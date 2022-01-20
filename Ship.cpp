@@ -176,7 +176,7 @@ void Ship::strafeDown()
 //rotations
 void Ship::yawLeft()
 {
-	torque.Y -= maxRotSpeed - rigidBodyComponent.angularVelocity.Y;
+	torque.Y -= maxRotSpeed + rigidBodyComponent.angularVelocity.Y;
 }
 
 void Ship::yawRight()
@@ -186,7 +186,7 @@ void Ship::yawRight()
 
 void Ship::pitchUp()
 {
-	torque.X -= maxRotSpeed - rigidBodyComponent.angularVelocity.X;
+	torque.X -= maxRotSpeed + rigidBodyComponent.angularVelocity.X;
 }
 
 void Ship::pitchDown()
@@ -199,7 +199,7 @@ void Ship::rollLeft()
 }
 void Ship::rollRight()
 {
-	torque.Z -= maxRotSpeed - rigidBodyComponent.angularVelocity.Z;
+	torque.Z -= maxRotSpeed + rigidBodyComponent.angularVelocity.Z;
 }
 
 void Ship::stopMoving()
