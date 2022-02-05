@@ -8,6 +8,7 @@
 #include "InputComponent.h"
 #include "IrrlichtComponent.h"
 #include "BulletRigidBodyComponent.h"
+#include "ShipMovementUtils.h"
 #include "ShipComponent.h"
 
 void shipMovementSystem(Scene& scene, f32 dt);

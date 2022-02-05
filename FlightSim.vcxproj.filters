@@ -1,210 +1,213 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Header Files\Components">
-      <UniqueIdentifier>{9f13e1d2-8f59-46bc-92de-cda7be1b4029}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Systems">
-      <UniqueIdentifier>{5393aaa9-156b-4f07-aa95-c56071e1984d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Core">
-      <UniqueIdentifier>{2ef9d687-78fb-4f88-bfb0-5290ab99f4d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Components">
-      <UniqueIdentifier>{40f8cbb5-0735-4bd6-866c-3a90575adf5e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Systems">
-      <UniqueIdentifier>{777ee6aa-85da-4cd0-bb4a-95dadaba7f8f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Core">
-      <UniqueIdentifier>{fae82cff-a1f1-4aed-a880-f9b3a53e2805}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Utilities">
-      <UniqueIdentifier>{901d7bad-1253-41d1-8f24-3c4edf2442ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Utilities">
-      <UniqueIdentifier>{c652721c-fcf6-46dd-94ac-df5df7bac303}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Gui">
-      <UniqueIdentifier>{63415c26-3806-4686-b55d-193afb9a40ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Gui">
-      <UniqueIdentifier>{5fc419a4-951e-4109-96b8-e091c379c526}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Systems\AI_Systems">
-      <UniqueIdentifier>{10984a15-e88d-4db9-ac77-7bcb93485c66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Systems\AI_Systems">
-      <UniqueIdentifier>{6ef621e4-c209-412f-a10e-ab9260887793}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\systems\CollisionCheckingSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\systems\IrrlichtRigidBodyPositionSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\systems\PlayerUpdateSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\systems\ProjectileSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\systems\HealthSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\systems\ShipMovementSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\systems\WeaponFiringSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\GameController.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\ECS.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\main.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\SceneManager.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utilities\GameFunctions.cpp">
-      <Filter>Source Files\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\GameStateController.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\GuiController.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gui\GuiMainMenu.cpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gui\GuiPauseMenu.cpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utilities\IrrlichtUtils.cpp">
-      <Filter>Source Files\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="src\systems\AIUpdateSystem.cpp">
-      <Filter>Source Files\Systems\AI_Systems</Filter>
+      <Filter>Sources\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp">
-      <Filter>Source Files\Systems\AI_Systems</Filter>
+    <ClCompile Include="src\systems\CollisionCheckingSystem.cpp">
+      <Filter>Sources\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp">
-      <Filter>Source Files\Systems\AI_Systems</Filter>
+      <Filter>Sources\Systems\AI_Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp">
+      <Filter>Sources\Systems\AI_Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\ECS.cpp">
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\GameController.cpp">
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\GameStateController.cpp">
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\GameFunctions.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\GuiController.cpp">
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\GuiMainMenu.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\GuiPauseMenu.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\HealthSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\IrrlichtRigidBodyPositionSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\IrrlichtUtils.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\main.cpp">
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="Networking.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\PlayerUpdateSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\ProjectileSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\SceneManager.cpp">
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\ShipMovementSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\ShipMovementUtils.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\WeaponFiringSystem.cpp">
+      <Filter>Sources\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\components\BulletRigidBodyComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\HealthComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\InputComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\IrrlichtComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\PlayerComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\ShipComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\WeaponInfoComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\systems\CollisionCheckingSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\systems\HealthSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\systems\IrrlichtRigidBodyPositionSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\systems\PlayerUpdateSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\systems\ProjectileSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\systems\ShipMovementSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\systems\WeaponFiringSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\BaseHeader.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\GameController.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\ECS.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\SceneManager.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\GameFunctions.h">
-      <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\GameDefaults.h">
-      <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\GameStateController.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\GuiController.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gui\GuiDialog.h">
-      <Filter>Header Files\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gui\GuiMainMenu.h">
-      <Filter>Header Files\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gui\GuiPauseMenu.h">
-      <Filter>Header Files\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gui\MenuData.h">
-      <Filter>Header Files\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\IrrlichtUtils.h">
-      <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="src\components\AIComponent.h">
-      <Filter>Header Files\Components</Filter>
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\BulletRigidBodyComponent.h">
+      <Filter>Headers\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
-      <Filter>Header Files\Systems\AI_Systems</Filter>
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\BaseHeader.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\CollisionCheckingSystem.h">
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ai_systems\DefaultAIBehaviors.h">
+      <Filter>Headers\Systems\AI_Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\ai_systems\DefaultAIUpdateSystem.h">
-      <Filter>Header Files\Systems\AI_Systems</Filter>
+      <Filter>Headers\Systems\AI_Systems</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\ECS.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\GameController.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\GameDefaults.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\GameStateController.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\GameFunctions.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\GuiController.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GuiDialog.h">
+      <Filter>Headers\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GuiMainMenu.h">
+      <Filter>Headers\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GuiPauseMenu.h">
+      <Filter>Headers\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\HealthComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\HealthSystem.h">
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\InputComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\IrrlichtComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\IrrlichtRigidBodyPositionSystem.h">
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\IrrlichtUtils.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\MenuData.h">
+      <Filter>Headers\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Networking.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\PlayerComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\PlayerUpdateSystem.h">
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ProjectileSystem.h">
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\SceneManager.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\ShipComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ShipMovementSystem.h">
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\ShipMovementUtils.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\WeaponFiringSystem.h">
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\WeaponInfoComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4a053bb7-c369-4508-94ab-14589a01ff9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{28c25cbb-b4ce-4a9d-a28b-15cce6994ee2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Components">
+      <UniqueIdentifier>{b922db02-18b8-43f1-a591-4ae83ae8e8c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Systems">
+      <UniqueIdentifier>{e89721e2-e635-472e-8451-5e473a110a83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Systems">
+      <UniqueIdentifier>{a96e59bd-8c03-4eb3-8fbf-c35f1e21daab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Core">
+      <UniqueIdentifier>{5c861071-c955-453c-b056-4a7df409ae94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Core">
+      <UniqueIdentifier>{03ce8f02-1238-4568-aa33-76d1d29a6aa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Systems\AI_Systems">
+      <UniqueIdentifier>{293981fc-faf7-4b89-9e26-f29f51a7d906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Systems\AI_Systems">
+      <UniqueIdentifier>{7bc3cd78-7fa9-4ba1-8941-8e79be93566f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Utilities">
+      <UniqueIdentifier>{7deef0a0-b48d-4be8-8c04-a1eea64fed90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Utilities">
+      <UniqueIdentifier>{7edb8844-beca-4f01-aebe-43729340d4d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Gui">
+      <UniqueIdentifier>{a721ea7a-4042-462d-91c2-0ffc8039dd4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Gui">
+      <UniqueIdentifier>{a309bdf4-382c-464c-ab31-f0dd8a6a5db4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
