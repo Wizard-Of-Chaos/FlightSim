@@ -1,12 +1,5 @@
 #include "IrrlichtRigidBodyPositionSystem.h"
-
-void QuaternionToEuler(const btQuaternion& TQuat, btVector3& TEuler) {
-	btScalar x, y, z;
-
-	TQuat.getEulerZYX(z, y, x);
-	TEuler.setValue(x, y, z);
-	TEuler *= RADTODEG;
-}
+#include <iostream>
 
 void irrlichtRigidBodyPositionSystem(Scene& scene, f32 dt)
 {
@@ -19,5 +12,6 @@ void irrlichtRigidBodyPositionSystem(Scene& scene, f32 dt)
 		btVector3 eulerOrientation;
 		QuaternionToEuler(rbc->rigidBody.getOrientation(), eulerOrientation);
 		irrcomp->node->setRotation(bulletVectorToIrrlicht(eulerOrientation));
+
 	}
 }

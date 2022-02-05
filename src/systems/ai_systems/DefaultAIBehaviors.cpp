@@ -33,7 +33,10 @@ void defaultFleeBehavior(SceneManager* manager, EntityId id, f32 dt)
 	vector3df targetVector = -distance; //runs away
 
 	btVector3 force = btVector3(0, 0, 0);
-	btVector3 torque = btVector3(0, 0, 0); //currently unused
+	btVector3 torque = btVector3(0, 0, 0);
+
+	force += getForceToDirection(ship, irrlichtVectorToBullet(targetVector));
+	torque += getTorqueToFaceDirection(&rbc->rigidBody, ship, irrlichtVectorToBullet(targetVector));
 
 	rbc->rigidBody.applyTorqueImpulse(torque * dt);
 	rbc->rigidBody.applyCentralImpulse(force * dt);

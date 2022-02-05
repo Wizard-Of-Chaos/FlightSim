@@ -111,6 +111,9 @@
     <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp">
       <Filter>Source Files\Systems\AI_Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\ShipMovementUtils.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\BulletRigidBodyComponent.h">
@@ -205,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="src\systems\ai_systems\DefaultAIBehaviors.h">
       <Filter>Header Files\Systems\AI_Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\ShipMovementUtils.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

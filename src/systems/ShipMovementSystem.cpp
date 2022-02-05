@@ -4,73 +4,57 @@ void shipMovementSystem(Scene& scene, f32 dt)
 {
 	for(auto entityId : SceneView<InputComponent, BulletRigidBodyComponent, ShipComponent>(scene)) {
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
+		btRigidBody* body = &rbc->rigidBody;
 		InputComponent* input = scene.get<InputComponent>(entityId);
 		ShipComponent* ship = scene.get<ShipComponent>(entityId);
-
-		f32 speed = ship->speed;
-		f32 rotSpeed = ship->rotSpeed;
 
 		btVector3 torque(0, 0, 0);
 		btVector3 force(0, 0, 0);
 
-		btVector3 forward(0, 0, 1);
-		btVector3 right(1, 0, 0);
-		btVector3 up(0, 1, 0);
-		btQuaternion transRot = rbc->rigidBody.getCenterOfMassTransform().getRotation();
-		
-		forward = forward.rotate(transRot.getAxis(), transRot.getAngle());
-		right = right.rotate(transRot.getAxis(), transRot.getAngle());
-		up = up.rotate(transRot.getAxis(), transRot.getAngle());
-
 		//strafing
 		if(input->isKeyDown(KEY_KEY_W)) {
-			//force += irrcomp->getForward() * maxSpeed;
-			force += forward * speed;
+			force += getForceForward(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_S)) {
-			force -= forward * speed;
+			force += getForceBackward(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_A)) {
-			force -= right * speed;
+			force += getForceLeft(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_D)) {
-			force += right * speed;
+			force += getForceRight(body, ship);
 		}
 		if(input->isKeyDown(KEY_SPACE)) {
-			force += up * speed;
+			force += getForceUp(body, ship);
 		}
 		if(input->isKeyDown(KEY_LCONTROL)) {
-			force -= up * speed;
+			force -= getForceDown(body, ship);
 		}
 
 		//rotations
 		if(input->isKeyDown(KEY_KEY_Q)) {
-			torque += forward * rotSpeed;
+			torque += getTorqueRollLeft(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_E)) {
-			torque -= forward * rotSpeed;
+			torque += getTorqueRollRight(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_R)) {
-			torque -= right * rotSpeed;
+			torque += getTorquePitchUp(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_F)) {
-			torque += right * rotSpeed;
+			torque += getTorquePitchDown(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_Z)) {
-			torque -= up * rotSpeed;
+			torque += getTorqueYawLeft(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_C)) {
-			torque += up * rotSpeed;
+			torque += getTorqueYawRight(body, ship);
 		}
 
 		//STOOOOOOOOOOOOOOOOOOOP
 		if (input->isKeyDown(KEY_KEY_X)) {
-			btVector3 ang = rbc->rigidBody.getAngularVelocity();
-			btVector3 lin = rbc->rigidBody.getLinearVelocity();
-			ang.safeNormalize();
-			lin.safeNormalize();
-			torque -= ang * rotSpeed;
-			force -= lin *speed;
+			torque += getTorqueToStopAngularVelocity(body, ship);
+			force += getForceToStopLinearVelocity(body, ship);
 		}
 
 		if (input->mouseControlEnabled) {
@@ -78,10 +62,10 @@ void shipMovementSystem(Scene& scene, f32 dt)
 			f32 mY = input->mousePosition.Y;
 
 			if (mX > .2f || mX < -.2f) {
-				torque += up * rotSpeed * mX;
+				torque += getTorqueYawRight(body, ship) * mX;
 			}
 			if (mY > .2f || mY < -.2f) {
-				torque += right * rotSpeed * mY;
+				torque += getTorquePitchUp(body, ship) * mY;
 			}
 		}
 

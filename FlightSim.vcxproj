@@ -171,6 +171,7 @@
     <ClCompile Include="src\systems\WeaponFiringSystem.cpp" />
     <ClCompile Include="src\utilities\GameFunctions.cpp" />
     <ClCompile Include="src\utilities\IrrlichtUtils.cpp" />
+    <ClCompile Include="src\utilities\ShipMovementUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="src\utilities\GameDefaults.h" />
     <ClInclude Include="src\utilities\GameFunctions.h" />
     <ClInclude Include="src\utilities\IrrlichtUtils.h" />
+    <ClInclude Include="src\utilities\ShipMovementUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
