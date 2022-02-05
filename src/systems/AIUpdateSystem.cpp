@@ -7,6 +7,9 @@ void AIUpdateSystem(SceneManager* manager, f32 dt)
 		auto AI = manager->scene.get<AIComponent>(id);
 		switch (AI->AIType) {
 			case AI_TYPE_DEFAULT:
+				defaultAIUpdateSystem(manager, id, dt);
+				break;
+			default:
 				break;
 		}
 	}

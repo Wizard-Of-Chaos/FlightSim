@@ -10,6 +10,7 @@
 #include "PlayerUpdateSystem.h"
 #include "WeaponFiringSystem.h"
 #include "CollisionCheckingSystem.h"
+#include "AIUpdateSystem.h"
 #include "HealthSystem.h"
 #include "GameDefaults.h"
 

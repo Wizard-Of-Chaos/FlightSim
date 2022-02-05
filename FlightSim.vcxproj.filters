@@ -108,6 +108,9 @@
     <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp">
       <Filter>Source Files\Systems\AI_Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp">
+      <Filter>Source Files\Systems\AI_Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\BulletRigidBodyComponent.h">
@@ -198,6 +201,9 @@
       <Filter>Header Files\Systems\AI_Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\ai_systems\DefaultAIUpdateSystem.h">
+      <Filter>Header Files\Systems\AI_Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ai_systems\DefaultAIBehaviors.h">
       <Filter>Header Files\Systems\AI_Systems</Filter>
     </ClInclude>
   </ItemGroup>

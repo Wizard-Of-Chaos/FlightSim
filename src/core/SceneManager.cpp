@@ -6,6 +6,7 @@ void SceneManager::update(f32 time, f32 frameDelta)
 {
 	dt = time;
 	shipMovementSystem(scene, dt); //updates impulses based on player input
+	AIUpdateSystem(this, dt); //updates AI components
 	weaponFiringSystem(this, dt); //fires guns
 	bulletWorld->stepSimulation(dt, 60); //applies the PHYSICS
 	collisionCheckingSystem(this); //destroys projectiles on hit

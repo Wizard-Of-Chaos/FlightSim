@@ -105,9 +105,11 @@ void GameController::initDefaultScene()
 	initializeDefaultRigidBody(&sceneECS, playerId);
 	initializeDefaultHUD(&sceneECS, playerId);
 
-	EntityId roidId = createDefaultObstacle(&sceneECS, randomVector());
+	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(40,40,40));
 	initializeDefaultRigidBody(&sceneECS, roidId);
 	initializeDefaultHealth(&sceneECS, roidId);
+
+	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
 
 	//make the light node an entity as well
 	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 0, 0),
