@@ -22,6 +22,7 @@ vector3df randomRotationVector();
 EntityId createDefaultShip(SceneManager* manager, vector3df position);
 EntityId createDefaultObstacle(SceneManager* manager, vector3df position);
 EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vector3df direction, EntityId weaponId);
+EntityId createDefaultAIShip(SceneManager* manager, vector3df position);
 
 void destroyProjectile(SceneManager* manager, EntityId projectile);
 void destroyObject(SceneManager* manager, EntityId id);

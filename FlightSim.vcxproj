@@ -158,6 +158,7 @@
     <ClCompile Include="src\core\GuiController.cpp" />
     <ClCompile Include="src\core\GameStateController.cpp" />
     <ClCompile Include="src\systems\AIUpdateSystem.cpp" />
+    <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp" />
     <ClCompile Include="src\systems\CollisionCheckingSystem.cpp" />
     <ClCompile Include="src\core\GameController.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="src\core\BaseHeader.h" />
     <ClInclude Include="src\components\BulletRigidBodyComponent.h" />
     <ClInclude Include="src\gui\MenuData.h" />
+    <ClInclude Include="src\systems\ai_systems\DefaultAIBehaviors.h" />
     <ClInclude Include="src\systems\ai_systems\DefaultAIUpdateSystem.h" />
     <ClInclude Include="src\systems\CollisionCheckingSystem.h" />
     <ClInclude Include="src\core\GameController.h" />

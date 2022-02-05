@@ -202,6 +202,13 @@ void destroyObject(SceneManager* manager, EntityId id)
 		}
 	}
 
+	auto ship = manager->scene.get<ShipComponent>(id);
+	if (ship) {
+		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+			destroyObject(manager, ship->weapons[i]);
+		}
+	}
+
 	if (irrComp) {
 		irrComp->node->removeAll();
 		irrComp->node->remove();
@@ -209,6 +216,7 @@ void destroyObject(SceneManager* manager, EntityId id)
 	if (rbc) {
 		manager->bulletWorld->removeRigidBody(&rbc->rigidBody);
 	}
+
 	manager->scene.destroyEntity(id);
 }
 
@@ -326,4 +334,26 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	player->selectionGui->setVisible(false);
 
 	return true;
+}
+
+//Creates a default AI ship at the given position. Returns the ID.
+EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
+{
+	Scene* scene = &manager->scene;
+
+	EntityId id = createDefaultShip(manager, position);
+	auto irr = scene->get<IrrlichtComponent>(id);
+	irr->name = "AI Ship";
+	initializeDefaultHealth(manager, id);
+	initializeDefaultRigidBody(manager, id);
+
+	auto ai = scene->assign<AIComponent>(id);
+	ai->AIType = AI_TYPE_DEFAULT;
+	ai->detectionRadius = AI_DEFAULT_DETECTION_RADIUS;
+	ai->reactionSpeed = AI_DEFAULT_REACTION_TIME;
+	ai->timeSinceLastStateCheck = 0;
+	ai->nearbyHostiles = false;
+	ai->closestContact = INVALID_ENTITY;
+
+	return id;
 }

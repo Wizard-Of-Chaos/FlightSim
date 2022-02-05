@@ -65,8 +65,12 @@ void shipMovementSystem(Scene& scene, f32 dt)
 
 		//STOOOOOOOOOOOOOOOOOOOP
 		if (input->isKeyDown(KEY_KEY_X)) {
-			torque -= rbc->rigidBody.getAngularVelocity() * rotSpeed;
-			force -= rbc->rigidBody.getLinearVelocity() * speed;
+			btVector3 ang = rbc->rigidBody.getAngularVelocity();
+			btVector3 lin = rbc->rigidBody.getLinearVelocity();
+			ang.safeNormalize();
+			lin.safeNormalize();
+			torque -= ang * rotSpeed;
+			force -= lin *speed;
 		}
 
 		if (input->mouseControlEnabled) {

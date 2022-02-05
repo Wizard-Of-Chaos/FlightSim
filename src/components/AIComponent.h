@@ -20,12 +20,18 @@ const enum AI_TYPE //different ships would have different AI patterns
 	AI_TYPE_DEFAULT
 };
 
+const f32 AI_DEFAULT_REACTION_TIME = 1.f;
+const f32 AI_DEFAULT_DETECTION_RADIUS = 100.f;
+
 struct AIComponent
 {
 	AI_TYPE AIType;
 	AI_STATE state;
+	f32 reactionSpeed; //how long it takes to change states
+	f32 timeSinceLastStateCheck; //this is going to be the time since the last state check
 	f32 detectionRadius;
 	array<EntityId> contacts;
+	EntityId closestContact;
 	bool nearbyHostiles;
 };
 

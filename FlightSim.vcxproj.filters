@@ -108,6 +108,9 @@
     <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp">
       <Filter>Source Files\Systems\AI_Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp">
+      <Filter>Source Files\Systems\AI_Systems</Filter>
+    </ClCompile>
     <ClCompile Include="Networking.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -202,9 +205,6 @@
     </ClInclude>
     <ClInclude Include="src\systems\ai_systems\DefaultAIUpdateSystem.h">
       <Filter>Header Files\Systems\AI_Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Networking.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
