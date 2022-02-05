@@ -4,6 +4,7 @@
 #define ECS_H
 
 #include <bitset>
+#include <tuple>
 #include <vector>
 
 typedef uint32_t EntityIndex;
@@ -56,6 +57,7 @@ struct Scene {
 	std::vector<EntityDesc> entities;
 	std::vector<EntityIndex> freeEntities;
 	std::vector<ComponentPool*> componentPools;
+	std::vector<std::tuple<EntityId, int, unsigned int>> priorityAccumulator;
 
 	EntityId newEntity();
 

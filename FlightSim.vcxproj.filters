@@ -111,8 +111,13 @@
     <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp">
       <Filter>Source Files\Systems\AI_Systems</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp">
       <Filter>Source Files\Utilities</Filter>
+=======
+    <ClCompile Include="Networking.cpp">
+      <Filter>Source Files</Filter>
+>>>>>>> c233412bcdd1f810ea32dc497bd4418687649b60
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,11 +211,14 @@
     <ClInclude Include="src\systems\ai_systems\DefaultAIUpdateSystem.h">
       <Filter>Header Files\Systems\AI_Systems</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="src\systems\ai_systems\DefaultAIBehaviors.h">
       <Filter>Header Files\Systems\AI_Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\utilities\ShipMovementUtils.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
+=======
+>>>>>>> c233412bcdd1f810ea32dc497bd4418687649b60
   </ItemGroup>
 </Project>
