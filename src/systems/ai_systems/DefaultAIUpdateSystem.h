@@ -10,5 +10,5 @@ class SceneManager;
 
 void defaultAIUpdateSystem(SceneManager* manager, EntityId id, f32 dt);
 
-void defaultAIStateCheck(SceneManager* manager, EntityId id);
+void updateContacts(SceneManager* manager, EntityId id);
 #endif 
