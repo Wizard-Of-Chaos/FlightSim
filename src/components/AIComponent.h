@@ -21,7 +21,7 @@ const enum AI_TYPE //different ships would have different AI patterns
 };
 
 const f32 AI_DEFAULT_REACTION_TIME = 1.f;
-const f32 AI_DEFAULT_DETECTION_RADIUS = 100.f;
+const f32 AI_DEFAULT_DETECTION_RADIUS = 50.f;
 
 struct AIComponent
 {

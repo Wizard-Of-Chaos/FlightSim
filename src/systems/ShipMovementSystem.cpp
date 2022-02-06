@@ -1,4 +1,5 @@
 #include "ShipMovementSystem.h"
+#include <iostream>
 
 void shipMovementSystem(Scene& scene, f32 dt)
 {
@@ -28,14 +29,14 @@ void shipMovementSystem(Scene& scene, f32 dt)
 			force += getForceUp(body, ship);
 		}
 		if(input->isKeyDown(KEY_LCONTROL)) {
-			force -= getForceDown(body, ship);
+			force += getForceDown(body, ship);
 		}
 
 		//rotations
-		if(input->isKeyDown(KEY_KEY_Q)) {
+		if(input->isKeyDown(KEY_KEY_Z)) {
 			torque += getTorqueRollLeft(body, ship);
 		}
-		if(input->isKeyDown(KEY_KEY_E)) {
+		if(input->isKeyDown(KEY_KEY_C)) {
 			torque += getTorqueRollRight(body, ship);
 		}
 		if(input->isKeyDown(KEY_KEY_R)) {
@@ -44,10 +45,10 @@ void shipMovementSystem(Scene& scene, f32 dt)
 		if(input->isKeyDown(KEY_KEY_F)) {
 			torque += getTorquePitchDown(body, ship);
 		}
-		if(input->isKeyDown(KEY_KEY_Z)) {
+		if(input->isKeyDown(KEY_KEY_Q)) {
 			torque += getTorqueYawLeft(body, ship);
 		}
-		if(input->isKeyDown(KEY_KEY_C)) {
+		if(input->isKeyDown(KEY_KEY_E)) {
 			torque += getTorqueYawRight(body, ship);
 		}
 

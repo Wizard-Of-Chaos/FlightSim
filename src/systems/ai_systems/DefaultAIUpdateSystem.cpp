@@ -24,7 +24,7 @@ void defaultAIStateCheck(SceneManager* manager, EntityId id)
 		closestContactDistance = closeIrr->node->getPosition() - irrAI->node->getPosition();
 	}
 
-	for (int i = 0; i < aiComp->contacts.size(); ++i) {
+	for (unsigned int i = 0; i < aiComp->contacts.size(); ++i) {
 		EntityId checkId = aiComp->contacts[i];
 		auto irrCheck = manager->scene.get<IrrlichtComponent>(checkId);
 		vector3df distance = irrCheck->node->getPosition() - irrAI->node->getPosition();

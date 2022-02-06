@@ -1,4 +1,5 @@
 #include "ShipMovementUtils.h"
+#include <iostream>
 
 void QuaternionToEuler(const btQuaternion& TQuat, btVector3& TEuler) {
 	btScalar x, y, z;
@@ -111,14 +112,31 @@ btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 	return -lin * ship->rotSpeed;
 }
 
-btVector3 getTorqueToFaceDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
+btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
 {
-	btVector3 axis = dir.cross(getRigidBodyForward(body));
-	btScalar angle = dir.angle(getRigidBodyForward(body));
+	btVector3 velocity = body->getAngularVelocity();
 
-	btVector3 euler;
-	btQuaternion targetRot(axis, angle);
-	QuaternionToEuler(targetRot, euler);
+	btVector3 forward = getRigidBodyForward(body);
+	btVector3 right = getRigidBodyRight(body);
+	btVector3 left = getRigidBodyLeft(body);
+	btVector3 up = getRigidBodyUp(body);
+	btVector3 down = getRigidBodyDown(body);
 
-	return euler * ship->speed;
+	btScalar angle = forward.angle(dir) * RADTODEG;
+	btScalar torqueFactor = angle / 180;
+
+	btVector3 torque(0, 0, 0);
+	if (right.dot(dir) > left.dot(dir)) {
+		torque += getTorqueYawRight(body, ship) * torqueFactor;
+	}
+	else {
+		torque += getTorqueYawLeft(body, ship) * torqueFactor;
+	}
+	if (up.dot(dir) > down.dot(dir)) {
+		torque += getTorquePitchUp(body, ship) * torqueFactor;
+	}
+	else {
+		torque += getTorquePitchDown(body, ship) * torqueFactor;
+	}
+	return torque;
 }
