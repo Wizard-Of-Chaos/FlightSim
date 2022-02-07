@@ -123,20 +123,41 @@ btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3
 	btVector3 down = getRigidBodyDown(body);
 
 	btScalar angle = forward.angle(dir) * RADTODEG;
-	btScalar torqueFactor = angle / 180;
+	btScalar torqueFactor = (angle / 180.f);
 
 	btVector3 torque(0, 0, 0);
 	if (right.dot(dir) > left.dot(dir)) {
-		torque += getTorqueYawRight(body, ship) * torqueFactor;
+		torque += getTorqueYawRight(body, ship);
 	}
 	else {
-		torque += getTorqueYawLeft(body, ship) * torqueFactor;
+		torque += getTorqueYawLeft(body, ship);
 	}
 	if (up.dot(dir) > down.dot(dir)) {
-		torque += getTorquePitchUp(body, ship) * torqueFactor;
+		torque += getTorquePitchUp(body, ship);
 	}
 	else {
-		torque += getTorquePitchDown(body, ship) * torqueFactor;
+		torque += getTorquePitchDown(body, ship);
 	}
+	torque *= torqueFactor;
 	return torque;
+}
+
+btVector3 getTorqueOpposingDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
+{
+	btVector3 forward = getRigidBodyForward(body);
+	btScalar angle = forward.angle(dir) * RADTODEG;
+	btScalar torqueFactor = ((180.f - angle) / 180.f);
+	btVector3 dirTorque = -getTorqueToDirection(body, ship, dir);
+	return dirTorque * torqueFactor;
+}
+
+void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt)
+{
+	btVector3 torque = getTorqueToDirection(body, ship, dir);
+	btVector3 opp = getTorqueOpposingDirection(body, ship, dir);
+	btScalar velocityFactor = body->getAngularVelocity().length();
+	torque /= velocityFactor * 3.f;
+	opp /= velocityFactor;
+	body->applyTorqueImpulse(getTorqueToDirection(body, ship, dir) * dt);
+	body->applyTorqueImpulse(getTorqueOpposingDirection(body, ship, dir) * dt);
 }

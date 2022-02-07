@@ -88,4 +88,10 @@ btVector3 getForceToDirection(ShipComponent* ship, btVector3 dir);
 //Returns the torque to kick the ship in the direction of the given vector.
 btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
 
+//Returns the torque to go opposite of the direction vector.
+btVector3 getTorqueOpposingDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
+
+//Combines torque and opposing torque to try and smoothly turn towards the direction.
+void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt);
+
 #endif 

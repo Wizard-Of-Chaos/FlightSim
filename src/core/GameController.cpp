@@ -105,15 +105,15 @@ void GameController::initDefaultScene()
 	initializeDefaultRigidBody(&sceneECS, playerId);
 	initializeDefaultHUD(&sceneECS, playerId);
 
-	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(40,40,40));
+	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40));
 	initializeDefaultRigidBody(&sceneECS, roidId);
 	initializeDefaultHealth(&sceneECS, roidId);
 
 	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
 
 	//make the light node an entity as well
-	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 0, 0),
-		SColor(200, 200, 200, 200), 400.f);
+	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 5000, 0),
+		SColor(200, 200, 200, 200), 20000.f);
 	n->setID(ID_IsNotSelectable);
 
 	n = smgr->addBillboardSceneNode(n, dimension2d<f32>(25, 25));
