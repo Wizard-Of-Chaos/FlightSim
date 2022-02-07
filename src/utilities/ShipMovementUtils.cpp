@@ -102,14 +102,18 @@ btVector3 getTorqueRollLeft(btRigidBody* body, ShipComponent* ship)
 btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
 {
 	btVector3 ang = body->getAngularVelocity();
-	ang.safeNormalize();
+	if (ang.length2() <= 0) return btVector3(0, 0, 0);
+	if (ang.length2() <= 0.00001f) return -ang;
+	ang.normalize();
 	return -ang * ship->rotSpeed;
 }
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 {
 	btVector3 lin = body->getLinearVelocity();
-	lin.safeNormalize();
-	return -lin * ship->rotSpeed;
+	if (lin.length2() <= 0) return btVector3(0, 0, 0);
+	if (lin.length2() <= 0.00001f) return -lin;
+	lin.normalize();
+	return -lin * ship->speed;
 }
 
 btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)

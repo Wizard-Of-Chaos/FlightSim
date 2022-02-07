@@ -10,7 +10,7 @@ struct PlayerComponent
 	ICameraSceneNode* camera;
 	ISceneNode* target;
 	//values for how much the camera swings around
-	f32 slerpFactor = 20.f;
+	f32 slerpFactor = .009f;
 	f32 velocityFactor = .1f;
 
 	ISceneNode* activeSelection;

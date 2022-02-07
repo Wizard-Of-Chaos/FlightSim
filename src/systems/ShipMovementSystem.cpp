@@ -66,7 +66,7 @@ void shipMovementSystem(Scene& scene, f32 dt)
 				torque += getTorqueYawRight(body, ship) * mX;
 			}
 			if (mY > .2f || mY < -.2f) {
-				torque += getTorquePitchUp(body, ship) * mY;
+				torque += getTorquePitchDown(body, ship) * mY;
 			}
 		}
 

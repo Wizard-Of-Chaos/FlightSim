@@ -23,7 +23,7 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		quaternion targetRot(targetnode->getRotation() * DEGTORAD);
 
 		quaternion desiredRot;
-		desiredRot = desiredRot.slerp(targetRot, nodeRot, frameDelta*player->slerpFactor);
+		desiredRot = desiredRot.slerp(targetRot, nodeRot, player->slerpFactor);
 		vector3df targetRotVec(0, 0, 0);
 		desiredRot.toEuler(targetRotVec);
 		targetRotVec *= RADTODEG;
