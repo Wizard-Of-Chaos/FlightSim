@@ -68,6 +68,9 @@ void shipMovementSystem(Scene& scene, f32 dt)
 			if (mY > .2f || mY < -.2f) {
 				torque += getTorquePitchDown(body, ship) * mY;
 			}
+			if ((mX < .2f && mX > -.2f) && (mY < .2f && mY > -.2f)) {
+				torque += getTorqueToStopAngularVelocity(body, ship);
+			}
 		}
 
 		rbc->rigidBody.applyTorqueImpulse(torque * dt);

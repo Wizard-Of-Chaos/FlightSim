@@ -88,4 +88,7 @@ btVector3 getTorqueOpposingDirection(btRigidBody* body, ShipComponent* ship, btV
 //Combines torque and opposing torque to try and smoothly turn towards the direction.
 void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt);
 
+//Applies a torque to turn towards the given direction, then applies a force to get there. Applies a braking force when close enough.
+void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt);
+
 #endif 

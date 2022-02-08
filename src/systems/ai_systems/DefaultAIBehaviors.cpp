@@ -23,8 +23,8 @@ void defaultFleeBehavior(SceneManager* manager, EntityId id, f32 dt)
 	auto ship = manager->scene.get<ShipComponent>(id);
 	auto ai = manager->scene.get<AIComponent>(id);
 
-	auto pursuitIrr = manager->scene.get<IrrlichtComponent>(ai->closestContact);
-	vector3df distance = pursuitIrr->node->getPosition() - irr->node->getPosition();
+	auto fleeIrr = manager->scene.get<IrrlichtComponent>(ai->closestContact);
+	vector3df distance = fleeIrr->node->getPosition() - irr->node->getPosition();
 	distance.normalize();
 	vector3df targetVector = -distance; //runs away
 
@@ -35,4 +35,17 @@ void defaultFleeBehavior(SceneManager* manager, EntityId id, f32 dt)
 
 	smoothTurnToDirection(&rbc->rigidBody, ship, irrlichtVectorToBullet(targetVector), dt);
 	rbc->rigidBody.applyCentralImpulse(force * dt);
+}
+
+void defaultPursuitBehavior(SceneManager* manager, EntityId id, f32 dt)
+{
+	auto irr = manager->scene.get<IrrlichtComponent>(id);
+	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
+	auto ship = manager->scene.get<ShipComponent>(id);
+	auto ai = manager->scene.get<AIComponent>(id);
+
+	auto pursuitIrr = manager->scene.get<IrrlichtComponent>(ai->closestContact);
+	vector3df tailPos = getNodeBackward(pursuitIrr->node) * 30.f;
+	goToPoint(&rbc->rigidBody, ship, irrlichtVectorToBullet(tailPos), dt);
+	//get behind the ship, then try and match velocity while turning toward it
 }
