@@ -15,7 +15,8 @@ class GameStateController;
 enum SELECTIONS
 {
 	ID_IsNotSelectable = 0,
-	ID_IsSelectable = 1 << 0
+	ID_IsSelectable = 1 << 0,
+	ID_IsAvoidable = 1 << 1
 };
 
 class BulletPhysicsWorld : public btDiscreteDynamicsWorld

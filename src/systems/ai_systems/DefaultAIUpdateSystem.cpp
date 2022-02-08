@@ -59,8 +59,8 @@ void defaultAIStateCheck(SceneManager* manager, EntityId id)
 	}
 
 	//there IS a contact!
-	aiComp->state = AI_STATE_FLEE;
-	//run away!
+	aiComp->state = AI_STATE_PURSUIT;
+	//whoop its ass!
 }
 
 void defaultAIUpdateSystem(SceneManager* manager, EntityId id, f32 dt)
@@ -79,6 +79,9 @@ void defaultAIUpdateSystem(SceneManager* manager, EntityId id, f32 dt)
 		break;
 	case AI_STATE_FLEE:
 		defaultFleeBehavior(manager, id, dt);
+		break;
+	case AI_STATE_PURSUIT:
+		defaultPursuitBehavior(manager, id, dt);
 		break;
 	default:
 		break;

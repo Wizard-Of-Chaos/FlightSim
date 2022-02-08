@@ -1,4 +1,7 @@
 #include "ShipMovementUtils.h"
+#include "SceneManager.h"
+#include "GameController.h"
+
 #include <iostream>
 
 void QuaternionToEuler(const btQuaternion& TQuat, btVector3& TEuler) {
@@ -89,20 +92,27 @@ btVector3 getTorqueRollLeft(btRigidBody* body, ShipComponent* ship)
 	return getRigidBodyForward(body) * ship->rollThrust;
 }
 
+btVector3 velocitySafeNormalize(btVector3& velocity)
+{
+	btVector3 retval(velocity);
+	if (retval.length2() <= 0) return btVector3(0, 0, 0);
+	if (retval.length2() <= 0.00001f) return retval;
+	retval.normalize();
+	return retval;
+}
+
 btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
 {
 	btVector3 ang = body->getAngularVelocity();
-	if (ang.length2() <= 0) return btVector3(0, 0, 0);
+	ang = velocitySafeNormalize(ang);
 	if (ang.length2() <= 0.00001f) return -ang;
-	ang.normalize();
 	return -ang * ((ship->pitchThrust + ship->yawThrust + ship->rollThrust) / 3.f);
 }
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 {
 	btVector3 lin = body->getLinearVelocity();
-	if (lin.length2() <= 0) return btVector3(0, 0, 0);
+	lin = velocitySafeNormalize(lin);
 	if (lin.length2() <= 0.00001f) return -lin;
-	lin.normalize();
 	return -lin * (ship->brakeThrust + ship->strafeThrust);
 }
 
@@ -177,4 +187,34 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 			body->applyCentralImpulse(getForceForward(body, ship) * dt);
 		}
 	}
+}
+
+bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
+{
+	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
+
+	auto ship = manager->scene.get<ShipComponent>(id);
+	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
+	auto irr = manager->scene.get<IrrlichtComponent>(id);
+
+	if (!ship || !rbc) return false;
+	btRigidBody* body = &rbc->rigidBody;
+
+	btVector3 velocity = body->getLinearVelocity();
+	btVector3 dir = velocitySafeNormalize(velocity);
+	vector3df pos = irr->node->getPosition();
+	vector3df futurePos = pos + (bulletVectorToIrrlicht(dir) * velocity.length() * 3.f);
+
+	line3df trajectory(pos, futurePos);
+	ISceneNode* obstacle = coll->getSceneNodeFromRayBB(trajectory, ID_IsAvoidable);
+
+	if (obstacle) {
+		EntityId obstacleId = strToId(std::string(obstacle->getName()));
+		if (target != INVALID_ENTITY && obstacleId == target) return false;
+
+		//now what?
+
+		return true;
+	}
+	return false;
 }

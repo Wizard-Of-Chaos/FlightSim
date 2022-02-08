@@ -8,8 +8,14 @@
 #include "BulletRigidBodyComponent.h"
 #include "IrrlichtComponent.h"
 
+class SceneManager;
+class GameController;
+
 //Converts a Bullet quaternion to Euler angles (in degrees).
 void QuaternionToEuler(const btQuaternion& TQuat, btVector3& TEuler);
+
+//Safe normalization for a velocity that dodges degenerate cases.
+btVector3 velocitySafeNormalize(btVector3& vel);
 
 /* DIRECTIONAL VECTORS */
 
@@ -90,5 +96,8 @@ void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir
 
 //Applies a torque to turn towards the given direction, then applies a force to get there. Applies a braking force when close enough.
 void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt);
+
+//Applies torque and force to avoid smacking into something. Returns true if actively avoiding an obstacle, and false otherwise.
+bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target=INVALID_ENTITY);
 
 #endif 

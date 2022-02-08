@@ -56,7 +56,7 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 
 	auto shipEntity = scene->newEntity();
 	playerNode->setName(idToStr(shipEntity).c_str());
-	playerNode->setID(ID_IsSelectable);
+	playerNode->setID(ID_IsSelectable | ID_IsAvoidable);
 	auto irrComponent = scene->assign<IrrlichtComponent>(shipEntity);
 
 	irrComponent->node = playerNode;
@@ -90,7 +90,7 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
 	auto roidEntity = scene->newEntity();
 	auto irrComp = scene->assign<IrrlichtComponent>(roidEntity);
 	irrComp->node = smgr->addMeshSceneNode(manager->defaults.defaultObstacleMesh);
-	irrComp->node->setID(ID_IsSelectable);
+	irrComp->node->setID(ID_IsSelectable | ID_IsAvoidable);
 	irrComp->node->setPosition(position);
 	irrComp->node->setName(idToStr(roidEntity).c_str());
 	irrComp->name = "Asteroid";
