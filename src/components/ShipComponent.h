@@ -8,12 +8,24 @@
 
 const int MAX_HARDPOINTS = 8;
 
+const f32 DEFAULT_FORWARD_THRUST = 75.f;
+const f32 DEFAULT_BRAKE_THRUST = 45.f;
+const f32 DEFAULT_STRAFE_THRUST = 20.f;
+const f32 DEFAULT_PITCH_THRUST = 90.f;
+const f32 DEFAULT_YAW_THRUST = 80.f;
+const f32 DEFAULT_ROLL_THRUST = 45.f;
+
 struct ShipComponent {
 	unsigned int hardpointCount;
 	vector3df hardpoints[MAX_HARDPOINTS];
 	EntityId weapons[MAX_HARDPOINTS];
-	f32 speed;
-	f32 rotSpeed;
+
+	f32 forwardThrust;
+	f32 brakeThrust;
+	f32 strafeThrust;
+	f32 pitchThrust;
+	f32 yawThrust;
+	f32 rollThrust;
 };
 
 #endif

@@ -9,12 +9,8 @@ void defaultIdleBehavior(SceneManager* manager, EntityId id, f32 dt)
 	btVector3 force = btVector3(0, 0, 0);
 	btVector3 torque = btVector3(0, 0, 0);
 
-	btVector3 ang = rbc->rigidBody.getAngularVelocity();
-	btVector3 lin = rbc->rigidBody.getLinearVelocity();
-	ang.safeNormalize();
-	lin.safeNormalize();
-	torque -= ang * ship->rotSpeed;
-	force -= lin * ship->speed;
+	force += getForceToStopLinearVelocity(&rbc->rigidBody, ship);
+	torque += getTorqueToStopAngularVelocity(&rbc->rigidBody, ship);
 
 	rbc->rigidBody.applyTorqueImpulse(torque * dt);
 	rbc->rigidBody.applyCentralImpulse(force * dt);

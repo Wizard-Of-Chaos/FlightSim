@@ -40,63 +40,53 @@ btVector3 getRigidBodyDown(btRigidBody* body)
 	return -getRigidBodyUp(body);
 }
 
-btVector3 getTorqueOnAxis(ShipComponent* ship, btVector3 axis)
-{
-	return axis * ship->rotSpeed;
-}
-btVector3 getForceToDirection(ShipComponent* ship, btVector3 dir)
-{
-	return dir * ship->speed;
-}
-
 btVector3 getForceForward(btRigidBody* body, ShipComponent* ship)
 {
-	return getForceToDirection(ship, getRigidBodyForward(body));
+	return getRigidBodyForward(body) * ship->forwardThrust;
 }
 btVector3 getForceBackward(btRigidBody* body, ShipComponent* ship)
 {
-	return getForceToDirection(ship, getRigidBodyBackward(body));
+	return getRigidBodyBackward(body) * ship->brakeThrust;
 }
 btVector3 getForceRight(btRigidBody* body, ShipComponent* ship)
 {
-	return getForceToDirection(ship, getRigidBodyRight(body));
+	return getRigidBodyRight(body) * ship->strafeThrust;
 }
 btVector3 getForceLeft(btRigidBody* body, ShipComponent* ship)
 {
-	return getForceToDirection(ship, getRigidBodyLeft(body));
+	return getRigidBodyLeft(body) * ship->strafeThrust;
 }
 btVector3 getForceUp(btRigidBody* body, ShipComponent* ship)
 {
-	return getForceToDirection(ship, getRigidBodyUp(body));
+	return getRigidBodyUp(body) * ship->strafeThrust;
 }
 btVector3 getForceDown(btRigidBody* body, ShipComponent* ship)
 {
-	return getForceToDirection(ship, getRigidBodyDown(body));
+	return getRigidBodyDown(body) * ship->strafeThrust;
 }
-
 btVector3 getTorquePitchUp(btRigidBody* body, ShipComponent* ship)
 {
-	return getTorqueOnAxis(ship, getRigidBodyLeft(body));
+	return getRigidBodyLeft(body) * ship->pitchThrust;
 }
 btVector3 getTorquePitchDown(btRigidBody* body, ShipComponent* ship)
 {
-	return getTorqueOnAxis(ship, getRigidBodyRight(body));
+	return getRigidBodyRight(body) * ship->pitchThrust;
 }
 btVector3 getTorqueYawRight(btRigidBody* body, ShipComponent* ship)
 {
-	return getTorqueOnAxis(ship, getRigidBodyUp(body));
+	return getRigidBodyUp(body) * ship->yawThrust;
 }
 btVector3 getTorqueYawLeft(btRigidBody* body, ShipComponent* ship)
 {
-	return getTorqueOnAxis(ship, getRigidBodyDown(body));
+	return getRigidBodyDown(body) * ship->yawThrust;
 }
 btVector3 getTorqueRollRight(btRigidBody* body, ShipComponent* ship)
 {
-	return getTorqueOnAxis(ship, getRigidBodyBackward(body));
+	return getRigidBodyBackward(body) * ship->rollThrust;
 }
 btVector3 getTorqueRollLeft(btRigidBody* body, ShipComponent* ship)
 {
-	return getTorqueOnAxis(ship, getRigidBodyForward(body));
+	return getRigidBodyForward(body) * ship->rollThrust;
 }
 
 btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
@@ -105,7 +95,7 @@ btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
 	if (ang.length2() <= 0) return btVector3(0, 0, 0);
 	if (ang.length2() <= 0.00001f) return -ang;
 	ang.normalize();
-	return -ang * ship->rotSpeed;
+	return -ang * ((ship->pitchThrust + ship->yawThrust + ship->rollThrust) / 3.f);
 }
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 {
@@ -113,7 +103,7 @@ btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 	if (lin.length2() <= 0) return btVector3(0, 0, 0);
 	if (lin.length2() <= 0.00001f) return -lin;
 	lin.normalize();
-	return -lin * ship->speed;
+	return -lin * (ship->brakeThrust + ship->strafeThrust);
 }
 
 btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)

@@ -63,8 +63,12 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 	irrComponent->name = "Default Ship";
 
 	auto shipComponent = scene->assign<ShipComponent>(shipEntity);
-	shipComponent->rotSpeed = 100.f;
-	shipComponent->speed = 40.f;
+	shipComponent->forwardThrust = DEFAULT_FORWARD_THRUST;
+	shipComponent->strafeThrust = DEFAULT_STRAFE_THRUST;
+	shipComponent->pitchThrust = DEFAULT_PITCH_THRUST;
+	shipComponent->yawThrust = DEFAULT_YAW_THRUST;
+	shipComponent->rollThrust = DEFAULT_ROLL_THRUST;
+
 	shipComponent->hardpointCount = 2;
 	shipComponent->hardpoints[0] = vector3df(2.4816f, .25f, -6.0088f);
 	shipComponent->hardpoints[1] = vector3df(-2.4816f, .25f, -6.0088f);
@@ -92,8 +96,8 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
 	irrComp->name = "Asteroid";
 
 	auto healthComp = scene->assign<HealthComponent>(roidEntity);
-	healthComp->health = 100.f;
-	healthComp->maxHealth = 100.f;
+	healthComp->health = DEFAULT_MAX_HEALTH;
+	healthComp->maxHealth = DEFAULT_MAX_HEALTH;
 
 	return roidEntity;
 }
@@ -235,12 +239,12 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	auto wepEntity = scene->newEntity();
 	auto wepInfo = scene->assign<WeaponInfoComponent>(wepEntity);
 	wepInfo->isFiring = false;
-	wepInfo->type = WEP_LASER;
-	wepInfo->firingSpeed = .5f;
-	wepInfo->projectileSpeed = 20.f;
-	wepInfo->range = 300.f;
+	wepInfo->type = DEFAULT_WEAPON_TYPE;
+	wepInfo->firingSpeed = DEFAULT_FIRING_SPEED;
+	wepInfo->projectileSpeed = DEFAULT_PROJECTILE_SPEED;
+	wepInfo->range = DEFAULT_WEAPON_RANGE;
 	wepInfo->timeSinceLastShot = 0.f;
-	wepInfo->damage = 20.f;
+	wepInfo->damage = DEFAULT_WEAPON_DAMAGE;
 
 	auto wepIrrComp = scene->assign<IrrlichtComponent>(wepEntity);
 	wepIrrComp->node = smgr->addMeshSceneNode(manager->defaults.defaultWeaponMesh, shipIrr->node, -1, shipComp->hardpoints[hardpoint], vector3df(0, 0, 0), vector3df(.5f, .5f, .5f));

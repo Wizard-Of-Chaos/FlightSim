@@ -73,17 +73,11 @@ btVector3 getTorqueRollLeft(btRigidBody* body, ShipComponent* ship);
 
 /* MOVEMENT VECTORS */
 
-//Returns torque on an axis, modified by the ship's rotational speed. Use to roll, pitch, and yaw.
-btVector3 getTorqueOnAxis(ShipComponent* ship, btVector3 axis);
-
 //Returns the torque in the opposite direction of the current angular velocity, modified by the ship's rotational speed.
 btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship);
 
 //Returns the force in the opposite direction of the current linear velocity, modified by the ship's speed.
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship);
-
-//Returns the force for the ship to move in the direction of the given vector.
-btVector3 getForceToDirection(ShipComponent* ship, btVector3 dir);
 
 //Returns the torque to kick the ship in the direction of the given vector.
 btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);

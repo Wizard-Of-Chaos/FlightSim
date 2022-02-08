@@ -11,6 +11,12 @@ enum WEAPON_TYPE {
 	WEP_GRAPPLE
 };
 
+const f32 DEFAULT_FIRING_SPEED = .5f;
+const f32 DEFAULT_PROJECTILE_SPEED = 20.f;
+const f32 DEFAULT_WEAPON_RANGE = 300.f;
+const WEAPON_TYPE DEFAULT_WEAPON_TYPE = WEP_LASER;
+const f32 DEFAULT_WEAPON_DAMAGE = 15.f;
+
 //WEAPON ENTITIES:
 //Irrlicht component, weapon info component
 
@@ -36,4 +42,5 @@ struct ProjectileInfoComponent
 	f32 range;
 	vector3df startPos;
 };
+
 #endif
