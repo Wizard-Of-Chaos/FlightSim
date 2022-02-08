@@ -12,6 +12,5 @@ void irrlichtRigidBodyPositionSystem(Scene& scene, f32 dt)
 		btVector3 eulerOrientation;
 		QuaternionToEuler(rbc->rigidBody.getOrientation(), eulerOrientation);
 		irrcomp->node->setRotation(bulletVectorToIrrlicht(eulerOrientation));
-
 	}
 }

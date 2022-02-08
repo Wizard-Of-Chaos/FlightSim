@@ -1,4 +1,5 @@
 #include "ShipMovementUtils.h"
+#include <iostream>
 
 void QuaternionToEuler(const btQuaternion& TQuat, btVector3& TEuler) {
 	btScalar x, y, z;
@@ -101,24 +102,66 @@ btVector3 getTorqueRollLeft(btRigidBody* body, ShipComponent* ship)
 btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
 {
 	btVector3 ang = body->getAngularVelocity();
-	ang.safeNormalize();
+	if (ang.length2() <= 0) return btVector3(0, 0, 0);
+	if (ang.length2() <= 0.00001f) return -ang;
+	ang.normalize();
 	return -ang * ship->rotSpeed;
 }
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 {
 	btVector3 lin = body->getLinearVelocity();
-	lin.safeNormalize();
-	return -lin * ship->rotSpeed;
+	if (lin.length2() <= 0) return btVector3(0, 0, 0);
+	if (lin.length2() <= 0.00001f) return -lin;
+	lin.normalize();
+	return -lin * ship->speed;
 }
 
-btVector3 getTorqueToFaceDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
+btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
 {
-	btVector3 axis = dir.cross(getRigidBodyForward(body));
-	btScalar angle = dir.angle(getRigidBodyForward(body));
+	btVector3 velocity = body->getAngularVelocity();
 
-	btVector3 euler;
-	btQuaternion targetRot(axis, angle);
-	QuaternionToEuler(targetRot, euler);
+	btVector3 forward = getRigidBodyForward(body);
+	btVector3 right = getRigidBodyRight(body);
+	btVector3 left = getRigidBodyLeft(body);
+	btVector3 up = getRigidBodyUp(body);
+	btVector3 down = getRigidBodyDown(body);
 
-	return euler * ship->speed;
+	btScalar angle = forward.angle(dir) * RADTODEG;
+	btScalar torqueFactor = (angle / 180.f);
+
+	btVector3 torque(0, 0, 0);
+	if (right.dot(dir) > left.dot(dir)) {
+		torque += getTorqueYawRight(body, ship);
+	}
+	else {
+		torque += getTorqueYawLeft(body, ship);
+	}
+	if (up.dot(dir) > down.dot(dir)) {
+		torque += getTorquePitchUp(body, ship);
+	}
+	else {
+		torque += getTorquePitchDown(body, ship);
+	}
+	torque *= torqueFactor;
+	return torque;
+}
+
+btVector3 getTorqueOpposingDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
+{
+	btVector3 forward = getRigidBodyForward(body);
+	btScalar angle = forward.angle(dir) * RADTODEG;
+	btScalar torqueFactor = ((180.f - angle) / 180.f);
+	btVector3 dirTorque = -getTorqueToDirection(body, ship, dir);
+	return dirTorque * torqueFactor;
+}
+
+void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt)
+{
+	btVector3 torque = getTorqueToDirection(body, ship, dir);
+	btVector3 opp = getTorqueOpposingDirection(body, ship, dir);
+	btScalar velocityFactor = body->getAngularVelocity().length();
+	torque /= velocityFactor * 3.f;
+	opp /= velocityFactor;
+	body->applyTorqueImpulse(getTorqueToDirection(body, ship, dir) * dt);
+	body->applyTorqueImpulse(getTorqueOpposingDirection(body, ship, dir) * dt);
 }

@@ -2,7 +2,7 @@
 #include "DefaultAIUpdateSystem.h"
 #include <iostream>
 
-void defaultAIStateCheck(SceneManager* manager, EntityId id)
+void updateContacts(SceneManager* manager, EntityId id)
 {
 	auto irrAI = manager->scene.get<IrrlichtComponent>(id);
 	auto aiComp = manager->scene.get<AIComponent>(id);
@@ -24,7 +24,7 @@ void defaultAIStateCheck(SceneManager* manager, EntityId id)
 		closestContactDistance = closeIrr->node->getPosition() - irrAI->node->getPosition();
 	}
 
-	for (int i = 0; i < aiComp->contacts.size(); ++i) {
+	for (unsigned int i = 0; i < aiComp->contacts.size(); ++i) {
 		EntityId checkId = aiComp->contacts[i];
 		auto irrCheck = manager->scene.get<IrrlichtComponent>(checkId);
 		vector3df distance = irrCheck->node->getPosition() - irrAI->node->getPosition();
@@ -43,18 +43,24 @@ void defaultAIStateCheck(SceneManager* manager, EntityId id)
 			closestContactDistance = distance;
 		}
 	}
-
 	if (aiComp->contacts.size() == 0) {
 		aiComp->closestContact = INVALID_ENTITY;
 	}
+}
 
-	if (aiComp->closestContact != INVALID_ENTITY) {
-		aiComp->state = AI_STATE_FLEE;
-	}
-	else {
+void defaultAIStateCheck(SceneManager* manager, EntityId id)
+{
+	auto irrAI = manager->scene.get<IrrlichtComponent>(id);
+	auto aiComp = manager->scene.get<AIComponent>(id);
+
+	if (aiComp->closestContact == INVALID_ENTITY) {
 		aiComp->state = AI_STATE_IDLE;
+		return;
 	}
 
+	//there IS a contact!
+	aiComp->state = AI_STATE_FLEE;
+	//run away!
 }
 
 void defaultAIUpdateSystem(SceneManager* manager, EntityId id, f32 dt)
@@ -62,6 +68,7 @@ void defaultAIUpdateSystem(SceneManager* manager, EntityId id, f32 dt)
 	auto ai = manager->scene.get<AIComponent>(id);
 	ai->timeSinceLastStateCheck += dt;
 	if (ai->timeSinceLastStateCheck >= ai->reactionSpeed) {
+		updateContacts(manager, id);
 		defaultAIStateCheck(manager, id);
 		ai->timeSinceLastStateCheck = 0;
 	}

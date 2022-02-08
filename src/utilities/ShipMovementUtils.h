@@ -82,11 +82,16 @@ btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
 //Returns the force in the opposite direction of the current linear velocity, modified by the ship's speed.
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship);
 
-//Returns the torque for the ship to face the direction of the given vector.
-btVector3 getTorqueToFaceDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
-
 //Returns the force for the ship to move in the direction of the given vector.
 btVector3 getForceToDirection(ShipComponent* ship, btVector3 dir);
 
+//Returns the torque to kick the ship in the direction of the given vector.
+btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
+
+//Returns the torque to go opposite of the direction vector.
+btVector3 getTorqueOpposingDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
+
+//Combines torque and opposing torque to try and smoothly turn towards the direction.
+void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt);
 
 #endif 
