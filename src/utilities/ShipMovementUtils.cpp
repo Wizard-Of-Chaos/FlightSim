@@ -152,8 +152,8 @@ void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir
 	btScalar velocityFactor = body->getAngularVelocity().length();
 	torque /= velocityFactor * 3.f;
 	opp /= velocityFactor;
-	btScalar angle = getRigidBodyForward(body).angle(dir) * RADTODEG;
-	if (angle > 5.f) {
+	btScalar angle = getRigidBodyForward(body).angle(dir);
+	if (angle > body->getAngularVelocity().length()) {
 		body->applyTorqueImpulse(getTorqueToDirection(body, ship, dir) * dt);
 		body->applyTorqueImpulse(getTorqueOpposingDirection(body, ship, dir) * dt);
 	}
@@ -170,7 +170,7 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 	btScalar angle = getRigidBodyForward(body).angle(dir) * RADTODEG;
 	smoothTurnToDirection(body, ship, dir, dt);
 	if (angle < 10.f) {
-		if (path.length() <= body->getAngularVelocity().length()) {
+		if (path.length() <= body->getLinearVelocity().length()) {
 			body->applyCentralImpulse(getForceToStopLinearVelocity(body, ship) * dt);
 		}
 		else {
