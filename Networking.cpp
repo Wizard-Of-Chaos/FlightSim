@@ -28,11 +28,11 @@ Packet* buildPacket(Scene& scene) {
 		unsigned int componentPrio = 1;
 
 		if (componentId == getId<BulletRigidBodyComponent>()) {
-			serializer = serializeBulletRigidBodyComponent;
+			// serializer = serializeBulletRigidBodyComponent;
 			// TODO: calculate payload size
 		}
 		else if (componentId == getId<HealthComponent>()) {
-			serializer = serializeHealthComponent;
+			// serializer = serializeHealthComponent;
 			// TODO: calculate payload size
 		}
 		else {
@@ -75,46 +75,4 @@ void sortAccumulator(std::vector<std::tuple<EntityId, int, unsigned int>>& prior
 
 		std::rotate(insertionPoint, it, it + 1);
 	}
-}
-
-bool serializeBulletRigidBodyComponent(EntityId entityId, char* buffer, Scene& scene) {
-	auto rbc = scene.get<BulletRigidBodyComponent>(entityId);
-	if (rbc == nullptr) {
-		return false;
-	}
-	
-
-}
-bool serializeHealthComponent(EntityId entityId, char* buffer, Scene& scene) {
-	auto healthComponent = scene.get<HealthComponent>(entityId);
-	if (healthComponent == nullptr) {
-		return false;
-	}
-}
-
-void BitWriter::writeBits(uint32_t thingToWrite, short numBits) {
-	scratch <<= numBits;
-	auto pattern = thingToWrite & ((1 << numBits) - 1);
-	scratch |= pattern;
-	scratchBits += numBits;
-	if (scratchBits > sizeof(uint32_t)) {
-		// flush to buffer
-		buffer[wordIndex] = (uint32_t)scratch;
-		scratch >>= sizeof(uint32_t);
-		scratchBits -= sizeof(uint32_t);
-		++wordIndex;
-	}
-}
-void BitReader::read(short numBits, uint32_t* to) {
-	if (numBits > sizeof(uint32_t)) {
-		// invalid read quantity
-	}
-	if (scratchBits < numBits) {
-		scratch |= ((uint64_t)buffer[wordIndex++]) << scratchBits;
-		scratchBits += sizeof(uint32_t);
-	}
-
-	*to = scratch & ((1 << numBits) - 1);
-	scratch >>= numBits;
-	scratchBits -= numBits;
 }

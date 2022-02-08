@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>irrklang\include;irrlicht-1.8.4\include;bulletlibs\include;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib\irrklang\include;lib\irrlicht\include;lib\bullet\src;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -148,7 +148,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>irrklang\lib\Winx64-visualStudio;irrlicht-1.8.4\lib\Win64-visualStudio;bulletlibs\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>lib\irrklang\lib\Winx64-visualStudio;lib\irrlicht\lib;lib\bullet\lib\Release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
