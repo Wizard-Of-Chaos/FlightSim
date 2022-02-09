@@ -152,7 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Networking.cpp" />
+    <ClCompile Include="src\core\Networking.cpp" />
     <ClCompile Include="src\gui\GuiPauseMenu.cpp" />
     <ClCompile Include="src\gui\GuiMainMenu.cpp" />
     <ClCompile Include="src\core\GuiController.cpp" />
@@ -176,7 +176,7 @@
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Networking.h" />
+    <ClInclude Include="src\core\Networking.h" />
     <ClInclude Include="src\components\AIComponent.h" />
     <ClInclude Include="src\systems\AIUpdateSystem.h" />
     <ClInclude Include="src\gui\GuiPauseMenu.h" />

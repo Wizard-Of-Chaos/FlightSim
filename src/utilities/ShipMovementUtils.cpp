@@ -146,15 +146,6 @@ btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3
 	return torque;
 }
 
-btVector3 getTorqueOpposingDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
-{
-	btVector3 forward = getRigidBodyForward(body);
-	btScalar angle = forward.angle(dir) * RADTODEG;
-	btScalar torqueFactor = ((180.f - angle) / 180.f);
-	btVector3 dirTorque = -getTorqueToDirection(body, ship, dir);
-	return dirTorque * torqueFactor;
-}
-
 void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt)
 {
 	btVector3 torque = getTorqueToDirection(body, ship, dir);

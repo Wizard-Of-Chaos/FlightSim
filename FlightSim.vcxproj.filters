@@ -46,7 +46,7 @@
     <ClCompile Include="src\core\main.cpp">
       <Filter>Sources\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Networking.cpp">
+    <ClCompile Include="src\core\Networking.cpp">
       <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\systems\PlayerUpdateSystem.cpp">
@@ -138,7 +138,7 @@
     <ClInclude Include="src\gui\MenuData.h">
       <Filter>Headers\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="Networking.h">
+    <ClInclude Include="src\core\Networking.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\components\PlayerComponent.h">

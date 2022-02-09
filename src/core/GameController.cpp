@@ -113,7 +113,7 @@ void GameController::initDefaultScene()
 
 	//make the light node an entity as well
 	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 5000, 0),
-		SColor(200, 200, 200, 200), 20000.f);
+		SColor(200, 255, 200, 200), 20000.f);
 	n->setID(ID_IsNotSelectable);
 
 	n = smgr->addBillboardSceneNode(n, dimension2d<f32>(25, 25));

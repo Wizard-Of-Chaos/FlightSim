@@ -12,10 +12,11 @@ const enum AI_STATE
 	AI_STATE_FLEE,
 	AI_STATE_SEARCH,
 	AI_STATE_GET_HELP,
-	AI_STATE_PATROL
+	AI_STATE_PATROL,
+	AI_STATE_FORM_ON_WING
 };
 
-const enum AI_TYPE //different ships would have different AI patterns
+const enum AI_TYPE //different ships would have different AI patternst
 {
 	AI_TYPE_DEFAULT
 };

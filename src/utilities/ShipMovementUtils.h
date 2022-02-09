@@ -39,42 +39,42 @@ btVector3 getRigidBodyDown(btRigidBody* body);
 
 /*FORCE VECTORS*/
 
-//Gets a force in the forward direction, modified by the ship's speed.
+//Gets a force in the forward direction, modified by the ship's forward thrust.
 btVector3 getForceForward(btRigidBody* body, ShipComponent* ship);
 
-//Gets a force in the backward direction, modified by the ship's speed.
+//Gets a force in the backward direction, modified by the ship's braking thrust.
 btVector3 getForceBackward(btRigidBody* body, ShipComponent* ship);
 
-//Gets a force in the right direction, modified by the ship's speed.
+//Gets a force in the right direction, modified by the ship's strafing thrust.
 btVector3 getForceRight(btRigidBody* body, ShipComponent* ship);
 
-//Gets a force in the left direction, modified by the ship's speed.
+//Gets a force in the left direction, modified by the ship's strafing thrust.
 btVector3 getForceLeft(btRigidBody* body, ShipComponent* ship);
 
-//Gets a force in the up direction, modified by the ship's speed.
+//Gets a force in the up direction, modified by the ship's strafing thrust.
 btVector3 getForceUp(btRigidBody* body, ShipComponent* ship);
 
-//Gets a force in the down direction, modifed by the ship's speed.
+//Gets a force in the down direction, modifed by the ship's strafing thrust.
 btVector3 getForceDown(btRigidBody* body, ShipComponent* ship);
 
 /* ROTATIONAL VECTORS */
 
-//Gets a torque to pitch up, modified by the ship's rotational speed.
+//Gets a torque to pitch up, modified by the ship's pitch thrust.
 btVector3 getTorquePitchUp(btRigidBody* body, ShipComponent* ship);
 
-//Gets a torque to pitch down, modified by the ship's rotational speed.
+//Gets a torque to pitch down, modified by the ship's pitch thrust.
 btVector3 getTorquePitchDown(btRigidBody* body, ShipComponent* ship);
 
-//Gets a torque to yaw right, modified by the ship's rotational speed.
+//Gets a torque to yaw right, modified by the ship's yaw thrust.
 btVector3 getTorqueYawRight(btRigidBody* body, ShipComponent* ship);
 
-//Gets a torque to yaw left, modified by the ship's rotational speed.
+//Gets a torque to yaw left, modified by the ship's yaw thrust.
 btVector3 getTorqueYawLeft(btRigidBody* body, ShipComponent* ship);
 
-//Gets a torque to roll right, modified by the ship's rotational speed.
+//Gets a torque to roll right, modified by the ship's roll thrust.
 btVector3 getTorqueRollRight(btRigidBody* body, ShipComponent* ship);
 
-//Gets a torque to roll left, modified by the ship's rotational speed.
+//Gets a torque to roll left, modified by the ship's roll thrust.
 btVector3 getTorqueRollLeft(btRigidBody* body, ShipComponent* ship);
 
 /* MOVEMENT VECTORS */
@@ -87,9 +87,6 @@ btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship);
 
 //Returns the torque to kick the ship in the direction of the given vector.
 btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
-
-//Returns the torque to go opposite of the direction vector.
-btVector3 getTorqueOpposingDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
 
 //Combines torque and opposing torque to try and smoothly turn towards the direction.
 void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt);
