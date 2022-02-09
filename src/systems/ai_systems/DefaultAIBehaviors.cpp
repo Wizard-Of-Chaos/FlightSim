@@ -54,7 +54,7 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, f32 dt)
 	facing.normalize();
 
 	//If it's not behind the ship, get behind it
-	if (dist.getLength() > 30.f) {
+	if (dist.getLength() > 50.f) {
 		goToPoint(&rbc->rigidBody, ship, irrlichtVectorToBullet(tailPos), dt);
 	}
 	else {

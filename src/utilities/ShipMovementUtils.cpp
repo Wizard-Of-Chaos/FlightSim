@@ -175,8 +175,12 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 	btVector3 dir = path.normalized();
 	btScalar angle = getRigidBodyForward(body).angle(dir) * RADTODEG;
 	smoothTurnToDirection(body, ship, dir, dt);
-	if (angle < 10.f) {
-		if (path.length() <= body->getLinearVelocity().length()) {
+	if (angle < 20.f) {
+		btScalar brakePower = ship->brakeThrust + ship->strafeThrust;
+		btVector3 velocity = body->getLinearVelocity();
+		btScalar timeToStop = velocity.length() / brakePower; //time required to stop in seconds
+		btScalar timeToArrive = path.length() / velocity.length(); //time to arrive based on the current path
+		if (timeToStop >= timeToArrive) { //You ever just write something so simple that you don't understand why it was such a PITA to get correct?
 			body->applyCentralImpulse(getForceToStopLinearVelocity(body, ship) * dt);
 		}
 		else {
