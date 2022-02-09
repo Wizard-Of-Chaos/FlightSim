@@ -39,6 +39,12 @@ void defaultFleeBehavior(SceneManager* manager, EntityId id, EntityId fleeTarget
 
 	smoothTurnToDirection(&rbc->rigidBody, ship, irrlichtVectorToBullet(targetVector), dt);
 	rbc->rigidBody.applyCentralImpulse(force * dt);
+
+	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+		EntityId wep = ship->weapons[i];
+		auto wepInfo = manager->scene.get<WeaponInfoComponent>(wep);
+		wepInfo->isFiring = false;
+	}
 }
 
 //TLDR is try and get behind the ship and match its velocity.

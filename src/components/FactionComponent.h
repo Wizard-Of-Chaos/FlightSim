@@ -18,12 +18,10 @@ struct FactionComponent
 	unsigned int hostileTo;
 	unsigned int friendlyTo;
 	bool isHostile(FactionComponent* other) {
-		if ((hostileTo & other->type) == hostileTo) return true;
-		return false;
+		return !!(hostileTo & other->type);
 	}
 	bool isFriendly(FactionComponent* other) {
-		if ((friendlyTo & other->type) == friendlyTo) return true;
-		return false;
+		return !!(friendlyTo & other->type);
 	}
 };
 #endif 

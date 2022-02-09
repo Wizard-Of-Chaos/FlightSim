@@ -100,7 +100,7 @@ bool GameController::OnEvent(const SEvent& event)
 
 void GameController::initDefaultScene()
 {
-	EntityId playerId = createDefaultShip(&sceneECS, vector3df(0, 0, 0));
+	EntityId playerId = createDefaultShip(&sceneECS, vector3df(0, 0, -50));
 	initializeDefaultPlayer(&sceneECS, playerId);
 	initializeDefaultRigidBody(&sceneECS, playerId);
 	//initializeNeutralFaction(&sceneECS, playerId);
@@ -113,7 +113,7 @@ void GameController::initDefaultScene()
 	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
 	initializeHostileFaction(&sceneECS, aiId);
 
-	EntityId friendlyId = createDefaultAIShip(&sceneECS, vector3df(-150, 15, 40));
+	EntityId friendlyId = createDefaultAIShip(&sceneECS, vector3df(100, 15, 40));
 	initializePlayerFaction(&sceneECS, friendlyId);
 
 	//make the light node an entity as well

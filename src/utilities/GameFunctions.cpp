@@ -96,6 +96,7 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 
 	auto shipComponent = scene->assign<ShipComponent>(shipEntity);
 	shipComponent->forwardThrust = DEFAULT_FORWARD_THRUST;
+	shipComponent->brakeThrust = DEFAULT_BRAKE_THRUST;
 	shipComponent->strafeThrust = DEFAULT_STRAFE_THRUST;
 	shipComponent->pitchThrust = DEFAULT_PITCH_THRUST;
 	shipComponent->yawThrust = DEFAULT_YAW_THRUST;
