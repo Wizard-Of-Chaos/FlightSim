@@ -158,14 +158,10 @@ btVector3 getTorqueOpposingDirection(btRigidBody* body, ShipComponent* ship, btV
 void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt)
 {
 	btVector3 torque = getTorqueToDirection(body, ship, dir);
-	btVector3 opp = getTorqueOpposingDirection(body, ship, dir);
-	btScalar velocityFactor = body->getAngularVelocity().length();
-	torque /= velocityFactor * 3.f;
-	opp /= velocityFactor;
 	btScalar angle = getRigidBodyForward(body).angle(dir);
-	if (angle > body->getAngularVelocity().length()) {
-		body->applyTorqueImpulse(getTorqueToDirection(body, ship, dir) * dt);
-		body->applyTorqueImpulse(getTorqueOpposingDirection(body, ship, dir) * dt);
+	btVector3 ang = body->getAngularVelocity();
+	if (angle > ang.length()) {
+		body->applyTorqueImpulse(torque * dt);
 	}
 	else {
 		body->applyTorqueImpulse(getTorqueToStopAngularVelocity(body, ship) * dt);
