@@ -7,8 +7,7 @@
 #include "DefaultAIBehaviors.h"
 
 class SceneManager;
-
-void defaultAIUpdateSystem(SceneManager* manager, EntityId id, f32 dt);
-
 void updateContacts(SceneManager* manager, EntityId id);
+void defaultAIStateCheck(SceneManager* manager, EntityId id);
+void defaultAIUpdateSystem(SceneManager* manager, EntityId id, f32 dt);
 #endif 

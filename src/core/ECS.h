@@ -59,6 +59,8 @@ struct Scene {
 	std::vector<ComponentPool*> componentPools;
 	std::vector<std::tuple<EntityId, int, unsigned int>> priorityAccumulator;
 
+	bool entityInUse(EntityId cachedId);
+
 	EntityId newEntity();
 
 	template<typename T>

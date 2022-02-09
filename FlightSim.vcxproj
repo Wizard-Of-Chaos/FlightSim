@@ -176,6 +176,7 @@
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\FactionComponent.h" />
     <ClInclude Include="src\core\Networking.h" />
     <ClInclude Include="src\components\AIComponent.h" />
     <ClInclude Include="src\systems\AIUpdateSystem.h" />

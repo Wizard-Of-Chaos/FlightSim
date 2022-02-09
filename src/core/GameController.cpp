@@ -103,17 +103,22 @@ void GameController::initDefaultScene()
 	EntityId playerId = createDefaultShip(&sceneECS, vector3df(0, 0, 0));
 	initializeDefaultPlayer(&sceneECS, playerId);
 	initializeDefaultRigidBody(&sceneECS, playerId);
+	//initializeNeutralFaction(&sceneECS, playerId);
 	initializeDefaultHUD(&sceneECS, playerId);
 
 	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40));
 	initializeDefaultRigidBody(&sceneECS, roidId);
-	initializeDefaultHealth(&sceneECS, roidId);
+	initializeNeutralFaction(&sceneECS, roidId);
 
 	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
+	initializeHostileFaction(&sceneECS, aiId);
+
+	EntityId friendlyId = createDefaultAIShip(&sceneECS, vector3df(-150, 15, 40));
+	initializePlayerFaction(&sceneECS, friendlyId);
 
 	//make the light node an entity as well
 	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 5000, 0),
-		SColor(200, 255, 200, 200), 20000.f);
+		SColor(200, 255, 180, 180), 20000.f);
 	n->setID(ID_IsNotSelectable);
 
 	n = smgr->addBillboardSceneNode(n, dimension2d<f32>(25, 25));

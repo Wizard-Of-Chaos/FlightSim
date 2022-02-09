@@ -17,14 +17,17 @@ void defaultIdleBehavior(SceneManager* manager, EntityId id, f32 dt)
 	rbc->rigidBody.applyCentralImpulse(force * dt);
 }
 
-void defaultFleeBehavior(SceneManager* manager, EntityId id, f32 dt)
+void defaultFleeBehavior(SceneManager* manager, EntityId id, EntityId fleeTarget, f32 dt)
 {
+	if (fleeTarget == INVALID_ENTITY) return;
+
 	auto irr = manager->scene.get<IrrlichtComponent>(id);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 	auto ship = manager->scene.get<ShipComponent>(id);
 	auto ai = manager->scene.get<AIComponent>(id);
 
-	auto fleeIrr = manager->scene.get<IrrlichtComponent>(ai->closestContact);
+	auto fleeIrr = manager->scene.get<IrrlichtComponent>(fleeTarget);
+	if (!fleeIrr) return;
 	vector3df distance = fleeIrr->node->getPosition() - irr->node->getPosition();
 	distance.normalize();
 	vector3df targetVector = -distance; //runs away
@@ -39,14 +42,17 @@ void defaultFleeBehavior(SceneManager* manager, EntityId id, f32 dt)
 }
 
 //TLDR is try and get behind the ship and match its velocity.
-void defaultPursuitBehavior(SceneManager* manager, EntityId id, f32 dt)
+void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuitTarget, f32 dt)
 {
+	if (pursuitTarget == INVALID_ENTITY) return;
+
 	auto irr = manager->scene.get<IrrlichtComponent>(id);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 	auto ship = manager->scene.get<ShipComponent>(id);
 	auto ai = manager->scene.get<AIComponent>(id);
 
-	auto pursuitIrr = manager->scene.get<IrrlichtComponent>(ai->closestContact);
+	auto pursuitIrr = manager->scene.get<IrrlichtComponent>(pursuitTarget);
+	if (!pursuitIrr) return;
 	vector3df tailPos = getNodeBackward(pursuitIrr->node) * 30.f; //change to backward
 	vector3df dist = tailPos - irr->node->getPosition();
 
@@ -61,14 +67,6 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, f32 dt)
 		//if it is behind it, start turning towards it
 		smoothTurnToDirection(&rbc->rigidBody, ship, irrlichtVectorToBullet(facing), dt);
 		auto pursuitBody = manager->scene.get<BulletRigidBodyComponent>(ai->closestContact);
-		
-		//start trying to match its velocity
-		if (rbc->rigidBody.getLinearVelocity().length2() >= pursuitBody->rigidBody.getLinearVelocity().length2()) {
-			rbc->rigidBody.applyCentralImpulse(getForceToStopLinearVelocity(&rbc->rigidBody, ship) * dt);
-		}
-		else {
-			rbc->rigidBody.applyCentralImpulse(getForceForward(&rbc->rigidBody, ship) * dt);
-		}
 	}
 
 	btVector3 forward = getRigidBodyForward(&rbc->rigidBody);

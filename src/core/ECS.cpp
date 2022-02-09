@@ -1,4 +1,5 @@
 #include "ECS.h"
+#include <iostream>
 
 int componentCounter = 0;
 
@@ -25,4 +26,11 @@ EntityVersion getEntityVersion(EntityId id) {
 }
 bool isEntityValid(EntityId id) {
 	return (id >> 32) != EntityIndex(-1);
+}
+
+bool Scene::entityInUse(EntityId cachedId) {
+	std::cout << getEntityIndex(cachedId) << std::endl;
+	if (entities[getEntityIndex(cachedId)].id == cachedId) {
+		return true;
+	} return false;
 }

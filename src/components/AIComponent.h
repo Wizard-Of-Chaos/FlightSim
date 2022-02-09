@@ -16,13 +16,14 @@ const enum AI_STATE
 	AI_STATE_FORM_ON_WING
 };
 
-const enum AI_TYPE //different ships would have different AI patternst
+const enum AI_TYPE //different ships would have different AI patterns
 {
 	AI_TYPE_DEFAULT
 };
 
 const f32 AI_DEFAULT_REACTION_TIME = 1.f;
 const f32 AI_DEFAULT_DETECTION_RADIUS = 400.f;
+const f32 AI_DEFAULT_DAMAGE_TOLERANCE = .25f;
 
 struct AIComponent
 {
@@ -31,9 +32,13 @@ struct AIComponent
 	f32 reactionSpeed; //how long it takes to change states
 	f32 timeSinceLastStateCheck; //this is going to be the time since the last state check
 	f32 detectionRadius;
+
+	f32 damageTolerance; // %hp that the AI will run at
+
 	array<EntityId> contacts;
 	EntityId closestContact;
-	bool nearbyHostiles;
+	EntityId closestHostileContact;
+	EntityId closestFriendlyContact;
 };
 
 #endif

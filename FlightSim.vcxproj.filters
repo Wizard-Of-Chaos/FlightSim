@@ -168,6 +168,9 @@
     <ClInclude Include="src\components\WeaponInfoComponent.h">
       <Filter>Headers\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\FactionComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

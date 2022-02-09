@@ -45,7 +45,39 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultSelectionTexture = manager->controller->driver->getTexture("hud/selection.png");
 }
 
-//Creates a default ship at the given position in Irrlicht space. Returns the entity ID.
+void initializeNeutralFaction(SceneManager* manager, EntityId id)
+{
+	Scene* scene = &manager->scene;
+	auto fac = scene->assign<FactionComponent>(id);
+	fac->type = FACTION_NEUTRAL;
+	fac->hostileTo = 0;
+	fac->friendlyTo = 0;
+}
+void initializeHostileFaction(SceneManager* manager, EntityId id)
+{
+	Scene* scene = &manager->scene;
+	auto fac = scene->assign<FactionComponent>(id);
+	fac->type = FACTION_HOSTILE;
+	fac->hostileTo = FACTION_PLAYER;
+	fac->friendlyTo = FACTION_HOSTILE;
+}
+
+void initializePlayerFaction(SceneManager* manager, EntityId id)
+{
+	Scene* scene = &manager->scene;
+	auto fac = scene->assign<FactionComponent>(id);
+	fac->type = FACTION_PLAYER;
+	fac->hostileTo = FACTION_HOSTILE;
+	fac->friendlyTo = FACTION_PLAYER;
+}
+
+void setFaction(FactionComponent* fac, FACTION_TYPE type, unsigned int hostilities, unsigned int friendlies)
+{
+	fac->type = type;
+	fac->hostileTo = hostilities;
+	fac->friendlyTo = friendlies;
+}
+
 EntityId createDefaultShip(SceneManager* manager, vector3df position)
 {
 	Scene* scene = &manager->scene;
@@ -81,7 +113,6 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 	return shipEntity;
 }
 
-//Creates a default obstacle at the given position (an asteroid). Returns the Entity ID. Does not create hitbox or health by default.
 EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
 {
 	ISceneManager* smgr = manager->controller->smgr;
@@ -99,12 +130,12 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
 	healthComp->health = DEFAULT_MAX_HEALTH;
 	healthComp->maxHealth = DEFAULT_MAX_HEALTH;
 
+	auto fac = scene->assign<FactionComponent>(roidEntity);
+	fac->type = FACTION_NEUTRAL;
+
 	return roidEntity;
 }
 
-//Creates a default projectile and kicks it in the given direction.
-//Requires: A weapon ID with an associated weapon info component. Returns INVALID_ENTITY otherwise.
-//Also initializes a sphere rigid body associated with the entity.
 EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vector3df direction, EntityId weaponId)
 {
 	Scene* scene = &manager->scene;
@@ -169,7 +200,6 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	return projectileEntity;
 }
 
-//Destroys a given projectile. Removes it from irrlicht and bullet considerations and the entity list.
 void destroyProjectile(SceneManager* manager, EntityId projectile)
 {
 	Scene* scene = &manager->scene;
@@ -192,8 +222,6 @@ void destroyProjectile(SceneManager* manager, EntityId projectile)
 	scene->destroyEntity(projectile); //bye bye your life goodbye
 }
 
-//Destroys a given object with a bullet component and an irrlicht component.
-//Usually called to get rid of something that hit 0 health.
 void destroyObject(SceneManager* manager, EntityId id)
 {
 	auto irrComp = manager->scene.get<IrrlichtComponent>(id);
@@ -224,8 +252,6 @@ void destroyObject(SceneManager* manager, EntityId id)
 	manager->scene.destroyEntity(id);
 }
 
-//Adds a default weapon to the given ship at the given hardpoint.
-//Requires: Irrlicht component, ship component. Returns false without that.
 bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoint)
 {
 	Scene* scene = &manager->scene;
@@ -254,8 +280,6 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	return true;
 }
 
-//Sets up a default hitbox (an axis-aligned bounding box) on the given object.
-//Requires: Irrlicht component. Returns false otherwise.
 bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
 {
 	Scene* scene = &manager->scene;
@@ -291,8 +315,6 @@ bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
 	return true;
 }
 
-//Adds on a player component and an input component to a given ship.
-//Requires: Irrlicht component. Returns false without that.
 bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 {
 	Scene* scene = &manager->scene;
@@ -312,8 +334,6 @@ bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 	return true;
 }
 
-//Adds a health component to the given entity. 
-//Doesn't require anything, technically, but you should really only use it on things what have rigid bodies and guns and stuff.
 void initializeDefaultHealth(SceneManager* manager, EntityId objectId)
 {
 	Scene* scene = &manager->scene;
@@ -323,8 +343,6 @@ void initializeDefaultHealth(SceneManager* manager, EntityId objectId)
 	healthComp->maxHealth = 100.f;
 }
 
-//Sets up the HUD for the given player entity.
-//Requires a player component; returns false otherwise.
 bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 {
 	Scene* scene = &manager->scene;
@@ -340,7 +358,6 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	return true;
 }
 
-//Creates a default AI ship at the given position. Returns the ID.
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
 {
 	Scene* scene = &manager->scene;
@@ -355,9 +372,11 @@ EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
 	ai->AIType = AI_TYPE_DEFAULT;
 	ai->detectionRadius = AI_DEFAULT_DETECTION_RADIUS;
 	ai->reactionSpeed = AI_DEFAULT_REACTION_TIME;
+	ai->damageTolerance = AI_DEFAULT_DAMAGE_TOLERANCE;
 	ai->timeSinceLastStateCheck = 0;
-	ai->nearbyHostiles = false;
 	ai->closestContact = INVALID_ENTITY;
+	ai->closestFriendlyContact = INVALID_ENTITY;
+	ai->closestHostileContact = INVALID_ENTITY;
 
 	return id;
 }
