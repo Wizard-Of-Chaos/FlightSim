@@ -29,7 +29,9 @@ bool isEntityValid(EntityId id) {
 }
 
 bool Scene::entityInUse(EntityId cachedId) {
-	std::cout << getEntityIndex(cachedId) << std::endl;
+	if (!isEntityValid(cachedId)) {
+		return false;
+	}
 	if (entities[getEntityIndex(cachedId)].id == cachedId) {
 		return true;
 	} return false;
