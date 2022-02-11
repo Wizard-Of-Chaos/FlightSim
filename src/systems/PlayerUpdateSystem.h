@@ -14,5 +14,6 @@ class SceneManager;
 class GameController;
 
 void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 dt);
-
+void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* body);
+void hudUpdate(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input);
 #endif

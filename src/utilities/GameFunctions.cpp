@@ -4,12 +4,12 @@
 #include "IrrlichtUtils.h"
 
 //Convenience functions to swap back and forth between irrlicht and bullet vectors.
-vector3df bulletVectorToIrrlicht(btVector3 vec)
+vector3df btVecToIrr(btVector3 vec)
 {
 	return vector3df(vec.x(), vec.y(), vec.z());
 }
 
-btVector3 irrlichtVectorToBullet(vector3df vec)
+btVector3 irrVecToBt(vector3df vec)
 {
 	return btVector3(vec.X, vec.Y, vec.Z);
 }
@@ -103,8 +103,8 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 	shipComponent->rollThrust = DEFAULT_ROLL_THRUST;
 
 	shipComponent->hardpointCount = 2;
-	shipComponent->hardpoints[0] = vector3df(2.4816f, .25f, -6.0088f);
-	shipComponent->hardpoints[1] = vector3df(-2.4816f, .25f, -6.0088f);
+	shipComponent->hardpoints[0] = vector3df(2.4816f, .59665f, .088f);
+	shipComponent->hardpoints[1] = vector3df(-2.4816f, .59665f, .088f);
 
 
 	for (unsigned int i = 0; i < shipComponent->hardpointCount; ++i) {
@@ -180,7 +180,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	auto rigidBodyInfo = scene->assign<BulletRigidBodyComponent>(projectileEntity);
 	btTransform transform = btTransform();
 	transform.setIdentity();
-	transform.setOrigin(irrlichtVectorToBullet(spawnPos));
+	transform.setOrigin(irrVecToBt(spawnPos));
 
 	auto motionState = new btDefaultMotionState(transform);
 
@@ -190,7 +190,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	shape->calculateLocalInertia(mass, localInertia);
 	rigidBodyInfo->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
 
-	rigidBodyInfo->rigidBody.applyCentralImpulse(irrlichtVectorToBullet(direction) * projectileInfo->speed);
+	rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
 
 	rigidBodyInfo->rigidBody.setUserIndex(getEntityIndex(projectileEntity));
 	rigidBodyInfo->rigidBody.setUserIndex2(getEntityVersion(projectileEntity));
@@ -294,7 +294,7 @@ bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
 
 	btTransform transform = btTransform();
 	transform.setIdentity();
-	transform.setOrigin(irrlichtVectorToBullet(objIrr->node->getPosition()));
+	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
 	auto motionState = new btDefaultMotionState(transform);
 	aabbox3df bounds = objIrr->node->getBoundingBox();
 	vector3df maxEdge = bounds.MaxEdge;
@@ -326,7 +326,7 @@ bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 	if (!shipIrr) return false;
 	ISceneNode* target = smgr->addEmptySceneNode(0);
 	target->setPosition(shipIrr->node->getPosition());
-	ICameraSceneNode* camera = smgr->addCameraSceneNode(target, vector3df(0, 5, -20), shipIrr->node->getPosition(), ID_IsNotSelectable, true);
+	ICameraSceneNode* camera = smgr->addCameraSceneNode(target, vector3df(0, 5, -15), shipIrr->node->getPosition(), ID_IsNotSelectable, true);
 	scene->assign<InputComponent>(shipId);
 	auto playerCamera = scene->assign<PlayerComponent>(shipId);
 	playerCamera->camera = camera;

@@ -17,9 +17,9 @@ class SceneManager;
 void setDefaults(SceneManager* manager);
 
 //Translates a bullet vector to an irrlicht vector.
-vector3df bulletVectorToIrrlicht(btVector3 vec);
+vector3df btVecToIrr(btVector3 vec);
 //Translates an irrlicht vector to a bullet vector.
-btVector3 irrlichtVectorToBullet(vector3df vec);
+btVector3 irrVecToBt(vector3df vec);
 vector3df randomVector();
 vector3df randomRotationVector();
 

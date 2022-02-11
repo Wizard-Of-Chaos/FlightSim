@@ -37,7 +37,7 @@ void defaultFleeBehavior(SceneManager* manager, EntityId id, EntityId fleeTarget
 
 	force += getForceForward(&rbc->rigidBody, ship);
 
-	smoothTurnToDirection(&rbc->rigidBody, ship, irrlichtVectorToBullet(targetVector), dt);
+	smoothTurnToDirection(&rbc->rigidBody, ship, irrVecToBt(targetVector), dt);
 	rbc->rigidBody.applyCentralImpulse(force * dt);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
@@ -67,16 +67,16 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 
 	//If it's not behind the ship, get behind it
 	if (dist.getLength() > 50.f) {
-		goToPoint(&rbc->rigidBody, ship, irrlichtVectorToBullet(tailPos), dt);
+		goToPoint(&rbc->rigidBody, ship, irrVecToBt(tailPos), dt);
 	}
 	else {
 		//if it is behind it, start turning towards it
-		smoothTurnToDirection(&rbc->rigidBody, ship, irrlichtVectorToBullet(facing), dt);
+		smoothTurnToDirection(&rbc->rigidBody, ship, irrVecToBt(facing), dt);
 		auto pursuitBody = manager->scene.get<BulletRigidBodyComponent>(ai->closestContact);
 	}
 
 	btVector3 forward = getRigidBodyForward(&rbc->rigidBody);
-	btScalar angle = forward.angle(irrlichtVectorToBullet(facing));
+	btScalar angle = forward.angle(irrVecToBt(facing));
 	//if it's facing the ship, start shooting
 	if ((angle * RADTODEG) < 30.f) {
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {

@@ -127,7 +127,7 @@ btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3
 	btVector3 down = getRigidBodyDown(body);
 
 	btScalar angle = forward.angle(dir) * RADTODEG;
-	btScalar torqueFactor = (angle / 180.f);
+	//btScalar torqueFactor = (angle / 180.f);
 
 	btVector3 torque(0, 0, 0);
 	if (right.dot(dir) > left.dot(dir)) {
@@ -142,7 +142,7 @@ btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3
 	else {
 		torque += getTorquePitchDown(body, ship);
 	}
-	torque *= torqueFactor;
+	//torque *= torqueFactor;
 	return torque;
 }
 
@@ -194,7 +194,7 @@ bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
 	btVector3 velocity = body->getLinearVelocity();
 	btVector3 dir = velocitySafeNormalize(velocity);
 	vector3df pos = irr->node->getPosition();
-	vector3df futurePos = pos + (bulletVectorToIrrlicht(dir) * velocity.length() * 3.f);
+	vector3df futurePos = pos + (btVecToIrr(dir) * velocity.length() * 3.f);
 
 	line3df trajectory(pos, futurePos);
 	ISceneNode* obstacle = coll->getSceneNodeFromRayBB(trajectory, ID_IsAvoidable);

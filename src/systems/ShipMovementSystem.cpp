@@ -63,10 +63,10 @@ void shipMovementSystem(Scene& scene, f32 dt)
 			f32 mY = input->mousePosition.Y;
 
 			if (mX > .2f || mX < -.2f) {
-				torque += getTorqueYawRight(body, ship) * mX;
+				torque += getTorqueYawRight(body, ship) * mX * .5f;
 			}
 			if (mY > .2f || mY < -.2f) {
-				torque += getTorquePitchDown(body, ship) * mY;
+				torque += getTorquePitchDown(body, ship) * mY * .5f;
 			}
 			if ((mX < .2f && mX > -.2f) && (mY < .2f && mY > -.2f)) {
 				torque += getTorqueToStopAngularVelocity(body, ship);
