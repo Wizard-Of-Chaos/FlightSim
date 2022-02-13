@@ -10,7 +10,7 @@ class GuiDialog
 {
 	public:
 
-		GuiDialog(GuiController* controller) { guiController = controller;}
+		GuiDialog(GuiController* controller);
 		virtual ~GuiDialog() {}
 
 		//These functions MUST be implemented. How that gets done can vary.
@@ -18,15 +18,20 @@ class GuiDialog
 		//then setting up all your other elements as childen of that node.
 		//For an example, go check GuiMainMenu.h
 		virtual void init() = 0;
-		virtual void show() = 0;
-		virtual void hide() = 0;
 
+		void show();
+		void hide();
 		//The GUI controller passes events to the currently active dialog and lets them handle it.
 		//Such as button clicking! Or mouse movement, if you want to do something odd.
 		virtual void handleEvent(const SEvent& event) = 0;
-		bool isDialogVisible() { return isVisible; }
+		bool isDialogVisible() { if (root) { return root->isVisible(); } return false; }
 	protected:
-		bool isVisible = false;
+		//The base size will be set to 960x540. GUI design can assume that you're working for a screen of that size.
+		//The elements will automatically scale with the size of the UI - assuming you set that up properly.
+		dimension2du baseSize;
+		//The root node is an effectively empty node that show and hide gets called on. All following GUI elements
+		//need to be set as a child of the root node.
+		IGUIElement* root;
 		GuiController* guiController;
 };
 

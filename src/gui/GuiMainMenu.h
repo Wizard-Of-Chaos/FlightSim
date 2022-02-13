@@ -21,16 +21,12 @@ enum MAIN_MENU_BUTTONS
 class GuiMainMenu : public GuiDialog
 {
 	public:
-		GuiMainMenu(GuiController* controller) : GuiDialog(controller), startGame(0), settings(0), quitGame(0), root(0) {}
+		GuiMainMenu(GuiController* controller) : GuiDialog(controller), startGame(0), settings(0), quitGame(0) {}
 
 		virtual void init();
 
-		//show() and hide() just set the root node to visible or not, thus showing or hiding the entire menu.
-		virtual void show() { root->setVisible(true); isVisible = true; }
-		virtual void hide() { root->setVisible(false); isVisible = false; }
 		virtual void handleEvent(const SEvent& event);
 	private:
-		IGUIStaticText* root;
 		IGUIButton* startGame;
 		IGUIButton* settings;
 		IGUIButton* quitGame;

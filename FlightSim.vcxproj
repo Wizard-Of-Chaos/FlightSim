@@ -153,6 +153,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Networking.cpp" />
+    <ClCompile Include="src\gui\GuiDialog.cpp" />
     <ClCompile Include="src\gui\GuiPauseMenu.cpp" />
     <ClCompile Include="src\gui\GuiMainMenu.cpp" />
     <ClCompile Include="src\core\GuiController.cpp" />

@@ -18,15 +18,12 @@ enum PAUSE_MENU_BUTTONS
 class GuiPauseMenu : public GuiDialog
 {
 	public:
-		GuiPauseMenu(GuiController* controller) : GuiDialog(controller), root(0), resumeGame(0), pauseSettings(0), exitToMenus(0) {}
+		GuiPauseMenu(GuiController* controller) : GuiDialog(controller), resumeGame(0), pauseSettings(0), exitToMenus(0) {}
 		~GuiPauseMenu() {}
 
 		virtual void init();
-		virtual void show() { root->setVisible(true); isVisible = true; }
-		virtual void hide() { root->setVisible(false); isVisible = false; }
 		virtual void handleEvent(const SEvent& event);
 	private:
-		IGUIStaticText* root;
 		IGUIButton* resumeGame;
 		IGUIButton* pauseSettings;
 		IGUIButton* exitToMenus;
