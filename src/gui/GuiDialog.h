@@ -13,12 +13,11 @@ class GuiDialog
 		GuiDialog(GuiController* controller);
 		virtual ~GuiDialog() {}
 
-		//These functions MUST be implemented. How that gets done can vary.
-		//Easiest way is to declare a gui element as "root" in your inherited class,
-		//then setting up all your other elements as childen of that node.
+		//This function MUST be implemented. How that gets done can vary.
 		//For an example, go check GuiMainMenu.h
 		virtual void init() = 0;
 
+		//These functions show or hide the root node (and thus show or hide all the children).
 		void show();
 		void hide();
 		//The GUI controller passes events to the currently active dialog and lets them handle it.
