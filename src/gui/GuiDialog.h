@@ -16,13 +16,13 @@ class GuiDialog
 		//This function MUST be implemented. How that gets done can vary.
 		//For an example, go check GuiMainMenu.h
 		virtual void init() = 0;
+		//The GUI controller passes events to the currently active dialog and lets them handle it.
+		//Such as button clicking! Or mouse movement, if you want to do something odd. This function MUST be implemented.
+		virtual void handleEvent(const SEvent& event) = 0;
 
 		//These functions show or hide the root node (and thus show or hide all the children).
 		void show();
 		void hide();
-		//The GUI controller passes events to the currently active dialog and lets them handle it.
-		//Such as button clicking! Or mouse movement, if you want to do something odd.
-		virtual void handleEvent(const SEvent& event) = 0;
 		bool isDialogVisible() { if (root) { return root->isVisible(); } return false; }
 	protected:
 		//The base size will be set to 960x540. GUI design can assume that you're working for a screen of that size.
