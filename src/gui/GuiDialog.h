@@ -35,5 +35,7 @@ class GuiDialog
 		GuiController* guiController;
 };
 
+void scaleAlign(IGUIElement* elem);
+
 #endif
 
