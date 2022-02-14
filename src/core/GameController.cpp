@@ -104,6 +104,7 @@ void GameController::initDefaultScene()
 	initializeDefaultPlayer(&sceneECS, playerId);
 	initializeDefaultRigidBody(&sceneECS, playerId);
 	initializeNeutralFaction(&sceneECS, playerId);
+	initializeDefaultHealth(&sceneECS, playerId);
 	initializeDefaultHUD(&sceneECS, playerId);
 
 	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40));

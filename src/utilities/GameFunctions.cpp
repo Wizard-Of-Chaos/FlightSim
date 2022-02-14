@@ -184,7 +184,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 
 	auto motionState = new btDefaultMotionState(transform);
 
-	auto shape = new btSphereShape(1.5f);
+	auto shape = new btSphereShape(.5f);
 	btVector3 localInertia;
 	f32 mass = .1f;
 	shape->calculateLocalInertia(mass, localInertia);

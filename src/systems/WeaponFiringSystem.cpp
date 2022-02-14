@@ -29,7 +29,7 @@ void weaponFiringSystem(SceneManager* manager, f32 dt)
 		auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
 		auto irrComp = scene->get<IrrlichtComponent>(entityId);
 
-		vector3df spawnPos = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 20.f);
+		vector3df spawnPos = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
 
 		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
 			createProjectileEntity(manager, spawnPos, getNodeForward(irrComp->node), entityId);
