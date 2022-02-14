@@ -5,6 +5,10 @@
 
 #include "BaseHeader.h"
 
+#include <vector>
+
+class HUDElement;
+
 struct PlayerComponent
 {
 	ICameraSceneNode* camera;
@@ -13,9 +17,10 @@ struct PlayerComponent
 	f32 slerpFactor = .009f;
 	f32 velocityFactor = .1f;
 
+	//hud
+	IGUIElement* rootHUD;
+	std::vector<HUDElement*> HUD;
 	ISceneNode* activeSelection;
-	IGUIImage* crosshairGui;
-	IGUIImage* selectionGui;
 };
 
 #endif

@@ -30,15 +30,17 @@ void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* 
 	vector3df shipForward = getNodeForward(playerShip);
 
 	f32 angle = irrVecToBt(targetForward).angle(irrVecToBt(shipForward));
+	f32 rollAngle = irrVecToBt(getNodeRight(targetnode)).angle(irrVecToBt(getNodeRight(playerShip)));
 	vector3df axis = shipForward.crossProduct(targetForward);
-	f32 maxAngle = 20.f * DEGTORAD;
 
 	quaternion nodeRot(playerShip->getRotation() * DEGTORAD);
 	quaternion targetRot(targetnode->getRotation() * DEGTORAD);
 
+	f32 slerp = (abs(angle) + abs(rollAngle)) / 2;
+
 	quaternion desiredRot;
 	vector3df targetRotVec(0, 0, 0);
-	desiredRot.slerp(targetRot, nodeRot, player->slerpFactor*(abs(angle)*10.f));
+	desiredRot.slerp(targetRot, nodeRot, player->slerpFactor*(slerp*10.f));
 	desiredRot.toEuler(targetRotVec);
 	targetRotVec *= RADTODEG;
 
@@ -52,39 +54,7 @@ void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* 
 
 void hudUpdate(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input)
 {
-	ICameraSceneNode* camera = player->camera;
-
-	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
-	line3df ray = coll->getRayFromScreenCoordinates(input->mousePixPosition, camera);
-
-	vector3df aheadCrosshairPos = playerShip->getPosition() + getNodeForward(playerShip) * 300.f;
-	position2di crosshairPos = coll->getScreenCoordinatesFrom3DPosition(aheadCrosshairPos, camera);
-	crosshairPos.X -= 64;
-	crosshairPos.Y -= 64;
-	player->crosshairGui->setRelativePosition(crosshairPos);
-
-	if (input->rightMouseDown) {
-		ISceneNode* selection = coll->getSceneNodeFromRayBB(ray, ID_IsSelectable);
-		if (selection) {
-			if (selection->getID() != -1) {
-				player->activeSelection = selection;
-				player->selectionGui->setVisible(true);
-				position2di selectionPos = coll->getScreenCoordinatesFrom3DPosition(selection->getAbsolutePosition(), camera);
-				selectionPos.X -= 64;
-				selectionPos.Y -= 64;
-				player->selectionGui->setRelativePosition(selectionPos);
-			}
-		}
-		else if (!selection) {
-			player->selectionGui->setVisible(false);
-			player->activeSelection = nullptr;
-		}
+	for (HUDElement* elem : player->HUD) {
+		elem->updateElement(manager, player, playerShip, input);
 	}
-	if (player->activeSelection) {
-		position2di selectionPos = coll->getScreenCoordinatesFrom3DPosition(player->activeSelection->getAbsolutePosition(), camera);
-		selectionPos.X -= 64;
-		selectionPos.Y -= 64;
-		player->selectionGui->setRelativePosition(selectionPos);
-	}
-
 }

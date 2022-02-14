@@ -10,6 +10,7 @@
 #include "ShipComponent.h"
 #include "WeaponInfoComponent.h"
 #include "FactionComponent.h"
+#include "HUDHeader.h"
 
 class SceneManager;
 

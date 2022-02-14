@@ -70,6 +70,12 @@
     <ClCompile Include="src\gui\GuiDialog.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\hud\HUDActiveSelection.cpp">
+      <Filter>Sources\Gui\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\hud\HUDCrosshair.cpp">
+      <Filter>Sources\Gui\HUD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -174,6 +180,18 @@
     <ClInclude Include="src\components\FactionComponent.h">
       <Filter>Headers\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\gui\hud\HUDElement.h">
+      <Filter>Headers\Gui\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\hud\HUDActiveSelection.h">
+      <Filter>Headers\Gui\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\hud\HUDHeader.h">
+      <Filter>Headers\Gui\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\hud\HUDCrosshair.h">
+      <Filter>Headers\Gui\HUD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
@@ -214,6 +232,12 @@
     </Filter>
     <Filter Include="Sources\Gui">
       <UniqueIdentifier>{a309bdf4-382c-464c-ab31-f0dd8a6a5db4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Gui\HUD">
+      <UniqueIdentifier>{877ec417-aa99-46b9-9242-dc176660e140}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Gui\HUD">
+      <UniqueIdentifier>{aa77fe6a-7ebd-428a-ac25-cdce8ed88379}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

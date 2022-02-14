@@ -12,5 +12,13 @@
 class SceneManager;
 
 void collisionCheckingSystem(SceneManager* manager);
+EntityId getIdFromBt(btCollisionObject* object);
+
+struct collisionFilterCallback : public btOverlapFilterCallback
+{
+	//returns true when pairs need collision
+	virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1);
+	SceneManager* manager;
+};
 
 #endif

@@ -2,6 +2,18 @@
 #include "SceneManager.h"
 #include <iostream>
 
+EntityId getIdFromBt(btCollisionObject* object)
+{
+	EntityIndex ind = object->getUserIndex();
+	EntityVersion ver = object->getUserIndex2();
+	int hasEnt = object->getUserIndex3();
+	EntityId id = INVALID_ENTITY;
+	if (hasEnt) {
+		id = createEntityId(ind, ver);
+	}
+	return id;
+}
+
 void collisionCheckingSystem(SceneManager* manager)
 {
 	int numManifolds = manager->bulletWorld->getDispatcher()->getNumManifolds();
@@ -11,21 +23,8 @@ void collisionCheckingSystem(SceneManager* manager)
 		btCollisionObject* objA = const_cast<btCollisionObject*>(contact->getBody0());
 		btCollisionObject* objB = const_cast<btCollisionObject*>(contact->getBody1());
 
-		EntityIndex indA = objA->getUserIndex();
-		EntityVersion verA = objA->getUserIndex2();
-		int hasEntA = objA->getUserIndex3();
-		EntityId idA = INVALID_ENTITY;
-		if (hasEntA) {
-			idA = createEntityId(indA, verA);
-		}
-
-		EntityIndex indB = objB->getUserIndex();
-		EntityVersion verB = objB->getUserIndex2();
-		int hasEntB = objB->getUserIndex3();
-		EntityId idB = INVALID_ENTITY;
-		if (hasEntB) {
-			idB = createEntityId(indB, verB);
-		}
+		EntityId idA = getIdFromBt(objA);
+		EntityId idB = getIdFromBt(objB);
 
 		ProjectileInfoComponent* projA = nullptr;
 		ProjectileInfoComponent* projB = nullptr;
@@ -62,4 +61,14 @@ void collisionCheckingSystem(SceneManager* manager)
 			destroyProjectile(manager, idB);
 		}
 	}
+}
+
+bool collisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1)
+{
+	btCollisionObject* a = static_cast<btCollisionObject*>(proxy0->m_clientObject);
+	btCollisionObject* b = static_cast<btCollisionObject*>(proxy1->m_clientObject);
+
+	EntityId idA = getIdFromBt(a);
+	EntityId idB = getIdFromBt(b);
+	//need to check who "owns" these entities
 }

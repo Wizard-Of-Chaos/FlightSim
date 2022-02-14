@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef PLAYERUPDATESYSTEM_H
+#define PLAYERUPDATESYSTEM_H
 #include "BaseHeader.h"
 
 #include "ECS.h"
@@ -9,6 +9,8 @@
 #include "PlayerComponent.h"
 #include "BulletRigidBodyComponent.h"
 #include "IrrlichtUtils.h"
+
+#include "HUDHeader.h"
 
 class SceneManager;
 class GameController;

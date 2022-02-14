@@ -231,7 +231,6 @@ void destroyObject(SceneManager* manager, EntityId id)
 		auto player = manager->scene.get<PlayerComponent>(playerId);
 		if (player->activeSelection == irrComp->node) {
 			player->activeSelection = nullptr;
-			player->selectionGui->setVisible(false);
 		}
 	}
 
@@ -350,11 +349,14 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	auto player = scene->get<PlayerComponent>(playerId);
 	if (!player) return false;
 	player->activeSelection = nullptr;
-	player->crosshairGui = manager->controller->guienv->addImage(manager->defaults.defaultCrosshairTexture, position2di(0, 0));
-	player->selectionGui = manager->controller->guienv->addImage(manager->defaults.defaultSelectionTexture, position2di(0, 0));
+	IGUIElement* crosshair = manager->controller->guienv->addImage(manager->defaults.defaultCrosshairTexture, position2di(0, 0));
+	IGUIElement* selection = manager->controller->guienv->addImage(manager->defaults.defaultSelectionTexture, position2di(0, 0));
 
-	player->crosshairGui->setVisible(true);
-	player->selectionGui->setVisible(false);
+	HUDElement* crossHUD = new HUDCrosshair(crosshair);
+	HUDElement* selectHUD = new HUDActiveSelection(selection);
+	selection->setVisible(false);
+	player->HUD.push_back(crossHUD);
+	player->HUD.push_back(selectHUD);
 
 	return true;
 }

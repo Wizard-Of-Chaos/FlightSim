@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>irrlicht-1.8.4\include;bulletlibs\include;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>irrlicht-1.8.4\include;bulletlibs\include;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems;$(SolutionDir)\src\gui\hud</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>lib\irrklang\include;lib\irrlicht\include;lib\bullet\src;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib\irrklang\include;lib\irrlicht\include;lib\bullet\src;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems;$(SolutionDir)\src\gui\hud</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -158,6 +158,8 @@
     <ClCompile Include="src\gui\GuiMainMenu.cpp" />
     <ClCompile Include="src\core\GuiController.cpp" />
     <ClCompile Include="src\core\GameStateController.cpp" />
+    <ClCompile Include="src\gui\hud\HUDActiveSelection.cpp" />
+    <ClCompile Include="src\gui\hud\HUDCrosshair.cpp" />
     <ClCompile Include="src\systems\AIUpdateSystem.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp" />
@@ -177,9 +179,13 @@
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gui\hud\HUDActiveSelection.h" />
+    <ClInclude Include="src\gui\hud\HUDCrosshair.h" />
+    <ClInclude Include="src\gui\hud\HUDElement.h" />
     <ClInclude Include="src\components\FactionComponent.h" />
     <ClInclude Include="src\core\Networking.h" />
     <ClInclude Include="src\components\AIComponent.h" />
+    <ClInclude Include="src\gui\hud\HUDHeader.h" />
     <ClInclude Include="src\systems\AIUpdateSystem.h" />
     <ClInclude Include="src\gui\GuiPauseMenu.h" />
     <ClInclude Include="src\gui\GuiMainMenu.h" />
