@@ -3,6 +3,7 @@
 #ifndef GUIDIALOG_H
 #define GUIDIALOG_H
 #include "BaseHeader.h"
+#include "IrrlichtUtils.h"
 
 class GuiController;
 
@@ -33,8 +34,6 @@ class GuiDialog
 		IGUIElement* root;
 		GuiController* guiController;
 };
-
-void scaleAlign(IGUIElement* elem);
 
 #endif
 

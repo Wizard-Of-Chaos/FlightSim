@@ -321,7 +321,6 @@ bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 	ISceneManager* smgr = manager->controller->smgr;
 
 	auto shipIrr = scene->get<IrrlichtComponent>(shipId);
-
 	if (!shipIrr) return false;
 	ISceneNode* target = smgr->addEmptySceneNode(0);
 	target->setPosition(shipIrr->node->getPosition());
@@ -348,6 +347,10 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	Scene* scene = &manager->scene;
 	auto player = scene->get<PlayerComponent>(playerId);
 	if (!player) return false;
+
+	dimension2du baseSize = dimension2du(960, 540);
+	player->rootHUD = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
+
 	player->activeSelection = nullptr;
 	IGUIElement* crosshair = manager->controller->guienv->addImage(manager->defaults.defaultCrosshairTexture, position2di(0, 0));
 	IGUIElement* selection = manager->controller->guienv->addImage(manager->defaults.defaultSelectionTexture, position2di(0, 0));

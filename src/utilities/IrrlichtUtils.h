@@ -15,4 +15,6 @@ vector3df getNodeDown(ISceneNode* node);
 
 EntityId strToId(std::string id);
 std::string idToStr(EntityId id);
+void scaleAlign(IGUIElement* elem);
+
 #endif

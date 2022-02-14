@@ -39,3 +39,8 @@ std::string idToStr(EntityId id)
 {
 	return std::to_string(id);
 }
+
+void scaleAlign(IGUIElement* elem)
+{
+	elem->setAlignment(EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE);
+}

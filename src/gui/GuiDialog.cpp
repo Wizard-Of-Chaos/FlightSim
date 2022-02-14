@@ -18,8 +18,3 @@ void GuiDialog::hide()
 	root->setRelativePosition(rect<s32>(position2di(0, 0), guiController->driver->getScreenSize()));
 	root->setVisible(false); 
 };
-
-void scaleAlign(IGUIElement* elem)
-{
-	elem->setAlignment(EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE);
-}
