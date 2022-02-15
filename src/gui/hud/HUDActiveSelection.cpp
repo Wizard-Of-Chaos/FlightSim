@@ -13,7 +13,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* p
 	if (input->rightMouseDown) {
 		ISceneNode* selection = coll->getSceneNodeFromRayBB(ray, ID_IsSelectable);
 		if (selection) {
-			if (selection->getID() != -1) {
+			if (selection->getID() != -1 && selection != playerShip) {
 				player->activeSelection = selection;
 				elem->setVisible(true);
 			}
