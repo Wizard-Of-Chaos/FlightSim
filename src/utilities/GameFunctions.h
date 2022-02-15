@@ -41,7 +41,7 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position);
 //Creates a projectile entity and shoots it in the indicated direction. Assigns information to the projectile (range, speed, etc)
 //based on the weapon that shot it. Returns the ID of the projectile.
 EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vector3df direction, EntityId weaponId);
-//Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon and health components. Returns the ID.
+//Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, and health components. Returns the ID.
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position);
 
 //Removes the given projectile from the scene.
@@ -64,5 +64,7 @@ void initializeDefaultHealth(SceneManager* manager, EntityId objectId);
 //Sets up the HUD for the given player entity.
 //Requires a player component; returns false otherwise.
 bool initializeDefaultHUD(SceneManager* manager, EntityId playerId);
+//Adds sensors to the given entity with default values. Requires an irrlicht component and a faction component.
+void initializeDefaultSensors(SceneManager* manager, EntityId id);
 
 #endif

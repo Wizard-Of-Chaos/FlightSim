@@ -56,6 +56,7 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 	auto ship = manager->scene.get<ShipComponent>(id);
 	auto ai = manager->scene.get<AIComponent>(id);
+	auto sensors = manager->scene.get<SensorComponent>(id);
 
 	auto pursuitIrr = manager->scene.get<IrrlichtComponent>(pursuitTarget);
 	if (!pursuitIrr) return;
@@ -72,7 +73,7 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 	else {
 		//if it is behind it, start turning towards it
 		smoothTurnToDirection(&rbc->rigidBody, ship, irrVecToBt(facing), dt);
-		auto pursuitBody = manager->scene.get<BulletRigidBodyComponent>(ai->closestContact);
+		auto pursuitBody = manager->scene.get<BulletRigidBodyComponent>(sensors->closestContact);
 	}
 
 	btVector3 forward = getRigidBodyForward(&rbc->rigidBody);

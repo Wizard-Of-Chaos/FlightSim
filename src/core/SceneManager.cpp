@@ -9,6 +9,7 @@ void SceneManager::update(f32 time, f32 frameDelta)
 	AIUpdateSystem(this, dt); //updates AI components
 	weaponFiringSystem(this, dt); //fires guns
 	bulletWorld->stepSimulation(dt, 60); //applies the PHYSICS
+	sensorUpdateSystem(this);
 	collisionCheckingSystem(this); //destroys projectiles on hit
 	updateHealthSystem(this); //updates health and removes objects with no health
 	irrlichtRigidBodyPositionSystem(scene, dt); //updates position based on rigidbody state

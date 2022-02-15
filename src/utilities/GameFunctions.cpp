@@ -364,6 +364,19 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	return true;
 }
 
+void initializeDefaultSensors(SceneManager* manager, EntityId id)
+{
+	Scene* scene = &manager->scene;
+	auto irr = scene->get<IrrlichtComponent>(id);
+	auto fac = scene->get<FactionComponent>(id);
+	if (!irr || !fac) return; //check, because sensors REQUIRE an irrlicht pos
+	auto sensors = scene->assign<SensorComponent>(id);
+	sensors->closestContact = INVALID_ENTITY;
+	sensors->closestFriendlyContact = INVALID_ENTITY;
+	sensors->closestHostileContact = INVALID_ENTITY;
+	sensors->detectionRadius = DEFAULT_SENSOR_RANGE;
+}
+
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
 {
 	Scene* scene = &manager->scene;
@@ -376,13 +389,9 @@ EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
 
 	auto ai = scene->assign<AIComponent>(id);
 	ai->AIType = AI_TYPE_DEFAULT;
-	ai->detectionRadius = AI_DEFAULT_DETECTION_RADIUS;
 	ai->reactionSpeed = AI_DEFAULT_REACTION_TIME;
 	ai->damageTolerance = AI_DEFAULT_DAMAGE_TOLERANCE;
 	ai->timeSinceLastStateCheck = 0;
-	ai->closestContact = INVALID_ENTITY;
-	ai->closestFriendlyContact = INVALID_ENTITY;
-	ai->closestHostileContact = INVALID_ENTITY;
 
 	return id;
 }
