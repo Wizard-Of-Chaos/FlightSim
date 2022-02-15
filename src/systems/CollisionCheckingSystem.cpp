@@ -49,7 +49,7 @@ void collisionCheckingSystem(SceneManager* manager)
 		}
 		if (hpB) {
 			if (projA) {
-				hpB->health -= projB->damage;
+				hpB->health -= projA->damage;
 			}
 		}
 

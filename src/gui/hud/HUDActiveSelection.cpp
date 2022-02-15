@@ -16,10 +16,6 @@ void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* p
 			if (selection->getID() != -1) {
 				player->activeSelection = selection;
 				elem->setVisible(true);
-				position2di selectionPos = coll->getScreenCoordinatesFrom3DPosition(selection->getAbsolutePosition(), camera);
-				selectionPos.X -= 64;
-				selectionPos.Y -= 64;
-				elem->setRelativePosition(selectionPos);
 			}
 		}
 		else if (!selection) {

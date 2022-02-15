@@ -43,6 +43,8 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultProjectileTexture = manager->controller->driver->getTexture("effects/particlered.bmp");
 	manager->defaults.defaultCrosshairTexture = manager->controller->driver->getTexture("hud/crosshair.png");
 	manager->defaults.defaultSelectionTexture = manager->controller->driver->getTexture("hud/selection.png");
+	manager->defaults.defaultContactTexture = manager->controller->driver->getTexture("hud/contact.png");
+	manager->defaults.defaultContactMarkerTexture = manager->controller->driver->getTexture("hud/contactmarker.png");
 }
 
 void initializeNeutralFaction(SceneManager* manager, EntityId id)

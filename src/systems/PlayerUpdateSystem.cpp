@@ -13,6 +13,33 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
 		InputComponent* input = scene.get<InputComponent>(entityId);
 
+		SensorComponent* sensors = scene.get<SensorComponent>(entityId);
+
+		for (unsigned int i = 0; i < sensors->contacts.size(); ++i) {
+			EntityId contact = sensors->contacts[i];
+			if (player->trackedContacts[contact] == nullptr) {
+				IGUIImage* marker = manager->controller->guienv->addImage(manager->defaults.defaultContactMarkerTexture, position2di(0, 0));
+				IGUIImage* pos = manager->controller->guienv->addImage(manager->defaults.defaultContactTexture, position2di(0, 0));
+				HUDContact* elem = new HUDContact(pos);
+				elem->marker = marker;
+				elem->contact = contact;
+
+				player->HUD.push_back(elem);
+				player->trackedContacts[contact] = elem;
+			}
+		}
+
+		for (auto [id, hud] : player->trackedContacts) {
+			if (!scene.entityInUse(id)) {
+				if (hud) player->removeContact(hud);
+				continue;
+			}
+			if (sensors->contacts.binary_search(id) == -1) {
+				if (!hud) continue;
+				player->removeContact(hud);
+			}
+		}
+
 		//camera work
 		cameraUpdate(player, irrcomp->node, &rbc->rigidBody);
 

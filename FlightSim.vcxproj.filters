@@ -79,6 +79,12 @@
     <ClCompile Include="src\systems\SensorUpdateSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\hud\HUDContact.cpp">
+      <Filter>Sources\Gui\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\PlayerComponent.cpp">
+      <Filter>Sources\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -201,6 +207,9 @@
     <ClInclude Include="src\systems\SensorUpdateSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="src\gui\hud\HUDContact.h">
+      <Filter>Headers\Gui\HUD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
@@ -247,6 +256,9 @@
     </Filter>
     <Filter Include="Sources\Gui\HUD">
       <UniqueIdentifier>{aa77fe6a-7ebd-428a-ac25-cdce8ed88379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Components">
+      <UniqueIdentifier>{13738754-442e-423d-96c3-6fc200ce8b86}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

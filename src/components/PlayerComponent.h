@@ -4,10 +4,13 @@
 #define PLAYERCOMPONENT_H
 
 #include "BaseHeader.h"
+#include "ECS.h"
 
 #include <vector>
+#include <map>
 
 class HUDElement;
+class HUDContact;
 
 struct PlayerComponent
 {
@@ -21,6 +24,10 @@ struct PlayerComponent
 	IGUIElement* rootHUD;
 	std::vector<HUDElement*> HUD;
 	ISceneNode* activeSelection;
+	std::map<EntityId, HUDContact*> trackedContacts;
+
+	void removeContact(HUDContact* contact);
+	void removeHUDElement(HUDElement* element);
 };
 
 #endif

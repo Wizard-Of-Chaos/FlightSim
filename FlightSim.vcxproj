@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\PlayerComponent.cpp" />
     <ClCompile Include="src\core\Networking.cpp" />
     <ClCompile Include="src\gui\GuiDialog.cpp" />
     <ClCompile Include="src\gui\GuiPauseMenu.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="src\core\GuiController.cpp" />
     <ClCompile Include="src\core\GameStateController.cpp" />
     <ClCompile Include="src\gui\hud\HUDActiveSelection.cpp" />
+    <ClCompile Include="src\gui\hud\HUDContact.cpp" />
     <ClCompile Include="src\gui\hud\HUDCrosshair.cpp" />
     <ClCompile Include="src\systems\AIUpdateSystem.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp" />
@@ -182,6 +184,7 @@
   <ItemGroup>
     <ClInclude Include="src\components\SensorComponent.h" />
     <ClInclude Include="src\gui\hud\HUDActiveSelection.h" />
+    <ClInclude Include="src\gui\hud\HUDContact.h" />
     <ClInclude Include="src\gui\hud\HUDCrosshair.h" />
     <ClInclude Include="src\gui\hud\HUDElement.h" />
     <ClInclude Include="src\components\FactionComponent.h" />

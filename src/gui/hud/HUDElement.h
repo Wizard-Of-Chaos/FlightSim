@@ -14,7 +14,7 @@ class HUDElement
 public:
 	HUDElement(IGUIElement* elem) : elem(elem) {}
 	virtual void updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input) = 0;
-protected:
+
 	IGUIElement* elem;
 };
 

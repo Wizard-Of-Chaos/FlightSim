@@ -126,9 +126,6 @@ btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3
 	btVector3 up = getRigidBodyUp(body);
 	btVector3 down = getRigidBodyDown(body);
 
-	btScalar angle = forward.angle(dir) * RADTODEG;
-	//btScalar torqueFactor = (angle / 180.f);
-
 	btVector3 torque(0, 0, 0);
 	if (right.dot(dir) > left.dot(dir)) {
 		torque += getTorqueYawRight(body, ship);
@@ -142,7 +139,6 @@ btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3
 	else {
 		torque += getTorquePitchDown(body, ship);
 	}
-	//torque *= torqueFactor;
 	return torque;
 }
 
