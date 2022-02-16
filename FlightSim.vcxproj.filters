@@ -85,6 +85,12 @@
     <ClCompile Include="src\components\PlayerComponent.cpp">
       <Filter>Sources\Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\GvReader.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\Config.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -209,6 +215,12 @@
     </ClInclude>
     <ClInclude Include="src\gui\hud\HUDContact.h">
       <Filter>Headers\Gui\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\Config.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\GvReader.h">
+      <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
