@@ -7,10 +7,13 @@
 class HUDContact : public HUDElement
 {
 public:
-	HUDContact(IGUIElement* elem) : HUDElement(elem) {}
+	HUDContact(SceneManager* man, EntityId id);
+	~HUDContact() override;
 	virtual void updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input);
 	EntityId contact;
-	IGUIElement* marker;
+
+	IGUIImage* contactView;
+	IGUIElement* offscreenMarker;
 };
 
 #endif 

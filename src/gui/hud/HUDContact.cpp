@@ -1,6 +1,20 @@
 #include "HUDContact.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include <iostream>
+
+HUDContact::HUDContact(SceneManager* man, EntityId id) : HUDElement(man) 
+{
+	offscreenMarker = man->controller->guienv->addImage(man->defaults.defaultContactMarkerTexture, position2di(0, 0));
+	contactView = man->controller->guienv->addImage(man->defaults.defaultContactTexture, position2di(0, 0));
+	contact = id;
+}
+
+HUDContact::~HUDContact()
+{
+	offscreenMarker->remove();
+	contactView->remove();
+}
 
 void HUDContact::updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input)
 {
@@ -34,16 +48,16 @@ void HUDContact::updateElement(SceneManager* manager, PlayerComponent* player, I
 
 		onscreenPos.X -= 32;
 		onscreenPos.Y -= 32;
-		marker->setRelativePosition(onscreenPos);
-		elem->setVisible(false);
-		marker->setVisible(true);
+		offscreenMarker->setRelativePosition(onscreenPos);
+		contactView->setVisible(false);
+		offscreenMarker->setVisible(true);
 	}
 	else {
 		position2di onscreenPos = contactScreenPos;
 		onscreenPos.X -= 32;
 		onscreenPos.Y -= 32;
-		elem->setRelativePosition(onscreenPos);
-		elem->setVisible(true);
-		marker->setVisible(false);
+		contactView->setRelativePosition(onscreenPos);
+		contactView->setVisible(true);
+		offscreenMarker->setVisible(false);
 	}
 }

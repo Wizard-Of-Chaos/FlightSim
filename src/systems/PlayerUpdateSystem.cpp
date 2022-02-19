@@ -17,13 +17,8 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 
 		for (unsigned int i = 0; i < sensors->contacts.size(); ++i) {
 			EntityId contact = sensors->contacts[i];
-			if (player->trackedContacts[contact] == nullptr) {
-				IGUIImage* marker = manager->controller->guienv->addImage(manager->defaults.defaultContactMarkerTexture, position2di(0, 0));
-				IGUIImage* pos = manager->controller->guienv->addImage(manager->defaults.defaultContactTexture, position2di(0, 0));
-				HUDContact* elem = new HUDContact(pos);
-				elem->marker = marker;
-				elem->contact = contact;
-
+			if (player->trackedContacts[contact] == nullptr && scene.entityInUse(contact)) {
+				HUDContact* elem = new HUDContact(manager, contact);
 				player->HUD.push_back(elem);
 				player->trackedContacts[contact] = elem;
 			}

@@ -2,6 +2,16 @@
 #include "SceneManager.h"
 #include "GameController.h"
 
+HUDCrosshair::HUDCrosshair(SceneManager* man) : HUDElement(man)
+{
+	crosshair = man->controller->guienv->addImage(man->defaults.defaultCrosshairTexture, position2di(0, 0));
+}
+
+HUDCrosshair::~HUDCrosshair()
+{
+	crosshair->remove();
+}
+
 void HUDCrosshair::updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input)
 {
 	ICameraSceneNode* camera = player->camera;
@@ -11,5 +21,5 @@ void HUDCrosshair::updateElement(SceneManager* manager, PlayerComponent* player,
 	position2di crosshairPos = coll->getScreenCoordinatesFrom3DPosition(aheadCrosshairPos, camera);
 	crosshairPos.X -= 32;
 	crosshairPos.Y -= 32;
-	elem->setRelativePosition(crosshairPos);
+	crosshair->setRelativePosition(crosshairPos);
 }

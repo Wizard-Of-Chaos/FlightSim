@@ -347,12 +347,8 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	dimension2du baseSize = dimension2du(960, 540);
 	player->rootHUD = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
 
-	IGUIElement* crosshair = manager->controller->guienv->addImage(manager->defaults.defaultCrosshairTexture, position2di(0, 0));
-	IGUIElement* selection = manager->controller->guienv->addImage(manager->defaults.defaultSelectionTexture, position2di(0, 0));
-
-	HUDElement* crossHUD = new HUDCrosshair(crosshair);
-	HUDElement* selectHUD = new HUDActiveSelection(selection);
-	selection->setVisible(false);
+	HUDElement* crossHUD = new HUDCrosshair(manager);
+	HUDElement* selectHUD = new HUDActiveSelection(manager);
 	player->HUD.push_back(crossHUD);
 	player->HUD.push_back(selectHUD);
 

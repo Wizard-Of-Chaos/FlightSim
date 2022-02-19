@@ -3,6 +3,19 @@
 #include "GameController.h"
 #include <iostream>
 
+HUDActiveSelection::HUDActiveSelection(SceneManager* man) : HUDElement(man)
+{
+	selectGUI = man->controller->guienv->addImage(man->defaults.defaultSelectionTexture, position2di(0, 0));
+	activeSelection = INVALID_ENTITY;
+	selectGUI->setVisible(false);
+}
+
+HUDActiveSelection::~HUDActiveSelection()
+{
+	selectGUI->remove();
+	//name->remove();
+}
+
 void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input)
 {
 	ICameraSceneNode* camera = player->camera;
@@ -20,16 +33,16 @@ void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* p
 			if (selection->getID() != -1 && selection != playerShip) {
 				EntityId id = strToId(selection->getName());
 				if(manager->scene.entityInUse(id)) activeSelection = id;
-				elem->setVisible(true);
+				selectGUI->setVisible(true);
 			}
 		}
 		else if (!selection) {
-			elem->setVisible(false);
+			selectGUI->setVisible(false);
 			activeSelection = INVALID_ENTITY;
 		}
 	}
 	if (activeSelection == INVALID_ENTITY) {
-		elem->setVisible(false);
+		selectGUI->setVisible(false);
 		return;
 	}
 	auto irr = manager->scene.get<IrrlichtComponent>(activeSelection);
@@ -40,5 +53,5 @@ void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* p
 	position2di selectionPos = coll->getScreenCoordinatesFrom3DPosition(irr->node->getAbsolutePosition(), camera);
 	selectionPos.X -= 64;
 	selectionPos.Y -= 64;
-	elem->setRelativePosition(selectionPos);
+	selectGUI->setRelativePosition(selectionPos);
 }

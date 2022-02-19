@@ -7,8 +7,10 @@
 class HUDCrosshair : public HUDElement
 {
 public:
-	HUDCrosshair(IGUIElement* elem) : HUDElement(elem) {}
+	HUDCrosshair(SceneManager* man);
+	~HUDCrosshair() override;
 	virtual void updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input);
+	IGUIImage* crosshair;
 };
 
 #endif 
