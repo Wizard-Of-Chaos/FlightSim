@@ -1,5 +1,6 @@
 #include "IrrlichtUtils.h"
 #include <string>
+#include <iostream>
 
 vector3df getNodeForward(ISceneNode* node)
 {

@@ -229,12 +229,6 @@ void destroyObject(SceneManager* manager, EntityId id)
 {
 	auto irrComp = manager->scene.get<IrrlichtComponent>(id);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
-	for (auto playerId : SceneView<PlayerComponent>(manager->scene)) {
-		auto player = manager->scene.get<PlayerComponent>(playerId);
-		if (player->activeSelection == irrComp->node) {
-			player->activeSelection = nullptr;
-		}
-	}
 
 	auto ship = manager->scene.get<ShipComponent>(id);
 	if (ship) {
@@ -353,7 +347,6 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	dimension2du baseSize = dimension2du(960, 540);
 	player->rootHUD = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
 
-	player->activeSelection = nullptr;
 	IGUIElement* crosshair = manager->controller->guienv->addImage(manager->defaults.defaultCrosshairTexture, position2di(0, 0));
 	IGUIElement* selection = manager->controller->guienv->addImage(manager->defaults.defaultSelectionTexture, position2di(0, 0));
 

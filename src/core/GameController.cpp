@@ -124,6 +124,8 @@ void GameController::initDefaultScene()
 	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 5000, 0),
 		SColor(200, 255, 180, 180), 20000.f);
 	n->setID(ID_IsNotSelectable);
+	ILightSceneNode* light = (ILightSceneNode*)n;
+	light->enableCastShadow(true);
 
 	n = smgr->addBillboardSceneNode(n, dimension2d<f32>(25, 25));
 	n->setMaterialFlag(EMF_LIGHTING, false);

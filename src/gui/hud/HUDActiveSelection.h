@@ -7,8 +7,9 @@
 class HUDActiveSelection : public HUDElement
 {
 public:
-	HUDActiveSelection(IGUIElement* elem) : HUDElement(elem) {}
+	HUDActiveSelection(IGUIElement* elem) : HUDElement(elem) { activeSelection = INVALID_ENTITY; }
 	virtual void updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input);
+	EntityId activeSelection;
 };
 
 #endif 
