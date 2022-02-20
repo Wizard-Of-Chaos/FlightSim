@@ -11,6 +11,7 @@ HUDActiveSelection::HUDActiveSelection(SceneManager* man) : HUDElement(man)
 	name->enableOverrideColor(true);
 	activeSelection = INVALID_ENTITY;
 	selectGUI->setVisible(false);
+	name->setVisible(false);
 }
 
 HUDActiveSelection::~HUDActiveSelection()
@@ -40,15 +41,18 @@ void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* p
 				std::wstring widestr = std::wstring(irr->name.begin(), irr->name.end());
 				name->setText(widestr.c_str());
 				selectGUI->setVisible(true);
+				name->setVisible(true);
 			}
 		}
 		else if (!selection) {
 			selectGUI->setVisible(false);
+			name->setVisible(false);
 			activeSelection = INVALID_ENTITY;
 		}
 	}
 	if (activeSelection == INVALID_ENTITY) {
 		selectGUI->setVisible(false);
+		name->setVisible(false);
 		return;
 	}
 	auto irr = manager->scene.get<IrrlichtComponent>(activeSelection);
