@@ -12,9 +12,9 @@ class SceneManager;
 class HUDElement
 {
 public:
-	HUDElement(SceneManager* man) {}
+	HUDElement(SceneManager* man, IGUIElement* root) {}
 	virtual ~HUDElement() {}
-	virtual void updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input) = 0;
+	virtual void updateElement(SceneManager* manager, EntityId playerId) = 0;
 };
 
 #endif

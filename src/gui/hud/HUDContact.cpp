@@ -3,11 +3,11 @@
 #include "GameController.h"
 #include <iostream>
 
-HUDContact::HUDContact(SceneManager* man, EntityId id) : HUDElement(man) 
+HUDContact::HUDContact(SceneManager* man, IGUIElement* root, EntityId contactId) : HUDElement(man, root) 
 {
-	offscreenMarker = man->controller->guienv->addImage(man->defaults.defaultContactMarkerTexture, position2di(0, 0));
-	contactView = man->controller->guienv->addImage(man->defaults.defaultContactTexture, position2di(0, 0));
-	contact = id;
+	offscreenMarker = man->controller->guienv->addImage(man->defaults.defaultContactMarkerTexture, position2di(0, 0), root);
+	contactView = man->controller->guienv->addImage(man->defaults.defaultContactTexture, position2di(0, 0), root);
+	contact = contactId;
 }
 
 HUDContact::~HUDContact()
@@ -16,8 +16,10 @@ HUDContact::~HUDContact()
 	contactView->remove();
 }
 
-void HUDContact::updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input)
+void HUDContact::updateElement(SceneManager* manager, EntityId playerId)
 {
+	auto player = manager->scene.get<PlayerComponent>(playerId);
+
 	if (!manager->scene.entityInUse(contact)) return;
 	ICameraSceneNode* camera = player->camera;
 	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();

@@ -6,5 +6,6 @@
 #include "HUDActiveSelection.h"
 #include "HUDCrosshair.h"
 #include "HUDContact.h"
+#include "HUDHealthBar.h"
 
 #endif 

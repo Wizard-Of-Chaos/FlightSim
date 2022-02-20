@@ -351,11 +351,12 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	dimension2du baseSize = dimension2du(960, 540);
 	player->rootHUD = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
 
-	HUDElement* crossHUD = new HUDCrosshair(manager);
-	HUDElement* selectHUD = new HUDActiveSelection(manager);
+	HUDElement* crossHUD = new HUDCrosshair(manager, player->rootHUD);
+	HUDElement* selectHUD = new HUDActiveSelection(manager, player->rootHUD);
+	HUDElement* healthHUD = new HUDHealthBar(manager, player->rootHUD);
 	player->HUD.push_back(crossHUD);
 	player->HUD.push_back(selectHUD);
-
+	player->HUD.push_back(healthHUD);
 	return true;
 }
 

@@ -12,13 +12,21 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
 		InputComponent* input = scene.get<InputComponent>(entityId);
+		HealthComponent* hp = scene.get<HealthComponent>(entityId);
+
+		if (input->isKeyDown(KEY_KEY_O)) {
+			hp->health -= 1;
+		}
+		else if (input->isKeyDown(KEY_KEY_P) && hp->health < hp->maxHealth) {
+			hp->health += 1;
+		}
 
 		SensorComponent* sensors = scene.get<SensorComponent>(entityId);
 
 		for (unsigned int i = 0; i < sensors->contacts.size(); ++i) {
 			EntityId contact = sensors->contacts[i];
 			if (player->trackedContacts[contact] == nullptr && scene.entityInUse(contact)) {
-				HUDContact* elem = new HUDContact(manager, contact);
+				HUDContact* elem = new HUDContact(manager, player->rootHUD, contact);
 				player->HUD.push_back(elem);
 				player->trackedContacts[contact] = elem;
 			}
@@ -39,7 +47,7 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		cameraUpdate(player, irrcomp->node, &rbc->rigidBody);
 
 		//HUD work
-		hudUpdate(manager, player, irrcomp->node, input);
+		hudUpdate(manager, player, entityId);
 	}
 }
 
@@ -74,9 +82,10 @@ void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* 
 	camera->setTarget(target);
 }
 
-void hudUpdate(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input)
+void hudUpdate(SceneManager* manager, PlayerComponent* player, EntityId playerId)
 {
+	player->rootHUD->setRelativePosition(rect<s32>(position2di(0, 0), manager->controller->driver->getScreenSize()));
 	for (HUDElement* elem : player->HUD) {
-		elem->updateElement(manager, player, playerShip, input);
+		elem->updateElement(manager, playerId);
 	}
 }

@@ -9,4 +9,4 @@ shadows=1
 stencilBuffer=1
 trilinearFiltering=1
 useScreenRes=0
-vsync=1
+vsync=0

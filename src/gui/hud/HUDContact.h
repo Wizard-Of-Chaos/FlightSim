@@ -7,9 +7,9 @@
 class HUDContact : public HUDElement
 {
 public:
-	HUDContact(SceneManager* man, EntityId id);
+	HUDContact(SceneManager* man, IGUIElement* root, EntityId contactId);
 	~HUDContact() override;
-	virtual void updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input);
+	virtual void updateElement(SceneManager* manager, EntityId playerId);
 	EntityId contact;
 
 	IGUIImage* contactView;

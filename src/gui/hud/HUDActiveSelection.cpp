@@ -3,10 +3,10 @@
 #include "GameController.h"
 #include <iostream>
 
-HUDActiveSelection::HUDActiveSelection(SceneManager* man) : HUDElement(man)
+HUDActiveSelection::HUDActiveSelection(SceneManager* man, IGUIElement* root) : HUDElement(man, root)
 {
-	selectGUI = man->controller->guienv->addImage(man->defaults.defaultSelectionTexture, position2di(0, 0));
-	name = man->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), dimension2du(128, 128)));
+	selectGUI = man->controller->guienv->addImage(man->defaults.defaultSelectionTexture, position2di(0, 0), root);
+	name = man->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), dimension2du(128, 128)), false, false, root);
 	name->setOverrideColor(SColor(255, 255, 255, 255));
 	name->enableOverrideColor(true);
 	activeSelection = INVALID_ENTITY;
@@ -20,8 +20,12 @@ HUDActiveSelection::~HUDActiveSelection()
 	name->remove();
 }
 
-void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input)
+void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 {
+	auto player = manager->scene.get<PlayerComponent>(playerId);
+	auto input = manager->scene.get<InputComponent>(playerId);
+	auto playerIrr = manager->scene.get<IrrlichtComponent>(playerId);
+
 	ICameraSceneNode* camera = player->camera;
 
 	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
@@ -34,7 +38,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* p
 	if (input->rightMouseDown) {
 		ISceneNode* selection = coll->getSceneNodeFromRayBB(ray, ID_IsSelectable);
 		if (selection) {
-			if (selection->getID() != -1 && selection != playerShip) {
+			if (selection->getID() != -1 && selection != playerIrr->node) {
 				EntityId id = strToId(selection->getName());
 				if(manager->scene.entityInUse(id)) activeSelection = id;
 				auto irr = manager->scene.get<IrrlichtComponent>(id);

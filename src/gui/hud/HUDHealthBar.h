@@ -7,10 +7,11 @@
 class HUDHealthBar : public HUDElement
 {
 public:
-	HUDHealthBar(SceneManager* manager);
+	HUDHealthBar(SceneManager* manager, IGUIElement* root);
 	~HUDHealthBar() override;
-	virtual void updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input);
+	virtual void updateElement(SceneManager* manager, EntityId playerId);
 	IGUIImage* health;
+	IGUIStaticText* healthNum;
 };
 
 #endif
