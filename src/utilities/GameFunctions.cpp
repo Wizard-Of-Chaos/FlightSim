@@ -36,15 +36,19 @@ vector3df randomRotationVector()
 //Sets the defaults in the scene manager for ship meshes.
 void setDefaults(SceneManager* manager)
 {
-	manager->defaults.defaultShipMesh = manager->controller->smgr->getMesh("models/tux/Tux.obj");
-	manager->defaults.defaultShipTexture = manager->controller->driver->getTexture("models/tux/BulletShipTex.png");
-	manager->defaults.defaultWeaponMesh = manager->controller->smgr->getMesh("models/wazer/wazer.obj");
-	manager->defaults.defaultObstacleMesh = manager->controller->smgr->getMesh("models/asteroid/Asteroid.obj");
-	manager->defaults.defaultProjectileTexture = manager->controller->driver->getTexture("effects/particlered.bmp");
-	manager->defaults.defaultCrosshairTexture = manager->controller->driver->getTexture("hud/crosshair.png");
-	manager->defaults.defaultSelectionTexture = manager->controller->driver->getTexture("hud/selection.png");
-	manager->defaults.defaultContactTexture = manager->controller->driver->getTexture("hud/contact.png");
-	manager->defaults.defaultContactMarkerTexture = manager->controller->driver->getTexture("hud/contactmarker.png");
+	ISceneManager* smgr = manager->controller->smgr;
+	IVideoDriver* driver = manager->controller->driver;
+
+	manager->defaults.defaultShipMesh = smgr->getMesh("models/tux/Tux.obj");
+	manager->defaults.defaultShipTexture = driver->getTexture("models/tux/BulletShipTex.png");
+	manager->defaults.defaultWeaponMesh = smgr->getMesh("models/wazer/wazer.obj");
+	manager->defaults.defaultObstacleMesh = smgr->getMesh("models/asteroid/Asteroid.obj");
+	manager->defaults.defaultProjectileTexture = driver->getTexture("effects/particlered.bmp");
+	manager->defaults.defaultCrosshairTexture = driver->getTexture("hud/crosshair.png");
+	manager->defaults.defaultSelectionTexture = driver->getTexture("hud/selection.png");
+	manager->defaults.defaultContactTexture = driver->getTexture("hud/contact.png");
+	manager->defaults.defaultContactMarkerTexture = driver->getTexture("hud/contactmarker.png");
+	manager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
 }
 
 void initializeNeutralFaction(SceneManager* manager, EntityId id)

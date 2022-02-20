@@ -6,6 +6,9 @@
 HUDActiveSelection::HUDActiveSelection(SceneManager* man) : HUDElement(man)
 {
 	selectGUI = man->controller->guienv->addImage(man->defaults.defaultSelectionTexture, position2di(0, 0));
+	name = man->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), dimension2du(128, 128)));
+	name->setOverrideColor(SColor(255, 255, 255, 255));
+	name->enableOverrideColor(true);
 	activeSelection = INVALID_ENTITY;
 	selectGUI->setVisible(false);
 }
@@ -13,7 +16,7 @@ HUDActiveSelection::HUDActiveSelection(SceneManager* man) : HUDElement(man)
 HUDActiveSelection::~HUDActiveSelection()
 {
 	selectGUI->remove();
-	//name->remove();
+	name->remove();
 }
 
 void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input)
@@ -33,6 +36,9 @@ void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* p
 			if (selection->getID() != -1 && selection != playerShip) {
 				EntityId id = strToId(selection->getName());
 				if(manager->scene.entityInUse(id)) activeSelection = id;
+				auto irr = manager->scene.get<IrrlichtComponent>(id);
+				std::wstring widestr = std::wstring(irr->name.begin(), irr->name.end());
+				name->setText(widestr.c_str());
 				selectGUI->setVisible(true);
 			}
 		}
@@ -54,4 +60,6 @@ void HUDActiveSelection::updateElement(SceneManager* manager, PlayerComponent* p
 	selectionPos.X -= 64;
 	selectionPos.Y -= 64;
 	selectGUI->setRelativePosition(selectionPos);
+	selectionPos.Y -= 16;
+	name->setRelativePosition(selectionPos);
 }

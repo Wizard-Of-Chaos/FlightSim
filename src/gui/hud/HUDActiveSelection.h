@@ -11,7 +11,7 @@ public:
 	~HUDActiveSelection() override;
 	virtual void updateElement(SceneManager* manager, PlayerComponent* player, ISceneNode* playerShip, InputComponent* input);
 	EntityId activeSelection;
-	//IGUIStaticText* name;
+	IGUIStaticText* name;
 	IGUIImage* selectGUI;
 };
 

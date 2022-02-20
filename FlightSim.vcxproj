@@ -162,6 +162,7 @@
     <ClCompile Include="src\gui\hud\HUDActiveSelection.cpp" />
     <ClCompile Include="src\gui\hud\HUDContact.cpp" />
     <ClCompile Include="src\gui\hud\HUDCrosshair.cpp" />
+    <ClCompile Include="src\gui\hud\HUDHealthBar.cpp" />
     <ClCompile Include="src\systems\AIUpdateSystem.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="src\core\Networking.h" />
     <ClInclude Include="src\components\AIComponent.h" />
     <ClInclude Include="src\gui\hud\HUDHeader.h" />
+    <ClInclude Include="src\gui\hud\HUDHealthBar.h" />
     <ClInclude Include="src\systems\AIUpdateSystem.h" />
     <ClInclude Include="src\gui\GuiPauseMenu.h" />
     <ClInclude Include="src\gui\GuiMainMenu.h" />
