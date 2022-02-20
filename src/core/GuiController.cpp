@@ -1,5 +1,6 @@
 #include "GuiController.h"
 #include "GameStateController.h"
+#include <iostream>
 
 GuiController::GuiController(GameStateController* controller)
 {

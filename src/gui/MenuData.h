@@ -11,8 +11,8 @@
 
 //Include and add menu types here.
 enum MENU_TYPE {
-	GUI_MAIN_MENU,
-	GUI_PAUSE_MENU
+	GUI_MAIN_MENU = 1,
+	GUI_PAUSE_MENU = 2
 };
 
 struct MenuData
