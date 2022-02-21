@@ -6,6 +6,7 @@
 #include "IrrlichtUtils.h"
 
 class GuiController;
+class GameStateController;
 
 class GuiDialog
 {

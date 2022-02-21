@@ -10,9 +10,9 @@ class GameStateController;
 
 enum PAUSE_MENU_BUTTONS
 {
-	GUI_PAUSE_RESUME,
-	GUI_PAUSE_SETTINGS,
-	GUI_PAUSE_EXIT_TO_MENU
+	PAUSEMENU_RESUME,
+	PAUSEMENU_SETTINGS,
+	PAUSEMENU_EXIT
 };
 
 class GuiPauseMenu : public GuiDialog

@@ -62,6 +62,9 @@ bool GameStateController::OnEvent(const SEvent& event)
 	case GAME_PAUSED:
 		guiController->OnEvent(event);
 		break;
+	case GAME_DEAD:
+		guiController->OnEvent(event);
+		break;
 	}
 	return false;
 }
@@ -83,12 +86,22 @@ void GameStateController::stateChange()
 	else if (oldState == GAME_PAUSED && state == GAME_MENUS) {
 		gameController->close();
 		guiController->init();
+		guiController->setActiveDialog(GUI_MAIN_MENU);
 	}
 	else if (oldState == GAME_RUNNING && state == GAME_PAUSED) {
 		guiController->setActiveDialog(GUI_PAUSE_MENU);
 	}
 	else if (oldState == GAME_PAUSED && state == GAME_RUNNING) {
 		guiController->close();
+	}
+	else if (oldState == GAME_RUNNING && state == GAME_DEAD) {
+		guiController->setActiveDialog(GUI_DEATH_MENU);
+		//set up death menu
+	}
+	else if (oldState == GAME_DEAD && state == GAME_MENUS) {
+		gameController->close();
+		guiController->init();
+		guiController->setActiveDialog(GUI_MAIN_MENU);
 	}
 
 	stateChangeCalled = false;
@@ -111,6 +124,9 @@ void GameStateController::mainLoop()
 				gameController->update();
 				break;
 			case GAME_PAUSED:
+				guiController->update();
+				break;
+			case GAME_DEAD:
 				guiController->update();
 				break;
 		}

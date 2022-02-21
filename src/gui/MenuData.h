@@ -8,11 +8,13 @@
 #include "GuiDialog.h"
 #include "GuiMainMenu.h"
 #include "GuiPauseMenu.h"
+#include "GuiDeathMenu.h"
 
 //Include and add menu types here.
 enum MENU_TYPE {
 	GUI_MAIN_MENU = 1,
-	GUI_PAUSE_MENU = 2
+	GUI_PAUSE_MENU = 2,
+	GUI_DEATH_MENU = 3
 };
 
 struct MenuData

@@ -13,9 +13,9 @@ class GuiController;
 //enum to handle all the different button IDs for this dialog.
 enum MAIN_MENU_BUTTONS
 {
-	GUI_START_GAME,
-	GUI_SETTINGS,
-	GUI_QUIT_GAME
+	MAINMENU_START,
+	MAINMENU_SETTINGS,
+	MAINMENU_QUIT
 };
 
 class GuiMainMenu : public GuiDialog

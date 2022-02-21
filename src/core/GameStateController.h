@@ -10,7 +10,8 @@ enum GAME_STATE
 {
 	GAME_MENUS = 0,
 	GAME_RUNNING = 1,
-	GAME_PAUSED = 2
+	GAME_PAUSED = 2,
+	GAME_DEAD = 3
 };
 
 class GameStateController : public IEventReceiver

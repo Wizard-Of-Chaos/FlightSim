@@ -9,6 +9,8 @@
 #include "GameFunctions.h"
 
 class SceneManager;
+class GameStateController;
+class GameController;
 
 void updateHealthSystem(SceneManager* manager);
 

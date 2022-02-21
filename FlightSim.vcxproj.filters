@@ -94,6 +94,9 @@
     <ClCompile Include="src\gui\hud\HUDHealthBar.cpp">
       <Filter>Sources\Gui\HUD</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\GuiDeathMenu.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -227,6 +230,9 @@
     </ClInclude>
     <ClInclude Include="src\gui\hud\HUDHealthBar.h">
       <Filter>Headers\Gui\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GuiDeathMenu.h">
+      <Filter>Headers\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
