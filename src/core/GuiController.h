@@ -21,6 +21,7 @@ class GuiController
 		GameStateController* stateController;
 		void init();
 		void close();
+		void menuCleanup();
 		void update();
 		GuiDialog* getActiveDialog() { return activeDialog; }
 		void setActiveDialog(MENU_TYPE menu);

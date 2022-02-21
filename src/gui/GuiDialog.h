@@ -13,7 +13,6 @@ class GuiDialog
 	public:
 
 		GuiDialog(GuiController* controller);
-		virtual ~GuiDialog() {}
 
 		//This function MUST be implemented. How that gets done can vary.
 		//For an example, go check GuiMainMenu.h

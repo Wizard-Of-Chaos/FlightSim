@@ -30,6 +30,13 @@ void GuiController::init()
 	//default main menu
 }
 
+void GuiController::menuCleanup()
+{
+	for (auto [key, val] : menus.menuDialogs) {
+		delete val;
+	}
+}
+
 void GuiController::close()
 {
 	if (activeDialog) {

@@ -85,6 +85,7 @@ void GameStateController::stateChange()
 	}
 	else if (oldState == GAME_PAUSED && state == GAME_MENUS) {
 		gameController->close();
+		guiController->menuCleanup();
 		guiController->init();
 		guiController->setActiveDialog(GUI_MAIN_MENU);
 	}
@@ -100,6 +101,7 @@ void GameStateController::stateChange()
 	}
 	else if (oldState == GAME_DEAD && state == GAME_MENUS) {
 		gameController->close();
+		guiController->menuCleanup();
 		guiController->init();
 		guiController->setActiveDialog(GUI_MAIN_MENU);
 	}
