@@ -57,4 +57,5 @@ void GuiController::setActiveDialog(MENU_TYPE menu)
 	}
 	activeDialog = menus.menuDialogs[menu];
 	activeDialog->show();
+	guienv->getRootGUIElement()->bringToFront(activeDialog->getRoot());
 }

@@ -25,6 +25,7 @@ class GuiDialog
 		void show();
 		void hide();
 		bool isDialogVisible() { if (root) { return root->isVisible(); } return false; }
+		IGUIElement* getRoot() { return root; }
 	protected:
 		//The base size will be set to 960x540. GUI design can assume that you're working for a screen of that size.
 		//The elements will automatically scale with the size of the UI - assuming you set that up properly.
