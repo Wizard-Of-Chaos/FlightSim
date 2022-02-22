@@ -14,7 +14,7 @@ GuiController::GuiController(GameStateController* controller)
 	activeDialog = 0;
 
 	gvReader tauntReader;
-	tauntReader.read("taunts.txt");
+	tauntReader.read("attributes/taunts.txt");
 	for (std::string line : tauntReader.lines) {
 		taunts.push_back(std::wstring(line.begin(), line.end()));
 	}
