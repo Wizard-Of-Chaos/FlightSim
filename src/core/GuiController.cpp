@@ -4,6 +4,7 @@
 
 GuiController::GuiController(GameStateController* controller)
 {
+	std::srand(time(NULL));
 	stateController = controller;
 	device = controller->device;
 	driver = device->getVideoDriver();
@@ -11,6 +12,12 @@ GuiController::GuiController(GameStateController* controller)
 	soundEngine = controller->soundEngine;
 	guienv = device->getGUIEnvironment();
 	activeDialog = 0;
+
+	gvReader tauntReader;
+	tauntReader.read("taunts.txt");
+	for (std::string line : tauntReader.lines) {
+		taunts.push_back(std::wstring(line.begin(), line.end()));
+	}
 }
 
 void GuiController::init()
@@ -28,6 +35,11 @@ void GuiController::init()
 	activeDialog = menus.menuDialogs[GUI_MAIN_MENU];
 	activeDialog->show();
 	//default main menu
+}
+
+std::wstring GuiController::getTaunt()
+{
+	return taunts[std::rand() % taunts.size()];
 }
 
 void GuiController::menuCleanup()

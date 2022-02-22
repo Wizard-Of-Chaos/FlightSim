@@ -25,10 +25,12 @@ class GuiController
 		void update();
 		GuiDialog* getActiveDialog() { return activeDialog; }
 		void setActiveDialog(MENU_TYPE menu);
+		std::wstring getTaunt();
 
 	private:
 		GuiDialog* activeDialog;
 		MenuData menus;
+		std::vector<std::wstring> taunts;
 		//to-do list: add hookups to store the various menus as well as change the active dialog
 };
 

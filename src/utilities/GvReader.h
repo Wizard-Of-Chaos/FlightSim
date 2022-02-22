@@ -11,13 +11,19 @@
 
 struct gvReader
 {
-		std::vector<std::string> lines;
-		std::map<std::string, std::string> values;
+	//Lines of a loaded file.
+	std::vector<std::string> lines;
+	//Map of values.
+	std::map<std::string, std::string> values;
 
-		void readLinesToValues();
-		void readValuesToLines();
-		void read(std::string filename);
-		void write(std::string filename);
+	//Reads the lines currently loaded to the map.
+	void readLinesToValues();
+	//Reads the map back out to lines of text.
+	void readValuesToLines();
+	//Reads in lines from a file.
+	void read(std::string filename);
+	//Writes lines to a file.
+	void write(std::string filename);
 };
 
 #endif 

@@ -23,9 +23,20 @@ struct ShipComponent {
 	f32 forwardThrust;
 	f32 brakeThrust;
 	f32 strafeThrust;
+
 	f32 pitchThrust;
 	f32 yawThrust;
 	f32 rollThrust;
+
+	vector3df upJetPos[2];
+	IParticleEmitter* upJetEmit[2];
+	vector3df downJetPos[2];
+	IParticleEmitter* downJetEmit[2];
+	vector3df leftJetPos[2];
+	IParticleEmitter* leftJetEmit[2];
+	vector3df rightJetPos[2];
+	IParticleEmitter* rightJetEmit[2];
+
 };
 
 #endif

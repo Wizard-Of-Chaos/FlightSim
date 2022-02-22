@@ -3,6 +3,7 @@
 #ifndef GAMEFUNCTIONS_H
 #define GAMEFUNCTIONS_H
 #include "BaseHeader.h"
+#include "AttributeReaders.h"
 #include "IrrlichtComponent.h"
 #include "HealthComponent.h"
 #include "InputComponent.h"

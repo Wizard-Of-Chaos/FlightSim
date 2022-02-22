@@ -97,6 +97,9 @@
     <ClCompile Include="src\gui\GuiDeathMenu.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\AttributeReaders.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -233,6 +236,9 @@
     </ClInclude>
     <ClInclude Include="src\gui\GuiDeathMenu.h">
       <Filter>Headers\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\AttributeReaders.h">
+      <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

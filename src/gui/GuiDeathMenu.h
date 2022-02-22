@@ -20,7 +20,6 @@ class GuiDeathMenu : public GuiDialog
 	private:
 		IGUIButton* returnToMenu;
 		IGUIStaticText* taunt;
-		std::vector<std::wstring> taunts;
 };
 
 #endif 

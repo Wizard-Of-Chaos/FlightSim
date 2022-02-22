@@ -89,31 +89,14 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 	Scene* scene = &manager->scene;
 	ISceneManager* smgr = manager->controller->smgr;
 
-	IMeshSceneNode* playerNode = smgr->addMeshSceneNode(manager->defaults.defaultShipMesh, 0, -1, position);
-	playerNode->setMaterialTexture(0, manager->defaults.defaultShipTexture);
-
 	auto shipEntity = scene->newEntity();
-	playerNode->setName(idToStr(shipEntity).c_str());
-	playerNode->setID(ID_IsSelectable | ID_IsAvoidable);
-	auto irrComponent = scene->assign<IrrlichtComponent>(shipEntity);
 
-	irrComponent->node = playerNode;
-	irrComponent->name = "Default Ship";
+	loadShip("attributes/ships/tux.gdat", shipEntity, manager);
+	auto ship = scene->get<ShipComponent>(shipEntity);
+	auto irr = scene->get<IrrlichtComponent>(shipEntity);
+	irr->node->setPosition(position);
 
-	auto shipComponent = scene->assign<ShipComponent>(shipEntity);
-	shipComponent->forwardThrust = DEFAULT_FORWARD_THRUST;
-	shipComponent->brakeThrust = DEFAULT_BRAKE_THRUST;
-	shipComponent->strafeThrust = DEFAULT_STRAFE_THRUST;
-	shipComponent->pitchThrust = DEFAULT_PITCH_THRUST;
-	shipComponent->yawThrust = DEFAULT_YAW_THRUST;
-	shipComponent->rollThrust = DEFAULT_ROLL_THRUST;
-
-	shipComponent->hardpointCount = 2;
-	shipComponent->hardpoints[0] = vector3df(2.4816f, .59665f, .088f);
-	shipComponent->hardpoints[1] = vector3df(-2.4816f, .59665f, .088f);
-
-
-	for (unsigned int i = 0; i < shipComponent->hardpointCount; ++i) {
+	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		initializeDefaultWeapon(manager, shipEntity, i);
 	}
 
@@ -261,20 +244,14 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	auto shipComp = scene->get<ShipComponent>(shipId);
 
 	if (!shipIrr || !shipComp) return false;
-
+	
 	auto wepEntity = scene->newEntity();
-	auto wepInfo = scene->assign<WeaponInfoComponent>(wepEntity);
-	wepInfo->isFiring = false;
-	wepInfo->type = DEFAULT_WEAPON_TYPE;
-	wepInfo->firingSpeed = DEFAULT_FIRING_SPEED;
-	wepInfo->projectileSpeed = DEFAULT_PROJECTILE_SPEED;
-	wepInfo->range = DEFAULT_WEAPON_RANGE;
-	wepInfo->timeSinceLastShot = 0.f;
-	wepInfo->damage = DEFAULT_WEAPON_DAMAGE;
+	loadWeapon("attributes/weapons/plasmablaster.gdat", wepEntity, manager);
+	auto irr = scene->get<IrrlichtComponent>(wepEntity);
+	irr->node->setParent(shipIrr->node);
+	irr->node->setPosition(shipComp->hardpoints[hardpoint]);
+	irr->node->setScale(vector3df(.5f, .5f, .5f));
 
-	auto wepIrrComp = scene->assign<IrrlichtComponent>(wepEntity);
-	wepIrrComp->node = smgr->addMeshSceneNode(manager->defaults.defaultWeaponMesh, shipIrr->node, -1, shipComp->hardpoints[hardpoint], vector3df(0, 0, 0), vector3df(.5f, .5f, .5f));
-	wepIrrComp->node->setID(ID_IsNotSelectable);
 	shipComp->weapons[hardpoint] = wepEntity;
 
 	return true;
