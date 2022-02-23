@@ -116,9 +116,8 @@ btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 	return -lin * (ship->brakeThrust + ship->strafeThrust);
 }
 
-btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
+void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
 {
-	btVector3 velocity = body->getAngularVelocity();
 
 	btVector3 forward = getRigidBodyForward(body);
 	btVector3 right = getRigidBodyRight(body);
@@ -126,32 +125,29 @@ btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3
 	btVector3 up = getRigidBodyUp(body);
 	btVector3 down = getRigidBodyDown(body);
 
-	btVector3 torque(0, 0, 0);
 	if (right.dot(dir) > left.dot(dir)) {
-		torque += getTorqueYawRight(body, ship);
+		ship->moves[SHIP_YAW_RIGHT] = true;
 	}
 	else {
-		torque += getTorqueYawLeft(body, ship);
+		ship->moves[SHIP_YAW_LEFT] = true;
 	}
 	if (up.dot(dir) > down.dot(dir)) {
-		torque += getTorquePitchUp(body, ship);
+		ship->moves[SHIP_PITCH_UP] = true;
 	}
 	else {
-		torque += getTorquePitchDown(body, ship);
+		ship->moves[SHIP_PITCH_DOWN] = true;
 	}
-	return torque;
 }
 
 void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt)
 {
-	btVector3 torque = getTorqueToDirection(body, ship, dir);
 	btScalar angle = getRigidBodyForward(body).angle(dir);
 	btVector3 ang = body->getAngularVelocity();
 	if (angle > ang.length()) {
-		body->applyTorqueImpulse(torque * dt);
+		turnToDirection(body, ship, dir);
 	}
 	else {
-		body->applyTorqueImpulse(getTorqueToStopAngularVelocity(body, ship) * dt);
+		ship->moves[SHIP_STOP_ROTATION] = true;
 	}
 }
 
@@ -168,10 +164,11 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 		btScalar timeToStop = velocity.length() / brakePower; //time required to stop in seconds
 		btScalar timeToArrive = path.length() / velocity.length(); //time to arrive based on the current path
 		if (timeToStop >= timeToArrive) { //You ever just write something so simple that you don't understand why it was such a PITA to get correct?
-			body->applyCentralImpulse(getForceToStopLinearVelocity(body, ship) * dt);
+
+			ship->moves[SHIP_STOP_VELOCITY] = true;
 		}
 		else {
-			body->applyCentralImpulse(getForceForward(body, ship) * dt);
+			ship->moves[SHIP_THRUST_FORWARD] = true;
 		}
 	}
 }

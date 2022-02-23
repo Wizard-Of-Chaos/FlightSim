@@ -34,7 +34,7 @@ const f32 DEFAULT_YAW_THRUST = 80.f;
 const f32 DEFAULT_ROLL_THRUST = 45.f;
 
 struct ShipComponent {
-	unsigned int hardpointCount;
+	u32 hardpointCount;
 	vector3df hardpoints[MAX_HARDPOINTS];
 	EntityId weapons[MAX_HARDPOINTS];
 
@@ -45,6 +45,9 @@ struct ShipComponent {
 	f32 pitchThrust;
 	f32 yawThrust;
 	f32 rollThrust;
+
+	f32 curPitch;
+	f32 curYaw;
 
 	bool moves[SHIP_MAX_MOVEMENTS];
 

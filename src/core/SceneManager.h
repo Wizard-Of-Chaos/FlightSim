@@ -11,7 +11,7 @@
 #include "WeaponFiringSystem.h"
 #include "CollisionCheckingSystem.h"
 #include "SensorUpdateSystem.h"
-#include "ShipParticleSystem.h"
+#include "ShipUpdateSystem.h"
 #include "AIUpdateSystem.h"
 #include "HealthSystem.h"
 #include "GameDefaults.h"

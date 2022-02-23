@@ -100,7 +100,7 @@
     <ClCompile Include="src\utilities\AttributeReaders.cpp">
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="src\systems\ShipParticleSystem.cpp">
+    <ClCompile Include="src\systems\ShipUpdateSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
   </ItemGroup>
@@ -243,7 +243,7 @@
     <ClInclude Include="src\utilities\AttributeReaders.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\ShipParticleSystem.h">
+    <ClInclude Include="src\systems\ShipUpdateSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
   </ItemGroup>

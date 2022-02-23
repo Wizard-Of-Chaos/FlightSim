@@ -86,7 +86,7 @@ btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship);
 
 //Returns the torque to kick the ship in the direction of the given vector.
-btVector3 getTorqueToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
+void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
 
 //Combines torque and opposing torque to try and smoothly turn towards the direction.
 void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt);

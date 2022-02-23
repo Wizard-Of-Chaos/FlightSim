@@ -72,6 +72,8 @@ bool loadShip(std::string path, EntityId id, SceneManager* manager)
 		ship->rightJetPos[i] = strToVec(in.values[val]);
 	}
 
+	ship->curPitch = 0;
+	ship->curYaw = 0;
 	return true;
 }
 

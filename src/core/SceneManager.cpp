@@ -5,8 +5,8 @@
 void SceneManager::update(f32 time, f32 frameDelta)
 {
 	dt = time;
-	shipControlSystem(scene, dt); //updates impulses based on player input
-	shipParticleSystem(scene, dt); //hits the jets on a given ship
+	shipControlSystem(scene, dt); //updates ship control scheme
+	shipUpdateSystem(scene, dt); //applies forces, applies particle effects on ships
 	AIUpdateSystem(this, dt); //updates AI components
 	weaponFiringSystem(this, dt); //fires guns
 	bulletWorld->stepSimulation(dt, 60); //applies the PHYSICS
