@@ -107,6 +107,7 @@ void GameController::initDefaultScene()
 	initializeDefaultHealth(&sceneECS, playerId);
 	initializeDefaultSensors(&sceneECS, playerId);
 	initializeDefaultHUD(&sceneECS, playerId);
+	initializeShipParticles(&sceneECS, playerId);
 
 	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40));
 	initializeDefaultRigidBody(&sceneECS, roidId);
@@ -115,10 +116,12 @@ void GameController::initDefaultScene()
 	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
 	initializeHostileFaction(&sceneECS, aiId);
 	initializeDefaultSensors(&sceneECS, aiId);
+	initializeShipParticles(&sceneECS, aiId);
 
 	EntityId friendlyId = createDefaultAIShip(&sceneECS, vector3df(100, 15, 40));
 	initializePlayerFaction(&sceneECS, friendlyId);
 	initializeDefaultSensors(&sceneECS, friendlyId);
+	initializeShipParticles(&sceneECS, friendlyId);
 
 	//make the light node an entity as well
 	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 5000, 0),

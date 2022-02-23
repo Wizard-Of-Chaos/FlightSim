@@ -49,6 +49,7 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultContactTexture = driver->getTexture("hud/contact.png");
 	manager->defaults.defaultContactMarkerTexture = driver->getTexture("hud/contactmarker.png");
 	manager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
+	manager->defaults.defaultJetTexture = driver->getTexture("effects/smokejet.png");
 }
 
 void initializeNeutralFaction(SceneManager* manager, EntityId id)
@@ -367,4 +368,41 @@ EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
 	ai->timeSinceLastStateCheck = 0;
 
 	return id;
+}
+
+IParticleSystemSceneNode* createShipJet(SceneManager* manager, ISceneNode* node, vector3df pos, vector3df dir)
+{
+	ISceneManager* smgr = manager->controller->smgr;
+
+	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(true, node);
+	IParticleEmitter* em = ps->createSphereEmitter(
+		pos, .1f, dir * .02f,
+		0, 0, SColor(255, 180, 180, 180), SColor(255, 210, 210, 210),
+		50, 200, 2, dimension2df(.05f, .05f), dimension2df(.15f, .15f)
+	);
+	ps->setEmitter(em);
+	em->drop();
+
+	IParticleAffector* paf = ps->createFadeOutParticleAffector();
+	ps->addAffector(paf);
+	paf->drop();
+	ps->setMaterialFlag(EMF_LIGHTING, false);
+	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	ps->setMaterialTexture(0, manager->defaults.defaultJetTexture);
+	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	return ps;
+}
+
+void initializeShipParticles(SceneManager* manager, EntityId id)
+{
+	auto ship = manager->scene.get<ShipComponent>(id);
+	auto irr = manager->scene.get<IrrlichtComponent>(id);
+
+	for (u32 i = 0; i < 2; ++i) {
+		ship->upJetEmit[i] = createShipJet(manager, irr->node, ship->upJetPos[i], getNodeUp(irr->node));
+		ship->downJetEmit[i] = createShipJet(manager, irr->node, ship->downJetPos[i], getNodeDown(irr->node));
+		ship->leftJetEmit[i] = createShipJet(manager, irr->node, ship->leftJetPos[i], getNodeLeft(irr->node));
+		ship->rightJetEmit[i] = createShipJet(manager, irr->node, ship->rightJetPos[i], getNodeRight(irr->node));
+	}
 }

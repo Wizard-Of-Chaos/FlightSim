@@ -177,7 +177,8 @@
     <ClCompile Include="src\systems\ProjectileSystem.cpp" />
     <ClCompile Include="src\core\SceneManager.cpp" />
     <ClCompile Include="src\systems\SensorUpdateSystem.cpp" />
-    <ClCompile Include="src\systems\ShipMovementSystem.cpp" />
+    <ClCompile Include="src\systems\ShipControlSystem.cpp" />
+    <ClCompile Include="src\systems\ShipParticleSystem.cpp" />
     <ClCompile Include="src\systems\WeaponFiringSystem.cpp" />
     <ClCompile Include="src\utilities\AttributeReaders.cpp" />
     <ClCompile Include="src\utilities\Config.cpp" />
@@ -223,7 +224,8 @@
     <ClInclude Include="src\core\SceneManager.h" />
     <ClInclude Include="src\components\ShipComponent.h" />
     <ClInclude Include="src\systems\SensorUpdateSystem.h" />
-    <ClInclude Include="src\systems\ShipMovementSystem.h" />
+    <ClInclude Include="src\systems\ShipControlSystem.h" />
+    <ClInclude Include="src\systems\ShipParticleSystem.h" />
     <ClInclude Include="src\systems\WeaponFiringSystem.h" />
     <ClInclude Include="src\components\WeaponInfoComponent.h" />
     <ClInclude Include="src\utilities\AttributeReaders.h" />

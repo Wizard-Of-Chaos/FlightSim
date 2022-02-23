@@ -68,4 +68,8 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId);
 //Adds sensors to the given entity with default values. Requires an irrlicht component and a faction component.
 void initializeDefaultSensors(SceneManager* manager, EntityId id);
 
+IParticleSystemSceneNode* createShipJet(SceneManager* manager, ISceneNode* node, vector3df pos, vector3df dir);
+//Adds the particle system to a given ship.
+void initializeShipParticles(SceneManager* manager, EntityId id);
+
 #endif

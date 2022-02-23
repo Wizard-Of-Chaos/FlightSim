@@ -58,7 +58,7 @@
     <ClCompile Include="src\core\SceneManager.cpp">
       <Filter>Sources\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\systems\ShipMovementSystem.cpp">
+    <ClCompile Include="src\systems\ShipControlSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp">
@@ -99,6 +99,9 @@
     </ClCompile>
     <ClCompile Include="src\utilities\AttributeReaders.cpp">
       <Filter>Sources\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\ShipParticleSystem.cpp">
+      <Filter>Sources\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,7 +192,7 @@
     <ClInclude Include="src\components\ShipComponent.h">
       <Filter>Headers\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\ShipMovementSystem.h">
+    <ClInclude Include="src\systems\ShipControlSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\utilities\ShipMovementUtils.h">
@@ -239,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="src\utilities\AttributeReaders.h">
       <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ShipParticleSystem.h">
+      <Filter>Headers\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

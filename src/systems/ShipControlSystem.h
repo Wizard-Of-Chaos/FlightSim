@@ -11,6 +11,6 @@
 #include "ShipMovementUtils.h"
 #include "ShipComponent.h"
 
-void shipMovementSystem(Scene& scene, f32 dt);
+void shipControlSystem(Scene& scene, f32 dt);
 
 #endif
