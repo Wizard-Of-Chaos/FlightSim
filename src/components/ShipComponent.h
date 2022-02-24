@@ -59,6 +59,10 @@ struct ShipComponent {
 	IParticleSystemSceneNode* leftJetEmit[2];
 	vector3df rightJetPos[2];
 	IParticleSystemSceneNode* rightJetEmit[2];
+	vector3df reverseJetPos[2];
+	IParticleSystemSceneNode* reverseJetEmit[2];
+	vector3df engineJetPos;
+	IParticleSystemSceneNode* engineJetEmit;
 
 };
 

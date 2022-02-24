@@ -17,6 +17,7 @@ struct GameDefaults
 	ITexture* defaultContactMarkerTexture;
 	ITexture* defaultHealthBarTexture;
 	ITexture* defaultJetTexture;
+	ITexture* defaultEngineJetTexture;
 };
 
 #endif

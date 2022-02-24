@@ -50,6 +50,7 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultContactMarkerTexture = driver->getTexture("hud/contactmarker.png");
 	manager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
 	manager->defaults.defaultJetTexture = driver->getTexture("effects/smokejet.png");
+	manager->defaults.defaultEngineJetTexture = driver->getTexture("effects/tuxengine.png");
 }
 
 void initializeNeutralFaction(SceneManager* manager, EntityId id)
@@ -375,10 +376,11 @@ IParticleSystemSceneNode* createShipJet(SceneManager* manager, ISceneNode* node,
 	ISceneManager* smgr = manager->controller->smgr;
 
 	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(true, node);
+	ps->setID(ID_IsNotSelectable);
 	IParticleEmitter* em = ps->createSphereEmitter(
 		pos, .1f, dir * .02f,
 		0, 0, SColor(255, 180, 180, 180), SColor(255, 210, 210, 210),
-		50, 200, 2, dimension2df(.05f, .05f), dimension2df(.15f, .15f)
+		50, 200, 2, dimension2df(.2f, .2f), dimension2df(.35f, .35f)
 	);
 	ps->setEmitter(em);
 	em->drop();
@@ -404,5 +406,29 @@ void initializeShipParticles(SceneManager* manager, EntityId id)
 		ship->downJetEmit[i] = createShipJet(manager, irr->node, ship->downJetPos[i], getNodeDown(irr->node));
 		ship->leftJetEmit[i] = createShipJet(manager, irr->node, ship->leftJetPos[i], getNodeLeft(irr->node));
 		ship->rightJetEmit[i] = createShipJet(manager, irr->node, ship->rightJetPos[i], getNodeRight(irr->node));
+		ship->reverseJetEmit[i] = createShipJet(manager, irr->node, ship->reverseJetPos[i], getNodeForward(irr->node));
 	}
+	ship->engineJetEmit = manager->controller->smgr->addParticleSystemSceneNode(true, irr->node);
+	ship->engineJetEmit->setID(ID_IsNotSelectable);
+	auto em = ship->engineJetEmit->createSphereEmitter(
+		ship->engineJetPos, .6f, getNodeBackward(irr->node) * .002f,
+		100, 300, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+		50, 200, 1, dimension2df(1.2f, 1.2f), dimension2df(1.4f, 1.4f));
+	ship->engineJetEmit->setEmitter(em);
+	em->drop();
+	IParticleAffector* paf = ship->engineJetEmit->createFadeOutParticleAffector();
+	ship->engineJetEmit->addAffector(paf);
+	paf->drop();
+	ship->engineJetEmit->setMaterialFlag(EMF_LIGHTING, false);
+	ship->engineJetEmit->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	ship->engineJetEmit->setMaterialTexture(0, manager->defaults.defaultEngineJetTexture);
+	ship->engineJetEmit->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	auto engine = manager->controller->smgr->addLightSceneNode(irr->node, ship->engineJetPos, SColorf(0.f, 1.f, 0.f), 1.3f);
+	auto bill = manager->controller->smgr->addBillboardSceneNode(engine, dimension2df(2.f, 2.f));
+	engine->setID(ID_IsNotSelectable);
+	bill->setID(ID_IsNotSelectable);
+	bill->setMaterialTexture(0, manager->defaults.defaultEngineJetTexture);
+	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+	bill->setMaterialFlag(EMF_LIGHTING, false);
 }

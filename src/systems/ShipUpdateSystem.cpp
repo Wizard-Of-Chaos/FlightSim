@@ -1,19 +1,32 @@
 #include "ShipUpdateSystem.h"
 
-void turnOnJets(IParticleEmitter* jet1, IParticleEmitter* jet2)
+
+void jetOn(IParticleEmitter* jet)
 {
-	jet1->setMaxParticlesPerSecond(800);
-	jet1->setMinParticlesPerSecond(500);
-	jet2->setMaxParticlesPerSecond(800);
-	jet2->setMinParticlesPerSecond(500);
+	jet->setMaxParticlesPerSecond(150);
+	jet->setMinParticlesPerSecond(50);
+}
+void jetOff(IParticleEmitter* jet)
+{
+	jet->setMaxParticlesPerSecond(0);
+	jet->setMinParticlesPerSecond(0);
+}
+void jetPairOn(IParticleEmitter* jet1, IParticleEmitter* jet2)
+{
+	jetOn(jet1);
+	jetOn(jet2);
 }
 
-void turnOffJets(IParticleEmitter* jet1, IParticleEmitter* jet2)
+void jetPairOff(IParticleEmitter* jet1, IParticleEmitter* jet2)
 {
-	jet1->setMaxParticlesPerSecond(0);
-	jet1->setMinParticlesPerSecond(0);
-	jet2->setMaxParticlesPerSecond(0);
-	jet2->setMinParticlesPerSecond(0);
+	jetOff(jet1);
+	jetOff(jet2);
+}
+
+void setPairDir(IParticleEmitter* jet1, IParticleEmitter* jet2, vector3df dir)
+{
+	jet1->setDirection(dir * .02f);
+	jet2->setDirection(dir * .02f);
 }
 
 void shipUpdateSystem(Scene& scene, f32 dt)
@@ -35,41 +48,45 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		IParticleEmitter* left2 = ship->leftJetEmit[1]->getEmitter();
 		IParticleEmitter* right1 = ship->rightJetEmit[0]->getEmitter();
 		IParticleEmitter* right2 = ship->rightJetEmit[1]->getEmitter();
+		IParticleEmitter* back1 = ship->reverseJetEmit[0]->getEmitter();
+		IParticleEmitter* back2 = ship->reverseJetEmit[1]->getEmitter();
+		IParticleEmitter* engine = ship->engineJetEmit->getEmitter();
 
-		up1->setDirection(getNodeUp(irr->node) * .02f);
-		up2->setDirection(getNodeUp(irr->node) * .02f);
-		down1->setDirection(getNodeDown(irr->node) * .02f);
-		down2->setDirection(getNodeDown(irr->node) * .02f);
-		left1->setDirection(getNodeLeft(irr->node) * .02f);
-		left2->setDirection(getNodeLeft(irr->node) * .02f);
-		right1->setDirection(getNodeRight(irr->node) * .02f);
-		right2->setDirection(getNodeRight(irr->node) * .02f);
+		setPairDir(up1, up2, getNodeUp(irr->node));
+		setPairDir(down1, down2, getNodeDown(irr->node));
+		setPairDir(left1, left2, getNodeLeft(irr->node));
+		setPairDir(right1, right2, getNodeRight(irr->node));
+		setPairDir(back1, back2, getNodeForward(irr->node));
+		engine->setDirection(getNodeBackward(irr->node) * .02f);
 
-		turnOffJets(up1, up2);
-		turnOffJets(down1, down2);
-		turnOffJets(left1, left2);
-		turnOffJets(right1, right2);
+		jetPairOff(up1, up2);
+		jetPairOff(down1, down2);
+		jetPairOff(left1, left2);
+		jetPairOff(right1, right2);
+		jetPairOff(back1, back2);
+		//jetOff(engine);
 
 		if (ship->moves[SHIP_STRAFE_DOWN]) {
-			turnOnJets(up1, up2);
+			jetPairOn(up1, up2);
 			force += getForceDown(body, ship);
 		}
 		if (ship->moves[SHIP_STRAFE_UP]) {
-			turnOnJets(down1, down2);
+			jetPairOn(down1, down2);
 			force += getForceUp(body, ship);
 		}
 		if (ship->moves[SHIP_STRAFE_LEFT]) {
-			turnOnJets(right1, right2);
+			jetPairOn(right1, right2);
 			force += getForceLeft(body, ship);
 		}
 		if (ship->moves[SHIP_STRAFE_RIGHT]) {
-			turnOnJets(left1, left2);
+			jetPairOn(left1, left2);
 			force += getForceRight(body, ship);
 		}
 		if (ship->moves[SHIP_THRUST_FORWARD]) {
 			force += getForceForward(body, ship);
 		}
 		if (ship->moves[SHIP_STRAFE_BACKWARD]) {
+			jetPairOn(back1, back2);
 			force += getForceBackward(body, ship);
 		}
 
@@ -79,19 +96,19 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		if (ship->curYaw > 0 || ship->curYaw < 0) pitchSensitivity = ship->curYaw * .5f;
 
 		if (ship->moves[SHIP_PITCH_UP]) {
-			turnOnJets(down2, up1);
+			jetPairOn(down2, up1);
 			torque += getTorquePitchUp(body, ship) * pitchSensitivity;
 		}
 		if (ship->moves[SHIP_PITCH_DOWN]) {
-			turnOnJets(down1, up2);
+			jetPairOn(down1, up2);
 			torque += getTorquePitchDown(body, ship) * pitchSensitivity;
 		}
 		if (ship->moves[SHIP_YAW_LEFT]) {
-			turnOnJets(right2, left1);
+			jetPairOn(right2, left1);
 			torque += getTorqueYawLeft(body, ship) * yawSensitivity;
 		}
 		if (ship->moves[SHIP_YAW_RIGHT]) {
-			turnOnJets(right1, left2);
+			jetPairOn(right1, left2);
 			torque += getTorqueYawRight(body, ship) * yawSensitivity;
 		}
 		if (ship->moves[SHIP_ROLL_LEFT]) {

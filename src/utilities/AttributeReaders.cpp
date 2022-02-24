@@ -71,6 +71,11 @@ bool loadShip(std::string path, EntityId id, SceneManager* manager)
 		val = "rightJetPos" + std::to_string(i);
 		ship->rightJetPos[i] = strToVec(in.values[val]);
 	}
+	for (u32 i = 0; i < 2; ++i) {
+		val = "reverseJetPos" + std::to_string(i);
+		ship->reverseJetPos[i] = strToVec(in.values[val]);
+	}
+	ship->engineJetPos = strToVec(in.values["engineJetPos"]);
 
 	ship->curPitch = 0;
 	ship->curYaw = 0;
