@@ -32,6 +32,7 @@ void weaponFiringSystem(SceneManager* manager, f32 dt)
 		vector3df spawnPos = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
 
 		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
+			manager->controller->soundEngine->play3D(manager->defaults.defaultLaserSound, spawnPos);
 			createProjectileEntity(manager, spawnPos, getNodeForward(irrComp->node), entityId);
 			wepInfo->timeSinceLastShot = 0.f;
 		}

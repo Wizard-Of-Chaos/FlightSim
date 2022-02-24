@@ -49,6 +49,8 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 
 		//HUD work
 		hudUpdate(manager, player, entityId);
+
+		manager->controller->soundEngine->setListenerPosition(player->camera->getAbsolutePosition(), getNodeForward(player->camera), vec3df(0, 0, 0), getNodeUp(player->camera));
 	}
 }
 
