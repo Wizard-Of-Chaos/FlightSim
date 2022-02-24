@@ -24,7 +24,7 @@ void GameStateController::init()
 	state = GAME_MENUS;
 
 	soundEngine = createIrrKlangDevice();
-	soundEngine->play2D("audio/music/space_boogaloo.mp3", true);
+	soundEngine->play2D("audio/music/space_boogaloo.ogg", true);
 	gameController = new GameController(this);
 
 	guiController = new GuiController(this);

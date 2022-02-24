@@ -38,6 +38,7 @@ void setDefaults(SceneManager* manager)
 {
 	ISceneManager* smgr = manager->controller->smgr;
 	IVideoDriver* driver = manager->controller->driver;
+	ISoundEngine* sndeng = manager->controller->soundEngine;
 
 	manager->defaults.defaultShipMesh = smgr->getMesh("models/tux/Tux.obj");
 	manager->defaults.defaultShipTexture = driver->getTexture("models/tux/BulletShipTex.png");
@@ -51,6 +52,10 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
 	manager->defaults.defaultJetTexture = driver->getTexture("effects/smokejet.png");
 	manager->defaults.defaultEngineJetTexture = driver->getTexture("effects/tuxengine.png");
+	manager->defaults.defaultJetSoundLoop = sndeng->getSoundSource("audio/jetthrust.ogg");
+	manager->defaults.defaultMusic = sndeng->getSoundSource("audio/music/space_boogaloo.ogg");
+	manager->defaults.defaultEngineSoundLoop = sndeng->getSoundSource("audio/engineloop.ogg");
+	manager->defaults.defaultLaserSound = sndeng->getSoundSource("audio/laser_shoot.ogg");
 }
 
 void initializeNeutralFaction(SceneManager* manager, EntityId id)

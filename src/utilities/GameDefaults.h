@@ -18,6 +18,10 @@ struct GameDefaults
 	ITexture* defaultHealthBarTexture;
 	ITexture* defaultJetTexture;
 	ITexture* defaultEngineJetTexture;
+	ISoundSource* defaultLaserSound;
+	ISoundSource* defaultEngineSoundLoop;
+	ISoundSource* defaultMusic;
+	ISoundSource* defaultJetSoundLoop;
 };
 
 #endif
