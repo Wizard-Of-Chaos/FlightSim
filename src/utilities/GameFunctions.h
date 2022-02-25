@@ -11,6 +11,7 @@
 #include "ShipComponent.h"
 #include "WeaponInfoComponent.h"
 #include "FactionComponent.h"
+#include "ExplosionComponent.h"
 #include "HUDHeader.h"
 
 class SceneManager;
@@ -76,4 +77,9 @@ IParticleSystemSceneNode* createShipJet(SceneManager* manager, ISceneNode* node,
 //Adds the particle system to a given ship.
 void initializeShipParticles(SceneManager* manager, EntityId id);
 
+//Creates an explosion at the point that lasts for the duration.
+EntityId explode(SceneManager* manager, vector3df position, f32 duration);
+
+//Creates an explosion at the impact point of a projectile. Way smaller than the other one.
+EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duration);
 #endif

@@ -52,6 +52,7 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
 	manager->defaults.defaultJetTexture = driver->getTexture("effects/smokejet.png");
 	manager->defaults.defaultEngineJetTexture = driver->getTexture("effects/tuxengine.png");
+	manager->defaults.defaultExplosion = driver->getTexture("effects/kaboom.png");
 	manager->defaults.defaultJetSoundLoop = sndeng->getSoundSource("audio/jetthrust.ogg");
 	manager->defaults.defaultMusic = sndeng->getSoundSource("audio/music/space_boogaloo.ogg");
 	manager->defaults.defaultEngineSoundLoop = sndeng->getSoundSource("audio/engineloop.ogg");
@@ -436,4 +437,48 @@ void initializeShipParticles(SceneManager* manager, EntityId id)
 	bill->setMaterialTexture(0, manager->defaults.defaultEngineJetTexture);
 	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 	bill->setMaterialFlag(EMF_LIGHTING, false);
+}
+
+EntityId explode(SceneManager* manager, vector3df position, f32 duration)
+{
+	EntityId id = manager->scene.newEntity();
+	auto explodeinfo = manager->scene.assign<ExplosionComponent>(id);
+	explodeinfo->duration = duration;
+	explodeinfo->lifetime = 0;
+	explodeinfo->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
+	auto em = explodeinfo->explosion->createSphereEmitter(position, 5.f, vector3df(0.05f, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+		50, 200, 360, dimension2df(1.f, 1.f), dimension2df(10.f, 10.f));
+	explodeinfo->explosion->setEmitter(em);
+	em->drop();
+	IParticleAffector* paf = explodeinfo->explosion->createFadeOutParticleAffector(SColor(0,0,0,0),100);
+	explodeinfo->explosion->addAffector(paf);
+	paf->drop();
+	explodeinfo->explosion->setMaterialFlag(EMF_LIGHTING, false);
+	explodeinfo->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	explodeinfo->explosion->setMaterialTexture(0, manager->defaults.defaultExplosion);
+	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	return id;
+}
+
+EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duration)
+{
+	EntityId id = manager->scene.newEntity();
+	auto explodeinfo = manager->scene.assign<ExplosionComponent>(id);
+	explodeinfo->duration = duration;
+	explodeinfo->lifetime = 0;
+	explodeinfo->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
+	auto em = explodeinfo->explosion->createSphereEmitter(position, .2f, vector3df(0.01f, 0.f, 0.f), 50, 100, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+		50, 100, 360, dimension2df(1.f, 1.f), dimension2df(1.5f, 1.5f));
+	explodeinfo->explosion->setEmitter(em);
+	em->drop();
+	IParticleAffector* paf = explodeinfo->explosion->createFadeOutParticleAffector(SColor(0, 0, 0, 0), 100);
+	explodeinfo->explosion->addAffector(paf);
+	paf->drop();
+	explodeinfo->explosion->setMaterialFlag(EMF_LIGHTING, false);
+	explodeinfo->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	explodeinfo->explosion->setMaterialTexture(0, manager->defaults.defaultProjectileTexture);
+	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	return id;
 }

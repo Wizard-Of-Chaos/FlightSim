@@ -103,6 +103,9 @@
     <ClCompile Include="src\systems\ShipUpdateSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\ExplosionSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -244,6 +247,12 @@
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\ShipUpdateSystem.h">
+      <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\ExplosionComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ExplosionSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
   </ItemGroup>

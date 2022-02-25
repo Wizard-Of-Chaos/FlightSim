@@ -13,6 +13,7 @@ void SceneManager::update(f32 time, f32 frameDelta)
 	sensorUpdateSystem(this);
 	collisionCheckingSystem(this); //destroys projectiles on hit
 	updateHealthSystem(this); //updates health and removes objects with no health
+	explosionSystem(this, dt); //Handles explosion lifetimes
 	irrlichtRigidBodyPositionSystem(scene, dt); //updates position based on rigidbody state
 	projectileRangeSystem(this); //kills projectiles after they have gone a set distance
 	playerUpdateSystem(this, scene, frameDelta); //updates camera location

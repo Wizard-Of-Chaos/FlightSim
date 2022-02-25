@@ -10,6 +10,7 @@ struct GameDefaults
 	IMesh* defaultShipMesh;
 	IMesh* defaultWeaponMesh;
 	IMesh* defaultObstacleMesh;
+
 	ITexture* defaultShipTexture;
 	ITexture* defaultProjectileTexture;
 	ITexture* defaultCrosshairTexture;
@@ -19,6 +20,8 @@ struct GameDefaults
 	ITexture* defaultHealthBarTexture;
 	ITexture* defaultJetTexture;
 	ITexture* defaultEngineJetTexture;
+	ITexture* defaultExplosion;
+
 	ISoundSource* defaultLaserSound;
 	ISoundSource* defaultEngineSoundLoop;
 	ISoundSource* defaultMusic;

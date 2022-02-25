@@ -26,6 +26,9 @@ void collisionCheckingSystem(SceneManager* manager)
 		EntityId idA = getIdFromBt(objA);
 		EntityId idB = getIdFromBt(objB);
 
+		auto irrA = manager->scene.get<IrrlichtComponent>(idA);
+		auto irrB = manager->scene.get<IrrlichtComponent>(idB);
+
 		ProjectileInfoComponent* projA = nullptr;
 		ProjectileInfoComponent* projB = nullptr;
 		HealthComponent* hpA = nullptr;
@@ -45,11 +48,13 @@ void collisionCheckingSystem(SceneManager* manager)
 		if (hpA) {
 			if (projB) {
 				hpA->health -= projB->damage;
+				projectileImpact(manager, irrB->node->getPosition(), .2f);
 			} // the "else" here should be checking mass and velocity to apply damage if you bonk something super hard
 		}
 		if (hpB) {
 			if (projA) {
 				hpB->health -= projA->damage;
+				projectileImpact(manager, irrA->node->getPosition(), .2f);
 			}
 		}
 

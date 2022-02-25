@@ -13,6 +13,7 @@
 #include "SensorUpdateSystem.h"
 #include "ShipUpdateSystem.h"
 #include "AIUpdateSystem.h"
+#include "ExplosionSystem.h"
 #include "HealthSystem.h"
 #include "GameDefaults.h"
 

@@ -170,6 +170,7 @@
     <ClCompile Include="src\systems\CollisionCheckingSystem.cpp" />
     <ClCompile Include="src\core\GameController.cpp" />
     <ClCompile Include="src\core\ECS.cpp" />
+    <ClCompile Include="src\systems\ExplosionSystem.cpp" />
     <ClCompile Include="src\systems\HealthSystem.cpp" />
     <ClCompile Include="src\systems\IrrlichtRigidBodyPositionSystem.cpp" />
     <ClCompile Include="src\core\main.cpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\ExplosionComponent.h" />
     <ClInclude Include="src\components\SensorComponent.h" />
     <ClInclude Include="src\gui\GuiDeathMenu.h" />
     <ClInclude Include="src\gui\hud\HUDActiveSelection.h" />
@@ -214,6 +216,7 @@
     <ClInclude Include="src\core\GameController.h" />
     <ClInclude Include="src\core\ECS.h" />
     <ClInclude Include="src\components\HealthComponent.h" />
+    <ClInclude Include="src\systems\ExplosionSystem.h" />
     <ClInclude Include="src\systems\HealthSystem.h" />
     <ClInclude Include="src\components\InputComponent.h" />
     <ClInclude Include="src\components\IrrlichtComponent.h" />
