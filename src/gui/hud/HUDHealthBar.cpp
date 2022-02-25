@@ -38,7 +38,7 @@ void HUDHealthBar::updateElement(SceneManager* manager, EntityId playerId)
 
 	rect<s32> screenrect = player->rootHUD->getRelativePosition();
 	dimension2du newsize;
-	newsize.set((u32)hpcomp->health / hpcomp->maxHealth * 192, 64);
+	newsize.set((u32)hpcomp->health / hpcomp->maxHealth * 192, 64); //where 192 is the length of the health bar. Could be changed later
 	health->setRelativePosition(rect<s32>(position2di(0, screenrect.getHeight() - 64), newsize));
 	healthNum->setRelativePosition(rect<s32>(position2di(0, screenrect.getHeight() - 96), dimension2du(300, 24)));
 }

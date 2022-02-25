@@ -3,7 +3,7 @@
 
 int componentCounter = 0;
 
-EntityId Scene::newEntity() {
+EntityId Scene::newEntity() { //The only function that should ACTUALLY be called anywhere else
 	if (!freeEntities.empty()) {
 		EntityIndex newIndex = freeEntities.back();
 		freeEntities.pop_back();

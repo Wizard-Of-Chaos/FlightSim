@@ -9,12 +9,9 @@
 #include "BulletRigidBodyComponent.h"
 #include "ShipMovementUtils.h"
 
-using namespace irr;
-using namespace video;
-using namespace scene;
-using namespace core;
-using namespace gui;
-
+//This function allows Irrlicht and Bullet to talk to each other. It checks all entities with Bullet components and Irrlicht components
+//and makes it so that the Bullet calculations (for rotation, movement, and such) affect the Irrlicht component and makes the thing actually
+//move.
 void irrlichtRigidBodyPositionSystem(Scene& scene, f32 dt);
 
 #endif

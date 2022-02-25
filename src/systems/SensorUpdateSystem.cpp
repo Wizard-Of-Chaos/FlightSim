@@ -2,6 +2,16 @@
 #include "SceneManager.h"
 #include "GameController.h"
 
+void contactDistanceUpdate(SceneManager* manager, ISceneNode* self, EntityId contact, SensorComponent* sensor, vector3df& closestDist)
+{
+	if (contact != INVALID_ENTITY) {
+		auto irr = manager->scene.get<IrrlichtComponent>(contact);
+		if (!irr) return;
+		vector3df dist = irr->node->getPosition() - self->getPosition();
+		closestDist = dist;
+	}
+}
+
 void sensorUpdateSystem(SceneManager* manager)
 {
 	for (EntityId id : SceneView<IrrlichtComponent, SensorComponent, FactionComponent>(manager->scene)) {
@@ -23,19 +33,10 @@ void sensorUpdateSystem(SceneManager* manager)
 		vector3df closestContactDistance(0, 0, 0);
 		vector3df closestHostileDistance(0, 0, 0);
 		vector3df closestFriendlyDistance(0, 0, 0);
-
-		if (sensor->closestContact != INVALID_ENTITY) {
-			auto closeIrr = manager->scene.get<IrrlichtComponent>(sensor->closestContact);
-			if (closeIrr) closestContactDistance = closeIrr->node->getPosition() - irr->node->getPosition();
-		}
-		if (sensor->closestFriendlyContact != INVALID_ENTITY) {
-			auto closeIrr = manager->scene.get<IrrlichtComponent>(sensor->closestContact);
-			if (closeIrr) closestFriendlyDistance = closeIrr->node->getPosition() - irr->node->getPosition();
-		}
-		if (sensor->closestHostileContact != INVALID_ENTITY) {
-			auto closeIrr = manager->scene.get<IrrlichtComponent>(sensor->closestContact);
-			if (closeIrr) closestHostileDistance = closeIrr->node->getPosition() - irr->node->getPosition();
-		}
+		
+		contactDistanceUpdate(manager, irr->node, sensor->closestContact, sensor, closestContactDistance);
+		contactDistanceUpdate(manager, irr->node, sensor->closestHostileContact, sensor, closestHostileDistance);
+		contactDistanceUpdate(manager, irr->node, sensor->closestFriendlyContact, sensor, closestFriendlyDistance);
 
 		for (unsigned int i = 0; i < sensor->contacts.size(); ++i) {
 			EntityId checkId = sensor->contacts[i];
@@ -50,6 +51,7 @@ void sensorUpdateSystem(SceneManager* manager)
 
 			vector3df distance = irrCheck->node->getPosition() - irr->node->getPosition();
 
+			//Too much repetition: move into other functions like contactDistanceUpdate
 			if (distance.getLength() > sensor->detectionRadius) {
 				if (sensor->closestContact == checkId) {
 					sensor->closestContact = INVALID_ENTITY;

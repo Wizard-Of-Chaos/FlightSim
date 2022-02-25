@@ -15,7 +15,7 @@ EntityId getIdFromBt(btCollisionObject* object)
 }
 
 void collisionCheckingSystem(SceneManager* manager)
-{
+{ //This is a bit messy - find way to avoid repeating self too much with the collisions - generic function?
 	int numManifolds = manager->bulletWorld->getDispatcher()->getNumManifolds();
 
 	for (int i = 0; i < numManifolds; ++i) {

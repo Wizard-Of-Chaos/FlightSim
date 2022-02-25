@@ -39,13 +39,13 @@ void GuiController::init()
 
 std::wstring GuiController::getTaunt()
 {
-	return taunts[std::rand() % taunts.size()];
+	return taunts[std::rand() % taunts.size()]; //Pulls out a random taunt to mess with the player
 }
 
 void GuiController::menuCleanup()
 {
 	for (auto [key, val] : menus.menuDialogs) {
-		delete val;
+		delete val; //Cleans out the menus when closing itself
 	}
 }
 
@@ -54,7 +54,7 @@ void GuiController::close()
 	if (activeDialog) {
 		activeDialog->hide();
 		activeDialog = nullptr;
-	}
+	} //Doesn't actually delete anything; that's what menuCleanup is for (and guienv->clear() is called elsewhere to actually remove elements)
 }
 
 bool GuiController::OnEvent(const SEvent& event)

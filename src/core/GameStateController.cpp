@@ -21,10 +21,10 @@ void GameStateController::init()
 	device->setEventReceiver(this);
 	guienv->setUserEventReceiver(this);
 	then = device->getTimer()->getTime();
-	state = GAME_MENUS;
+	state = GAME_MENUS; //Initial state
 
 	soundEngine = createIrrKlangDevice();
-	soundEngine->play2D("audio/music/space_boogaloo.ogg", true);
+	soundEngine->play2D("audio/music/space_boogaloo.ogg", true); //Todo: call this somewhere else
 	gameController = new GameController(this);
 
 	guiController = new GuiController(this);
@@ -45,14 +45,14 @@ bool GameStateController::OnEvent(const SEvent& event)
 	if (event.EventType == EET_KEY_INPUT_EVENT) {
 		if (event.KeyInput.Key == KEY_ESCAPE && event.KeyInput.PressedDown) {
 			if (state == GAME_RUNNING) {
-				setState(GAME_PAUSED);
+				setState(GAME_PAUSED); //Overrides anything else and sets the game to paused when the escape key is hit - needs abstraction later
 			}
 			else if (state == GAME_PAUSED) {
 				setState(GAME_RUNNING);
 			}
 		}
 	}
-	switch (state) {
+	switch (state) { //Passes events to their respective controllers and tells them its THEIR problem now
 	case GAME_MENUS:
 		guiController->OnEvent(event);
 		break;
@@ -73,10 +73,10 @@ void GameStateController::setState(GAME_STATE newState)
 {
 	oldState = state;
 	state = newState;
-	stateChangeCalled = true;
+	stateChangeCalled = true; //Lets the stateController know it needs to update the state. Can be called anywhere
 }
 
-void GameStateController::stateChange()
+void GameStateController::stateChange() //Messy handler for the different states; since there aren't many it's just an if chain
 {
 	if (oldState == GAME_MENUS && state == GAME_RUNNING) {
 		guiController->close();
@@ -114,11 +114,11 @@ void GameStateController::mainLoop()
 	u32 lastFPS = -1;
 	while (device->run()) {
 		if (stateChangeCalled) {
-			stateChange();
+			stateChange(); //Updates state if the change has been called by one of the controllers
 		}
 
 		u32 now = device->getTimer()->getTime();
-		switch (state) {
+		switch (state) { //Calls updates from its controllers based on the current state
 			case GAME_MENUS:
 				guiController->update();
 				break;

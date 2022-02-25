@@ -10,6 +10,11 @@
 class SceneManager;
 class GameController;
 
+/*
+* These functions are used to load various chunks of data using the GvReader class. Can load ships, weapons, and other stuff
+* from .gdat files.
+*/
+
 //Reads a vector from a string in the manner of: 40,50,-20
 vector3df strToVec(std::string str);
 //Creates a shipcomponent and an irrlicht component on the given entity.

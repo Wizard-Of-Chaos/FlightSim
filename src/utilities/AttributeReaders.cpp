@@ -3,7 +3,7 @@
 #include "GameController.h"
 #include <iostream>
 
-vector3df strToVec(std::string str)
+vector3df strToVec(std::string str) //Turns a string to a vector, splitting on a , character
 {
 	std::string xstr, ystr, zstr;
 

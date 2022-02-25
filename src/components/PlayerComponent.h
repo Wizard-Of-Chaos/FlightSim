@@ -12,6 +12,16 @@
 class HUDElement;
 class HUDContact;
 
+/*
+* The player component stores things that are exclusive to the player and get adjusted by the player.
+* It stores the camera scene node, which allows the player to actually view the scene, the target scene node,
+* which is tied to the IrrlichtComponent of the player ship and updates to allow the camera to rotate,
+* and it stores the HUD for the player's ship. 
+
+  The HUD is represented in the hud folder, and includes things derived
+* from the base HUD element class. The HUD vector stores all HUD elements, and each HUD element has its own
+* update call. Thanks, OOP design!
+*/
 struct PlayerComponent
 {
 	ICameraSceneNode* camera;

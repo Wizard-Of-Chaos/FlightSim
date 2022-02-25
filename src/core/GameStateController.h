@@ -6,6 +6,10 @@
 #include "GameController.h"
 #include "GuiController.h"
 
+/*
+* The states the game can be in - you're in menus, the game is going, the game is paused, or you're dead and waiting to
+* return to menus.
+*/
 enum GAME_STATE
 {
 	GAME_MENUS = 0,
@@ -14,6 +18,14 @@ enum GAME_STATE
 	GAME_DEAD = 3
 };
 
+/*
+* The game state controller class holds alllll of the things required for the game to actually function properly. It is set as the
+* Irrlicht device's event receiver, and updates its various systems with the OnEvent call. It also includes the current state of the game,
+* the main loop, the ability to change states and some logic to determine how to handle those state changes.
+* 
+* It also holds both the GuiController and GameController class, used for running their respective little worlds. Init should not be called more
+* than once, like, ever.
+*/
 class GameStateController : public IEventReceiver
 {
 	public:

@@ -15,6 +15,10 @@
 
 class SceneManager;
 
+/*
+* A big file of convenience functions that are used with the game.
+*/
+
 //Sets the default meshes for objects.
 void setDefaults(SceneManager* manager);
 

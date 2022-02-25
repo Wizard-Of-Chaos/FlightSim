@@ -31,11 +31,11 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
 	line3df ray = coll->getRayFromScreenCoordinates(input->mousePixPosition, camera);
 
-	if (!manager->scene.entityInUse(activeSelection)) {
+	if (!manager->scene.entityInUse(activeSelection)) { //Check to see if the entity still exists
 		activeSelection = INVALID_ENTITY;
 	}
 
-	if (input->rightMouseDown) {
+	if (input->rightMouseDown) { //Uses the input component to hurl out a ray selecting anything in its path
 		ISceneNode* selection = coll->getSceneNodeFromRayBB(ray, ID_IsSelectable);
 		if (selection) {
 			if (selection->getID() != -1 && selection != playerIrr->node) {
@@ -64,6 +64,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 		activeSelection = INVALID_ENTITY;
 		return;
 	}
+	//Moves around the selection GUI
 	position2di selectionPos = coll->getScreenCoordinatesFrom3DPosition(irr->node->getAbsolutePosition(), camera);
 	selectionPos.X -= 64;
 	selectionPos.Y -= 64;

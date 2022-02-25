@@ -8,6 +8,7 @@
 class GuiController;
 class GameStateController;
 
+//Enum containing the IDs for buttons on the pause menu.
 enum PAUSE_MENU_BUTTONS
 {
 	PAUSEMENU_RESUME,
@@ -15,6 +16,9 @@ enum PAUSE_MENU_BUTTONS
 	PAUSEMENU_EXIT
 };
 
+/*
+* The pause menu for the game. Includes the buttons on the pause menu and logic to handle those buttons.
+*/
 class GuiPauseMenu : public GuiDialog
 {
 	public:

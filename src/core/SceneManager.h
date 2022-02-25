@@ -18,6 +18,11 @@
 
 class GameController;
 
+/*
+* The poorly-named SceneManager (seriously, Irrlicht already took that name!) manages the ECS scene. It calls the various systems
+* to update all the components in the scene, as well as holds the default textures and such for the scene. Update is called from the main
+* loop in the GameController class.
+*/
 class SceneManager {
 	public:
 		SceneManager(Scene scene, GameController* controller, btDiscreteDynamicsWorld* bulletWorld) : controller(controller), scene(scene), bulletWorld(bulletWorld) {}

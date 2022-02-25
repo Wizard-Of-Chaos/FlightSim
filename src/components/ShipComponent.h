@@ -6,6 +6,13 @@
 #include "ECS.h"
 #include <vector>
 
+/*
+* The different types of movement a ship can make.
+* Thrust forward, strafe left/right/up/down/back, and then pitch/yaw/roll.
+* It also has STOP_VELOCITY and STOP_ROTATION to get the opposing force to rotation and velocity.
+*
+* The SHIP_MAX_MOVEMENTS enum is used to create arrays for ship movement.
+*/
 enum SHIP_MOVEMENT {
 	SHIP_THRUST_FORWARD,
 	SHIP_STRAFE_BACKWARD,
@@ -24,8 +31,10 @@ enum SHIP_MOVEMENT {
 	SHIP_MAX_MOVEMENTS
 };
 
+//The maximum amount of weapons any ship can have.
 const int MAX_HARDPOINTS = 8;
 
+//Default thrust capacity for a ship.
 const f32 DEFAULT_FORWARD_THRUST = 75.f;
 const f32 DEFAULT_BRAKE_THRUST = 45.f;
 const f32 DEFAULT_STRAFE_THRUST = 20.f;
@@ -33,8 +42,21 @@ const f32 DEFAULT_PITCH_THRUST = 90.f;
 const f32 DEFAULT_YAW_THRUST = 80.f;
 const f32 DEFAULT_ROLL_THRUST = 45.f;
 
+/*
+* The ship component holds a lot of information about what a ship is.
+* It holds the amount of hardpoints, a list of positions for those hardpoints, the weapon ID for those hardpoints,
+* and the thrusts for each way the ship can move.
+* 
+* The thrusts are self explanatory. curPitch and curYaw are used in combination with mouse movement, to represent
+* where the mouse is on the screen.
+* 
+* The "moves" array holds which movements are currently triggered.
+* 
+* Finally, the vectors and emitters hold the particle effects for the different thrusts a ship can do.
+*/
 struct ShipComponent {
 	u32 hardpointCount;
+	//This and the weapons array are initialized to the maximum of 8.
 	vector3df hardpoints[MAX_HARDPOINTS];
 	EntityId weapons[MAX_HARDPOINTS];
 
@@ -49,6 +71,7 @@ struct ShipComponent {
 	f32 curPitch;
 	f32 curYaw;
 
+	//Holds the movements that the ship is currently trying to make (pitch, yaw, thrust, etc).
 	bool moves[SHIP_MAX_MOVEMENTS];
 
 	vector3df upJetPos[2];

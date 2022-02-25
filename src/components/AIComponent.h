@@ -5,6 +5,10 @@
 #include "BaseHeader.h"
 #include "ECS.h"
 
+/*
+* The different states an AI might be in. Implemented using steering behaviors in
+* the AI_Systems folder.
+*/
 const enum AI_STATE
 {
 	AI_STATE_IDLE,
@@ -20,9 +24,15 @@ const enum AI_TYPE //different ships would have different AI patterns
 	AI_TYPE_DEFAULT
 };
 
+//Default reaction time. Default is to check state once per second.
 const f32 AI_DEFAULT_REACTION_TIME = 1.f;
+//The AI will run when it is below 25% health, by default. Represented as a float.
 const f32 AI_DEFAULT_DAMAGE_TOLERANCE = .25f;
 
+//The component that controls the AI for a given AI ship.
+//Includes the type of AI, the current state of the AI, how quickly it reacts
+//(changes state), the damage point at which it will flip out, and time since
+//the last time it changed states (internal use).
 struct AIComponent
 {
 	AI_TYPE AIType;

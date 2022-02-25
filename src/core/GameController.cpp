@@ -31,8 +31,8 @@ void GameController::init()
 	bWorld->setGravity(btVector3(0, 0, 0));
 
 	Scene scene;
-	sceneECS = SceneManager(scene, this, bWorld);
-	setDefaults(&sceneECS);
+	sceneECS = SceneManager(scene, this, bWorld); //Sets up the ECS scene
+	setDefaults(&sceneECS); //Todo: this should be called somewhere else
 }
 
 void GameController::close()
@@ -56,7 +56,7 @@ void GameController::close()
 bool GameController::OnEvent(const SEvent& event)
 {
 	if (event.EventType == EET_KEY_INPUT_EVENT) {
-		for(auto entityId : SceneView<InputComponent>(sceneECS.scene)) {
+		for(auto entityId : SceneView<InputComponent>(sceneECS.scene)) { //Passes key input to the input components
 			InputComponent* input = sceneECS.scene.get<InputComponent>(entityId);
 			input->keysDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
 			if(event.KeyInput.Key == KEY_KEY_Y && !input->keysDown[KEY_KEY_Y]) {
@@ -65,7 +65,7 @@ bool GameController::OnEvent(const SEvent& event)
 		}
 	}
 	if (event.EventType == EET_MOUSE_INPUT_EVENT) {
-		for(auto entityId: SceneView<InputComponent>(sceneECS.scene)) {
+		for(auto entityId: SceneView<InputComponent>(sceneECS.scene)) { //Passes mouse input to the input components
 			InputComponent* input = sceneECS.scene.get<InputComponent>(entityId);
 			switch(event.MouseInput.Event) {
 			case EMIE_LMOUSE_PRESSED_DOWN:
@@ -93,11 +93,12 @@ bool GameController::OnEvent(const SEvent& event)
 
 	}
 	if (event.EventType == EET_GUI_EVENT) {
-		//handle GUI shit here.
+		//handle GUI events here, but there probably aren't any that the HUD itself doesn't handle
 	}
 	return false;
 }
 
+//Init for a default scene, with a player and some AI ships and obstacles. Mostly for testing.
 void GameController::initDefaultScene()
 {
 	EntityId playerId = createDefaultShip(&sceneECS, vector3df(0, 0, -50));
@@ -147,7 +148,7 @@ void GameController::update()
 {
 	u32 now = device->getTimer()->getTime();
 	f32 delta = (f32)(now - then) / 1000.f;
-	if (delta > .25) {
+	if (delta > .25) { //If the delta is too big, it's .25.
 		delta = .25;
 	}
 	then = now;

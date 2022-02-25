@@ -73,7 +73,7 @@ void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* 
 
 	quaternion desiredRot;
 	vector3df targetRotVec(0, 0, 0);
-	desiredRot.slerp(targetRot, nodeRot, player->slerpFactor*(slerp*10.f));
+	desiredRot.slerp(targetRot, nodeRot, player->slerpFactor*(slerp*10.f)); //remove the magic number here later
 	desiredRot.toEuler(targetRotVec);
 	targetRotVec *= RADTODEG;
 

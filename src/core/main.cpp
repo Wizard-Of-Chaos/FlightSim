@@ -10,7 +10,7 @@ int main()
 	config.saveConfig("gameconfig.gdat");
 	dimension2du res(config.resX, config.resY);
 	if (config.useScreenRes) {
-		IrrlichtDevice* nullDev = createDevice(EDT_NULL);
+		IrrlichtDevice* nullDev = createDevice(EDT_NULL); //Used to get the current screen res if needed
 		res = nullDev->getVideoModeList()->getDesktopResolution();
 		nullDev->drop();
 	}

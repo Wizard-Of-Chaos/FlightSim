@@ -6,7 +6,7 @@ const std::map <std::string, E_DRIVER_TYPE> drivers =
 	{"OpenGL", EDT_OPENGL}
 };
 
-GameConfig::GameConfig()
+GameConfig::GameConfig() //default configuration
 {
 	driver = EDT_DIRECT3D9;
 	fullscreen = true;

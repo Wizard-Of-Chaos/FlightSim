@@ -4,6 +4,7 @@
 
 #include "BaseHeader.h"
 
+//Holds all the default textures and sounds and meshes for the game that can be used as placeholders if you can't load your custom mesh.
 struct GameDefaults
 {
 	IMesh* defaultShipMesh;

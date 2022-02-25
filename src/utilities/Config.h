@@ -6,6 +6,10 @@
 
 const extern std::map <std::string, E_DRIVER_TYPE> drivers;
 
+/*
+* Holds the configuration for the game - things like fullscreen, the resolution, filtering, shadows, and other
+* graphics stuff.
+*/
 struct GameConfig
 {
 	GameConfig();

@@ -11,6 +11,11 @@
 class SceneManager;
 class GameController;
 
+/*
+* Holds a whole bunch of functions that are mostly used with AI to make the ship move around.
+* Also includes bullet normalized vectors and the forces to move in specific directions.
+*/
+
 //Converts a Bullet quaternion to Euler angles (in degrees).
 void QuaternionToEuler(const btQuaternion& TQuat, btVector3& TEuler);
 
@@ -85,7 +90,7 @@ btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
 //Returns the force in the opposite direction of the current linear velocity, modified by the ship's speed.
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship);
 
-//Returns the torque to kick the ship in the direction of the given vector.
+//Updates the ship's moves array to pitch and yaw towards the given direction.
 void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
 
 //Combines torque and opposing torque to try and smoothly turn towards the direction.

@@ -18,6 +18,9 @@ enum MAIN_MENU_BUTTONS
 	MAINMENU_QUIT
 };
 
+/*
+* The main menu dialog. Includes the buttons and logic to handle those buttons and start the game.
+*/
 class GuiMainMenu : public GuiDialog
 {
 	public:

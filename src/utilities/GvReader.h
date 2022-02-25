@@ -9,6 +9,11 @@
 #include <fstream>
 #include <sstream>
 
+/*
+* Reads in data from a .gdat file (or really any text file, it's not picky). Includes functions
+* to map the lines read in to a map of values (such as driver=Direct3D9), and vice versa. Will write out
+* to a given file.
+*/
 struct gvReader
 {
 	//Lines of a loaded file.

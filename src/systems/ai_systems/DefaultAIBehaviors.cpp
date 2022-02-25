@@ -13,6 +13,7 @@ void defaultIdleBehavior(SceneManager* manager, EntityId id, f32 dt)
 	force += getForceToStopLinearVelocity(&rbc->rigidBody, ship);
 	torque += getTorqueToStopAngularVelocity(&rbc->rigidBody, ship);
 
+	//slows and stops the rigid body
 	rbc->rigidBody.applyTorqueImpulse(torque * dt);
 	rbc->rigidBody.applyCentralImpulse(force * dt);
 }

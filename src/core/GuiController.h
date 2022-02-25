@@ -7,6 +7,15 @@
 
 class GameStateController;
 
+/*
+* The GUI controller handles updates for all the menus in the game (start menu, settings menu, death menu, etc).
+* It takes in events with the OnEvent call, and holds pointers to any necessary information.
+* 
+* The big thing it does is contains the active dialogs and a list of dialogs that it can run. For example, if the
+* player is currently on the main menu, the main menu will be  the active dialog. Changing menus will call setActiveDialog()
+* and other functions. It also has a list of taunts for the death screen (loaded from a text file). The event taken in
+* OnEvent gets passed down the chain to the current active dialog.
+*/
 class GuiController
 {
 	public:
@@ -31,7 +40,6 @@ class GuiController
 		GuiDialog* activeDialog;
 		MenuData menus;
 		std::vector<std::wstring> taunts;
-		//to-do list: add hookups to store the various menus as well as change the active dialog
 };
 
 #endif

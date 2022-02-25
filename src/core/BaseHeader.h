@@ -3,6 +3,10 @@
 #ifndef BASEFLIGHTHEADER_H
 #define BASEFLIGHTHEADER_H
 
+/*
+* This header holds all of the basic includes that are needed for the project.
+* When adding new files, this shoudl be the first thing you include.
+*/
 #include <irrlicht.h>
 using namespace irr;
 using namespace core;

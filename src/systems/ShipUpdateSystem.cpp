@@ -40,6 +40,7 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		btVector3 torque(0, 0, 0);
 		btVector3 force(0, 0, 0);
 
+		//Ugly looking, but all these emitters need adjusting every time the ship moves
 		IParticleEmitter* up1 = ship->upJetEmit[0]->getEmitter();
 		IParticleEmitter* up2 = ship->upJetEmit[1]->getEmitter();
 		IParticleEmitter* down1 = ship->downJetEmit[0]->getEmitter();
@@ -95,6 +96,7 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		if (ship->curPitch > 0 || ship->curPitch < 0) pitchSensitivity = ship->curPitch * .5f;
 		if (ship->curYaw > 0 || ship->curYaw < 0) pitchSensitivity = ship->curYaw * .5f;
 
+		//Updates the ship's torque based on what it's currently trying to do
 		if (ship->moves[SHIP_PITCH_UP]) {
 			jetPairOn(down2, up1);
 			torque += getTorquePitchUp(body, ship) * pitchSensitivity;
@@ -124,6 +126,7 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 			force += getForceToStopLinearVelocity(body, ship);
 		}
 
+		//Zeroes out the controls
 		for (u32 i = 0; i < SHIP_MAX_MOVEMENTS; ++i) {
 			ship->moves[i] = false;
 		}

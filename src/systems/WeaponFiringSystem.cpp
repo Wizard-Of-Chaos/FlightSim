@@ -6,7 +6,7 @@
 void weaponFiringSystem(SceneManager* manager, f32 dt)
 {
 	Scene* scene = &manager->scene;
-	for (auto entityId : SceneView<InputComponent, ShipComponent>(manager->scene)) {
+	for (auto entityId : SceneView<InputComponent, ShipComponent>(manager->scene)) { //Updates ships actually shooting from input
 		auto input = scene->get<InputComponent>(entityId);
 		auto ship = scene->get<ShipComponent>(entityId);
 		if (input->leftMouseDown) {
@@ -25,7 +25,7 @@ void weaponFiringSystem(SceneManager* manager, f32 dt)
 		}
 	}
 
-	for (auto entityId : SceneView<WeaponInfoComponent, IrrlichtComponent>(manager->scene)) {
+	for (auto entityId : SceneView<WeaponInfoComponent, IrrlichtComponent>(manager->scene)) { //If the gun is firing, update time since last shot, play a sound and make the entity
 		auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
 		auto irrComp = scene->get<IrrlichtComponent>(entityId);
 

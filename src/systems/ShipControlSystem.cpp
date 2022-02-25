@@ -2,7 +2,7 @@
 #include <iostream>
 
 void shipControlSystem(Scene& scene, f32 dt)
-{
+{ //This whole thing needs to be abstracted out to player-defined keybinds
 	for(auto entityId : SceneView<InputComponent, ShipComponent>(scene)) {
 		InputComponent* input = scene.get<InputComponent>(entityId);
 		ShipComponent* ship = scene.get<ShipComponent>(entityId);
