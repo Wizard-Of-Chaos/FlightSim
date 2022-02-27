@@ -431,6 +431,7 @@ void initializeShipParticles(SceneManager* manager, EntityId id)
 	ship->engineJetEmit->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	auto engine = manager->controller->smgr->addLightSceneNode(irr->node, ship->engineJetPos, SColorf(0.f, 1.f, 0.f), 1.3f);
+	ship->engineLight = engine;
 	auto bill = manager->controller->smgr->addBillboardSceneNode(engine, dimension2df(2.f, 2.f));
 	engine->setID(ID_IsNotSelectable);
 	bill->setID(ID_IsNotSelectable);

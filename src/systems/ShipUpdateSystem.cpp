@@ -29,6 +29,42 @@ void setPairDir(IParticleEmitter* jet1, IParticleEmitter* jet2, vector3df dir)
 	jet2->setDirection(dir * .02f);
 }
 
+void afterburnerJetOn(IParticleEmitter* engine, ILightSceneNode* light)
+{
+	engine->setMaxParticlesPerSecond(500);
+	engine->setMinParticlesPerSecond(450);
+	light->setRadius(3.f);
+}
+
+void afterburnerJetOff(IParticleEmitter* engine, ILightSceneNode* light)
+{
+	engine->setMaxParticlesPerSecond(300);
+	engine->setMinParticlesPerSecond(100);
+	light->setRadius(1.3f);
+}
+
+bool velocitySafetyCheck(f32 linVelocity, ShipComponent* ship, btVector3 velDir, btVector3 thrustDir)
+{
+	if (linVelocity >= ship->linearMaxVelocity) {
+		if (std::abs(velDir.angle(thrustDir)) * RADTODEG >= 90.f) {
+			return true;
+		}
+		return ship->safetyOverride;
+	}
+	return true;
+}
+
+bool angularSafetyCheck(f32 angVelocity, ShipComponent* ship, btVector3 velDir, btVector3 thrustDir)
+{
+	if (angVelocity >= ship->angularMaxVelocity) {
+		if (std::abs(velDir.angle(thrustDir)) * RADTODEG >= 90.f) {
+			return true;
+		}
+		return ship->safetyOverride;
+	}
+	return true;
+}
+
 void shipUpdateSystem(Scene& scene, f32 dt)
 {
 	for (auto entityId : SceneView<ShipComponent, BulletRigidBodyComponent>(scene)) {
@@ -36,6 +72,13 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		auto irr = scene.get<IrrlichtComponent>(entityId);
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
 		btRigidBody* body = &rbc->rigidBody;
+
+		f32 linVel = body->getLinearVelocity().length();
+		f32 angVel = body->getAngularVelocity().length();
+		btVector3 linDir = body->getLinearVelocity();
+		btVector3 angDir = body->getAngularVelocity();
+		velocitySafeNormalize(linDir);
+		velocitySafeNormalize(angDir);
 
 		btVector3 torque(0, 0, 0);
 		btVector3 force(0, 0, 0);
@@ -66,29 +109,40 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		jetPairOff(right1, right2);
 		jetPairOff(back1, back2);
 		//jetOff(engine);
-
-		if (ship->moves[SHIP_STRAFE_DOWN]) {
+		if (ship->moves[SHIP_STRAFE_DOWN] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyDown(body))) {
 			jetPairOn(up1, up2);
 			force += getForceDown(body, ship);
 		}
-		if (ship->moves[SHIP_STRAFE_UP]) {
+		if (ship->moves[SHIP_STRAFE_UP] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyUp(body))) {
 			jetPairOn(down1, down2);
 			force += getForceUp(body, ship);
 		}
-		if (ship->moves[SHIP_STRAFE_LEFT]) {
+		if (ship->moves[SHIP_STRAFE_LEFT] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyLeft(body))) {
 			jetPairOn(right1, right2);
 			force += getForceLeft(body, ship);
 		}
-		if (ship->moves[SHIP_STRAFE_RIGHT]) {
+		if (ship->moves[SHIP_STRAFE_RIGHT] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyRight(body))) {
 			jetPairOn(left1, left2);
 			force += getForceRight(body, ship);
 		}
-		if (ship->moves[SHIP_THRUST_FORWARD]) {
+		if (ship->moves[SHIP_THRUST_FORWARD] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyForward(body))) {
 			force += getForceForward(body, ship);
 		}
-		if (ship->moves[SHIP_STRAFE_BACKWARD]) {
+		if (ship->moves[SHIP_STRAFE_BACKWARD] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyBackward(body))) {
 			jetPairOn(back1, back2);
 			force += getForceBackward(body, ship);
+		}
+
+		bool aft = ship->moves[SHIP_AFTERBURNER];
+		if ((aft && ship->afterburnerFuel > 0) && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyForward(body))) {
+			ship->afterburnerFuel -= dt * ship->afterburnerFuelEfficiency;
+			force += getForceAfterburner(body, ship);
+		}
+		if (aft != ship->afterburnerOn && ship->afterburnerFuel > 0) {
+			if (aft) afterburnerJetOn(ship->engineJetEmit->getEmitter(), ship->engineLight);
+			else afterburnerJetOff(ship->engineJetEmit->getEmitter(), ship->engineLight);
+
+			ship->afterburnerOn = aft;
 		}
 
 		f32 pitchSensitivity = 1.f;
@@ -97,28 +151,29 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		if (ship->curYaw > 0 || ship->curYaw < 0) pitchSensitivity = ship->curYaw * .5f;
 
 		//Updates the ship's torque based on what it's currently trying to do
-		if (ship->moves[SHIP_PITCH_UP]) {
+		if (ship->moves[SHIP_PITCH_UP] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyLeft(body))) {
 			jetPairOn(down2, up1);
 			torque += getTorquePitchUp(body, ship) * pitchSensitivity;
 		}
-		if (ship->moves[SHIP_PITCH_DOWN]) {
+		if (ship->moves[SHIP_PITCH_DOWN] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyRight(body))) {
 			jetPairOn(down1, up2);
 			torque += getTorquePitchDown(body, ship) * pitchSensitivity;
 		}
-		if (ship->moves[SHIP_YAW_LEFT]) {
+		if (ship->moves[SHIP_YAW_LEFT] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyDown(body))) {
 			jetPairOn(right2, left1);
 			torque += getTorqueYawLeft(body, ship) * yawSensitivity;
 		}
-		if (ship->moves[SHIP_YAW_RIGHT]) {
+		if (ship->moves[SHIP_YAW_RIGHT] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyUp(body))) {
 			jetPairOn(right1, left2);
 			torque += getTorqueYawRight(body, ship) * yawSensitivity;
 		}
-		if (ship->moves[SHIP_ROLL_LEFT]) {
+		if (ship->moves[SHIP_ROLL_LEFT] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyForward(body))) {
 			torque += getTorqueRollLeft(body, ship);
 		}
-		if (ship->moves[SHIP_ROLL_RIGHT]) {
+		if (ship->moves[SHIP_ROLL_RIGHT] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyBackward(body))) {
 			torque += getTorqueRollRight(body, ship);
 		}
+
 		if (ship->moves[SHIP_STOP_ROTATION]) {
 			torque += getTorqueToStopAngularVelocity(body, ship);
 		}
@@ -135,5 +190,17 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 
 		rbc->rigidBody.applyTorqueImpulse(torque * dt);
 		rbc->rigidBody.applyCentralImpulse(force * dt);
+
+		auto hp = scene.get<HealthComponent>(entityId);
+		if (!hp) continue;
+
+		if (linVel > ship->linearMaxVelocity + 1.f) {
+			f32 over = linVel - ship->linearMaxVelocity;
+			hp->health -= over * ship->velocityTolerance * dt;
+		}
+		if (angVel > ship->angularMaxVelocity + .2f) {
+			f32 over = angVel - ship->angularMaxVelocity;
+			hp->health -= over * ship->velocityTolerance * dt;
+		}
 	}
 }

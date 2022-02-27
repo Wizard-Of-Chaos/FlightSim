@@ -62,6 +62,9 @@ bool GameController::OnEvent(const SEvent& event)
 			if(event.KeyInput.Key == KEY_KEY_Y && !input->keysDown[KEY_KEY_Y]) {
 				input->mouseControlEnabled = !input->mouseControlEnabled;
 			}
+			if (event.KeyInput.Key == KEY_KEY_U && !input->keysDown[KEY_KEY_U]) {
+				input->safetyOverride = !input->safetyOverride;
+			}
 		}
 	}
 	if (event.EventType == EET_MOUSE_INPUT_EVENT) {

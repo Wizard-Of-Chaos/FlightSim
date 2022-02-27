@@ -77,8 +77,17 @@ bool loadShip(std::string path, EntityId id, SceneManager* manager)
 	}
 	ship->engineJetPos = strToVec(in.values["engineJetPos"]);
 
+	ship->velocityTolerance = std::stof(in.values["velocityTolerance"]);
+	ship->linearMaxVelocity = std::stof(in.values["linearMaxVelocity"]);
+	ship->angularMaxVelocity = std::stof(in.values["angularMaxVelocity"]);
+	ship->afterburnerThrust = std::stof(in.values["afterburnerThrust"]);
+	ship->afterburnerFuel = std::stof(in.values["afterburnerFuel"]);
+	ship->afterburnerFuelEfficiency = std::stof(in.values["afterburnerFuelEfficiency"]);
+
 	ship->curPitch = 0;
 	ship->curYaw = 0;
+	ship->afterburnerOn = false;
+	ship->safetyOverride = false;
 	return true;
 }
 

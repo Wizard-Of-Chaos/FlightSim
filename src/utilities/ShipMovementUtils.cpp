@@ -47,6 +47,10 @@ btVector3 getForceForward(btRigidBody* body, ShipComponent* ship)
 {
 	return getRigidBodyForward(body) * ship->forwardThrust;
 }
+btVector3 getForceAfterburner(btRigidBody* body, ShipComponent* ship)
+{
+	return getRigidBodyForward(body) * ship->afterburnerThrust;
+}
 btVector3 getForceBackward(btRigidBody* body, ShipComponent* ship)
 {
 	return getRigidBodyBackward(body) * ship->brakeThrust;

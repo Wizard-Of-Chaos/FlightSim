@@ -19,6 +19,11 @@ void jetPairOff(IParticleEmitter* jet1, IParticleEmitter* jet2);
 //Sets the direction of a pair of emitters.
 void setPairDir(IParticleEmitter* jet1, IParticleEmitter* jet2, vector3df dir);
 
+void afterburnerJetOn(IParticleEmitter* engine, ILightSceneNode* light);
+void afterburnerJetOff(IParticleEmitter* engine, ILightSceneNode* light);
+bool velocitySafetyCheck(f32 linVelocity, ShipComponent* ship, btVector3 velDir, btVector3 thrustDir);
+bool angularSafetyCheck(f32 angVelocity, ShipComponent* ship, btVector3 velDir, btVector3 thrustDir);
+
 /*
 * Actually updates the ship component in a given scene. This function plays the audio associated with each movement,
 * updates the particle effects while moving (with the jet functions above), and applies the torques and forces from

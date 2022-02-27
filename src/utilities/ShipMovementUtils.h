@@ -47,6 +47,9 @@ btVector3 getRigidBodyDown(btRigidBody* body);
 //Gets a force in the forward direction, modified by the ship's forward thrust.
 btVector3 getForceForward(btRigidBody* body, ShipComponent* ship);
 
+//Gets an afterburner force in the ship's forward direction.
+btVector3 getForceAfterburner(btRigidBody* body, ShipComponent* ship);
+
 //Gets a force in the backward direction, modified by the ship's braking thrust.
 btVector3 getForceBackward(btRigidBody* body, ShipComponent* ship);
 

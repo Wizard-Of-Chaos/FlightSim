@@ -8,6 +8,8 @@ void shipControlSystem(Scene& scene, f32 dt)
 		ShipComponent* ship = scene.get<ShipComponent>(entityId);
 
 		//strafing
+		ship->safetyOverride = input->safetyOverride;
+
 		if(input->isKeyDown(KEY_KEY_W)) {
 			ship->moves[SHIP_THRUST_FORWARD] = true;
 		}
@@ -25,6 +27,9 @@ void shipControlSystem(Scene& scene, f32 dt)
 		}
 		if(input->isKeyDown(KEY_LCONTROL)) {
 			ship->moves[SHIP_STRAFE_DOWN] = true;
+		}
+		if (input->isKeyDown(KEY_TAB)) {
+			ship->moves[SHIP_AFTERBURNER] = true;
 		}
 
 		//rotations

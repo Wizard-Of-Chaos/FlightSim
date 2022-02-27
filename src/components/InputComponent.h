@@ -15,6 +15,7 @@
 struct InputComponent {
 	bool keysDown[KEY_KEY_CODES_COUNT];
 	bool mouseControlEnabled = false;
+	bool safetyOverride = false;
 	vector2df mousePosition;
 	position2di mousePixPosition;
 	bool leftMouseDown;
