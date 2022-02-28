@@ -18,6 +18,8 @@ struct GameDefaults
 	ITexture* defaultContactTexture;
 	ITexture* defaultContactMarkerTexture;
 	ITexture* defaultHealthBarTexture;
+	ITexture* defaultVelocityBarTexture;
+
 	ITexture* defaultJetTexture;
 	ITexture* defaultEngineJetTexture;
 	ITexture* defaultExplosion;
@@ -26,6 +28,8 @@ struct GameDefaults
 	ISoundSource* defaultEngineSoundLoop;
 	ISoundSource* defaultMusic;
 	ISoundSource* defaultJetSoundLoop;
+
+	IGUIFont* defaultHUDFont;
 };
 
 #endif

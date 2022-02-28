@@ -3,8 +3,6 @@
 #include "GameController.h"
 #include <iostream>
 #include <string>
-#include <codecvt>
-#include <sstream>
 
 HUDHealthBar::HUDHealthBar(SceneManager* manager, IGUIElement* root) : HUDElement(manager, root)
 {
@@ -12,6 +10,7 @@ HUDHealthBar::HUDHealthBar(SceneManager* manager, IGUIElement* root) : HUDElemen
 	health = manager->controller->guienv->addImage(manager->defaults.defaultHealthBarTexture, position2di(0, screenrect.getHeight()-64), root);
 	healthNum = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 96), dimension2du(300,24)),false, true, root);
 	healthNum->setOverrideColor(SColor(255, 200, 200, 200));
+	healthNum->setOverrideFont(manager->defaults.defaultHUDFont);
 	health->setScaleImage(false);
 	health->setAlignment(EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 	healthNum->setAlignment(EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
@@ -22,6 +21,7 @@ HUDHealthBar::HUDHealthBar(SceneManager* manager, IGUIElement* root) : HUDElemen
 HUDHealthBar::~HUDHealthBar()
 {
 	health->remove();
+	healthNum->remove();
 }
 
 void HUDHealthBar::updateElement(SceneManager* manager, EntityId playerId)

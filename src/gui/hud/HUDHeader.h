@@ -9,5 +9,6 @@
 #include "HUDCrosshair.h"
 #include "HUDContact.h"
 #include "HUDHealthBar.h"
+#include "HUDVelocityBar.h"
 
 #endif 
