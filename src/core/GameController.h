@@ -76,7 +76,6 @@ class GameController
 		void update();
 
 	private:
-		bool defaultsLoaded;
 		SceneManager sceneECS; 
 		u32 then;
 		f32 accumulator = 0.0f;
