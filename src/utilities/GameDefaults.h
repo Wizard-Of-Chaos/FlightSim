@@ -19,6 +19,7 @@ struct GameDefaults
 	ITexture* defaultContactMarkerTexture;
 	ITexture* defaultHealthBarTexture;
 	ITexture* defaultVelocityBarTexture;
+	ITexture* defaultFuelBarTexture;
 
 	ITexture* defaultJetTexture;
 	ITexture* defaultEngineJetTexture;

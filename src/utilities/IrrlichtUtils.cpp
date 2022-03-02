@@ -45,3 +45,10 @@ void scaleAlign(IGUIElement* elem)
 {
 	elem->setAlignment(EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE);
 }
+
+std::string fprecis(f32 num, s32 round)
+{
+	std::string ret = std::to_string(num);
+	ret.resize(ret.size() - round);
+	return ret;
+}

@@ -9,7 +9,7 @@ HUDVelocityBar::HUDVelocityBar(SceneManager* manager, IGUIElement* root) : HUDEl
 
 	IGUIEnvironment* env = manager->controller->guienv;
 	velocity = env->addImage(manager->defaults.defaultVelocityBarTexture, position2di(screen.getWidth() - 192, screen.getHeight() - 64), root);
-	position = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - (screen.getWidth()/2)-150, screen.getHeight() - 32), dimension2du(240, 32)), false, true, root);
+	position = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - (screen.getWidth()/2)-150, screen.getHeight() - 32), dimension2du(280, 32)), false, true, root);
 	velocityNum = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 96), dimension2du(192, 32)), false, true, root);
 	rotationSpeed = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 128), dimension2du(192, 32)), false, true, root);
 	overrideStatus = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 160), dimension2du(192, 32)), false, true, root);
@@ -50,17 +50,12 @@ void HUDVelocityBar::updateElement(SceneManager* manager, EntityId playerId)
 	btScalar angLen = rbc->rigidBody.getAngularVelocity().length();
 
 	std::string x, y, z;
-	x = std::to_string(pos.x());
-	y = std::to_string(pos.y());
-	z = std::to_string(pos.z());
-	x.resize(x.size() - 5);
-	y.resize(y.size() - 5);
-	z.resize(z.size() - 5);
+	x = fprecis(pos.x(), 5);
+	y = fprecis(pos.y(), 5);
+	z = fprecis(pos.z(), 5);
 
-	std::string velnum = std::to_string(velLen);
-	velnum.resize(velnum.size() - 5);
-	std::string angnum = std::to_string(angLen * RADTODEG);
-	angnum.resize(angnum.size() - 5);
+	std::string velnum = fprecis(velLen, 5);
+	std::string angnum = fprecis(angLen * RADTODEG, 5);
 	std::string overtoggle = (ship->safetyOverride) ? "OFF" : "ON";
 
 	std::string vel = "Velocity: " + velnum;
@@ -81,7 +76,7 @@ void HUDVelocityBar::updateElement(SceneManager* manager, EntityId playerId)
 	newsize.set(width, 64);
 	velocity->setRelativePosition(rect<s32>(position2di(screenrect.getWidth()-width, screenrect.getHeight() - 64), newsize));
 	velocityNum->setRelativePosition(rect<s32>(position2di(screenrect.getWidth() - 190, screenrect.getHeight() - 96), dimension2du(192, 32)));
-	position->setRelativePosition(rect<s32>(position2di((screenrect.getWidth() / 2) - 150, screenrect.getHeight() - 32), dimension2du(192, 32)));
+	position->setRelativePosition(rect<s32>(position2di((screenrect.getWidth() / 2) - 150, screenrect.getHeight() - 32), dimension2du(280, 32)));
 	rotationSpeed->setRelativePosition(rect<s32>(position2di(screenrect.getWidth() - 190, screenrect.getHeight() - 128), dimension2du(192, 32)));
 	overrideStatus->setRelativePosition(rect<s32>(position2di(screenrect.getWidth() - 190, screenrect.getHeight() - 160), dimension2du(192, 32)));
 }

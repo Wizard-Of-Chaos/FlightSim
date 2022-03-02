@@ -52,6 +52,7 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultContactMarkerTexture = driver->getTexture("hud/contactmarker.png");
 	manager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
 	manager->defaults.defaultVelocityBarTexture = driver->getTexture("hud/speed.png");
+	manager->defaults.defaultFuelBarTexture = driver->getTexture("hud/fuel.png");
 
 	manager->defaults.defaultJetTexture = driver->getTexture("effects/smokejet.png");
 	manager->defaults.defaultEngineJetTexture = driver->getTexture("effects/tuxengine.png");

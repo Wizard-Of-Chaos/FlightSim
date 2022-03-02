@@ -144,6 +144,9 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 
 			ship->afterburnerOn = aft;
 		}
+		if (ship->afterburnerFuel <= 0) {
+			afterburnerJetOff(ship->engineJetEmit->getEmitter(), ship->engineLight);
+		}
 
 		f32 pitchSensitivity = 1.f;
 		f32 yawSensitivity = 1.f;

@@ -16,6 +16,8 @@ public:
 	~HUDHealthBar() override;
 	virtual void updateElement(SceneManager* manager, EntityId playerId);
 	IGUIImage* health;
+	IGUIImage* fuel;
+	IGUIStaticText* fuelNum;
 	IGUIStaticText* healthNum;
 };
 

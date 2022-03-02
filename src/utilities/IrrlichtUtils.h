@@ -30,4 +30,7 @@ std::string idToStr(EntityId id);
 //Convenience function to call on a GUI element to force it to scale with its root node.
 void scaleAlign(IGUIElement* elem);
 
+//Convenience funtion to return a string that is a rounded float. Thank you, GUI work.
+//Chops off the last so-many digits, specified by "round".
+std::string fprecis(f32 num, s32 round);
 #endif

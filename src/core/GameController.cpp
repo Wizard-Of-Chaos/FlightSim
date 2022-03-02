@@ -32,7 +32,11 @@ void GameController::init()
 
 	Scene scene;
 	sceneECS = SceneManager(scene, this, bWorld); //Sets up the ECS scene
-	setDefaults(&sceneECS); //Todo: this should be called somewhere else
+
+	if (!defaultsLoaded) {
+		setDefaults(&sceneECS);
+		defaultsLoaded = true;
+	}
 }
 
 void GameController::close()

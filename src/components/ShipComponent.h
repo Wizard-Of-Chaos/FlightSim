@@ -80,6 +80,7 @@ struct ShipComponent {
 	f32 curYaw;
 
 	f32 afterburnerFuel;
+	f32 maxAfterburnerFuel;
 	f32 afterburnerFuelEfficiency;
 	//Holds the movements that the ship is currently trying to make (pitch, yaw, thrust, etc).
 	bool moves[SHIP_MAX_MOVEMENTS];
