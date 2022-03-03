@@ -109,6 +109,9 @@
     <ClCompile Include="src\gui\hud\HUDVelocityBar.cpp">
       <Filter>Sources\Gui\HUD</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\GuiSettingsMenu.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -260,6 +263,9 @@
     </ClInclude>
     <ClInclude Include="src\gui\hud\HUDVelocityBar.h">
       <Filter>Headers\Gui\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GuiSettingsMenu.h">
+      <Filter>Headers\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

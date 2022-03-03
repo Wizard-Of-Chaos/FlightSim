@@ -160,6 +160,7 @@
     <ClCompile Include="src\gui\GuiMainMenu.cpp" />
     <ClCompile Include="src\core\GuiController.cpp" />
     <ClCompile Include="src\core\GameStateController.cpp" />
+    <ClCompile Include="src\gui\GuiSettingsMenu.cpp" />
     <ClCompile Include="src\gui\hud\HUDActiveSelection.cpp" />
     <ClCompile Include="src\gui\hud\HUDContact.cpp" />
     <ClCompile Include="src\gui\hud\HUDCrosshair.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="src\components\ExplosionComponent.h" />
     <ClInclude Include="src\components\SensorComponent.h" />
     <ClInclude Include="src\gui\GuiDeathMenu.h" />
+    <ClInclude Include="src\gui\GuiSettingsMenu.h" />
     <ClInclude Include="src\gui\hud\HUDActiveSelection.h" />
     <ClInclude Include="src\gui\hud\HUDContact.h" />
     <ClInclude Include="src\gui\hud\HUDCrosshair.h" />

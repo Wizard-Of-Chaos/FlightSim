@@ -43,6 +43,7 @@ void GuiMainMenu::handleEvent(const SEvent& event)
 					guiController->stateController->setState(GAME_RUNNING);
 					break;
 				case MAINMENU_SETTINGS:
+					guiController->setActiveDialog(GUI_SETTINGS_MENU);
 					break;
 				case MAINMENU_QUIT:
 					guiController->device->closeDevice();

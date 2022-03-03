@@ -12,6 +12,28 @@
 * 
 * TODO: Later, this should be abstracted out so that input gets translated to player-mapped keybinds for ship movement.
 */
+
+enum INPUT {
+	IN_THRUST_FORWARDS,
+	IN_STRAFE_BACKWARDS,
+	IN_STRAFE_LEFT,
+	IN_STRAFE_RIGHT,
+	IN_STRAFE_UP,
+	IN_STRAFE_DOWN,
+	IN_AFTERBURNER,
+	IN_PITCH_UP,
+	IN_PITCH_DOWN,
+	IN_YAW_LEFT,
+	IN_YAW_RIGHT,
+	IN_ROLL_LEFT,
+	IN_ROLL_RIGHT,
+	IN_TOGGLE_SAFETY,
+	IN_PAUSE_MENU,
+	IN_TOGGLE_MOUSE,
+	IN_TOGGLE_HUD,
+	IN_TOGGLE_THROTTLE
+};
+
 struct InputComponent {
 	bool keysDown[KEY_KEY_CODES_COUNT];
 	bool mouseControlEnabled = false;
