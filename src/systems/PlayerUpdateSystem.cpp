@@ -12,15 +12,8 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		IrrlichtComponent* irrcomp = scene.get<IrrlichtComponent>(entityId);
 		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
-		InputComponent* input = scene.get<InputComponent>(entityId);
+		WeaponInfoComponent* wep = scene.get<WeaponInfoComponent>(entityId);
 		HealthComponent* hp = scene.get<HealthComponent>(entityId);
-
-		if (input->isKeyDown(KEY_KEY_O)) {
-			hp->health -= 1;
-		}
-		else if (input->isKeyDown(KEY_KEY_P) && hp->health < hp->maxHealth) {
-			hp->health += 1;
-		}
 
 		SensorComponent* sensors = scene.get<SensorComponent>(entityId);
 

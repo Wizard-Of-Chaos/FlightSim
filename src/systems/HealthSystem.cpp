@@ -10,12 +10,13 @@ void updateHealthSystem(SceneManager* manager)
 		auto hpComp = manager->scene.get<HealthComponent>(id);
 		if (hpComp->health <= 0) {
 			bool playerDead = false;
-			auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
+			auto irr = manager->scene.get<IrrlichtComponent>(id);
 			auto player = manager->scene.get<PlayerComponent>(id);
 			if (player) playerDead = true;
 
-			if (rbc) {
-				explode(manager, btVecToIrr(rbc->rigidBody.getCenterOfMassPosition()), 1.f);
+			if (irr) {
+				vector3df pos = irr->node->getAbsolutePosition();
+				explode(manager, pos, 1.f);
 			}
 			destroyObject(manager, id); //get rid of the object first, THEN change state
 			if (playerDead) {

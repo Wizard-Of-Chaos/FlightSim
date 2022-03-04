@@ -30,7 +30,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 	ICameraSceneNode* camera = player->camera;
 
 	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
-	line3df ray = coll->getRayFromScreenCoordinates(input->mousePixPosition, camera);
+	line3df ray = input->cameraRay;
 
 	if (!manager->scene.entityInUse(activeSelection)) { //Check to see if the entity still exists
 		activeSelection = INVALID_ENTITY;

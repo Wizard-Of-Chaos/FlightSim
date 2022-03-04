@@ -41,6 +41,8 @@ struct WeaponInfoComponent
 	f32 timeSinceLastShot;
 	f32 damage;
 	bool isFiring;
+	vector3df firingDirection;
+	vector3df spawnPosition;
 };
 
 //PROJECTILE ENTITIES:

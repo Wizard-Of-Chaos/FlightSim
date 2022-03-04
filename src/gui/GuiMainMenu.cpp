@@ -11,8 +11,6 @@ void GuiMainMenu::init()
 	u32 horizontalPos = baseSize.Width / 3;
 	dimension2du buttonSize(horizontalPos, verticalSlice); //third of the screen size and a sixth of the height
 
-	//Menus should set up their root node. Who knows, maybe it could be a cool background.
-	//root = guiController->guienv->addStaticText(L"MAIN", rect<s32>(position2di(0, 0), baseSize));
 	//All buttons have the root node set as the parent. This allows a single call to root->setVisible in order to display or hide the menu.
 	startGame = guiController->guienv->addButton(rect<s32>(position2di(horizontalPos, 32), buttonSize), root, MAINMENU_START, L"Start Game", L"Are you prepared to shoot rocks?");
 	settings = guiController->guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 2 + verticalSlice), buttonSize), root, MAINMENU_SETTINGS, L"Settings", L"Like we have any worthwhile settings.");

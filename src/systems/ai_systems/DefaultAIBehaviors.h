@@ -4,6 +4,7 @@
 #define DEFAULTAIBEHAVIORS_H
 #include "BaseHeader.h"
 #include "AIComponent.h"
+#include "IrrlichtComponent.h"
 #include "ECS.h"
 
 class SceneManager;

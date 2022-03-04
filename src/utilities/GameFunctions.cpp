@@ -456,7 +456,7 @@ EntityId explode(SceneManager* manager, vector3df position, f32 duration)
 	explodeinfo->duration = duration;
 	explodeinfo->lifetime = 0;
 	explodeinfo->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
-	auto em = explodeinfo->explosion->createSphereEmitter(position, 5.f, vector3df(0.05f, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+	auto em = explodeinfo->explosion->createSphereEmitter(vector3df(0,0,0), 5.f, vector3df(0.05f, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
 		50, 200, 360, dimension2df(1.f, 1.f), dimension2df(10.f, 10.f));
 	explodeinfo->explosion->setEmitter(em);
 	em->drop();
@@ -478,7 +478,7 @@ EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duratio
 	explodeinfo->duration = duration;
 	explodeinfo->lifetime = 0;
 	explodeinfo->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
-	auto em = explodeinfo->explosion->createSphereEmitter(position, .2f, vector3df(0.01f, 0.f, 0.f), 50, 100, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+	auto em = explodeinfo->explosion->createSphereEmitter(vector3df(0,0,0), .2f, vector3df(0.01f, 0.f, 0.f), 50, 100, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
 		50, 100, 360, dimension2df(1.f, 1.f), dimension2df(1.5f, 1.5f));
 	explodeinfo->explosion->setEmitter(em);
 	em->drop();

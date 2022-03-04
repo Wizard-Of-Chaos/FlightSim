@@ -1,11 +1,15 @@
 #include "ShipControlSystem.h"
+#include "SceneManager.h"
+#include "GameController.h"
 #include <iostream>
 
-void shipControlSystem(Scene& scene, f32 dt)
+void shipControlSystem(SceneManager* manager, f32 dt)
 { //This whole thing needs to be abstracted out to player-defined keybinds
-	for(auto entityId : SceneView<InputComponent, ShipComponent>(scene)) {
+	Scene& scene = manager->scene;
+	for(auto entityId : SceneView<InputComponent, ShipComponent, PlayerComponent>(scene)) {
 		InputComponent* input = scene.get<InputComponent>(entityId);
 		ShipComponent* ship = scene.get<ShipComponent>(entityId);
+		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
 
 		//strafing
 		ship->safetyOverride = input->safetyOverride;
@@ -82,5 +86,28 @@ void shipControlSystem(Scene& scene, f32 dt)
 				ship->moves[SHIP_STOP_ROTATION] = true;
 			}
 		}
+		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
+
+		if (input->leftMouseDown) {
+			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+				EntityId wep = ship->weapons[i];
+				auto wepInfo = scene.get<WeaponInfoComponent>(wep);
+				auto irrComp = scene.get<IrrlichtComponent>(wep);
+				wepInfo->isFiring = true;
+				wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
+				vector3df target = input->cameraRay.getMiddle();
+				vector3df dir = target - wepInfo->spawnPosition;
+				dir.normalize();
+				wepInfo->firingDirection = dir;
+			}
+		}
+		else {
+			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+				EntityId wep = ship->weapons[i];
+				auto wepInfo = scene.get<WeaponInfoComponent>(wep);
+				wepInfo->isFiring = false;
+			}
+		}
+
 	}
 }

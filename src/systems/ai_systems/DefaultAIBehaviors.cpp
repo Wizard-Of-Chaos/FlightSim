@@ -84,7 +84,10 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 			EntityId wep = ship->weapons[i];
 			auto wepInfo = manager->scene.get<WeaponInfoComponent>(wep);
+			auto irrComp = manager->scene.get<IrrlichtComponent>(wep);
 			wepInfo->isFiring = true;
+			wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
+			wepInfo->firingDirection = getNodeForward(irrComp->node);
 		}
 	}
 	else {

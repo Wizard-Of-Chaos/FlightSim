@@ -2,38 +2,19 @@
 #include "GameController.h"
 #include "SceneManager.h"
 #include "IrrlichtUtils.h"
+#include <iostream>
 
 void weaponFiringSystem(SceneManager* manager, f32 dt)
 {
 	Scene* scene = &manager->scene;
-	for (auto entityId : SceneView<InputComponent, ShipComponent>(manager->scene)) { //Updates ships actually shooting from input
-		auto input = scene->get<InputComponent>(entityId);
-		auto ship = scene->get<ShipComponent>(entityId);
-		if (input->leftMouseDown) {
-			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-				EntityId wep = ship->weapons[i];
-				auto wepInfo = scene->get<WeaponInfoComponent>(wep);
-				wepInfo->isFiring = true;
-			}
-		}
-		else {
-			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-				EntityId wep = ship->weapons[i];
-				auto wepInfo = scene->get<WeaponInfoComponent>(wep);
-				wepInfo->isFiring = false;
-			}
-		}
-	}
 
 	for (auto entityId : SceneView<WeaponInfoComponent, IrrlichtComponent>(manager->scene)) { //If the gun is firing, update time since last shot, play a sound and make the entity
 		auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
 		auto irrComp = scene->get<IrrlichtComponent>(entityId);
 
-		vector3df spawnPos = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
-
 		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
-			manager->controller->soundEngine->play3D(manager->defaults.defaultLaserSound, spawnPos);
-			createProjectileEntity(manager, spawnPos, getNodeForward(irrComp->node), entityId);
+			manager->controller->soundEngine->play3D(manager->defaults.defaultLaserSound, wepInfo->spawnPosition);
+			createProjectileEntity(manager, wepInfo->spawnPosition, wepInfo->firingDirection, entityId);
 			wepInfo->timeSinceLastShot = 0.f;
 		}
 		wepInfo->timeSinceLastShot += dt;

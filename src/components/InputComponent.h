@@ -40,6 +40,7 @@ struct InputComponent {
 	bool safetyOverride = false;
 	vector2df mousePosition;
 	position2di mousePixPosition;
+	line3df cameraRay;
 	bool leftMouseDown;
 	bool rightMouseDown;
 	bool isKeyDown(EKEY_CODE key) { return keysDown[key]; }
