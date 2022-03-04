@@ -17,6 +17,8 @@ void collisionCheckingSystem(SceneManager* manager);
 //Convenience function to get the ID from a bullet collision object.
 EntityId getIdFromBt(btCollisionObject* object);
 
+void projectileCollider(SceneManager* manager, EntityId projectile, EntityId impacted);
+
 //The callback used by bullet physics to determine when two things need to have collision associated with them. Doesn't do anything out
 //of the ordinary - but it will be used to make sure that a ship can't shoot itself, for example, by checking the IDs associated with
 //both the projectile entity and the ship entity.

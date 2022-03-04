@@ -14,8 +14,20 @@ EntityId getIdFromBt(btCollisionObject* object)
 	return id;
 }
 
+void projectileCollider(SceneManager* manager, EntityId projectile, EntityId impacted)
+{
+	auto hp = manager->scene.get<HealthComponent>(impacted);
+	auto proj = manager->scene.get<ProjectileInfoComponent>(projectile);
+	auto irr = manager->scene.get<IrrlichtComponent>(projectile);
+	if (hp) {
+		hp->health -= proj->damage;
+	}
+	projectileImpact(manager, irr->node->getPosition(), .2f);
+	destroyProjectile(manager, projectile);
+}
+
 void collisionCheckingSystem(SceneManager* manager)
-{ //This is a bit messy - find way to avoid repeating self too much with the collisions - generic function?
+{
 	int numManifolds = manager->bulletWorld->getDispatcher()->getNumManifolds();
 
 	for (int i = 0; i < numManifolds; ++i) {
@@ -26,44 +38,11 @@ void collisionCheckingSystem(SceneManager* manager)
 		EntityId idA = getIdFromBt(objA);
 		EntityId idB = getIdFromBt(objB);
 
-		auto irrA = manager->scene.get<IrrlichtComponent>(idA);
-		auto irrB = manager->scene.get<IrrlichtComponent>(idB);
-
-		ProjectileInfoComponent* projA = nullptr;
-		ProjectileInfoComponent* projB = nullptr;
-		HealthComponent* hpA = nullptr;
-		HealthComponent* hpB = nullptr;
-
-		if (idA != INVALID_ENTITY) {
-			projA = manager->scene.get<ProjectileInfoComponent>(idA);
-			hpA = manager->scene.get<HealthComponent>(idA);
-		}
-		
-		if (idB != INVALID_ENTITY) {
-			projB = manager->scene.get<ProjectileInfoComponent>(idB);
-			hpB = manager->scene.get<HealthComponent>(idB);
-		}
-
-		//health updates on collision
-		if (hpA) {
-			if (projB) {
-				hpA->health -= projB->damage;
-				projectileImpact(manager, irrB->node->getPosition(), .2f);
-			} // the "else" here should be checking mass and velocity to apply damage if you bonk something super hard
-		}
-		if (hpB) {
-			if (projA) {
-				hpB->health -= projA->damage;
-				projectileImpact(manager, irrA->node->getPosition(), .2f);
-			}
-		}
-
-		//projectile destruction on collision
-		if (projA) {
-			destroyProjectile(manager, idA);
-		}
-		if (projB) {
-			destroyProjectile(manager, idB);
+		if (idA != INVALID_ENTITY && idB != INVALID_ENTITY) {
+			auto projA = manager->scene.get<ProjectileInfoComponent>(idA);
+			auto projB = manager->scene.get<ProjectileInfoComponent>(idB);
+			if (projA) projectileCollider(manager, idA, idB);
+			if (projB) projectileCollider(manager, idB, idA);
 		}
 	}
 }
