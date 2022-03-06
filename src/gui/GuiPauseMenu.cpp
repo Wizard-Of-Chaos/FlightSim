@@ -15,34 +15,34 @@ void GuiPauseMenu::init()
 	scaleAlign(resumeGame);
 	scaleAlign(pauseSettings);
 	scaleAlign(exitToMenus);
+
 	resumeGame->setScaleImage(true);
 	pauseSettings->setScaleImage(true);
 	exitToMenus->setScaleImage(true);
 
+	guiController->setCallback(resumeGame, std::bind(&GuiPauseMenu::onResume, this, std::placeholders::_1));
+	guiController->setCallback(pauseSettings, std::bind(&GuiPauseMenu::onSettings, this, std::placeholders::_1));
+	guiController->setCallback(exitToMenus, std::bind(&GuiPauseMenu::onExit, this, std::placeholders::_1));
+
 	hide();
 }
 
-void GuiPauseMenu::handleEvent(const SEvent& event)
+bool GuiPauseMenu::onResume(const SEvent& event)
 {
-	switch (event.EventType) {
-	case EET_MOUSE_INPUT_EVENT:
-		break;
-	case EET_KEY_INPUT_EVENT:
-		break;
-	case EET_GUI_EVENT:
-		s32 id = event.GUIEvent.Caller->getID();
-		if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
-			switch (id) {
-			case PAUSEMENU_RESUME:
-				guiController->stateController->setState(GAME_RUNNING);
-				break;
-			case PAUSEMENU_SETTINGS:
-				break;
-			case PAUSEMENU_EXIT:
-				guiController->stateController->setState(GAME_MENUS);
-				break;
-			}
-		}
-		break;
-	}
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+
+	guiController->stateController->setState(GAME_RUNNING);
+	return false;
+}
+bool GuiPauseMenu::onSettings(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	return false;
+}
+bool GuiPauseMenu::onExit(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+
+	guiController->stateController->setState(GAME_MENUS);
+	return false;
 }

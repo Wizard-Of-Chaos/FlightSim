@@ -17,29 +17,17 @@ void GuiDeathMenu::init()
 	scaleAlign(taunt);
 
 	returnToMenu->setScaleImage(true);
+
+	GuiCallback ret = std::bind(&GuiDeathMenu::onReturn, this, std::placeholders::_1);
+	guiController->setCallback(returnToMenu, ret);
 	hide();
 }
 
-void GuiDeathMenu::handleEvent(const SEvent& event)
+bool GuiDeathMenu::onReturn(const SEvent& event)
 {
-	switch (event.EventType)
-	{
-	case EET_MOUSE_INPUT_EVENT:
-		break;
-	case EET_KEY_INPUT_EVENT:
-		break;
-	case EET_GUI_EVENT:
-		s32 id = event.GUIEvent.Caller->getID();
-		if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
-			switch (id) 
-			{
-			case DEATHMENU_RETURN:
-				taunt->setText(guiController->getTaunt().c_str());
-				guiController->stateController->setState(GAME_MENUS);
-				break;
-			default:
-				break;
-			}
-		}
-	}
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+
+	taunt->setText(guiController->getTaunt().c_str());
+	guiController->stateController->setState(GAME_MENUS);
+	return false;
 }

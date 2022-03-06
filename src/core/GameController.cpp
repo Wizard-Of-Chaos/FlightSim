@@ -39,8 +39,13 @@ void GameController::init()
 void GameController::close()
 {
 	smgr->clear();
-	guienv->clear();
-
+	for (auto id : SceneView<PlayerComponent>(sceneECS.scene)) {
+		auto player = sceneECS.scene.get<PlayerComponent>(id);
+		for (HUDElement* hud : player->HUD) {
+			delete hud;
+		}
+		player->rootHUD->remove();
+	}
 	delete broadPhase;
 	bWorld->clearObjects();
 	delete collisionConfig;

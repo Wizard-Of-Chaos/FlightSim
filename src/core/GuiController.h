@@ -4,8 +4,12 @@
 #define GUICONTROLLER_H
 #include "BaseHeader.h"
 #include "MenuData.h"
+#include <unordered_map>
+#include <functional>
 
 class GameStateController;
+
+typedef std::function<bool(const SEvent&)> GuiCallback;
 
 /*
 * The GUI controller handles updates for all the menus in the game (start menu, settings menu, death menu, etc).
@@ -36,10 +40,13 @@ class GuiController
 		void setActiveDialog(MENU_TYPE menu);
 		std::wstring getTaunt();
 
+		void setCallback(IGUIElement* elem, GuiCallback callback);
+
 	private:
 		GuiDialog* activeDialog;
 		MenuData menus;
 		std::vector<std::wstring> taunts;
+		std::unordered_map<IGUIElement*, GuiCallback> callbacks;
 };
 
 #endif

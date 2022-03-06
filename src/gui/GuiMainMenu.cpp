@@ -22,32 +22,34 @@ void GuiMainMenu::init()
 	settings->setScaleImage(true);
 	quitGame->setScaleImage(true);
 
+	GuiCallback start = std::bind(&GuiMainMenu::onStart, this, std::placeholders::_1);
+	GuiCallback set = std::bind(&GuiMainMenu::onSettings, this, std::placeholders::_1);
+	GuiCallback quit = std::bind(&GuiMainMenu::onQuit, this, std::placeholders::_1);
+	guiController->setCallback(startGame, start);
+	guiController->setCallback(settings, set);
+	guiController->setCallback(quitGame, quit);
 	hide();
 }
 
-void GuiMainMenu::handleEvent(const SEvent& event)
+bool GuiMainMenu::onStart(const SEvent& event)
 {
-	switch (event.EventType)
-	{
-		case EET_MOUSE_INPUT_EVENT:
-			break;
-		case EET_KEY_INPUT_EVENT:
-			break;
-		case EET_GUI_EVENT:
-			s32 id = event.GUIEvent.Caller->getID();
-			if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) { //important: don't forget this if statement on buttons, otherwise all of 'em will try and activate at once.
-				switch (id) {
-				case MAINMENU_START:
-					guiController->stateController->setState(GAME_RUNNING);
-					break;
-				case MAINMENU_SETTINGS:
-					guiController->setActiveDialog(GUI_SETTINGS_MENU);
-					break;
-				case MAINMENU_QUIT:
-					guiController->device->closeDevice();
-					break;
-				}
-			}
-			break;
-	}
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+
+	guiController->stateController->setState(GAME_RUNNING);
+	return false;
+
+}
+bool GuiMainMenu::onSettings(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true; 
+
+	guiController->setActiveDialog(GUI_SETTINGS_MENU);
+	return false;
+}
+bool GuiMainMenu::onQuit(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+
+	guiController->device->closeDevice();
+	return false;
 }

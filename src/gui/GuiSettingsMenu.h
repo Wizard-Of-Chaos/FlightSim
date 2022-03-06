@@ -18,10 +18,20 @@ enum SETTINGS_MENU_BUTTONS {
 class GuiSettingsMenu : public GuiDialog
 {
 	public:
-		GuiSettingsMenu(GuiController* controller) : GuiDialog(controller), filtering(0), fullscreen(0), returnToMain(0) {}
+		GuiSettingsMenu(GuiController* controller) : GuiDialog(controller) {}
 		virtual void init();
-		virtual void handleEvent(const SEvent& event);
+
 		void restartRequired();
+
+		bool onFilterSelect(const SEvent& event);
+		bool onResolutionSelect(const SEvent& event);
+		bool onCheckFullscreen(const SEvent& event);
+		bool onCheckVsync(const SEvent& event);
+		bool onCheckAliasing(const SEvent& event);
+		bool onCheckShadows(const SEvent& event);
+		bool onReturn(const SEvent& event);
+		bool onKeybinds(const SEvent& event);
+
 	private:
 		IGUIComboBox* filtering;
 		IGUIComboBox* resolution;

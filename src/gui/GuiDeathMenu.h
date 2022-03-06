@@ -21,7 +21,7 @@ class GuiDeathMenu : public GuiDialog
 	public:
 		GuiDeathMenu(GuiController* controller) : GuiDialog(controller), returnToMenu(0), taunt(0) {}
 		virtual void init();
-		virtual void handleEvent(const SEvent& event);
+		bool onReturn(const SEvent& event);
 	private:
 		IGUIButton* returnToMenu;
 		IGUIStaticText* taunt;

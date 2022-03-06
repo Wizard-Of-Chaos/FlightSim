@@ -33,4 +33,10 @@ struct GameDefaults
 	IGUIFont* defaultHUDFont;
 };
 
+struct loadedData
+{
+	std::vector<ShipComponent> loadedShips;
+	std::vector<WeaponInfoComponent> loadedWeapons;
+};
+
 #endif

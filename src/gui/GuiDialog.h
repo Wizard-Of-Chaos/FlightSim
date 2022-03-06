@@ -21,9 +21,6 @@ class GuiDialog
 		//This function MUST be implemented. How that gets done can vary.
 		//For an example, go check GuiMainMenu.h
 		virtual void init() = 0;
-		//The GUI controller passes events to the currently active dialog and lets them handle it.
-		//Such as button clicking! Or mouse movement, if you want to do something odd. This function MUST be implemented.
-		virtual void handleEvent(const SEvent& event) = 0;
 
 		//These functions show or hide the root node (and thus show or hide all the children).
 		void show();

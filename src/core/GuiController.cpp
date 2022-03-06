@@ -62,10 +62,15 @@ void GuiController::close()
 bool GuiController::OnEvent(const SEvent& event)
 {
 	//Hurls the event to the active dialog.
-	if (activeDialog) {
-		activeDialog->handleEvent(event);
+	if (activeDialog && event.EventType == EET_GUI_EVENT && callbacks.find(event.GUIEvent.Caller) != callbacks.end()) {
+		return callbacks[event.GUIEvent.Caller](event);
 	}
-	return false;
+	return true;
+}
+
+void GuiController::setCallback(IGUIElement* elem, GuiCallback callback)
+{
+	callbacks[elem] = callback;
 }
 
 void GuiController::update()

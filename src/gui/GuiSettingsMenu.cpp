@@ -36,6 +36,15 @@ void GuiSettingsMenu::init()
 	scaleAlign(restart);
 	scaleAlign(shadows);
 
+	guiController->setCallback(filtering, std::bind(&GuiSettingsMenu::onFilterSelect, this, std::placeholders::_1));
+	guiController->setCallback(fullscreen, std::bind(&GuiSettingsMenu::onCheckFullscreen, this, std::placeholders::_1));
+	guiController->setCallback(returnToMain, std::bind(&GuiSettingsMenu::onReturn, this, std::placeholders::_1));
+	guiController->setCallback(resolution, std::bind(&GuiSettingsMenu::onResolutionSelect, this, std::placeholders::_1));
+	guiController->setCallback(vsync, std::bind(&GuiSettingsMenu::onCheckVsync, this, std::placeholders::_1));
+	guiController->setCallback(antialiasing, std::bind(&GuiSettingsMenu::onCheckAliasing, this, std::placeholders::_1));
+	guiController->setCallback(keybinds, std::bind(&GuiSettingsMenu::onKeybinds, this, std::placeholders::_1));
+	guiController->setCallback(shadows, std::bind(&GuiSettingsMenu::onCheckShadows, this, std::placeholders::_1));
+
 	hide();
 }
 
@@ -45,52 +54,50 @@ void GuiSettingsMenu::restartRequired()
 	restart->setVisible(true);
 }
 
-void GuiSettingsMenu::handleEvent(const SEvent& event)
+bool GuiSettingsMenu::onFilterSelect(const SEvent& event)
 {
-	switch (event.EventType)
-	{
-	case EET_MOUSE_INPUT_EVENT:
-		break;
-	case EET_KEY_INPUT_EVENT:
-		break;
-	case EET_GUI_EVENT:
-		s32 id = event.GUIEvent.Caller->getID();
-		switch (event.GUIEvent.EventType) {
-		case EGET_BUTTON_CLICKED:
-			switch (id) {
-			case SETTINGSMENU_RETURN_TO_MAIN:
-				guiController->setActiveDialog(GUI_MAIN_MENU);
-				break;
-			case SETTINGSMENU_KEYBINDS:
-				break;
-			}
-			break;
-		case EGET_CHECKBOX_CHANGED:
-			switch (id) {
-			case SETTINGSMENU_FULLSCREEN:
-				restartRequired();
-				break;
-			case SETTINGSMENU_VSYNC:
-				restartRequired();
-				break;
-			case SETTINGSMENU_ANTIALIASING:
-				restartRequired();
-				break;
-			case SETTINGSMENU_SHADOWS:
-				restartRequired();
-				break;
-			}
-			break;
-		case EGET_COMBO_BOX_CHANGED:
-			switch (id) {
-			case SETTINGSMENU_FILTERING_BOX:
-				restartRequired();
-				break;
-			case SETTINGSMENU_RESOLUTION:
-				restartRequired();
-				break;
-			}
-			break;
-		}
-	}
+	if (event.GUIEvent.EventType != EGET_COMBO_BOX_CHANGED) return true;
+	restartRequired();
+	return false;
+}
+bool GuiSettingsMenu::onResolutionSelect(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_COMBO_BOX_CHANGED) return true;
+	restartRequired();
+	return false;
+}
+bool GuiSettingsMenu::onCheckFullscreen(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_CHECKBOX_CHANGED) return true;
+	restartRequired();
+	return false;
+}
+bool GuiSettingsMenu::onCheckVsync(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_CHECKBOX_CHANGED) return true;
+	restartRequired();
+	return false;
+}
+bool GuiSettingsMenu::onCheckAliasing(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_CHECKBOX_CHANGED) return true;
+	restartRequired();
+	return false;
+}
+bool GuiSettingsMenu::onCheckShadows(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_CHECKBOX_CHANGED) return true;
+	restartRequired();
+	return false;
+}
+bool GuiSettingsMenu::onReturn(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	guiController->setActiveDialog(GUI_MAIN_MENU);
+	return false;
+}
+bool GuiSettingsMenu::onKeybinds(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	return false;
 }

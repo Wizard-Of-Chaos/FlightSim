@@ -28,7 +28,9 @@ class GuiMainMenu : public GuiDialog
 
 		virtual void init();
 
-		virtual void handleEvent(const SEvent& event);
+		bool onStart(const SEvent& event);
+		bool onSettings(const SEvent& event);
+		bool onQuit(const SEvent& event);
 	private:
 		IGUIButton* startGame;
 		IGUIButton* settings;

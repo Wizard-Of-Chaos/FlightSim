@@ -26,7 +26,10 @@ class GuiPauseMenu : public GuiDialog
 		~GuiPauseMenu() {}
 
 		virtual void init();
-		virtual void handleEvent(const SEvent& event);
+
+		bool onResume(const SEvent& event);
+		bool onSettings(const SEvent& event);
+		bool onExit(const SEvent& exit);
 	private:
 		IGUIButton* resumeGame;
 		IGUIButton* pauseSettings;
