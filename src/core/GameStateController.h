@@ -5,6 +5,7 @@
 #include "BaseHeader.h"
 #include "GameController.h"
 #include "GuiController.h"
+#include "Config.h"
 
 /*
 * The states the game can be in - you're in menus, the game is going, the game is paused, or you're dead and waiting to
@@ -41,6 +42,9 @@ class GameStateController : public IEventReceiver
 		void init();
 		void mainLoop();
 		void setState(GAME_STATE newState);
+
+		VideoConfig videoConfig;
+
 	private:
 		void stateChange();
 		u32 then;

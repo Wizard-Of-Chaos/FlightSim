@@ -5,7 +5,7 @@
 
 int main()
 {
-	GameConfig config;
+	VideoConfig config;
 	config.loadConfig("gameconfig.gdat");
 	config.saveConfig("gameconfig.gdat");
 	dimension2du res(config.resX, config.resY);
@@ -16,6 +16,7 @@ int main()
 	}
 	IrrlichtDevice* device = createDevice(config.driver, res, 32, config.fullscreen, config.stencilBuffer, config.vsync, 0);
 	GameStateController controller(device);
+	controller.videoConfig = config;
 	controller.mainLoop();
 	device->drop();
 	return 0;

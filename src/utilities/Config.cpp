@@ -6,7 +6,7 @@ const std::map <std::string, E_DRIVER_TYPE> drivers =
 	{"OpenGL", EDT_OPENGL}
 };
 
-GameConfig::GameConfig() //default configuration
+VideoConfig::VideoConfig() //default configuration
 {
 	driver = EDT_DIRECT3D9;
 	fullscreen = true;
@@ -22,7 +22,7 @@ GameConfig::GameConfig() //default configuration
 	stencilBuffer = true;
 }
 
-void GameConfig::loadConfig(std::string filename)
+void VideoConfig::loadConfig(std::string filename)
 {
 	gvReader in;
 	in.read(filename);
@@ -44,7 +44,7 @@ void GameConfig::loadConfig(std::string filename)
 
 }
 
-void GameConfig::saveConfig(std::string filename)
+void VideoConfig::saveConfig(std::string filename)
 {
 	gvReader out;
 	std::string driverstr;
@@ -69,4 +69,34 @@ void GameConfig::saveConfig(std::string filename)
 
 	out.readValuesToLines();
 	out.write(filename);
+}
+
+KeyConfig::KeyConfig()
+{
+
+}
+
+void KeyConfig::loadConfig(std::string filename)
+{
+
+}
+
+void KeyConfig::saveConfig(std::string filename)
+{
+
+}
+
+GameConfig::GameConfig()
+{
+
+}
+
+void GameConfig::loadConfig(std::string filename)
+{
+
+}
+
+void GameConfig::saveConfig(std::string filename)
+{
+
 }
