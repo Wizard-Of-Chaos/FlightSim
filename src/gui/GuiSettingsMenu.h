@@ -3,6 +3,7 @@
 #define GUISETTINGSMENU_H
 #include "BaseHeader.h"
 #include "GuiDialog.h"
+#include "Config.h"
 
 enum SETTINGS_MENU_BUTTONS {
 	SETTINGSMENU_FILTERING_BOX,
@@ -43,5 +44,6 @@ class GuiSettingsMenu : public GuiDialog
 		IGUIButton* keybinds;
 		IGUIStaticText* restart;
 		bool restartReminder;
+		VideoConfig* vConfig;
 };
 #endif 

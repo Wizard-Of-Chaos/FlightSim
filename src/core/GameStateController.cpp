@@ -1,7 +1,7 @@
 #include "GameStateController.h"
 #include <iostream>
 
-GameStateController::GameStateController(IrrlichtDevice* dev)
+GameStateController::GameStateController(IrrlichtDevice* dev, VideoConfig vconf)
 {
 	device = dev;
 	driver = 0;
@@ -10,6 +10,7 @@ GameStateController::GameStateController(IrrlichtDevice* dev)
 	soundEngine = 0;
 	then = 0;
 	gameController = 0;
+	videoConfig = vconf;
 	init();
 }
 

@@ -1,9 +1,12 @@
 #include "GuiSettingsMenu.h"
 #include "GuiController.h"
 #include "GameStateController.h"
+#include <iostream>
 
 void GuiSettingsMenu::init()
 {
+	vConfig = &guiController->stateController->videoConfig;
+
 	u32 height = baseSize.Height / 8;
 	u32 width = baseSize.Width / 4;
 	dimension2du size(width,height);
@@ -45,6 +48,13 @@ void GuiSettingsMenu::init()
 	guiController->setCallback(keybinds, std::bind(&GuiSettingsMenu::onKeybinds, this, std::placeholders::_1));
 	guiController->setCallback(shadows, std::bind(&GuiSettingsMenu::onCheckShadows, this, std::placeholders::_1));
 
+	//std::cout << vConfig->fullscreen << std::endl;
+
+	fullscreen->setChecked(vConfig->fullscreen);
+	vsync->setChecked(vConfig->vsync);
+	antialiasing->setChecked(vConfig->antialiasing);
+	shadows->setChecked(vConfig->shadows);
+
 	hide();
 }
 
@@ -69,30 +79,36 @@ bool GuiSettingsMenu::onResolutionSelect(const SEvent& event)
 bool GuiSettingsMenu::onCheckFullscreen(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_CHECKBOX_CHANGED) return true;
+	vConfig->fullscreen = fullscreen->isChecked();
+	vConfig->useScreenRes = fullscreen->isChecked();
 	restartRequired();
 	return false;
 }
 bool GuiSettingsMenu::onCheckVsync(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_CHECKBOX_CHANGED) return true;
+	vConfig->vsync = vsync->isChecked();
 	restartRequired();
 	return false;
 }
 bool GuiSettingsMenu::onCheckAliasing(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_CHECKBOX_CHANGED) return true;
+	vConfig->antialiasing = antialiasing->isChecked();
 	restartRequired();
 	return false;
 }
 bool GuiSettingsMenu::onCheckShadows(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_CHECKBOX_CHANGED) return true;
+	vConfig->shadows = shadows->isChecked();
 	restartRequired();
 	return false;
 }
 bool GuiSettingsMenu::onReturn(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	vConfig->saveConfig("videoconfig.gdat");
 	guiController->setActiveDialog(GUI_MAIN_MENU);
 	return false;
 }

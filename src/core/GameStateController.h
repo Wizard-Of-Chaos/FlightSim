@@ -38,7 +38,7 @@ class GameStateController : public IEventReceiver
 		IGUIEnvironment* guienv;
 		ISoundEngine* soundEngine;
 
-		GameStateController(IrrlichtDevice* dev);
+		GameStateController(IrrlichtDevice* dev, VideoConfig vconf);
 		void init();
 		void mainLoop();
 		void setState(GAME_STATE newState);

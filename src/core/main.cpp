@@ -6,8 +6,8 @@
 int main()
 {
 	VideoConfig config;
-	config.loadConfig("gameconfig.gdat");
-	config.saveConfig("gameconfig.gdat");
+	config.loadConfig("videoconfig.gdat");
+	config.saveConfig("videoconfig.gdat");
 	dimension2du res(config.resX, config.resY);
 	if (config.useScreenRes) {
 		IrrlichtDevice* nullDev = createDevice(EDT_NULL); //Used to get the current screen res if needed
@@ -15,7 +15,7 @@ int main()
 		nullDev->drop();
 	}
 	IrrlichtDevice* device = createDevice(config.driver, res, 32, config.fullscreen, config.stencilBuffer, config.vsync, 0);
-	GameStateController controller(device);
+	GameStateController controller(device, config);
 	controller.videoConfig = config;
 	controller.mainLoop();
 	device->drop();
