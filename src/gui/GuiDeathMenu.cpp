@@ -18,8 +18,7 @@ void GuiDeathMenu::init()
 
 	returnToMenu->setScaleImage(true);
 
-	GuiCallback ret = std::bind(&GuiDeathMenu::onReturn, this, std::placeholders::_1);
-	guiController->setCallback(returnToMenu, ret);
+	guiController->setCallback(returnToMenu, std::bind(&GuiDeathMenu::onReturn, this, std::placeholders::_1));
 	hide();
 }
 

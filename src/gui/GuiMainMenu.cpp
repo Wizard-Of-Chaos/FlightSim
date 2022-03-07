@@ -22,12 +22,9 @@ void GuiMainMenu::init()
 	settings->setScaleImage(true);
 	quitGame->setScaleImage(true);
 
-	GuiCallback start = std::bind(&GuiMainMenu::onStart, this, std::placeholders::_1);
-	GuiCallback set = std::bind(&GuiMainMenu::onSettings, this, std::placeholders::_1);
-	GuiCallback quit = std::bind(&GuiMainMenu::onQuit, this, std::placeholders::_1);
-	guiController->setCallback(startGame, start);
-	guiController->setCallback(settings, set);
-	guiController->setCallback(quitGame, quit);
+	guiController->setCallback(startGame, std::bind(&GuiMainMenu::onStart, this, std::placeholders::_1));
+	guiController->setCallback(settings, std::bind(&GuiMainMenu::onSettings, this, std::placeholders::_1));
+	guiController->setCallback(quitGame, std::bind(&GuiMainMenu::onQuit, this, std::placeholders::_1));
 	hide();
 }
 

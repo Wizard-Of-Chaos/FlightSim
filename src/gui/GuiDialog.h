@@ -8,6 +8,7 @@
 class GuiController;
 class GameStateController;
 
+
 /*
 * The base class for all GUI dialogs. Includes a show/hide function as well as a root GUI element and a pointer to the controller.
 * All buttons and text and whatnot NEEDS to have the root GUI element as a parent, so the dialog can be shown or hidden.
