@@ -42,7 +42,6 @@ class GuiController
 
 		void setCallback(IGUIElement* elem, GuiCallback callback);
 
-
 	private:
 		GuiDialog* activeDialog;
 		MenuData menus;

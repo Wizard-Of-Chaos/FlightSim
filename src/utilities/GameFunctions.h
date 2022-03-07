@@ -44,14 +44,9 @@ void setFaction(FactionComponent* fac, FACTION_TYPE type, unsigned int hostiliti
 EntityId createDefaultShip(SceneManager* manager, vector3df position);
 //Creates a default obstacle (asteroid) at the given position. Includes health, irrlicht, and faction components. Returns the ID.
 EntityId createDefaultObstacle(SceneManager* manager, vector3df position);
-//Creates a projectile entity and shoots it in the indicated direction. Assigns information to the projectile (range, speed, etc)
-//based on the weapon that shot it. Returns the ID of the projectile.
-EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vector3df direction, EntityId weaponId);
 //Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, and health components. Returns the ID.
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position);
 
-//Removes the given projectile from the scene.
-void destroyProjectile(SceneManager* manager, EntityId projectile);
 //Removes the given object from the scene.
 void destroyObject(SceneManager* manager, EntityId id);
 
@@ -80,6 +75,4 @@ void initializeShipParticles(SceneManager* manager, EntityId id);
 //Creates an explosion at the point that lasts for the duration.
 EntityId explode(SceneManager* manager, vector3df position, f32 duration);
 
-//Creates an explosion at the impact point of a projectile. Way smaller than the other one.
-EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duration);
 #endif

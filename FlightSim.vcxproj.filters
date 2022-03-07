@@ -112,6 +112,9 @@
     <ClCompile Include="src\gui\GuiSettingsMenu.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\ProjectileUtils.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -266,6 +269,9 @@
     </ClInclude>
     <ClInclude Include="src\gui\GuiSettingsMenu.h">
       <Filter>Headers\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\ProjectileUtils.h">
+      <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,7 @@
 #include "BulletRigidBodyComponent.h"
 #include "ProjectileSystem.h"
 #include "HealthComponent.h"
+#include "ProjectileUtils.h"
 
 class SceneManager;
 
