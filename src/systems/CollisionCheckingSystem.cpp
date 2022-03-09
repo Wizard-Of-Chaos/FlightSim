@@ -55,4 +55,6 @@ bool collisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0,
 	EntityId idA = getIdFromBt(a);
 	EntityId idB = getIdFromBt(b);
 	//need to check who "owns" these entities
+
+	return false;
 }

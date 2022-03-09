@@ -44,13 +44,6 @@ std::wstring GuiController::getTaunt()
 	return taunts[std::rand() % taunts.size()]; //Pulls out a random taunt to mess with the player
 }
 
-void GuiController::menuCleanup()
-{
-	for (auto [key, val] : menus.menuDialogs) {
-		delete val; //Cleans out the menus when closing itself
-	}
-}
-
 void GuiController::close()
 {
 	if (activeDialog) {

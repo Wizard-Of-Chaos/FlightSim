@@ -23,9 +23,15 @@ using namespace irrklang;
 #ifdef _MSC_VER
 #pragma comment(lib, "Irrlicht.lib")
 
+#if _DEBUG
+#pragma comment(lib, "BulletDynamics_Debug.lib")
+#pragma comment(lib, "BulletCollision_Debug.lib")
+#pragma comment(lib, "LinearMath_Debug.lib")
+#else 
 #pragma comment(lib, "BulletDynamics.lib")
 #pragma comment(lib, "BulletCollision.lib")
 #pragma comment(lib, "LinearMath.lib")
+#endif 
 
 #pragma comment(lib, "irrKlang.lib")
 #endif

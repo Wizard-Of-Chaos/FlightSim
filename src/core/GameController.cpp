@@ -22,6 +22,8 @@ void GameController::init()
 	guienv = device->getGUIEnvironment();
 	then = device->getTimer()->getTime();
 
+	rend.setDriver(driver);
+
 	//bullet init
 	broadPhase = new btAxisSweep3(btVector3(-1000, -1000, -1000), btVector3(1000, 1000, 1000));
 	collisionConfig = new btDefaultCollisionConfiguration();
@@ -30,6 +32,7 @@ void GameController::init()
 	bWorld = new BulletPhysicsWorld(dispatcher, broadPhase, solver, collisionConfig);
 	bWorld->setGravity(btVector3(0, 0, 0));
 
+	bWorld->setDebugDrawer(&rend);
 	Scene scene;
 	sceneECS = SceneManager(scene, this, bWorld); //Sets up the ECS scene
 

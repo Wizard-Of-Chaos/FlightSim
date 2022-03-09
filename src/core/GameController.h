@@ -41,6 +41,34 @@ class BulletPhysicsWorld : public btDiscreteDynamicsWorld
 			m_predictiveManifolds.clear();
 		}
 };
+
+class btDebugRenderer : public btIDebugDraw
+{
+public:
+	void setDriver(IVideoDriver* ndriver) { driver = ndriver; }
+	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color) {
+		matrix4 id;
+		id.makeIdentity();
+		driver->setTransform(ETS_WORLD, id);
+		driver->setMaterial(SMaterial());
+		driver->draw3DLine(btVecToIrr(from), btVecToIrr(to), SColor(255,255,255,255));
+	}
+	virtual void drawContactPoint(const btVector3& pointOnB, const btVector3& normalOnB, btScalar dist, int lifeTime, const btVector3& color)
+	{
+
+	}
+	virtual void reportErrorWarning(const char* warning) {
+		printf(warning);
+	}
+	virtual void draw3dText(const btVector3& location, const char* text) {
+
+	}
+	virtual void setDebugMode(int nmode) { mode = nmode; }
+	virtual int getDebugMode() const { return mode; }
+private:
+	IVideoDriver* driver;
+	int mode;
+};
 /*
 * The GameController class holds all the necessary information about what's actually going on in the game. It has pointers to the
 * various drivers for the game (the irrlicht device, video driver, Irrlicht scene manager, ECS manager, sound engine, etc) and handles
@@ -67,6 +95,8 @@ class GameController
 		btDefaultCollisionConfiguration* collisionConfig;
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
+		
+		btDebugRenderer rend;
 
 		GameController(GameStateController* controller);
 		void init();
