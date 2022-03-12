@@ -44,6 +44,7 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultShipTexture = driver->getTexture("models/tux/BulletShipTex.png");
 	manager->defaults.defaultWeaponMesh = smgr->getMesh("models/wazer/wazer.obj");
 	manager->defaults.defaultObstacleMesh = smgr->getMesh("models/asteroid/Asteroid.obj");
+	manager->defaults.defaultMissileMesh = smgr->getMesh("models/basicmissile/Missile.obj");
 
 	manager->defaults.defaultProjectileTexture = driver->getTexture("effects/particlered.bmp");
 	manager->defaults.defaultCrosshairTexture = driver->getTexture("hud/crosshair.png");
@@ -175,7 +176,7 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	if (!shipIrr || !shipComp) return false;
 	
 	auto wepEntity = scene->newEntity();
-	loadWeapon("attributes/weapons/plasmablaster.gdat", wepEntity, manager);
+	loadWeapon("attributes/weapons/plasmablaster.gdat", wepEntity, shipId, manager);
 	auto irr = scene->get<IrrlichtComponent>(wepEntity);
 	irr->node->setParent(shipIrr->node);
 	irr->node->setPosition(shipComp->hardpoints[hardpoint]);

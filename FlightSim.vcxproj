@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\ExplosionComponent.h" />
+    <ClInclude Include="src\components\MissileComponent.h" />
     <ClInclude Include="src\components\SensorComponent.h" />
     <ClInclude Include="src\gui\GuiDeathMenu.h" />
     <ClInclude Include="src\gui\GuiSettingsMenu.h" />

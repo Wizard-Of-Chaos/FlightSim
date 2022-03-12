@@ -36,3 +36,13 @@ bool Scene::entityInUse(EntityId cachedId) {
 		return true;
 	} return false;
 }
+
+void parentUpdate(Scene& scene)
+{
+	for (auto id : SceneView<ParentComponent>(scene)) {
+		auto parent = scene.get<ParentComponent>(id);
+		if (!scene.entityInUse(parent->parentId)) {
+			parent->parentId = INVALID_ENTITY;
+		}
+	}
+}

@@ -19,10 +19,9 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	projectileInfo->range = wepInfo->range;
 	projectileInfo->damage = wepInfo->damage;
 
-	auto irrComp = scene->assign<IrrlichtComponent>(projectileEntity);
 	switch (projectileInfo->type) {
 	case WEP_PLASMA:
-		createPlasmaProjectile(manager, irrComp, wepInfo, projectileInfo, direction, spawnPos);
+		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
 		break;
 	case WEP_GRAPPLE:
 		break;
@@ -50,20 +49,31 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 
 	manager->bulletWorld->addRigidBody(&rigidBodyInfo->rigidBody);
 
+	auto parent = scene->assign<ParentComponent>(projectileEntity);
+	parent->parentId = weaponId;
+
 	return projectileEntity;
 }
 
-void createPlasmaProjectile(SceneManager* manager, IrrlichtComponent* irr, WeaponInfoComponent* wep, ProjectileInfoComponent* proj, vector3df dir, vector3df spawn)
+void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn)
 {
+	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
+
 	ISceneManager* smgr = manager->controller->smgr;
 	//this needs to be abstracted out to creating different types of node, for now it's just the laser with a crappy particle
 	irr->node = smgr->addLightSceneNode(0, spawn, SColorf(.8f, .2f, .2f), 30.f);
+	irr->name = "plasma ball";
 	ISceneNode* bill = smgr->addBillboardSceneNode(irr->node, dimension2d<f32>(3.f, 3.f));
 	bill->setMaterialFlag(EMF_LIGHTING, false);
 	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 	bill->setMaterialTexture(0, manager->defaults.defaultProjectileTexture);
 
+	irr->node->setID(ID_IsNotSelectable);
+	irr->node->setName(idToStr(projId).c_str());
+	bill->setID(ID_IsNotSelectable);
+
 	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false, irr->node);
+	ps->setID(ID_IsNotSelectable);
 	IParticleEmitter* em = ps->createSphereEmitter(ps->getPosition(), .5f, //spawn point and radius
 		(-dir * .01f), 30, 60, //direction, emit rate min/max
 		SColor(0, 100, 50, 50), SColor(0, 255, 100, 100), 500, 2000, 0, //min / max color, shortest lifetime, longest lifetime, angle
@@ -77,6 +87,15 @@ void createPlasmaProjectile(SceneManager* manager, IrrlichtComponent* irr, Weapo
 	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
 	ps->setMaterialTexture(0, manager->defaults.defaultProjectileTexture);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+}
+
+void createMissileProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn)
+{
+	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
+
+	irr->node = manager->controller->smgr->addMeshSceneNode(manager->defaults.defaultWeaponMesh, 0, ID_IsNotSelectable, spawn, vector3df(0, 0, 0), vector3df(.2f, .2f, .2f));
+	irr->name = "missile";
+	irr->node->setName(idToStr(projId).c_str());
 }
 
 void destroyProjectile(SceneManager* manager, EntityId projectile)

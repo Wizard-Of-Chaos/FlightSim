@@ -92,7 +92,7 @@ bool loadShip(std::string path, EntityId id, SceneManager* manager)
 	return true;
 }
 
-bool loadWeapon(std::string path, EntityId weaponId, SceneManager* manager)
+bool loadWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager)
 {
 	gvReader in;
 	in.read(path);
@@ -101,6 +101,9 @@ bool loadWeapon(std::string path, EntityId weaponId, SceneManager* manager)
 
 	auto wep = manager->scene.assign<WeaponInfoComponent>(weaponId);
 	auto irr = manager->scene.assign<IrrlichtComponent>(weaponId);
+	auto parent = manager->scene.assign<ParentComponent>(weaponId);
+	parent->parentId = shipId;
+
 	if (!wep || !irr) return false;
 
 	ISceneManager* smgr = manager->controller->smgr;

@@ -5,6 +5,7 @@
 void SceneManager::update(f32 time, f32 frameDelta)
 {
 	dt = time;
+	parentUpdate(scene); //checks to see whether parents are currently in use
 	shipControlSystem(this, dt); //updates ship control scheme
 	shipUpdateSystem(scene, dt); //applies forces, applies particle effects on ships
 	AIUpdateSystem(this, dt); //updates AI components

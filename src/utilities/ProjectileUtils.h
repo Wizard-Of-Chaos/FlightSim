@@ -16,7 +16,10 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 void destroyProjectile(SceneManager* manager, EntityId projectile);
 
 //Adds on the info for a plasma projectile as well as particle effects.
-void createPlasmaProjectile(SceneManager* manager, IrrlichtComponent* irr, WeaponInfoComponent* wep, ProjectileInfoComponent* proj, vector3df dir, vector3df spawn);
+void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn);
+
+void createMissileProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn);
+
 //Creates an explosion at the impact point of a projectile. Way smaller than the other one.
 EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duration);
 #endif 

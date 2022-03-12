@@ -181,4 +181,11 @@ struct SceneView
 	}
 };
 
+struct ParentComponent
+{
+	EntityId parentId;
+};
+
+void parentUpdate(Scene& scene);
+
 #endif

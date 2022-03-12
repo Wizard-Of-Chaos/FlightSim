@@ -273,6 +273,9 @@
     <ClInclude Include="src\utilities\ProjectileUtils.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\MissileComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
