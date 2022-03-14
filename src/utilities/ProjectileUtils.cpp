@@ -30,6 +30,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	case WEP_GRAPPLE:
 		break;
 	case WEP_MISSILE:
+		createMissileProjectile(manager, projectileEntity, direction, spawnPos);
 		break;
 	}
 	auto rigidBodyInfo = scene->assign<BulletRigidBodyComponent>(projectileEntity);
@@ -94,14 +95,28 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, vector3df d
 {
 	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
 
-	auto parent = manager->scene.get<ParentComponent>(projId);
-	auto irrp = manager->scene.get<IrrlichtComponent>(parent->parentId);
+	auto wepParent = manager->scene.get<ParentComponent>(projId);
+	auto irrp = manager->scene.get<IrrlichtComponent>(wepParent->parentId);
 	irr->node = manager->controller->smgr->addMeshSceneNode(manager->defaults.defaultWeaponMesh, 0, ID_IsNotSelectable, spawn, irrp->node->getRotation(), vector3df(.2f, .2f, .2f));
 	irr->name = "missile";
 	irr->node->setName(idToStr(projId).c_str());
 
 	auto missile = manager->scene.assign<MissileComponent>(projId); //nothing to do with this yet; need to load missile stats
-	//need to set target and various missile speeds
+
+	auto shipParent = manager->scene.get<ParentComponent>(wepParent->parentId);
+
+	auto pc = manager->scene.get<PlayerComponent>(shipParent->parentId);
+	if (pc) {
+		missile->target = pc->activeSelection;
+	}
+	auto ai = manager->scene.get<AIComponent>(shipParent->parentId);
+	if (ai) {
+		//set the target to whatever the AI is targeting
+	}
+	//hardcoded missile stuff for now
+	missile->forwardThrust = 100.f;
+	missile->maxVelocity = 130.f;
+	missile->rotThrust = 90.f;
 }
 
 void destroyProjectile(SceneManager* manager, EntityId projectile)
