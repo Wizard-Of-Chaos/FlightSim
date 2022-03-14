@@ -5,6 +5,10 @@
 #include "WeaponInfoComponent.h"
 #include "IrrlichtComponent.h"
 #include "BulletRigidBodyComponent.h"
+#include "MissileComponent.h"
+#include "ShipMovementUtils.h"
+
+
 
 class SceneManager;
 class GameController;
@@ -22,4 +26,6 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, vector3df d
 
 //Creates an explosion at the impact point of a projectile. Way smaller than the other one.
 EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duration);
+
+void missileGoTo(btRigidBody* body, MissileComponent* miss, btVector3 dest, f32 dt);
 #endif 

@@ -12,6 +12,10 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	if (!wepInfo) return INVALID_ENTITY;
 
 	auto projectileEntity = scene->newEntity();
+
+	auto parent = scene->assign<ParentComponent>(projectileEntity);
+	parent->parentId = weaponId;
+
 	auto projectileInfo = scene->assign<ProjectileInfoComponent>(projectileEntity);
 	projectileInfo->type = wepInfo->type;
 	projectileInfo->speed = wepInfo->projectileSpeed;
@@ -48,9 +52,6 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	rigidBodyInfo->rigidBody.setUserIndex3(1);
 
 	manager->bulletWorld->addRigidBody(&rigidBodyInfo->rigidBody);
-
-	auto parent = scene->assign<ParentComponent>(projectileEntity);
-	parent->parentId = weaponId;
 
 	return projectileEntity;
 }
@@ -93,9 +94,14 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, vector3df d
 {
 	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
 
-	irr->node = manager->controller->smgr->addMeshSceneNode(manager->defaults.defaultWeaponMesh, 0, ID_IsNotSelectable, spawn, vector3df(0, 0, 0), vector3df(.2f, .2f, .2f));
+	auto parent = manager->scene.get<ParentComponent>(projId);
+	auto irrp = manager->scene.get<IrrlichtComponent>(parent->parentId);
+	irr->node = manager->controller->smgr->addMeshSceneNode(manager->defaults.defaultWeaponMesh, 0, ID_IsNotSelectable, spawn, irrp->node->getRotation(), vector3df(.2f, .2f, .2f));
 	irr->name = "missile";
 	irr->node->setName(idToStr(projId).c_str());
+
+	auto missile = manager->scene.assign<MissileComponent>(projId); //nothing to do with this yet; need to load missile stats
+	//need to set target and various missile speeds
 }
 
 void destroyProjectile(SceneManager* manager, EntityId projectile)
@@ -140,4 +146,47 @@ EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duratio
 	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	return id;
+}
+
+void missileGoTo(btRigidBody* body, MissileComponent* miss, btVector3 dest, f32 dt)
+{
+	btVector3 force(0, 0, 0);
+	btVector3 torque(0, 0, 0);
+	btVector3 forward = getRigidBodyForward(body);
+
+	btVector3 path = dest - body->getCenterOfMassPosition();
+	btVector3 dir = path.normalized();
+
+	btScalar angle = forward.angle(dir);
+	btVector3 angVel = body->getAngularVelocity();
+
+	if (angle <= angVel.length()) {
+		btVector3 angNorm = velocitySafeNormalize(angVel);
+		if (angNorm.length2() <= 0.00001f) torque += -angNorm;
+		else torque += -angNorm * miss->rotThrust;
+	}
+	else {
+		btVector3 right = getRigidBodyRight(body);
+		btVector3 left = getRigidBodyLeft(body);
+		btVector3 up = getRigidBodyUp(body);
+		btVector3 down = getRigidBodyDown(body);
+		if (right.dot(dir) > left.dot(dir)) {
+			torque += up * miss->rotThrust;
+		}
+		else {
+			torque += down * miss->rotThrust;
+		}
+		if (up.dot(dir) > down.dot(dir)) {
+			torque += left * miss->rotThrust;
+		}
+		else {
+			torque += right * miss->rotThrust;
+		}
+	}
+	if (angle * RADTODEG >= 90 || body->getLinearVelocity().length() < miss->maxVelocity) {
+		force += forward * miss->forwardThrust;
+	}
+
+	body->applyCentralImpulse(force * dt);
+	body->applyTorqueImpulse(torque * dt);
 }

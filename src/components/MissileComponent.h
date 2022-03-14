@@ -7,6 +7,10 @@
 struct MissileComponent
 {
 	EntityId target;
+	//effectively a stripped-down ship component here
+	f32 rotThrust;
+	f32 forwardThrust;
+	f32 maxVelocity;
 };
 
 #endif 

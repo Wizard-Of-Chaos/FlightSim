@@ -15,6 +15,6 @@ class SceneManager;
 
 //Determines whether or not a projectile is out of range and deletes it accordingly. In the future,
 //this will also handle the different "types" of projectile - for example, how a missile moves, how a harpoon moves, etc.
-void projectileRangeSystem(SceneManager* manager);
+void projectileRangeSystem(SceneManager* manager, f32 dt);
 
 #endif

@@ -122,8 +122,6 @@ btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 
 void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
 {
-
-	btVector3 forward = getRigidBodyForward(body);
 	btVector3 right = getRigidBodyRight(body);
 	btVector3 left = getRigidBodyLeft(body);
 	btVector3 up = getRigidBodyUp(body);
