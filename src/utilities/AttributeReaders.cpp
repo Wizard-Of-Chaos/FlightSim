@@ -92,9 +92,8 @@ bool loadShip(std::string path, EntityId id, SceneManager* manager)
 	return true;
 }
 
-bool loadWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager)
+bool baseLoadWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager, gvReader& in)
 {
-	gvReader in;
 	in.read(path);
 	if (in.lines.empty()) return false;
 	in.readLinesToValues();
@@ -104,7 +103,7 @@ bool loadWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManag
 	auto parent = manager->scene.assign<ParentComponent>(weaponId);
 	parent->parentId = shipId;
 
-	if (!wep || !irr) return false;
+	if (!wep || !irr || !parent) return false;
 
 	ISceneManager* smgr = manager->controller->smgr;
 	IVideoDriver* driver = manager->controller->driver;
@@ -129,5 +128,15 @@ bool loadWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManag
 	wep->range = std::stof(in.values["range"]);
 	wep->timeSinceLastShot = 0.f;
 
+	return true;
+}
+
+bool loadMissileWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager, gvReader& reader)
+{
+	if (!baseLoadWeapon(path, weaponId, shipId, manager, reader)) return false;
+	auto miss = manager->scene.assign<MissileInfoComponent>(weaponId);
+	if (!miss) return false;
+	miss->maxMissileVelocity = std::stof(reader.values["maxMissileVelocity"]);
+	miss->missileRotThrust = std::stof(reader.values["missileRotThrust"]);
 	return true;
 }

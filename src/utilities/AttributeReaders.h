@@ -21,6 +21,7 @@ vector3df strToVec(std::string str);
 //TODO: add on the rigid body loader
 bool loadShip(std::string path, EntityId id, SceneManager* manager);
 //Creates a weapon entity with a WeaponInfoComponent and an IrrlichtComponent.
-bool loadWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager);
-
+bool baseLoadWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager, gvReader& reader);
+//Uses the base load weapon function and adds on a MissileInfoComponent.
+bool loadMissileWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager, gvReader& reader);
 #endif 

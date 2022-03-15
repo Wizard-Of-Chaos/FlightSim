@@ -12,7 +12,7 @@ void projectileRangeSystem(SceneManager* manager, f32 dt)
 			destroyProjectile(manager, id);
 		}
 
-		auto miss = manager->scene.get<MissileComponent>(id);
+		auto miss = manager->scene.get<MissileProjectileComponent>(id);
 		if (miss) {
 			if (!manager->scene.entityInUse(miss->target) || miss->target == INVALID_ENTITY) {
 				explode(manager, irr->node->getPosition(), .3f);
@@ -20,7 +20,7 @@ void projectileRangeSystem(SceneManager* manager, f32 dt)
 			}
 			auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 			auto targetrbc = manager->scene.get<BulletRigidBodyComponent>(miss->target);
-			missileGoTo(&rbc->rigidBody, miss, targetrbc->rigidBody.getCenterOfMassPosition(), dt);
+			missileGoTo(&rbc->rigidBody, projectileInfo, miss, targetrbc->rigidBody.getCenterOfMassPosition(), dt);
 		}
 	}
 }

@@ -1,0 +1,8 @@
+model=wazer/wazer.obj
+texture=wazer/wazer.png
+name=Plasma Blaster
+type=0
+firingSpeed=.5
+projectileSpeed=20
+range=300
+damage=15

@@ -4,12 +4,17 @@
 #include "BaseHeader.h"
 #include "ECS.h"
 
-struct MissileComponent
+struct MissileInfoComponent
+{
+	f32 missileRotThrust;
+	f32 maxMissileVelocity;
+};
+
+struct MissileProjectileComponent
 {
 	EntityId target;
 	//effectively a stripped-down ship component here
 	f32 rotThrust;
-	f32 forwardThrust;
 	f32 maxVelocity;
 };
 

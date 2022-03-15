@@ -23,6 +23,8 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	projectileInfo->range = wepInfo->range;
 	projectileInfo->damage = wepInfo->damage;
 
+	f32 mass = .1f;
+
 	switch (projectileInfo->type) {
 	case WEP_PLASMA:
 		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
@@ -30,7 +32,9 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	case WEP_GRAPPLE:
 		break;
 	case WEP_MISSILE:
-		createMissileProjectile(manager, projectileEntity, direction, spawnPos);
+		mass = .3f;
+		auto missInfo = manager->scene.get<MissileInfoComponent>(weaponId);
+		createMissileProjectile(manager, projectileEntity, missInfo, direction, spawnPos);
 		break;
 	}
 	auto rigidBodyInfo = scene->assign<BulletRigidBodyComponent>(projectileEntity);
@@ -42,7 +46,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 
 	auto shape = new btSphereShape(.5f);
 	btVector3 localInertia;
-	f32 mass = .1f;
+
 	shape->calculateLocalInertia(mass, localInertia);
 	rigidBodyInfo->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
 
@@ -91,21 +95,21 @@ void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df di
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 }
 
-void createMissileProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn)
+void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfoComponent* missInfo, vector3df dir, vector3df spawn)
 {
 	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
-
 	auto wepParent = manager->scene.get<ParentComponent>(projId);
+	auto shipParent = manager->scene.get<ParentComponent>(wepParent->parentId);
+	auto pc = manager->scene.get<PlayerComponent>(shipParent->parentId);
+	if (!pc || pc->activeSelection == INVALID_ENTITY) return; // need a similar check for AI component
+
 	auto irrp = manager->scene.get<IrrlichtComponent>(wepParent->parentId);
 	irr->node = manager->controller->smgr->addMeshSceneNode(manager->defaults.defaultWeaponMesh, 0, ID_IsNotSelectable, spawn, irrp->node->getRotation(), vector3df(.2f, .2f, .2f));
 	irr->name = "missile";
 	irr->node->setName(idToStr(projId).c_str());
 
-	auto missile = manager->scene.assign<MissileComponent>(projId); //nothing to do with this yet; need to load missile stats
+	auto missile = manager->scene.assign<MissileProjectileComponent>(projId);
 
-	auto shipParent = manager->scene.get<ParentComponent>(wepParent->parentId);
-
-	auto pc = manager->scene.get<PlayerComponent>(shipParent->parentId);
 	if (pc) {
 		missile->target = pc->activeSelection;
 	}
@@ -114,9 +118,8 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, vector3df d
 		//set the target to whatever the AI is targeting
 	}
 	//hardcoded missile stuff for now
-	missile->forwardThrust = 100.f;
-	missile->maxVelocity = 130.f;
-	missile->rotThrust = 90.f;
+	missile->maxVelocity = missInfo->maxMissileVelocity;
+	missile->rotThrust = missInfo->missileRotThrust;
 }
 
 void destroyProjectile(SceneManager* manager, EntityId projectile)
@@ -163,7 +166,7 @@ EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duratio
 	return id;
 }
 
-void missileGoTo(btRigidBody* body, MissileComponent* miss, btVector3 dest, f32 dt)
+void missileGoTo(btRigidBody* body, ProjectileInfoComponent* proj, MissileProjectileComponent* miss, btVector3 dest, f32 dt)
 {
 	btVector3 force(0, 0, 0);
 	btVector3 torque(0, 0, 0);
@@ -199,7 +202,7 @@ void missileGoTo(btRigidBody* body, MissileComponent* miss, btVector3 dest, f32 
 		}
 	}
 	if (angle * RADTODEG >= 90 || body->getLinearVelocity().length() < miss->maxVelocity) {
-		force += forward * miss->forwardThrust;
+		force += forward * proj->speed;
 	}
 
 	body->applyCentralImpulse(force * dt);
