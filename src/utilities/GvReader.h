@@ -29,6 +29,8 @@ struct gvReader
 	void read(std::string filename);
 	//Writes lines to a file.
 	void write(std::string filename);
+
+	void clear();
 };
 
 #endif 

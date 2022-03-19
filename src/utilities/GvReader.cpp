@@ -42,3 +42,9 @@ void gvReader::readValuesToLines()
 		lines.push_back(out);
 	}
 }
+
+void gvReader::clear()
+{
+	lines.clear();
+	values.clear();
+}

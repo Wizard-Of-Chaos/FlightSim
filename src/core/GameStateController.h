@@ -6,6 +6,8 @@
 #include "GameController.h"
 #include "GuiController.h"
 #include "Config.h"
+#include "LoadoutData.h"
+#include <filesystem>
 
 /*
 * The states the game can be in - you're in menus, the game is going, the game is paused, or you're dead and waiting to
@@ -27,6 +29,9 @@ enum GAME_STATE
 * It also holds both the GuiController and GameController class, used for running their respective little worlds. Init should not be called more
 * than once, like, ever.
 */
+
+
+
 class GameStateController : public IEventReceiver
 {
 	public:
@@ -44,6 +49,13 @@ class GameStateController : public IEventReceiver
 		void setState(GAME_STATE newState);
 
 		VideoConfig videoConfig;
+
+		std::string playerShip;
+		std::string playerWeapons[8];
+
+		void loadShipAndWeaponData();
+		std::unordered_map<std::string, ShipData*> shipData;
+		std::unordered_map<std::string, WeaponData*> weaponData;
 
 	private:
 		void stateChange();

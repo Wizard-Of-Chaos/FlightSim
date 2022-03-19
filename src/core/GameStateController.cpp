@@ -39,6 +39,30 @@ void GameStateController::init()
 	if (tooltipDefaultFont) {
 		guienv->getSkin()->setFont(tooltipDefaultFont, EGDF_TOOLTIP);
 	}
+
+	loadShipAndWeaponData();
+}
+
+void GameStateController::loadShipAndWeaponData()
+{
+	std::string basepath = "attributes/";
+	std::string weaponpath = basepath + "weapons/";
+	std::string shippath = basepath + "ships/";
+
+	gvReader in;
+	std::cout << "Loading ships... \n";
+	for (const auto& file : std::filesystem::directory_iterator(shippath)) {
+		loadShipData(file.path().string(), this, in);
+		in.clear();
+	}
+	std::cout << "Loading weapons... \n";
+	for (const auto& file : std::filesystem::directory_iterator(weaponpath)) {
+		loadWeaponData(file.path().string(), this, in);
+		in.clear();
+	}
+	std::cout << "Done. \n";
+	std::cout << "Number of weapons: " << weaponData.size() << std::endl;
+	std::cout << "Number of ships: " << shipData.size() << std::endl;
 }
 
 bool GameStateController::OnEvent(const SEvent& event)

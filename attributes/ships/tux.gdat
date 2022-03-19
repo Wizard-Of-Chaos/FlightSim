@@ -1,6 +1,9 @@
 model=tux/Tux.obj
 texture=tux/BulletShipTex.png
+jet=smokejet.png
+engine=tuxengine.png
 name=Tux
+description=The Tux is a light and sleek fighter, named for the notion that anyone looks good in one.
 forwardThrust=75
 brakeThrust=45
 strafeThrust=20

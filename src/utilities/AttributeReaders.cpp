@@ -1,6 +1,7 @@
 #include "AttributeReaders.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include "GameStateController.h"
 #include <iostream>
 
 vector3df strToVec(std::string str) //Turns a string to a vector, splitting on a , character
@@ -14,129 +15,185 @@ vector3df strToVec(std::string str) //Turns a string to a vector, splitting on a
 	return vector3df(std::stof(xstr), std::stof(ystr), std::stof(zstr));
 }
 
-bool loadShip(std::string path, EntityId id, SceneManager* manager)
+bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
 {
-	std::cout << "Reading ship in from: " << path << std::endl;
-	gvReader in;
+	std::cout << "Reading ship in from: " << path << "... \n";
 	in.read(path);
 	if (in.lines.empty()) return false;
 	in.readLinesToValues();
 
-	auto ship = manager->scene.assign<ShipComponent>(id);
-	auto irr = manager->scene.assign<IrrlichtComponent>(id);
-	if (!ship || !irr) return false;
+	std::string name = in.values["name"];
+	ShipData* data = new ShipData;
 
-	ISceneManager* smgr = manager->controller->smgr;
-	IVideoDriver* driver = manager->controller->driver;
+	data->description = in.values["description"];
 
 	std::string meshpath = "models/" + in.values["model"];
 	std::string texpath = "models/" + in.values["texture"];
-	irr->name = in.values["name"];
 
-	IMesh* shipmesh = smgr->getMesh(meshpath.c_str());
-	ITexture* shiptex = driver->getTexture(meshpath.c_str());
-	irr->node = smgr->addMeshSceneNode(shipmesh);
-	irr->node->setMaterialTexture(0, shiptex);
+	data->shipMesh = cont->smgr->getMesh(meshpath.c_str());
+	data->shipTexture = cont->driver->getTexture(texpath.c_str());
 
-	irr->node->setName(idToStr(id).c_str());
-	irr->node->setID(ID_IsSelectable | ID_IsAvoidable);
+	std::string jetpath = "effects/" + in.values["jet"];
+	std::string enginepath = "effects/" + in.values["engine"];
 
-	ship->forwardThrust = std::stof(in.values["forwardThrust"]);
-	ship->brakeThrust = std::stof(in.values["brakeThrust"]);
-	ship->strafeThrust = std::stof(in.values["strafeThrust"]);
-	ship->pitchThrust = std::stof(in.values["pitchThrust"]);
-	ship->yawThrust = std::stof(in.values["yawThrust"]);
-	ship->rollThrust = std::stof(in.values["rollThrust"]);
+	data->engineTexture = cont->driver->getTexture(enginepath.c_str());
+	data->jetTexture = cont->driver->getTexture(jetpath.c_str());
 
-	ship->hardpointCount = std::stoi(in.values["hardpointCount"]);
+	data->shipComponent.forwardThrust = std::stof(in.values["forwardThrust"]);
+	data->shipComponent.brakeThrust = std::stof(in.values["brakeThrust"]);
+	data->shipComponent.strafeThrust = std::stof(in.values["strafeThrust"]);
+	data->shipComponent.pitchThrust = std::stof(in.values["pitchThrust"]);
+	data->shipComponent.yawThrust = std::stof(in.values["yawThrust"]);
+	data->shipComponent.rollThrust = std::stof(in.values["rollThrust"]);
+
+	data->shipComponent.hardpointCount = std::stoi(in.values["hardpointCount"]);
+
 	std::string val;
-	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+	for (unsigned int i = 0; i < data->shipComponent.hardpointCount; ++i) {
 		val = "hardpoint" + std::to_string(i);
-		ship->hardpoints[i] = strToVec(in.values[val]);
-		ship->weapons[i] = INVALID_ENTITY;
+		data->shipComponent.hardpoints[i] = strToVec(in.values[val]);
+		data->shipComponent.weapons[i] = INVALID_ENTITY;
 	}
 	for (unsigned int i = 0; i < 2; ++i) {
 		val = "upJetPos" + std::to_string(i);
-		ship->upJetPos[i] = strToVec(in.values[val]);
+		data->shipComponent.upJetPos[i] = strToVec(in.values[val]);
 	}
 	for (unsigned int i = 0; i < 2; ++i) {
 		val = "downJetPos" + std::to_string(i);
-		ship->downJetPos[i] = strToVec(in.values[val]);
+		data->shipComponent.downJetPos[i] = strToVec(in.values[val]);
 	}
 	for (unsigned int i = 0; i < 2; ++i) {
 		val = "leftJetPos" + std::to_string(i);
-		ship->leftJetPos[i] = strToVec(in.values[val]);
+		data->shipComponent.leftJetPos[i] = strToVec(in.values[val]);
 	}
 	for (unsigned int i = 0; i < 2; ++i) {
 		val = "rightJetPos" + std::to_string(i);
-		ship->rightJetPos[i] = strToVec(in.values[val]);
+		data->shipComponent.rightJetPos[i] = strToVec(in.values[val]);
 	}
 	for (u32 i = 0; i < 2; ++i) {
 		val = "reverseJetPos" + std::to_string(i);
-		ship->reverseJetPos[i] = strToVec(in.values[val]);
+		data->shipComponent.reverseJetPos[i] = strToVec(in.values[val]);
 	}
-	ship->engineJetPos = strToVec(in.values["engineJetPos"]);
+	data->shipComponent.engineJetPos = strToVec(in.values["engineJetPos"]);
 
-	ship->velocityTolerance = std::stof(in.values["velocityTolerance"]);
-	ship->linearMaxVelocity = std::stof(in.values["linearMaxVelocity"]);
-	ship->angularMaxVelocity = std::stof(in.values["angularMaxVelocity"]);
-	ship->afterburnerThrust = std::stof(in.values["afterburnerThrust"]);
-	ship->afterburnerFuel = std::stof(in.values["afterburnerFuel"]);
-	ship->maxAfterburnerFuel = ship->afterburnerFuel;
-	ship->afterburnerFuelEfficiency = std::stof(in.values["afterburnerFuelEfficiency"]);
+	data->shipComponent.velocityTolerance = std::stof(in.values["velocityTolerance"]);
+	data->shipComponent.linearMaxVelocity = std::stof(in.values["linearMaxVelocity"]);
+	data->shipComponent.angularMaxVelocity = std::stof(in.values["angularMaxVelocity"]);
+	data->shipComponent.afterburnerThrust = std::stof(in.values["afterburnerThrust"]);
+	data->shipComponent.afterburnerFuel = std::stof(in.values["afterburnerFuel"]);
+	data->shipComponent.maxAfterburnerFuel = data->shipComponent.afterburnerFuel;
+	data->shipComponent.afterburnerFuelEfficiency = std::stof(in.values["afterburnerFuelEfficiency"]);
 
-	ship->curPitch = 0;
-	ship->curYaw = 0;
-	ship->afterburnerOn = false;
-	ship->safetyOverride = false;
+	data->shipComponent.curPitch = 0;
+	data->shipComponent.curYaw = 0;
+	data->shipComponent.afterburnerOn = false;
+	data->shipComponent.safetyOverride = false;
+
+	cont->shipData[name] = data;
+	std::cout << "Done loading " << path << ". \n";
 	return true;
 }
 
-bool baseLoadWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager, gvReader& in)
+bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 {
+	std::cout << "Reading weapon in from: " << path << "... \n";
 	in.read(path);
 	if (in.lines.empty()) return false;
 	in.readLinesToValues();
+
+	std::string name = in.values["name"];
+	WEAPON_TYPE type = (WEAPON_TYPE)std::stoi(in.values["type"]);
+	WeaponData* data = new WeaponData;
+	if (type == WEP_PLASMA) {
+		//nothing for now
+	}
+	else if (type == WEP_MISSILE) {
+		delete data;
+		data = new MissileData;
+	}
+	data->name = name;
+	data->description = in.values["description"];
+	std::string meshpath = "models/" + in.values["model"];
+	std::string texpath = "models/" + in.values["texture"];
+
+	data->weaponMesh = cont->smgr->getMesh(meshpath.c_str());
+	data->weaponTexture = cont->driver->getTexture(meshpath.c_str());
+	
+	std::string effectpath = "effects/" + in.values["particle"];
+	data->weaponEffect = cont->driver->getTexture(effectpath.c_str());
+	
+	if (type == WEP_MISSILE) {
+		std::string misspath = "models/" + in.values["missilemodel"];
+		std::string misstexpath = "models/" + in.values["missiletexture"];
+		MissileData* miss = (MissileData*)data;
+		miss->missileMesh = cont->smgr->getMesh(misspath.c_str());
+		miss->missileMesh = cont->smgr->getMesh(misstexpath.c_str());
+		miss->missileComponent.maxMissileVelocity = std::stof(in.values["maxMissileVelocity"]);
+		miss->missileComponent.missileRotThrust = std::stof(in.values["missileRotThrust"]);
+	}
+
+	data->weaponComponent.isFiring = false;
+	data->weaponComponent.type = type;
+	data->weaponComponent.firingSpeed = std::stof(in.values["firingSpeed"]);
+	data->weaponComponent.projectileSpeed = std::stof(in.values["projectileSpeed"]);
+	data->weaponComponent.damage = std::stof(in.values["damage"]);
+	data->weaponComponent.range = std::stof(in.values["range"]);
+	data->weaponComponent.timeSinceLastShot = 0.f;
+
+	cont->weaponData[name] = data;
+	std::cout << "Done loading " << path << ". \n";
+	return true;
+}
+
+bool loadShip(std::string name, EntityId id, SceneManager* manager)
+{
+	ISceneManager* smgr = manager->controller->smgr;
+	IVideoDriver* driver = manager->controller->driver;
+	GameStateController* stateCtrl = manager->controller->stateController;
+
+	ShipData* data = stateCtrl->shipData[name];
+	if (!data) return false;
+
+	auto ship = manager->scene.assign<ShipComponent>(id);
+	auto irr = manager->scene.assign<IrrlichtComponent>(id);
+	if (!irr || !ship) return false;
+	*ship = data->shipComponent;
+
+	irr->node = smgr->addMeshSceneNode(data->shipMesh);
+	irr->node->setMaterialTexture(0, data->shipTexture);
+	irr->node->setName(idToStr(id).c_str());
+	irr->node->setID(ID_IsSelectable | ID_IsAvoidable);
+
+	return true;
+}
+
+bool loadWeapon(std::string name, EntityId weaponId, EntityId shipId, SceneManager* manager)
+{
+	ISceneManager* smgr = manager->controller->smgr;
+	IVideoDriver* driver = manager->controller->driver;
+	GameStateController* stateCtrl = manager->controller->stateController;
+
+	WeaponData* data = stateCtrl->weaponData[name];
+	if (!data) return false;
 
 	auto wep = manager->scene.assign<WeaponInfoComponent>(weaponId);
 	auto irr = manager->scene.assign<IrrlichtComponent>(weaponId);
 	auto parent = manager->scene.assign<ParentComponent>(weaponId);
-	parent->parentId = shipId;
-
 	if (!wep || !irr || !parent) return false;
-
-	ISceneManager* smgr = manager->controller->smgr;
-	IVideoDriver* driver = manager->controller->driver;
-
-	std::string meshpath = "models/" + in.values["model"];
-	std::string texpath = "models/" + in.values["texture"];
-	irr->name = in.values["name"];
-
-	IMesh* wepmesh = smgr->getMesh(meshpath.c_str());
-	ITexture* weptex = driver->getTexture(meshpath.c_str());
-	irr->node = smgr->addMeshSceneNode(wepmesh);
-
+	
+	parent->parentId = shipId;
+	
+	irr->node = smgr->addMeshSceneNode(data->weaponMesh);
+	irr->node->setMaterialTexture(0, data->weaponTexture);
 	irr->node->setName(idToStr(weaponId).c_str());
 	irr->node->setID(ID_IsNotSelectable);
-	irr->node->setMaterialTexture(0, weptex);
 
-	wep->isFiring = false;
-	wep->type = (WEAPON_TYPE)std::stoi(in.values["type"]);
-	wep->firingSpeed = std::stof(in.values["firingSpeed"]);
-	wep->projectileSpeed = std::stof(in.values["projectileSpeed"]);
-	wep->damage = std::stof(in.values["damage"]);
-	wep->range = std::stof(in.values["range"]);
-	wep->timeSinceLastShot = 0.f;
+	*wep = data->weaponComponent;
+	if (data->weaponComponent.type == WEP_MISSILE) {
+		auto miss = manager->scene.assign<MissileInfoComponent>(weaponId);
+		MissileData* mdata = (MissileData*)data;
+		*miss = mdata->missileComponent;
+	}
 
-	return true;
-}
-
-bool loadMissileWeapon(std::string path, EntityId weaponId, EntityId shipId, SceneManager* manager, gvReader& reader)
-{
-	if (!baseLoadWeapon(path, weaponId, shipId, manager, reader)) return false;
-	auto miss = manager->scene.assign<MissileInfoComponent>(weaponId);
-	if (!miss) return false;
-	miss->maxMissileVelocity = std::stof(reader.values["maxMissileVelocity"]);
-	miss->missileRotThrust = std::stof(reader.values["missileRotThrust"]);
-	return true;
+	return true; 
 }

@@ -5,8 +5,12 @@
 #include "GvReader.h"
 #include "InputComponent.h"
 #include <unordered_map>
+#include <vector>
+#include "ECS.h"
 
 const extern std::map <std::string, E_DRIVER_TYPE> drivers;
+
+class GameStateController;
 
 /*
 * Holds the configuration for the game - things like fullscreen, the resolution, filtering, shadows, and other
@@ -47,4 +51,10 @@ struct GameConfig
 	bool particles; //placeholder for other stuff
 };
 
+struct Loadout
+{
+	void load(GameStateController* controller, EntityId playerEntity);
+	std::string ship;
+	std::vector<std::string> weapons;
+};
 #endif 

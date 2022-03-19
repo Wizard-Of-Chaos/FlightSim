@@ -107,7 +107,7 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 
 	auto shipEntity = scene->newEntity();
 
-	loadShip("attributes/ships/tux.gdat", shipEntity, manager);
+	loadShip("Tux", shipEntity, manager);
 	auto ship = scene->get<ShipComponent>(shipEntity);
 	auto irr = scene->get<IrrlichtComponent>(shipEntity);
 	irr->node->setPosition(position);
@@ -176,8 +176,7 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	if (!shipIrr || !shipComp) return false;
 	
 	auto wepEntity = scene->newEntity();
-	gvReader reader;
-	baseLoadWeapon("attributes/weapons/plasmablaster.gdat", wepEntity, shipId, manager, reader);
+	loadWeapon("Plasma Blaster", wepEntity, shipId, manager);
 	auto irr = scene->get<IrrlichtComponent>(wepEntity);
 	irr->node->setParent(shipIrr->node);
 	irr->node->setPosition(shipComp->hardpoints[hardpoint]);
