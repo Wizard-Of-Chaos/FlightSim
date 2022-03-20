@@ -115,6 +115,9 @@
     <ClCompile Include="src\utilities\ProjectileUtils.cpp">
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\GuiLoadoutMenu.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -277,7 +280,10 @@
       <Filter>Headers\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\utilities\LoadoutData.h">
-      <Filter>Sources\Core</Filter>
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GuiLoadoutMenu.h">
+      <Filter>Headers\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

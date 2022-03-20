@@ -13,16 +13,20 @@ void GuiMainMenu::init()
 
 	//All buttons have the root node set as the parent. This allows a single call to root->setVisible in order to display or hide the menu.
 	startGame = guiController->guienv->addButton(rect<s32>(position2di(horizontalPos, 32), buttonSize), root, MAINMENU_START, L"Start Game", L"Are you prepared to shoot rocks?");
-	settings = guiController->guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 2 + verticalSlice), buttonSize), root, MAINMENU_SETTINGS, L"Settings", L"Like we have any worthwhile settings.");
-	quitGame = guiController->guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 3 + (verticalSlice * 2)), buttonSize), root, MAINMENU_QUIT, L"Quit Game", L"You'll be back.");
+	loadout = guiController->guienv->addButton(rect<s32>(position2di(horizontalPos, 32*2 + verticalSlice), buttonSize), root, MAINMENU_LOADOUT, L"Set Loadout", L"What guns do you like?");
+	settings = guiController->guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 3 + verticalSlice * 2), buttonSize), root, MAINMENU_SETTINGS, L"Settings", L"Like we have any worthwhile settings.");
+	quitGame = guiController->guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 4 + (verticalSlice * 3)), buttonSize), root, MAINMENU_QUIT, L"Quit Game", L"You'll be back.");
 	scaleAlign(startGame);
 	scaleAlign(settings);
 	scaleAlign(quitGame);
+	scaleAlign(loadout);
+	loadout->setScaleImage();
 	startGame->setScaleImage(true);
 	settings->setScaleImage(true);
 	quitGame->setScaleImage(true);
 
 	guiController->setCallback(startGame, std::bind(&GuiMainMenu::onStart, this, std::placeholders::_1));
+	guiController->setCallback(loadout, std::bind(&GuiMainMenu::onLoadout, this, std::placeholders::_1));
 	guiController->setCallback(settings, std::bind(&GuiMainMenu::onSettings, this, std::placeholders::_1));
 	guiController->setCallback(quitGame, std::bind(&GuiMainMenu::onQuit, this, std::placeholders::_1));
 	hide();
@@ -36,6 +40,14 @@ bool GuiMainMenu::onStart(const SEvent& event)
 	return false;
 
 }
+
+bool GuiMainMenu::onLoadout(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	guiController->setActiveDialog(GUI_LOADOUT_MENU);
+	return false;
+}
+
 bool GuiMainMenu::onSettings(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true; 

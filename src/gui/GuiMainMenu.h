@@ -14,6 +14,7 @@ class GuiController;
 enum MAIN_MENU_BUTTONS
 {
 	MAINMENU_START,
+	MAINMENU_LOADOUT,
 	MAINMENU_SETTINGS,
 	MAINMENU_QUIT
 };
@@ -29,10 +30,12 @@ class GuiMainMenu : public GuiDialog
 		virtual void init();
 
 		bool onStart(const SEvent& event);
+		bool onLoadout(const SEvent& event);
 		bool onSettings(const SEvent& event);
 		bool onQuit(const SEvent& event);
 	private:
 		IGUIButton* startGame;
+		IGUIButton* loadout;
 		IGUIButton* settings;
 		IGUIButton* quitGame;
 };

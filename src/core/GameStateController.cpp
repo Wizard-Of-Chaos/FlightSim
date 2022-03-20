@@ -3,6 +3,7 @@
 
 GameStateController::GameStateController(IrrlichtDevice* dev, VideoConfig vconf)
 {
+	gameInitialized = false;
 	device = dev;
 	driver = 0;
 	smgr = 0;
@@ -16,6 +17,8 @@ GameStateController::GameStateController(IrrlichtDevice* dev, VideoConfig vconf)
 
 void GameStateController::init()
 {
+	std::cout << "Starting game... \n";
+
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
 	guienv = device->getGUIEnvironment();
@@ -23,6 +26,11 @@ void GameStateController::init()
 	guienv->setUserEventReceiver(this);
 	then = device->getTimer()->getTime();
 	state = GAME_MENUS; //Initial state
+
+	playerShip = "Tux";
+	playerWeapons[0] = "Plasma Blaster";
+	playerWeapons[1] = "Plasma Blaster";
+	loadShipAndWeaponData();
 
 	soundEngine = createIrrKlangDevice();
 	soundEngine->play2D("audio/music/space_boogaloo.ogg", true); //Todo: call this somewhere else
@@ -39,8 +47,8 @@ void GameStateController::init()
 	if (tooltipDefaultFont) {
 		guienv->getSkin()->setFont(tooltipDefaultFont, EGDF_TOOLTIP);
 	}
-
-	loadShipAndWeaponData();
+	std::cout << "Game initialized!\n";
+	gameInitialized = true;
 }
 
 void GameStateController::loadShipAndWeaponData()
@@ -67,6 +75,8 @@ void GameStateController::loadShipAndWeaponData()
 
 bool GameStateController::OnEvent(const SEvent& event)
 {
+	if (!gameInitialized) return true;
+
 	if (event.EventType == EET_KEY_INPUT_EVENT) {
 		if (event.KeyInput.Key == KEY_ESCAPE && event.KeyInput.PressedDown) {
 			if (state == GAME_RUNNING) {

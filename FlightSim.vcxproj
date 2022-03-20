@@ -157,6 +157,7 @@
     <ClCompile Include="src\core\Networking.cpp" />
     <ClCompile Include="src\gui\GuiDeathMenu.cpp" />
     <ClCompile Include="src\gui\GuiDialog.cpp" />
+    <ClCompile Include="src\gui\GuiLoadoutMenu.cpp" />
     <ClCompile Include="src\gui\GuiPauseMenu.cpp" />
     <ClCompile Include="src\gui\GuiMainMenu.cpp" />
     <ClCompile Include="src\core\GuiController.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="src\components\MissileComponent.h" />
     <ClInclude Include="src\components\SensorComponent.h" />
     <ClInclude Include="src\gui\GuiDeathMenu.h" />
+    <ClInclude Include="src\gui\GuiLoadoutMenu.h" />
     <ClInclude Include="src\gui\GuiSettingsMenu.h" />
     <ClInclude Include="src\gui\hud\HUDActiveSelection.h" />
     <ClInclude Include="src\gui\hud\HUDContact.h" />

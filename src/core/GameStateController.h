@@ -51,7 +51,7 @@ class GameStateController : public IEventReceiver
 		VideoConfig videoConfig;
 
 		std::string playerShip;
-		std::string playerWeapons[8];
+		std::string playerWeapons[MAX_HARDPOINTS];
 
 		void loadShipAndWeaponData();
 		std::unordered_map<std::string, ShipData*> shipData;
@@ -65,7 +65,7 @@ class GameStateController : public IEventReceiver
 		GameController* gameController;
 		GuiController* guiController;
 		bool stateChangeCalled = false;
-
+		bool gameInitialized = false;
 
 
 };
