@@ -84,6 +84,8 @@ void GuiLoadoutMenu::init()
 	wepDescription->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 
 	guiController->setCallback(returnToMain, std::bind(&GuiLoadoutMenu::onReturn, this, std::placeholders::_1));
+	guiController->setCallback(shipL, std::bind(&GuiLoadoutMenu::onShipChangeLeft, this, std::placeholders::_1));
+	guiController->setCallback(shipR, std::bind(&GuiLoadoutMenu::onShipChangeRight, this, std::placeholders::_1));
 	hide();
 }
 
