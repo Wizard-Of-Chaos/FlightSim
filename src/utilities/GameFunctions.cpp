@@ -176,7 +176,7 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	if (!shipIrr || !shipComp) return false;
 	
 	auto wepEntity = scene->newEntity();
-	loadWeapon(0, wepEntity, shipId, manager);
+	loadWeapon(1, wepEntity, shipId, manager);
 	auto irr = scene->get<IrrlichtComponent>(wepEntity);
 	irr->node->setParent(shipIrr->node);
 	irr->node->setPosition(shipComp->hardpoints[hardpoint]);

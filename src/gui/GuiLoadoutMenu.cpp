@@ -38,6 +38,7 @@ void GuiLoadoutMenu::createButtonPair(u32 num)
 	
 	guiController->setCallback(weaponbuttons[num].buttonL, std::bind(&GuiLoadoutMenu::onWeaponChangeLeft, this, std::placeholders::_1));
 	guiController->setCallback(weaponbuttons[num].buttonR, std::bind(&GuiLoadoutMenu::onWeaponChangeRight, this, std::placeholders::_1));
+	guiController->setCallback(weaponbuttons[num].name, std::bind(&GuiLoadoutMenu::onWeaponHover, this, std::placeholders::_1));
 }
 void GuiLoadoutMenu::init()
 {
@@ -57,7 +58,7 @@ void GuiLoadoutMenu::init()
 	shipR = env->addButton(rect<s32>(position2di(buf * 3 + textHoriz + buttonHoriz, baseSize.Height / 2), buttonSize), root, LOADOUTMENU_SHIP_SELECT_R, L">");
 	ship = env->addStaticText(name.c_str(), rect<s32>(position2di(buf * 2 + buttonHoriz, baseSize.Height / 2), textSize), false, true, root, LOADOUTMENU_SHIP_SELECT);
 	shipDescription = env->addStaticText(desc.c_str(), rect<s32>(position2di(buf, baseSize.Height / 2 + buf + buttonVert), dimension2du(textHoriz + buttonHoriz*2, textVert*3)), false, true, root, LOADOUTMENU_SHIP_DESC);
-
+	wepDescription = env->addStaticText(L"", rect<s32>(position2di(buf, buf * 2 + textVert), dimension2du(buttonHoriz * 2 + textHoriz + buf * 2, baseSize.Height / 2 - buf)), false, true, root, LOADOUTMENU_WEP_DESC);
 	returnToMain = env->addButton(rect<s32>(position2di(buf, buf), textSize), root, LOADOUTMENU_RETURN_TO_MAIN, L"Return to Main", L"Return to the main menu.");
 
 	for (int i = 0; i < MAX_HARDPOINTS; ++i) {
@@ -68,6 +69,7 @@ void GuiLoadoutMenu::init()
 	scaleAlign(shipR);
 	scaleAlign(ship);
 	scaleAlign(shipDescription);
+	scaleAlign(wepDescription);
 
 	scaleAlign(returnToMain);
 	shipL->setScaleImage();
@@ -78,31 +80,110 @@ void GuiLoadoutMenu::init()
 	ship->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 	shipDescription->setOverrideColor(SColor(255, 200, 200, 200));
 	shipDescription->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-	hide();
+	wepDescription->setOverrideColor(SColor(255, 200, 200, 200));
+	wepDescription->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 
 	guiController->setCallback(returnToMain, std::bind(&GuiLoadoutMenu::onReturn, this, std::placeholders::_1));
+	hide();
+}
+
+void GuiLoadoutMenu::setShipNameAndDesc(u32 shipId)
+{
+	GameStateController* stCtrl = guiController->stateController;
+	stCtrl->playerShip = shipId;
+	std::string name = stCtrl->shipData[shipId]->name;
+	std::string desc = stCtrl->shipData[shipId]->description;
+	ship->setText(std::wstring(name.begin(), name.end()).c_str());
+	shipDescription->setText(std::wstring(desc.begin(), desc.end()).c_str());
 }
 
 bool GuiLoadoutMenu::onShipChangeLeft(const SEvent& event)
 {
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+
+	u32 shipId = guiController->stateController->playerShip;
+	if (shipId == 0) {
+		shipId = guiController->stateController->shipData.size() - 1;
+	}
+	else {
+		--shipId;
+	}
+	setShipNameAndDesc(shipId);
 	return false;
 }
 bool GuiLoadoutMenu::onShipChangeRight(const SEvent& event)
 {
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	GameStateController* stCtrl = guiController->stateController;
+	u32 shipId = guiController->stateController->playerShip;
+	if (shipId == 0) {
+		shipId = guiController->stateController->shipData.size() - 1;
+	}
+	else {
+		++shipId;
+	}
+	setShipNameAndDesc(shipId);
+
 	return false;
 }
 bool GuiLoadoutMenu::onWeaponChangeLeft(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	u32 num = std::stoi(event.GUIEvent.Caller->getName());
+	GameStateController* stCtrl = guiController->stateController;
+	if (num >= stCtrl->shipData[stCtrl->playerShip]->shipComponent.hardpointCount) return true;
+
+	u32 wepId = stCtrl->playerWeapons[num];
+	if (wepId == 0) {
+		wepId = stCtrl->weaponData.size()-1;
+	} else {
+		--wepId;
+	}
+	stCtrl->playerWeapons[num] = wepId;
+	WeaponData* data = stCtrl->weaponData[wepId];
+	weaponbuttons[num].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
+
 	return false;
 }
 bool GuiLoadoutMenu::onWeaponChangeRight(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	u32 num = std::stoi(event.GUIEvent.Caller->getName());
+	GameStateController* stCtrl = guiController->stateController;
+	if (num >= stCtrl->shipData[stCtrl->playerShip]->shipComponent.hardpointCount) return true;
+
+	u32 wepId = stCtrl->playerWeapons[num];
+	if (wepId == stCtrl->weaponData.size() - 1) {
+		wepId = 0;
+	}
+	else {
+		++wepId;
+	}
+	stCtrl->playerWeapons[num] = wepId;
+	WeaponData* data = stCtrl->weaponData[wepId];
+	weaponbuttons[num].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
+
 	return false;
 }
+
+bool GuiLoadoutMenu::onWeaponHover(const SEvent& event)
+{
+	GameStateController* stCtrl = guiController->stateController;
+	u32 num = std::stoi(event.GUIEvent.Caller->getName());
+	if (num >= stCtrl->shipData[stCtrl->playerShip]->shipComponent.hardpointCount) return true;
+
+	if (event.GUIEvent.EventType == EGET_ELEMENT_HOVERED) {
+		WeaponData* data = stCtrl->weaponData[stCtrl->playerWeapons[num]];
+		wepDescription->setText(std::wstring(data->description.begin(), data->description.end()).c_str());
+		return false;
+	}
+	else if (event.GUIEvent.EventType == EGET_ELEMENT_LEFT) {
+		wepDescription->setText(L"");
+		return false;
+	}
+	return true;
+}
+
 bool GuiLoadoutMenu::onReturn(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;

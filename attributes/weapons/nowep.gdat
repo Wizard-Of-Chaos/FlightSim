@@ -1,0 +1,11 @@
+model=none 
+texture=none
+particle=particlered.bmp
+id=0
+name=None
+description=None
+type=0
+firingSpeed=0
+projectileSpeed=0
+range=0
+damage=0

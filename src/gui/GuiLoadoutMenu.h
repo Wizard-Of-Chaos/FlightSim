@@ -39,7 +39,8 @@ enum LOADOUT_MENU_BUTTONS
 	LOADOUTMENU_SHIP_SELECT_R,
 
 	LOADOUTMENU_RETURN_TO_MAIN,
-	LOADOUTMENU_SHIP_DESC
+	LOADOUTMENU_SHIP_DESC,
+	LOADOUTMENU_WEP_DESC
 };
 
 struct ButtonPair
@@ -58,16 +59,19 @@ class GuiLoadoutMenu : public GuiDialog
 		bool onShipChangeLeft(const SEvent& event);
 		bool onWeaponChangeRight(const SEvent& event);
 		bool onWeaponChangeLeft(const SEvent& event);
+		bool onWeaponHover(const SEvent& event);
 		bool onReturn(const SEvent& event);
 
 	private:
 		void createButtonPair(u32 num);
 		void loadoutToWString();
+		void setShipNameAndDesc(u32 shipId);
 
 		ButtonPair weaponbuttons[MAX_HARDPOINTS];
 
 		IGUIStaticText* ship;
 		IGUIStaticText* shipDescription;
+		IGUIStaticText* wepDescription;
 		IGUIButton* shipL;
 		IGUIButton* shipR;
 		IGUIButton* returnToMain;
@@ -83,7 +87,5 @@ class GuiLoadoutMenu : public GuiDialog
 		std::wstring name;
 		std::wstring desc;
 		std::wstring weps[MAX_HARDPOINTS];
-		std::wstring wepdesc[MAX_HARDPOINTS];
-
 };
 #endif 
