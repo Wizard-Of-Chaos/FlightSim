@@ -22,9 +22,9 @@ class GameStateController;
 vector3df strToVec(std::string str);
 //Creates a shipcomponent and an irrlicht component on the given entity.
 //TODO: add on the rigid body loader
-bool loadShip(std::string name, EntityId id, SceneManager* manager);
+bool loadShip(u32 id, EntityId entity, SceneManager* manager);
 //Creates a weapon entity with a WeaponInfoComponent and an IrrlichtComponent.
-bool loadWeapon(std::string name, EntityId weaponId, EntityId shipId, SceneManager* manager);
+bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager);
 
 bool loadShipData(std::string path, GameStateController* cont, gvReader& in);
 bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in);

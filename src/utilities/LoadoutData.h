@@ -7,6 +7,7 @@
 
 struct ShipData
 {
+	u32 id;
 	std::string name;
 	std::string description;
 	ShipComponent shipComponent;
@@ -18,6 +19,7 @@ struct ShipData
 
 struct WeaponData
 {
+	u32 id;
 	std::string name;
 	std::string description;
 	WeaponInfoComponent weaponComponent;

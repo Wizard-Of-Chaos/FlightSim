@@ -12,8 +12,10 @@ void updateHealthSystem(SceneManager* manager)
 			bool playerDead = false;
 			auto irr = manager->scene.get<IrrlichtComponent>(id);
 			auto player = manager->scene.get<PlayerComponent>(id);
-			if (player) playerDead = true;
-
+			if (player) {
+				playerDead = true;
+				manager->controller->clearPlayerHUD();
+			}
 			if (irr) {
 				vector3df pos = irr->node->getAbsolutePosition();
 				explode(manager, pos, 1.f);

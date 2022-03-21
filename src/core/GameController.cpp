@@ -8,11 +8,23 @@ GameController::GameController(GameStateController* controller)
 	stateController = controller;
 	device = controller->device;
 	soundEngine = controller->soundEngine;
+	open = false;
 	smgr = 0;
 	guienv = 0;
 	driver = 0;
 	then = 0;
 	bWorld = 0;
+}
+
+void GameController::clearPlayerHUD()
+{
+	for (auto id : SceneView<PlayerComponent>(sceneECS.scene)) {
+		auto player = sceneECS.scene.get<PlayerComponent>(id);
+		for (HUDElement* hud : player->HUD) {
+			delete hud;
+		}
+		player->rootHUD->remove();
+	}
 }
 
 void GameController::init()
@@ -37,18 +49,15 @@ void GameController::init()
 	sceneECS = SceneManager(scene, this, bWorld); //Sets up the ECS scene
 
 	setDefaults(&sceneECS);
+	open = true;
 }
 
 void GameController::close()
 {
+	if (!open) return;
+
+	clearPlayerHUD();
 	smgr->clear();
-	for (auto id : SceneView<PlayerComponent>(sceneECS.scene)) {
-		auto player = sceneECS.scene.get<PlayerComponent>(id);
-		for (HUDElement* hud : player->HUD) {
-			delete hud;
-		}
-		player->rootHUD->remove();
-	}
 	delete broadPhase;
 	bWorld->clearObjects();
 	delete collisionConfig;
@@ -60,6 +69,7 @@ void GameController::close()
 	for (ComponentPool* pool : sceneECS.scene.componentPools) {
 		delete pool; //pool's closed
 	}
+	open = false;
 }
 
 bool GameController::OnEvent(const SEvent& event)

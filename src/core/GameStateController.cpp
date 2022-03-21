@@ -27,9 +27,12 @@ void GameStateController::init()
 	then = device->getTimer()->getTime();
 	state = GAME_MENUS; //Initial state
 
-	playerShip = "Tux";
-	playerWeapons[0] = "Plasma Blaster";
-	playerWeapons[1] = "Plasma Blaster";
+	playerShip = 0;
+	playerWeapons[0] = 0;
+	playerWeapons[1] = 0;
+	for (int i = 2; i < MAX_HARDPOINTS; ++i) {
+		playerWeapons[i] = WEAPONID_INVALID;
+	}
 	loadShipAndWeaponData();
 
 	soundEngine = createIrrKlangDevice();
@@ -128,7 +131,7 @@ void GameStateController::stateChange() //Messy handler for the different states
 	else if (oldState == GAME_PAUSED && state == GAME_RUNNING) {
 		guiController->close();
 	}
-	else if (oldState == GAME_RUNNING && state == GAME_DEAD) {
+	else if (oldState == GAME_RUNNING && state == GAME_DEAD) { //BUG: HUD doesn't get deleted
 		guiController->setActiveDialog(GUI_DEATH_MENU);
 		//set up death menu
 	}

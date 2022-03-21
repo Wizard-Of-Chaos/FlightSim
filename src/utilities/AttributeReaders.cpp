@@ -21,10 +21,12 @@ bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
 	in.read(path);
 	if (in.lines.empty()) return false;
 	in.readLinesToValues();
-
+	u32 id = std::stoi(in.values["id"]);
 	std::string name = in.values["name"];
 	ShipData* data = new ShipData;
 
+	data->id = id;
+	data->name = name;
 	data->description = in.values["description"];
 
 	std::string meshpath = "models/" + in.values["model"];
@@ -89,7 +91,7 @@ bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
 	data->shipComponent.afterburnerOn = false;
 	data->shipComponent.safetyOverride = false;
 
-	cont->shipData[name] = data;
+	cont->shipData[id] = data;
 	std::cout << "Done loading " << path << ". \n";
 	return true;
 }
@@ -101,6 +103,7 @@ bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	if (in.lines.empty()) return false;
 	in.readLinesToValues();
 
+	u32 id = std::stoi(in.values["id"]);
 	std::string name = in.values["name"];
 	WEAPON_TYPE type = (WEAPON_TYPE)std::stoi(in.values["type"]);
 	WeaponData* data = new WeaponData;
@@ -111,6 +114,7 @@ bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 		delete data;
 		data = new MissileData;
 	}
+	data->id = id;
 	data->name = name;
 	data->description = in.values["description"];
 	std::string meshpath = "models/" + in.values["model"];
@@ -140,57 +144,57 @@ bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	data->weaponComponent.range = std::stof(in.values["range"]);
 	data->weaponComponent.timeSinceLastShot = 0.f;
 
-	cont->weaponData[name] = data;
+	cont->weaponData[id] = data;
 	std::cout << "Done loading " << path << ". \n";
 	return true;
 }
 
-bool loadShip(std::string name, EntityId id, SceneManager* manager)
+bool loadShip(u32 id, EntityId entity, SceneManager* manager)
 {
 	ISceneManager* smgr = manager->controller->smgr;
 	IVideoDriver* driver = manager->controller->driver;
 	GameStateController* stateCtrl = manager->controller->stateController;
 
-	ShipData* data = stateCtrl->shipData[name];
+	ShipData* data = stateCtrl->shipData[id];
 	if (!data) return false;
 
-	auto ship = manager->scene.assign<ShipComponent>(id);
-	auto irr = manager->scene.assign<IrrlichtComponent>(id);
+	auto ship = manager->scene.assign<ShipComponent>(entity);
+	auto irr = manager->scene.assign<IrrlichtComponent>(entity);
 	if (!irr || !ship) return false;
 	*ship = data->shipComponent;
 
 	irr->node = smgr->addMeshSceneNode(data->shipMesh);
 	irr->node->setMaterialTexture(0, data->shipTexture);
-	irr->node->setName(idToStr(id).c_str());
+	irr->node->setName(idToStr(entity).c_str());
 	irr->node->setID(ID_IsSelectable | ID_IsAvoidable);
 
 	return true;
 }
 
-bool loadWeapon(std::string name, EntityId weaponId, EntityId shipId, SceneManager* manager)
+bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager)
 {
 	ISceneManager* smgr = manager->controller->smgr;
 	IVideoDriver* driver = manager->controller->driver;
 	GameStateController* stateCtrl = manager->controller->stateController;
 
-	WeaponData* data = stateCtrl->weaponData[name];
+	WeaponData* data = stateCtrl->weaponData[id];
 	if (!data) return false;
 
-	auto wep = manager->scene.assign<WeaponInfoComponent>(weaponId);
-	auto irr = manager->scene.assign<IrrlichtComponent>(weaponId);
-	auto parent = manager->scene.assign<ParentComponent>(weaponId);
+	auto wep = manager->scene.assign<WeaponInfoComponent>(weaponEntity);
+	auto irr = manager->scene.assign<IrrlichtComponent>(weaponEntity);
+	auto parent = manager->scene.assign<ParentComponent>(weaponEntity);
 	if (!wep || !irr || !parent) return false;
 	
-	parent->parentId = shipId;
+	parent->parentId = shipEntity;
 	
 	irr->node = smgr->addMeshSceneNode(data->weaponMesh);
 	irr->node->setMaterialTexture(0, data->weaponTexture);
-	irr->node->setName(idToStr(weaponId).c_str());
+	irr->node->setName(idToStr(weaponEntity).c_str());
 	irr->node->setID(ID_IsNotSelectable);
 
 	*wep = data->weaponComponent;
 	if (data->weaponComponent.type == WEP_MISSILE) {
-		auto miss = manager->scene.assign<MissileInfoComponent>(weaponId);
+		auto miss = manager->scene.assign<MissileInfoComponent>(weaponEntity);
 		MissileData* mdata = (MissileData*)data;
 		*miss = mdata->missileComponent;
 	}

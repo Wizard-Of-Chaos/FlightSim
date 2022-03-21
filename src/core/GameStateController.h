@@ -29,7 +29,9 @@ enum GAME_STATE
 * It also holds both the GuiController and GameController class, used for running their respective little worlds. Init should not be called more
 * than once, like, ever.
 */
-
+const u32 SHIPID_PLAYER_DEFAULT = 0;
+const u32 WEAPONID_INVALID = -1;
+const u32 WEAPONID_NONE = 0;
 
 
 class GameStateController : public IEventReceiver
@@ -50,12 +52,12 @@ class GameStateController : public IEventReceiver
 
 		VideoConfig videoConfig;
 
-		std::string playerShip;
-		std::string playerWeapons[MAX_HARDPOINTS];
+		u32 playerShip;
+		u32 playerWeapons[MAX_HARDPOINTS];
 
 		void loadShipAndWeaponData();
-		std::unordered_map<std::string, ShipData*> shipData;
-		std::unordered_map<std::string, WeaponData*> weaponData;
+		std::unordered_map<u32, ShipData*> shipData;
+		std::unordered_map<u32, WeaponData*> weaponData;
 
 	private:
 		void stateChange();

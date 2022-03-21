@@ -105,12 +105,15 @@ class GameController
 		void initDefaultScene();
 		void update();
 
+		void clearPlayerHUD();
 	private:
 		SceneManager sceneECS; 
 		u32 then;
 		f32 accumulator = 0.0f;
 		f32 dt = 0.005f;
 		f32 t = 0.0f;
+
+		bool open;
 };
 
 
