@@ -1,6 +1,7 @@
 #include "GameFunctions.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include "GameStateController.h"
 #include "IrrlichtUtils.h"
 
 //Convenience functions to swap back and forth between irrlicht and bullet vectors.
@@ -100,22 +101,29 @@ void setFaction(FactionComponent* fac, FACTION_TYPE type, unsigned int hostiliti
 	fac->friendlyTo = friendlies;
 }
 
-EntityId createDefaultShip(SceneManager* manager, vector3df position)
+EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position)
 {
 	Scene* scene = &manager->scene;
 	ISceneManager* smgr = manager->controller->smgr;
 
 	auto shipEntity = scene->newEntity();
 
-	loadShip(0, shipEntity, manager);
+	loadShip(id, shipEntity, manager);
 	auto ship = scene->get<ShipComponent>(shipEntity);
 	auto irr = scene->get<IrrlichtComponent>(shipEntity);
 	irr->node->setPosition(position);
 
+	return shipEntity;
+}
+
+EntityId createDefaultShip(SceneManager* manager, vector3df position)
+{
+	EntityId shipEntity = createShipFromId(0, manager, position);
+	auto ship = manager->scene.get<ShipComponent>(shipEntity);
+
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		initializeDefaultWeapon(manager, shipEntity, i);
 	}
-
 	return shipEntity;
 }
 
@@ -165,8 +173,10 @@ void destroyObject(SceneManager* manager, EntityId id)
 	manager->scene.destroyEntity(id);
 }
 
-bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoint)
+bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int hardpoint)
 {
+	if (id <= 0) return false;
+
 	Scene* scene = &manager->scene;
 	ISceneManager* smgr = manager->controller->smgr;
 
@@ -176,7 +186,7 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	if (!shipIrr || !shipComp) return false;
 	
 	auto wepEntity = scene->newEntity();
-	loadWeapon(1, wepEntity, shipId, manager);
+	loadWeapon(id, wepEntity, shipId, manager);
 	auto irr = scene->get<IrrlichtComponent>(wepEntity);
 	irr->node->setParent(shipIrr->node);
 	irr->node->setPosition(shipComp->hardpoints[hardpoint]);
@@ -185,6 +195,11 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	shipComp->weapons[hardpoint] = wepEntity;
 
 	return true;
+}
+
+bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoint)
+{
+	return initializeWeaponFromId(1, manager, shipId, hardpoint);
 }
 
 bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
@@ -384,4 +399,25 @@ EntityId explode(SceneManager* manager, vector3df position, f32 duration)
 	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	return id;
+}
+
+EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos)
+{
+	GameStateController* stCtrl = manager->controller->stateController;
+	EntityId shipEntity = createShipFromId(stCtrl->playerShip, manager, pos);
+	auto ship = manager->scene.get<ShipComponent>(shipEntity);
+
+	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+		initializeWeaponFromId(stCtrl->playerWeapons[i], manager, shipEntity, i);
+	}
+
+	initializeDefaultPlayer(manager, shipEntity);
+	initializeDefaultRigidBody(manager, shipEntity);
+	initializeNeutralFaction(manager, shipEntity);
+	initializeDefaultHealth(manager, shipEntity);
+	initializeDefaultSensors(manager, shipEntity);
+	initializeDefaultHUD(manager, shipEntity);
+	initializeShipParticles(manager, shipEntity);
+
+	return shipEntity;
 }

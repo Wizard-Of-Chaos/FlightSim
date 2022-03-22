@@ -28,8 +28,8 @@ void GameStateController::init()
 	state = GAME_MENUS; //Initial state
 
 	playerShip = 0;
-	playerWeapons[0] = 0;
-	playerWeapons[1] = 0;
+	playerWeapons[0] = 1;
+	playerWeapons[1] = 1;
 	for (int i = 2; i < MAX_HARDPOINTS; ++i) {
 		playerWeapons[i] = WEAPONID_INVALID;
 	}

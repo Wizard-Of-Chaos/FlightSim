@@ -123,14 +123,8 @@ bool GameController::OnEvent(const SEvent& event)
 //Init for a default scene, with a player and some AI ships and obstacles. Mostly for testing.
 void GameController::initDefaultScene()
 {
-	EntityId playerId = createDefaultShip(&sceneECS, vector3df(0, 0, -50));
-	initializeDefaultPlayer(&sceneECS, playerId);
-	initializeDefaultRigidBody(&sceneECS, playerId);
-	initializeNeutralFaction(&sceneECS, playerId);
-	initializeDefaultHealth(&sceneECS, playerId);
-	initializeDefaultSensors(&sceneECS, playerId);
-	initializeDefaultHUD(&sceneECS, playerId);
-	initializeShipParticles(&sceneECS, playerId);
+	std::cout << "Loading into game...\n";
+	EntityId playerId = createPlayerShipFromLoadout(&sceneECS, vector3df(0, 0, -50));
 
 	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40));
 	initializeDefaultRigidBody(&sceneECS, roidId);
@@ -164,6 +158,8 @@ void GameController::initDefaultScene()
 	n->setID(ID_IsNotSelectable);
 
 	device->getCursorControl()->setActiveIcon(ECI_CROSS);
+
+	std::cout << "Loaded.\n";
 }
 
 void GameController::update()

@@ -15,6 +15,8 @@
 #include "HUDHeader.h"
 
 class SceneManager;
+class GameController;
+class GameStateController;
 
 /*
 * A big file of convenience functions that are used with the game.
@@ -39,6 +41,7 @@ void initializePlayerFaction(SceneManager* manager, EntityId id);
 //Changes the faction type and hostilities/friendlies of the given faction. Allegiances should be passed in as a bitmask.
 void setFaction(FactionComponent* fac, FACTION_TYPE type, unsigned int hostilities, unsigned int friendlies);
 
+EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position);
 //Creates a default ship entity at the given position. Does not include hitbox, health, or other components.
 //Does include two default weapon entities and an irrlicht component / ship component. Returns the ID.
 EntityId createDefaultShip(SceneManager* manager, vector3df position);
@@ -50,6 +53,7 @@ EntityId createDefaultAIShip(SceneManager* manager, vector3df position);
 //Removes the given object from the scene.
 void destroyObject(SceneManager* manager, EntityId id);
 
+bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int hardpoint);
 //Adds a default weapon to the given ship at the given hardpoint.
 //Requires: Irrlicht component, ship component. Returns false without that.
 bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoint);
@@ -75,4 +79,5 @@ void initializeShipParticles(SceneManager* manager, EntityId id);
 //Creates an explosion at the point that lasts for the duration.
 EntityId explode(SceneManager* manager, vector3df position, f32 duration);
 
+EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos);
 #endif
