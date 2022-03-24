@@ -91,6 +91,8 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		if (input->leftMouseDown) {
 			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 				EntityId wep = ship->weapons[i];
+				if (!scene.entityInUse(wep)) continue;
+
 				auto wepInfo = scene.get<WeaponInfoComponent>(wep);
 				auto irrComp = scene.get<IrrlichtComponent>(wep);
 				wepInfo->isFiring = true;
@@ -104,6 +106,8 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		else {
 			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 				EntityId wep = ship->weapons[i];
+				if (!scene.entityInUse(wep)) continue;
+
 				auto wepInfo = scene.get<WeaponInfoComponent>(wep);
 				wepInfo->isFiring = false;
 			}

@@ -112,6 +112,9 @@ EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position)
 	auto ship = scene->get<ShipComponent>(shipEntity);
 	auto irr = scene->get<IrrlichtComponent>(shipEntity);
 	irr->node->setPosition(position);
+	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
+		ship->weapons[i] = INVALID_ENTITY;
+	}
 
 	return shipEntity;
 }
@@ -194,6 +197,9 @@ bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int 
 
 	shipComp->weapons[hardpoint] = wepEntity;
 
+	auto parentCmp = scene->assign<ParentComponent>(wepEntity);
+	parentCmp->parentId = shipId;
+
 	return true;
 }
 
@@ -251,7 +257,7 @@ bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 	auto playerCamera = scene->assign<PlayerComponent>(shipId);
 	playerCamera->camera = camera;
 	playerCamera->target = target;
-
+	playerCamera->activeSelection = INVALID_ENTITY;
 	return true;
 }
 

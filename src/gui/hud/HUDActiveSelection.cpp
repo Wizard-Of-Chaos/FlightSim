@@ -26,6 +26,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 	auto player = manager->scene.get<PlayerComponent>(playerId);
 	auto input = manager->scene.get<InputComponent>(playerId);
 	auto playerIrr = manager->scene.get<IrrlichtComponent>(playerId);
+	player->activeSelection = activeSelection;
 
 	ICameraSceneNode* camera = player->camera;
 

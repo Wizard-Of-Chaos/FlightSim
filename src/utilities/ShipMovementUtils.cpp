@@ -100,7 +100,7 @@ btVector3 velocitySafeNormalize(btVector3& velocity)
 {
 	btVector3 retval(velocity);
 	if (retval.length2() <= 0) return btVector3(0, 0, 0);
-	if (retval.length2() <= 0.00001f) return retval;
+	if (retval.length2() <= DEGENERATE_VECTOR_LENGTH) return retval;
 	retval.normalize();
 	return retval;
 }
@@ -109,14 +109,14 @@ btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
 {
 	btVector3 ang = body->getAngularVelocity();
 	ang = velocitySafeNormalize(ang);
-	if (ang.length2() <= 0.00001f) return -ang;
+	if (ang.length2() <= DEGENERATE_VECTOR_LENGTH) return -ang;
 	return -ang * ((ship->pitchThrust + ship->yawThrust + ship->rollThrust) / 3.f);
 }
 btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
 {
 	btVector3 lin = body->getLinearVelocity();
 	lin = velocitySafeNormalize(lin);
-	if (lin.length2() <= 0.00001f) return -lin;
+	if (lin.length2() <= DEGENERATE_VECTOR_LENGTH) return -lin;
 	return -lin * (ship->brakeThrust + ship->strafeThrust);
 }
 
@@ -129,14 +129,12 @@ void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
 
 	if (right.dot(dir) > left.dot(dir)) {
 		ship->moves[SHIP_YAW_RIGHT] = true;
-	}
-	else {
+	} else {
 		ship->moves[SHIP_YAW_LEFT] = true;
 	}
 	if (up.dot(dir) > down.dot(dir)) {
 		ship->moves[SHIP_PITCH_UP] = true;
-	}
-	else {
+	} else {
 		ship->moves[SHIP_PITCH_DOWN] = true;
 	}
 }
@@ -147,8 +145,7 @@ void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir
 	btVector3 ang = body->getAngularVelocity();
 	if (angle > ang.length()) {
 		turnToDirection(body, ship, dir);
-	}
-	else {
+	} else {
 		ship->moves[SHIP_STOP_ROTATION] = true;
 	}
 }
@@ -168,8 +165,7 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 		if (timeToStop >= timeToArrive) { //You ever just write something so simple that you don't understand why it was such a PITA to get correct?
 
 			ship->moves[SHIP_STOP_VELOCITY] = true;
-		}
-		else {
+		} else {
 			ship->moves[SHIP_THRUST_FORWARD] = true;
 		}
 	}

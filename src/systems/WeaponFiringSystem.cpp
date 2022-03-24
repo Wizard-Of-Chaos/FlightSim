@@ -10,6 +10,7 @@ void weaponFiringSystem(SceneManager* manager, f32 dt)
 
 	for (auto entityId : SceneView<WeaponInfoComponent, IrrlichtComponent>(manager->scene)) { //If the gun is firing, update time since last shot, play a sound and make the entity
 		auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
+		if (wepInfo->type == WEP_NONE) continue;
 		auto irrComp = scene->get<IrrlichtComponent>(entityId);
 
 		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {

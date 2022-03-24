@@ -10,6 +10,7 @@
 * Currently only WEP_PLASMA is properly implemented. More to come.
 */
 enum WEAPON_TYPE {
+	WEP_NONE = -1,
 	WEP_PLASMA = 0,
 	WEP_MISSILE = 1,
 	WEP_GRAPPLE = 2

@@ -1,6 +1,5 @@
 #include "ShipUpdateSystem.h"
 
-
 void jetOn(IParticleEmitter* jet)
 {
 	jet->setMaxParticlesPerSecond(150);

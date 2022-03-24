@@ -1,6 +1,7 @@
 #include "ProjectileUtils.h"
 #include "GameController.h"
 #include "SceneManager.h"
+#include <iostream>
 
 EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vector3df direction, EntityId weaponId)
 {
@@ -8,8 +9,17 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	ISceneManager* smgr = manager->controller->smgr;
 
 	auto wepInfo = scene->get<WeaponInfoComponent>(weaponId);
+	auto shipParent = scene->get<ParentComponent>(weaponId);
 
-	if (!wepInfo) return INVALID_ENTITY;
+	if (!wepInfo || !shipParent) {
+		std::cout << "Cannot fire! ";
+		if (!wepInfo) std::cout << "Weapon info ";
+		if (!shipParent) std::cout << "Parent info ";
+		std::cout << "is NULL\n";
+		return INVALID_ENTITY;
+	}
+
+	auto shipRBC = scene->get<BulletRigidBodyComponent>(shipParent->parentId);
 
 	auto projectileEntity = scene->newEntity();
 
@@ -25,6 +35,27 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 
 	f32 mass = .1f;
 
+	auto rigidBodyInfo = scene->assign<BulletRigidBodyComponent>(projectileEntity);
+	btTransform transform = btTransform();
+	transform.setIdentity();
+
+	transform.setRotation(shipRBC->rigidBody.getOrientation());
+	transform.setOrigin(irrVecToBt(spawnPos));
+
+	auto motionState = new btDefaultMotionState(transform);
+
+	auto shape = new btSphereShape(.5f);
+	btVector3 localInertia;
+
+	shape->calculateLocalInertia(mass, localInertia);
+	rigidBodyInfo->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
+
+	if (projectileInfo->type == WEP_PLASMA) rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
+
+	rigidBodyInfo->rigidBody.setUserIndex(getEntityIndex(projectileEntity));
+	rigidBodyInfo->rigidBody.setUserIndex2(getEntityVersion(projectileEntity));
+	rigidBodyInfo->rigidBody.setUserIndex3(1);
+
 	switch (projectileInfo->type) {
 	case WEP_PLASMA:
 		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
@@ -37,24 +68,6 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 		createMissileProjectile(manager, projectileEntity, missInfo, direction, spawnPos);
 		break;
 	}
-	auto rigidBodyInfo = scene->assign<BulletRigidBodyComponent>(projectileEntity);
-	btTransform transform = btTransform();
-	transform.setIdentity();
-	transform.setOrigin(irrVecToBt(spawnPos));
-
-	auto motionState = new btDefaultMotionState(transform);
-
-	auto shape = new btSphereShape(.5f);
-	btVector3 localInertia;
-
-	shape->calculateLocalInertia(mass, localInertia);
-	rigidBodyInfo->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
-
-	rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
-
-	rigidBodyInfo->rigidBody.setUserIndex(getEntityIndex(projectileEntity));
-	rigidBodyInfo->rigidBody.setUserIndex2(getEntityVersion(projectileEntity));
-	rigidBodyInfo->rigidBody.setUserIndex3(1);
 
 	manager->bulletWorld->addRigidBody(&rigidBodyInfo->rigidBody);
 
@@ -97,21 +110,27 @@ void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df di
 
 void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfoComponent* missInfo, vector3df dir, vector3df spawn)
 {
-	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
 	auto wepParent = manager->scene.get<ParentComponent>(projId);
 	auto shipParent = manager->scene.get<ParentComponent>(wepParent->parentId);
 	auto pc = manager->scene.get<PlayerComponent>(shipParent->parentId);
-	if (!pc || pc->activeSelection == INVALID_ENTITY) return; // need a similar check for AI component
+	if (!pc) return; // need a similar check for AI component
+	if (pc && pc->activeSelection == INVALID_ENTITY) {
+		std::cout << "No entity is currently selected!\n";
+	}
+	ISceneManager* smgr = manager->controller->smgr;
 
-	auto irrp = manager->scene.get<IrrlichtComponent>(wepParent->parentId);
-	irr->node = manager->controller->smgr->addMeshSceneNode(manager->defaults.defaultWeaponMesh, 0, ID_IsNotSelectable, spawn, irrp->node->getRotation(), vector3df(.2f, .2f, .2f));
+	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
+
+	auto irrship = manager->scene.get<IrrlichtComponent>(shipParent->parentId);
+	vector3df rot = irrship->node->getRotation();
+	irr->node = manager->controller->smgr->addMeshSceneNode(manager->defaults.defaultMissileMesh, 0, ID_IsNotSelectable, spawn, rot, vector3df(.2f, .2f, .2f));
 	irr->name = "missile";
 	irr->node->setName(idToStr(projId).c_str());
 
 	auto missile = manager->scene.assign<MissileProjectileComponent>(projId);
-
 	if (pc) {
 		missile->target = pc->activeSelection;
+
 	}
 	auto ai = manager->scene.get<AIComponent>(shipParent->parentId);
 	if (ai) {
@@ -120,6 +139,22 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfo
 	//hardcoded missile stuff for now
 	missile->maxVelocity = missInfo->maxMissileVelocity;
 	missile->rotThrust = missInfo->missileRotThrust;
+
+	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false, irr->node);
+	ps->setID(ID_IsNotSelectable);
+	IParticleEmitter* em = ps->createSphereEmitter(ps->getPosition(), .5f, //spawn point and radius
+		(-dir * .00001f), 50, 100, //direction, emit rate min/max
+		SColor(0, 100, 100, 100), SColor(0, 255, 200, 200), 500, 2000, 0, //min / max color, shortest lifetime, longest lifetime, angle
+		dimension2df(.1f, .1f), dimension2df(1.f, 1.f)); //min / max size
+	ps->setEmitter(em);
+	em->drop();
+	IParticleAffector* paf = ps->createFadeOutParticleAffector();
+	ps->addAffector(paf);
+	paf->drop();
+	ps->setMaterialFlag(EMF_LIGHTING, false);
+	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	ps->setMaterialTexture(0, manager->defaults.defaultJetTexture);
+	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 }
 
 void destroyProjectile(SceneManager* manager, EntityId projectile)
@@ -166,45 +201,58 @@ EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duratio
 	return id;
 }
 
-void missileGoTo(btRigidBody* body, ProjectileInfoComponent* proj, MissileProjectileComponent* miss, btVector3 dest, f32 dt)
+void missileGoTo(SceneManager* manager, EntityId id, f32 dt)
 {
-	btVector3 force(0, 0, 0);
+	auto miss = manager->scene.get<MissileProjectileComponent>(id);
+	auto proj = manager->scene.get<ProjectileInfoComponent>(id);
+	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
+	if (!miss || !proj || !rbc) return;
+	btRigidBody* body = &rbc->rigidBody;
+
 	btVector3 torque(0, 0, 0);
+	btVector3 force(0, 0, 0);
 	btVector3 forward = getRigidBodyForward(body);
 
-	btVector3 path = dest - body->getCenterOfMassPosition();
+	force += forward * proj->speed;
+	body->applyCentralImpulse(force * dt);
+
+	if(!manager->scene.entityInUse(miss->target)) return;
+
+	auto targetirr = manager->scene.get<IrrlichtComponent>(miss->target);
+
+	btVector3 path = irrVecToBt(targetirr->node->getPosition()) - body->getCenterOfMassPosition();
 	btVector3 dir = path.normalized();
 
-	btScalar angle = forward.angle(dir);
-	btVector3 angVel = body->getAngularVelocity();
+	//turn towards target
+	btVector3 right = getRigidBodyRight(body);
+	btVector3 left = getRigidBodyLeft(body);
+	btVector3 up = getRigidBodyUp(body);
+	btVector3 down = getRigidBodyDown(body);
 
-	if (angle <= angVel.length()) {
-		btVector3 angNorm = velocitySafeNormalize(angVel);
-		if (angNorm.length2() <= 0.00001f) torque += -angNorm;
-		else torque += -angNorm * miss->rotThrust;
-	}
-	else {
-		btVector3 right = getRigidBodyRight(body);
-		btVector3 left = getRigidBodyLeft(body);
-		btVector3 up = getRigidBodyUp(body);
-		btVector3 down = getRigidBodyDown(body);
-		if (right.dot(dir) > left.dot(dir)) {
-			torque += up * miss->rotThrust;
+	btScalar angle = forward.angle(dir);
+	btVector3 ang = body->getAngularVelocity();
+
+	if (angle <= ang.length()) {
+		btVector3 angNorm = velocitySafeNormalize(ang);
+		if (ang.length2() >= DEGENERATE_VECTOR_LENGTH) {
+			torque += -ang;
 		}
 		else {
+			btVector3 stopTorque = -angNorm * miss->rotThrust;
+			torque += stopTorque;
+		}
+	} else {
+		if (right.dot(dir) > left.dot(dir)) {
+			torque += up * miss->rotThrust;
+		} else {
 			torque += down * miss->rotThrust;
 		}
 		if (up.dot(dir) > down.dot(dir)) {
 			torque += left * miss->rotThrust;
-		}
-		else {
+		} else {
 			torque += right * miss->rotThrust;
 		}
 	}
-	if (angle * RADTODEG >= 90 || body->getLinearVelocity().length() < miss->maxVelocity) {
-		force += forward * proj->speed;
-	}
 
-	body->applyCentralImpulse(force * dt);
 	body->applyTorqueImpulse(torque * dt);
 }

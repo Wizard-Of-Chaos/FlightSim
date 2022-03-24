@@ -29,7 +29,7 @@ bool isEntityValid(EntityId id) {
 }
 
 bool Scene::entityInUse(EntityId cachedId) {
-	if (!isEntityValid(cachedId)) {
+	if (!isEntityValid(cachedId) || cachedId == INVALID_ENTITY) {
 		return false;
 	}
 	if (entities[getEntityIndex(cachedId)].id == cachedId) {

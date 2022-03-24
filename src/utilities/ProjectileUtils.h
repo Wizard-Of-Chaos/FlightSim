@@ -27,5 +27,5 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfo
 //Creates an explosion at the impact point of a projectile. Way smaller than the other one.
 EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duration);
 
-void missileGoTo(btRigidBody* body, ProjectileInfoComponent* proj, MissileProjectileComponent* miss, btVector3 dest, f32 dt);
+void missileGoTo(SceneManager* manager, EntityId id, f32 dt);
 #endif 

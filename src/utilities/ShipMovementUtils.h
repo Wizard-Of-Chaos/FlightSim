@@ -11,6 +11,8 @@
 class SceneManager;
 class GameController;
 
+const f32 DEGENERATE_VECTOR_LENGTH = 0.0000001f;
+
 /*
 * Holds a whole bunch of functions that are mostly used with AI to make the ship move around.
 * Also includes bullet normalized vectors and the forces to move in specific directions.

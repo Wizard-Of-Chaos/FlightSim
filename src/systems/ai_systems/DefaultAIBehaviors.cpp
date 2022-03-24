@@ -93,6 +93,7 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 	else {
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 			EntityId wep = ship->weapons[i];
+			if (!manager->scene.entityInUse(wep)) continue;
 			auto wepInfo = manager->scene.get<WeaponInfoComponent>(wep);
 			wepInfo->isFiring = false;
 		}
