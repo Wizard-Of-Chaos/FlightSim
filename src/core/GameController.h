@@ -42,6 +42,9 @@ class BulletPhysicsWorld : public btDiscreteDynamicsWorld
 		}
 };
 
+/*
+* This class is SUPPOSED to be able to make it so that bullet bodies use Irrlicht to draw themselves, but I have yet to get it functional.
+*/
 class btDebugRenderer : public btIDebugDraw
 {
 public:

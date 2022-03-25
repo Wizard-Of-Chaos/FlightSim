@@ -5,6 +5,7 @@
 #include "GuiDialog.h"
 #include "Config.h"
 
+//Buttons for the settings menu.
 enum SETTINGS_MENU_BUTTONS {
 	SETTINGSMENU_FILTERING_BOX,
 	SETTINGSMENU_RETURN_TO_MAIN,
@@ -16,6 +17,10 @@ enum SETTINGS_MENU_BUTTONS {
 	SETTINGSMENU_SHADOWS
 };
 
+/*
+* The GuiSettingsMenu should be pretty self explanatory; what it does is keep track of the buttons for enabling / disabling
+* video options as well as gameplay options and keybinds.
+*/
 class GuiSettingsMenu : public GuiDialog
 {
 	public:

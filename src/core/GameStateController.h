@@ -28,6 +28,9 @@ enum GAME_STATE
 * 
 * It also holds both the GuiController and GameController class, used for running their respective little worlds. Init should not be called more
 * than once, like, ever.
+* 
+* The other thing it does is contain the details for ships and weapons; the actual data associated with them and a prototype component for each.
+* These are loaded from .gdat files in attributes/ and stored in two unordered maps for ease of access.
 */
 const u32 SHIPID_PLAYER_DEFAULT = 0;
 const u32 WEAPONID_INVALID = -1;

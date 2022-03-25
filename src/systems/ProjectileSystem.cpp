@@ -2,7 +2,7 @@
 #include "GameController.h"
 #include <iostream>
 
-void projectileRangeSystem(SceneManager* manager, f32 dt)
+void projectileSystem(SceneManager* manager, f32 dt)
 {
 	for (auto id : SceneView<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>(manager->scene)) {
 		auto projectileInfo = manager->scene.get<ProjectileInfoComponent>(id);

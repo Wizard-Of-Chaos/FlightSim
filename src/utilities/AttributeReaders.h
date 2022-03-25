@@ -20,12 +20,15 @@ class GameStateController;
 
 //Reads a vector from a string in the manner of: 40,50,-20
 vector3df strToVec(std::string str);
-//Creates a shipcomponent and an irrlicht component on the given entity.
-//TODO: add on the rigid body loader
+//Loads the ship data from the game state controller onto the given entity.
+//Includes an Irrlicht component and a ShipComponent.
 bool loadShip(u32 id, EntityId entity, SceneManager* manager);
-//Creates a weapon entity with a WeaponInfoComponent and an IrrlichtComponent.
+//Loads the weapon data from the game state controller onto the given entity.
+//Includes a WeaponInfoComponent, an Irrlicht component, a ParentComponent, and whatever other components are necessary (e.g., a MissileInfoComponent).
 bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager);
 
+//Pulls the ship data from the given .gdat file and saves it in the game state controller.
 bool loadShipData(std::string path, GameStateController* cont, gvReader& in);
+//Pulls the weapon data from the given .gdat file and saves it in the game state controller.
 bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in);
 #endif 

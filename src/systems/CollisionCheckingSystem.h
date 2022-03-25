@@ -18,6 +18,7 @@ void collisionCheckingSystem(SceneManager* manager);
 //Convenience function to get the ID from a bullet collision object.
 EntityId getIdFromBt(btCollisionObject* object);
 
+//Checks two entities: the projectile and whatever got hit by the projectile. Removes the appropriate amount of health.
 void projectileCollider(SceneManager* manager, EntityId projectile, EntityId impacted);
 
 //The callback used by bullet physics to determine when two things need to have collision associated with them. Doesn't do anything out

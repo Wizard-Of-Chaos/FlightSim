@@ -41,6 +41,9 @@ void initializePlayerFaction(SceneManager* manager, EntityId id);
 //Changes the faction type and hostilities/friendlies of the given faction. Allegiances should be passed in as a bitmask.
 void setFaction(FactionComponent* fac, FACTION_TYPE type, unsigned int hostilities, unsigned int friendlies);
 
+//Creates a ship using the data at the given id in the GameStateController.
+//Example: The "Tuxedo" ship has the id 0 in the GameStateController. Throw that ID in here and it will load the ship.
+//Adds: ShipComponent, IrrlichtComponent
 EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position);
 //Creates a default ship entity at the given position. Does not include hitbox, health, or other components.
 //Does include two default weapon entities and an irrlicht component / ship component. Returns the ID.
@@ -53,6 +56,8 @@ EntityId createDefaultAIShip(SceneManager* manager, vector3df position);
 //Removes the given object from the scene.
 void destroyObject(SceneManager* manager, EntityId id);
 
+//Initializes a weapon component on the given ship at the given hardpoint from the ID given.
+//Example: The "Plasma Blaster" has the weapon id 1. Pass in 1 to this function to load a Plasma Blaster onto the hardpoint.
 bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int hardpoint);
 //Adds a default weapon to the given ship at the given hardpoint.
 //Requires: Irrlicht component, ship component. Returns false without that.
@@ -79,5 +84,7 @@ void initializeShipParticles(SceneManager* manager, EntityId id);
 //Creates an explosion at the point that lasts for the duration.
 EntityId explode(SceneManager* manager, vector3df position, f32 duration);
 
+//Creates all the necessary details and components to set up the player's current loadout at the given position. Returns the
+//EntityId of the player.
 EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos);
 #endif

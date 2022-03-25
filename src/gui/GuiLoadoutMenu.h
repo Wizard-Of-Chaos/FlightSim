@@ -8,6 +8,9 @@
 class GuiController;
 class GameStateController;
 
+//This header is a doozy.
+
+//Enum containing all the buttons available on the loadout menu (probably unnecessary, but just in case).
 enum LOADOUT_MENU_BUTTONS
 {
 	LOADOUTMENU_WEAPON_0,
@@ -43,6 +46,11 @@ enum LOADOUT_MENU_BUTTONS
 	LOADOUTMENU_WEP_DESC
 };
 
+/*
+* ButtonPairs are used on the loadout menu in order to be able to display several things : the name of the weapon
+* on the hardpoint associated with them and a button switching left and right to enable the player to flip cleanly
+* through their weapon options. The weapon data is loaded from the GameStateController map for weapons.
+*/
 struct ButtonPair
 {
 	IGUIStaticText* name;
@@ -50,6 +58,10 @@ struct ButtonPair
 	IGUIButton* buttonR;
 };
 
+/*
+* The dialog for the loadout menu. Despite what the code looks like, it IS self explanatory!
+* Essentially it just contains all of the buttons and text required to display things on the loadout menu.
+*/
 class GuiLoadoutMenu : public GuiDialog
 {
 	public:
