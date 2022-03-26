@@ -217,7 +217,6 @@ btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh)
 	btShapeHull* hull = new btShapeHull(&shape);
 	hull->buildHull(0);
 	btConvexHullShape ret((const btScalar*)hull->getVertexPointer(), hull->numVertices(), sizeof(btVector3));
-	std::cout << hull->numVertices() << std::endl;
 	delete hull;
 	return ret;
 }
