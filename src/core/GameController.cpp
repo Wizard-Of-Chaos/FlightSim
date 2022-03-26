@@ -127,8 +127,6 @@ void GameController::initDefaultScene()
 	EntityId playerId = createPlayerShipFromLoadout(&sceneECS, vector3df(0, 0, -50));
 
 	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40));
-	initializeDefaultRigidBody(&sceneECS, roidId);
-	initializeNeutralFaction(&sceneECS, roidId);
 
 	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
 	initializeHostileFaction(&sceneECS, aiId);

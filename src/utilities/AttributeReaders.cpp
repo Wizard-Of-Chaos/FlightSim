@@ -34,6 +34,7 @@ bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
 
 	data->shipMesh = cont->smgr->getMesh(meshpath.c_str());
 	data->shipTexture = cont->driver->getTexture(texpath.c_str());
+	data->collisionShape = createCollisionShapeFromMesh(data->shipMesh);
 
 	std::string jetpath = "effects/" + in.values["jet"];
 	std::string enginepath = "effects/" + in.values["engine"];
@@ -200,4 +201,23 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager
 	}
 
 	return true; 
+}
+
+btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh)
+{
+	IMeshBuffer* buf = mesh->getMeshBuffer((u32)0);
+	S3DVertex* bufverts = (S3DVertex*)buf->getVertices();
+	btConvexHullShape shape;
+
+	for (u32 i = 0; i < buf->getVertexCount(); ++i) {
+		vector3df pos = bufverts[i].Pos;
+		shape.addPoint(btVector3(pos.X, pos.Y, pos.Z));
+	}
+	shape.setMargin(0);
+	btShapeHull* hull = new btShapeHull(&shape);
+	hull->buildHull(0);
+	btConvexHullShape ret((const btScalar*)hull->getVertexPointer(), hull->numVertices(), sizeof(btVector3));
+	std::cout << hull->numVertices() << std::endl;
+	delete hull;
+	return ret;
 }

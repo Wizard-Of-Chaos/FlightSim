@@ -143,12 +143,10 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
 	irrComp->node->setName(idToStr(roidEntity).c_str());
 	irrComp->name = "Asteroid";
 
-	auto healthComp = scene->assign<HealthComponent>(roidEntity);
-	healthComp->health = DEFAULT_MAX_HEALTH;
-	healthComp->maxHealth = DEFAULT_MAX_HEALTH;
-
-	auto fac = scene->assign<FactionComponent>(roidEntity);
-	fac->type = FACTION_NEUTRAL;
+	btConvexHullShape* shape = new btConvexHullShape(createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh));
+	initializeBtRigidBody(manager, roidEntity, shape);
+	initializeNeutralFaction(manager, roidEntity);
+	initializeDefaultHealth(manager, roidEntity);
 
 	return roidEntity;
 }
@@ -243,6 +241,51 @@ bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
 	return true;
 }
 
+bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape* shape)
+{
+	Scene* scene = &manager->scene;
+	ISceneManager* smgr = manager->controller->smgr;
+
+	auto objIrr = scene->get<IrrlichtComponent>(entityId);
+
+	if (!objIrr) return false;
+
+	BulletRigidBodyComponent* rbc = scene->assign<BulletRigidBodyComponent>(entityId);
+
+	btTransform transform = btTransform();
+	transform.setIdentity();
+	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
+	auto motionState = new btDefaultMotionState(transform);
+
+	btVector3 localInertia;
+	f32 mass = 1.f;
+	shape->calculateLocalInertia(mass, localInertia);
+	rbc->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
+	rbc->rigidBody.setSleepingThresholds(0, 0);
+
+	rbc->rigidBody.setUserIndex(getEntityIndex(entityId));
+	rbc->rigidBody.setUserIndex2(getEntityVersion(entityId));
+	rbc->rigidBody.setUserIndex3(1);
+
+	manager->bulletWorld->addRigidBody(&(rbc->rigidBody));
+
+	return true;
+}
+
+bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 shipId)
+{
+	Scene* scene = &manager->scene;
+	ISceneManager* smgr = manager->controller->smgr;
+	GameStateController* cont = manager->controller->stateController;
+
+	auto shipComp = scene->get<ShipComponent>(entityId);
+
+	if (!shipComp) return false;
+	auto shape = new btConvexHullShape(cont->shipData[shipId]->collisionShape);
+	//dont want to screw with the inertia so we make a copy
+	return initializeBtRigidBody(manager, entityId, shape);
+}
+
 bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 {
 	Scene* scene = &manager->scene;
@@ -311,7 +354,8 @@ EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
 	auto irr = scene->get<IrrlichtComponent>(id);
 	irr->name = "AI Ship";
 	initializeDefaultHealth(manager, id);
-	initializeDefaultRigidBody(manager, id);
+	initializeShipCollisionBody(manager, id, 0);
+	//initializeDefaultRigidBody(manager, id);
 
 	auto ai = scene->assign<AIComponent>(id);
 	ai->AIType = AI_TYPE_DEFAULT;
@@ -418,7 +462,8 @@ EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos)
 	}
 
 	initializeDefaultPlayer(manager, shipEntity);
-	initializeDefaultRigidBody(manager, shipEntity);
+	//initializeDefaultRigidBody(manager, shipEntity);
+	initializeShipCollisionBody(manager, shipEntity, stCtrl->playerShip);
 	initializeNeutralFaction(manager, shipEntity);
 	initializeDefaultHealth(manager, shipEntity);
 	initializeDefaultSensors(manager, shipEntity);

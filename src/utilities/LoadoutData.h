@@ -15,6 +15,7 @@ struct ShipData
 	std::string name;
 	std::string description;
 	ShipComponent shipComponent;
+	btConvexHullShape collisionShape;
 	IMesh* shipMesh;
 	ITexture* shipTexture;
 	ITexture* engineTexture;

@@ -31,4 +31,6 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager
 bool loadShipData(std::string path, GameStateController* cont, gvReader& in);
 //Pulls the weapon data from the given .gdat file and saves it in the game state controller.
 bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in);
+
+btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh);
 #endif 
