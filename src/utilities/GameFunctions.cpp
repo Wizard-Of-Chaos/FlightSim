@@ -309,8 +309,20 @@ void initializeDefaultHealth(SceneManager* manager, EntityId objectId)
 	Scene* scene = &manager->scene;
 
 	auto healthComp = scene->assign<HealthComponent>(objectId);
-	healthComp->health = 100.f;
-	healthComp->maxHealth = 100.f;
+	healthComp->health = DEFAULT_MAX_HEALTH;
+	healthComp->maxHealth = DEFAULT_MAX_HEALTH;
+}
+
+void initializeDefaultShields(SceneManager* manager, EntityId objectId)
+{
+	Scene* scene = &manager->scene;
+
+	auto shields = scene->assign<ShieldComponent>(objectId);
+	shields->shields = DEFAULT_MAX_SHIELDS;
+	shields->maxShields = DEFAULT_MAX_SHIELDS;
+	shields->rechargeDelay = DEFAULT_RECHARGE_DELAY;
+	shields->rechargeRate = DEFAULT_RECHARGE_RATE;
+	shields->timeSinceLastHit = shields->rechargeDelay;
 }
 
 bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
@@ -354,6 +366,7 @@ EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
 	auto irr = scene->get<IrrlichtComponent>(id);
 	irr->name = "AI Ship";
 	initializeDefaultHealth(manager, id);
+	initializeDefaultShields(manager, id);
 	initializeShipCollisionBody(manager, id, 0);
 	//initializeDefaultRigidBody(manager, id);
 

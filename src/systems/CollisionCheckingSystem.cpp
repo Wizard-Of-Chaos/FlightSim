@@ -17,11 +17,30 @@ EntityId getIdFromBt(btCollisionObject* object)
 void projectileCollider(SceneManager* manager, EntityId projectile, EntityId impacted)
 {
 	auto hp = manager->scene.get<HealthComponent>(impacted);
+	auto shield = manager->scene.get<ShieldComponent>(impacted);
 	auto proj = manager->scene.get<ProjectileInfoComponent>(projectile);
 	auto irr = manager->scene.get<IrrlichtComponent>(projectile);
 	if (hp) {
-		hp->health -= proj->damage;
+		f32 overflow = 0;
+		if (shield) {
+			shield->shields -= proj->damage;
+			if (shield->shields <= 0) {
+				overflow += -shield->shields;
+				shield->shields = 0;
+			}
+			shield->timeSinceLastHit = 0;
+		} else {
+			overflow = proj->damage;
+		}
+		std::cout << overflow << std::endl;
+		hp->health -= overflow;
 	}
+	/*
+	std::cout << "Impact! ";
+	if (shield) std::cout << "Shields: " << shield->shields;
+	if (hp) std::cout << " Health: " << hp->health;
+	std::cout << std::endl;
+	*/
 	projectileImpact(manager, irr->node->getPosition(), .2f);
 	destroyProjectile(manager, projectile);
 }

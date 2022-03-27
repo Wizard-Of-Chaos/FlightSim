@@ -1,4 +1,4 @@
-#include "HealthSystem.h"
+#include "HealthAndShieldSystems.h"
 #include "SceneManager.h"
 #include "GameStateController.h"
 #include "GameController.h"
@@ -23,6 +23,24 @@ void updateHealthSystem(SceneManager* manager)
 			destroyObject(manager, id); //get rid of the object first, THEN change state
 			if (playerDead) {
 				manager->controller->stateController->setState(GAME_DEAD);
+			}
+		}
+	}
+}
+
+void updateShieldSystem(SceneManager* manager, f32 dt)
+{
+	for (auto id : SceneView<ShieldComponent>(manager->scene)) {
+		auto shieldComp = manager->scene.get<ShieldComponent>(id);
+		shieldComp->timeSinceLastHit += dt;
+		if (shieldComp->timeSinceLastHit >= shieldComp->rechargeDelay) {
+			shieldComp->timeSinceLastHit = shieldComp->rechargeDelay + .5f;
+
+			if (shieldComp->shields < shieldComp->maxShields) {
+				shieldComp->shields += shieldComp->rechargeRate * dt;
+				if (shieldComp->shields > shieldComp->maxShields) {
+					shieldComp->shields = shieldComp->maxShields;
+				}
 			}
 		}
 	}

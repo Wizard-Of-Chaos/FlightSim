@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HEALTHSYSTEM_H
-#define HEALTHSYSTEM_H
+#ifndef HEALTHANDSHIELDSYSTEMS_H
+#define HEALTHANDSHIELDSYSTEMS_H
 #include "BaseHeader.h"
 #include "ECS.h"
 #include "IrrlichtComponent.h"
@@ -14,6 +14,9 @@ class GameController;
 
 //Updates health for all entities in the scene. If health is 0, removes it from the scene.
 void updateHealthSystem(SceneManager* manager);
+
+//Updates shield values for all entities in the scene.
+void updateShieldSystem(SceneManager* manager, f32 dt);
 
 #endif 
 

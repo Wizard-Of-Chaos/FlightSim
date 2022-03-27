@@ -8,5 +8,5 @@ resY=540
 shadows=1
 stencilBuffer=1
 trilinearFiltering=1
-useScreenRes=0
+useScreenRes=1
 vsync=0

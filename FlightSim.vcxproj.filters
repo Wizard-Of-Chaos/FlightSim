@@ -34,7 +34,7 @@
     <ClCompile Include="src\gui\GuiPauseMenu.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
-    <ClCompile Include="src\systems\HealthSystem.cpp">
+    <ClCompile Include="src\systems\HealthAndShieldSystems.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\systems\IrrlichtRigidBodyPositionSystem.cpp">
@@ -171,7 +171,7 @@
     <ClInclude Include="src\components\HealthComponent.h">
       <Filter>Headers\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\systems\HealthSystem.h">
+    <ClInclude Include="src\systems\HealthAndShieldSystems.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\components\InputComponent.h">
@@ -284,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="src\gui\GuiLoadoutMenu.h">
       <Filter>Headers\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\ShieldComponent.h">
+      <Filter>Headers\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

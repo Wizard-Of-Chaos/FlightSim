@@ -14,7 +14,7 @@
 #include "ShipUpdateSystem.h"
 #include "AIUpdateSystem.h"
 #include "ExplosionSystem.h"
-#include "HealthSystem.h"
+#include "HealthAndShieldSystems.h"
 #include "GameDefaults.h"
 
 class GameController;
