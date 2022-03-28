@@ -355,6 +355,8 @@ void initializeDefaultSensors(SceneManager* manager, EntityId id)
 	sensors->closestContact = INVALID_ENTITY;
 	sensors->closestFriendlyContact = INVALID_ENTITY;
 	sensors->closestHostileContact = INVALID_ENTITY;
+	sensors->targetContact = INVALID_ENTITY;
+	sensors->timeSelected = 0;
 	sensors->detectionRadius = DEFAULT_SENSOR_RANGE;
 }
 

@@ -128,9 +128,11 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfo
 	irr->node->setName(idToStr(projId).c_str());
 
 	auto missile = manager->scene.assign<MissileProjectileComponent>(projId);
-	if (sensors) {
+	if (sensors && missInfo->timeToLock <= sensors->timeSelected) {
 		missile->target = sensors->targetContact;
-
+	} else {
+		std::cout << "Sensors unavailable or lock-time not established!\n";
+		missile->target = INVALID_ENTITY;
 	}
 	auto ai = manager->scene.get<AIComponent>(shipParent->parentId);
 	if (ai) {

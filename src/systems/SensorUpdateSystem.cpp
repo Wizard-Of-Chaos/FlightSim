@@ -1,6 +1,7 @@
 #include "SensorUpdateSystem.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include <iostream>
 
 void contactDistanceUpdate(SceneManager* manager, ISceneNode* self, EntityId contact, SensorComponent* sensor, vector3df& closestDist)
 {

@@ -13,3 +13,4 @@ range=1000
 damage=30
 maxMissileVelocity=100
 missileRotThrust=10
+timeToLock=3

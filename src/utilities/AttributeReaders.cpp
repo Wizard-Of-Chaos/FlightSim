@@ -135,6 +135,7 @@ bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 		miss->missileMesh = cont->smgr->getMesh(misstexpath.c_str());
 		miss->missileComponent.maxMissileVelocity = std::stof(in.values["maxMissileVelocity"]);
 		miss->missileComponent.missileRotThrust = std::stof(in.values["missileRotThrust"]);
+		miss->missileComponent.timeToLock = std::stof(in.values["timeToLock"]);
 	}
 
 	data->weaponComponent.isFiring = false;
