@@ -28,8 +28,8 @@ void projectileCollider(SceneManager* manager, EntityId projectile, EntityId imp
 struct collisionFilterCallback : public btOverlapFilterCallback
 {
 	//returns true when pairs need collision
-	virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1);
-	bool isProjectileHittingParent(EntityId proj, EntityId other); //domestic abuse should never be allowed
+	virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) const;
+	bool isProjectileHittingParent(EntityId proj, EntityId other) const;//domestic abuse should never be allowed
 	SceneManager* manager;
 };
 

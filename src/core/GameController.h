@@ -98,6 +98,7 @@ class GameController
 		btDefaultCollisionConfiguration* collisionConfig;
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
+		collisionFilterCallback* collCb;
 		
 		btDebugRenderer rend;
 

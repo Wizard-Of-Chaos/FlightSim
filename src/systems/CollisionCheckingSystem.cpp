@@ -65,13 +65,14 @@ void collisionCheckingSystem(SceneManager* manager)
 	}
 }
 
-bool collisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1)
+bool collisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) const
 {
 	btCollisionObject* a = static_cast<btCollisionObject*>(proxy0->m_clientObject);
 	btCollisionObject* b = static_cast<btCollisionObject*>(proxy1->m_clientObject);
 
 	EntityId idA = getIdFromBt(a);
 	EntityId idB = getIdFromBt(b);
+	if (!manager->scene.entityInUse(idA) || !manager->scene.entityInUse(idB)) return true; //something probably went wrong if either of these hits
 	//need to check who "owns" these entities
 	auto parentA = manager->scene.get<ParentComponent>(idA);
 	auto parentB = manager->scene.get<ParentComponent>(idB);
@@ -80,6 +81,10 @@ bool collisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0,
 	}
 	auto projA = manager->scene.get<ProjectileInfoComponent>(idA);
 	auto projB = manager->scene.get<ProjectileInfoComponent>(idB);
+
+	if (projA && projB) {
+		return false;
+	}
 
 	//if one is a projectile and the other isn't, needs to check whether it hit its parent - if so throw it out
 	if (projA && !projB) {
@@ -93,7 +98,7 @@ bool collisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0,
 	return true;
 }
 
-bool collisionFilterCallback::isProjectileHittingParent(EntityId proj, EntityId other)
+bool collisionFilterCallback::isProjectileHittingParent(EntityId proj, EntityId other) const
 {
 	auto wepParent = manager->scene.get<ParentComponent>(proj);
 	if (!wepParent) return true;

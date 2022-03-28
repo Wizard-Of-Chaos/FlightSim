@@ -43,10 +43,13 @@ void GameController::init()
 	solver = new btSequentialImpulseConstraintSolver();
 	bWorld = new BulletPhysicsWorld(dispatcher, broadPhase, solver, collisionConfig);
 	bWorld->setGravity(btVector3(0, 0, 0));
-
 	bWorld->setDebugDrawer(&rend);
 	Scene scene;
 	sceneECS = SceneManager(scene, this, bWorld); //Sets up the ECS scene
+
+	collCb = new collisionFilterCallback();
+	collCb->manager = &sceneECS;
+	bWorld->getPairCache()->setOverlapFilterCallback(collCb);
 
 	setDefaults(&sceneECS);
 	open = true;
@@ -64,6 +67,7 @@ void GameController::close()
 	delete dispatcher;
 	delete solver;
 	delete bWorld; //this likely leaks some memory
+	delete collCb;
 
 	//delete all the crap in the scenemanager too
 	for (ComponentPool* pool : sceneECS.scene.componentPools) {
