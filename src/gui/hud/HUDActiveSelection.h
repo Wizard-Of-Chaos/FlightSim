@@ -15,7 +15,7 @@ public:
 	HUDActiveSelection(SceneManager* man, IGUIElement* root);
 	~HUDActiveSelection() override;
 	virtual void updateElement(SceneManager* manager, EntityId playerId);
-	EntityId activeSelection;
+
 	IGUIStaticText* name;
 	IGUIImage* selectGUI;
 };

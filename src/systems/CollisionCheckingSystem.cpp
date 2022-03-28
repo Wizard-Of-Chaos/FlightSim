@@ -32,7 +32,6 @@ void projectileCollider(SceneManager* manager, EntityId projectile, EntityId imp
 		} else {
 			overflow = proj->damage;
 		}
-		std::cout << overflow << std::endl;
 		hp->health -= overflow;
 	}
 	/*

@@ -10,7 +10,7 @@ HUDActiveSelection::HUDActiveSelection(SceneManager* man, IGUIElement* root) : H
 	name->setOverrideColor(SColor(255, 255, 255, 255));
 	name->setOverrideFont(man->defaults.defaultHUDFont);
 	name->enableOverrideColor(true);
-	activeSelection = INVALID_ENTITY;
+	//activeSelection = INVALID_ENTITY;
 	selectGUI->setVisible(false);
 	name->setVisible(false);
 }
@@ -26,15 +26,15 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 	auto player = manager->scene.get<PlayerComponent>(playerId);
 	auto input = manager->scene.get<InputComponent>(playerId);
 	auto playerIrr = manager->scene.get<IrrlichtComponent>(playerId);
-	player->activeSelection = activeSelection;
+	auto sensors = manager->scene.get<SensorComponent>(playerId);
 
 	ICameraSceneNode* camera = player->camera;
 
 	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
 	line3df ray = input->cameraRay;
 
-	if (!manager->scene.entityInUse(activeSelection)) { //Check to see if the entity still exists
-		activeSelection = INVALID_ENTITY;
+	if (!manager->scene.entityInUse(sensors->targetContact)) { //Check to see if the entity still exists
+		sensors->targetContact = INVALID_ENTITY;
 	}
 
 	if (input->rightMouseDown) { //Uses the input component to hurl out a ray selecting anything in its path
@@ -42,7 +42,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 		if (selection) {
 			if (selection->getID() != -1 && selection != playerIrr->node) {
 				EntityId id = strToId(selection->getName());
-				if(manager->scene.entityInUse(id)) activeSelection = id;
+				if(manager->scene.entityInUse(id)) sensors->targetContact = id;
 				auto irr = manager->scene.get<IrrlichtComponent>(id);
 				std::wstring widestr = std::wstring(irr->name.begin(), irr->name.end());
 				name->setText(widestr.c_str());
@@ -53,17 +53,17 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 		else if (!selection) {
 			selectGUI->setVisible(false);
 			name->setVisible(false);
-			activeSelection = INVALID_ENTITY;
+			sensors->targetContact = INVALID_ENTITY;
 		}
 	}
-	if (activeSelection == INVALID_ENTITY) {
+	if (sensors->targetContact == INVALID_ENTITY) {
 		selectGUI->setVisible(false);
 		name->setVisible(false);
 		return;
 	}
-	auto irr = manager->scene.get<IrrlichtComponent>(activeSelection);
+	auto irr = manager->scene.get<IrrlichtComponent>(sensors->targetContact);
 	if (!irr) {
-		activeSelection = INVALID_ENTITY;
+		sensors->targetContact = INVALID_ENTITY;
 		return;
 	}
 	//Moves around the selection GUI

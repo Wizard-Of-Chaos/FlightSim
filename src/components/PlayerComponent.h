@@ -33,7 +33,7 @@ struct PlayerComponent
 	//hud
 	IGUIElement* rootHUD;
 	std::vector<HUDElement*> HUD;
-	EntityId activeSelection;
+
 	std::map<EntityId, HUDContact*> trackedContacts;
 
 	void removeContact(HUDContact* contact);

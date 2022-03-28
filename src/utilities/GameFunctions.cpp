@@ -300,7 +300,7 @@ bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 	auto playerCamera = scene->assign<PlayerComponent>(shipId);
 	playerCamera->camera = camera;
 	playerCamera->target = target;
-	playerCamera->activeSelection = INVALID_ENTITY;
+	//playerCamera->activeSelection = INVALID_ENTITY;
 	return true;
 }
 

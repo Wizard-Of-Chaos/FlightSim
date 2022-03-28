@@ -112,9 +112,9 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfo
 {
 	auto wepParent = manager->scene.get<ParentComponent>(projId);
 	auto shipParent = manager->scene.get<ParentComponent>(wepParent->parentId);
-	auto pc = manager->scene.get<PlayerComponent>(shipParent->parentId);
-	if (!pc) return; // need a similar check for AI component
-	if (pc && pc->activeSelection == INVALID_ENTITY) {
+	auto sensors = manager->scene.get<SensorComponent>(shipParent->parentId);
+	if (!sensors) return; // need a similar check for AI component
+	if (sensors && sensors->targetContact == INVALID_ENTITY) {
 		std::cout << "No entity is currently selected!\n";
 	}
 	ISceneManager* smgr = manager->controller->smgr;
@@ -128,8 +128,8 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfo
 	irr->node->setName(idToStr(projId).c_str());
 
 	auto missile = manager->scene.assign<MissileProjectileComponent>(projId);
-	if (pc) {
-		missile->target = pc->activeSelection;
+	if (sensors) {
+		missile->target = sensors->targetContact;
 
 	}
 	auto ai = manager->scene.get<AIComponent>(shipParent->parentId);

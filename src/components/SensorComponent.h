@@ -24,6 +24,9 @@ struct SensorComponent
 	EntityId closestContact;
 	EntityId closestHostileContact;
 	EntityId closestFriendlyContact;
+
+	EntityId targetContact; //contact for whoever the sensors are actually focused on
+	f32 timeSelected;
 };
 
 #endif
