@@ -12,7 +12,7 @@ void contactDistanceUpdate(SceneManager* manager, ISceneNode* self, EntityId con
 	}
 }
 
-void sensorUpdateSystem(SceneManager* manager) //the sensor component does not and SHOULD not pick an active selection; however it can null-out the current one
+void sensorUpdateSystem(SceneManager* manager, f32 dt) //the sensor component does not and SHOULD not pick an active selection; however it can null-out the current one
 {
 	for (EntityId id : SceneView<IrrlichtComponent, SensorComponent, FactionComponent>(manager->scene)) {
 		auto irr = manager->scene.get<IrrlichtComponent>(id);
@@ -25,6 +25,9 @@ void sensorUpdateSystem(SceneManager* manager) //the sensor component does not a
 			if (targetDistance.getLength() > sensor->detectionRadius) {
 				sensor->targetContact = INVALID_ENTITY; //the actual removal from the list of contacts happens further down the chain
 			}
+			sensor->timeSelected += dt;
+		} else {
+			sensor->timeSelected = 0;
 		}
 
 		for (EntityId checkId : SceneView<FactionComponent, IrrlichtComponent>(manager->scene)) {
