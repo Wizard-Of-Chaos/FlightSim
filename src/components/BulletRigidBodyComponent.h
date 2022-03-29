@@ -11,6 +11,7 @@
 struct BulletRigidBodyComponent
 {
 	btRigidBody rigidBody = btRigidBody(0,0,0,btVector3(0,0,0));
+	btConvexHullShape shape;
 };
 
 #endif

@@ -39,6 +39,8 @@ HUDHealthBar::~HUDHealthBar()
 	healthNum->remove();
 	fuel->remove();
 	fuelNum->remove();
+	shield->remove();
+	shieldNum->remove();
 }
 
 void HUDHealthBar::updateElement(SceneManager* manager, EntityId playerId)

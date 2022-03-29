@@ -143,8 +143,7 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
 	irrComp->node->setName(idToStr(roidEntity).c_str());
 	irrComp->name = "Asteroid";
 
-	btConvexHullShape* shape = new btConvexHullShape(createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh));
-	initializeBtRigidBody(manager, roidEntity, shape);
+	initializeBtRigidBody(manager, roidEntity, createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh));
 	initializeNeutralFaction(manager, roidEntity);
 	initializeDefaultHealth(manager, roidEntity);
 
@@ -206,6 +205,7 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	return initializeWeaponFromId(1, manager, shipId, hardpoint);
 }
 
+/*
 bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
 {
 	Scene* scene = &manager->scene;
@@ -225,10 +225,10 @@ bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
 	vector3df maxEdge = bounds.MaxEdge;
 	vector3df minEdge = bounds.MinEdge;
 	btVector3 halves((maxEdge.X - minEdge.X) * .5f, (maxEdge.Y - minEdge.Y) * .5f, (maxEdge.Z - minEdge.Z) * .5f);
-	auto shape = new btBoxShape(halves);
+	auto shape = btBoxShape(halves)
 	btVector3 localInertia;
 	f32 mass = 1.f;
-	shape->calculateLocalInertia(mass, localInertia);
+	shape.calculateLocalInertia(mass, localInertia);
 	rbc->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
 	rbc->rigidBody.setSleepingThresholds(0, 0);
 
@@ -240,8 +240,9 @@ bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
 
 	return true;
 }
+*/
 
-bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape* shape)
+bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape)
 {
 	Scene* scene = &manager->scene;
 	ISceneManager* smgr = manager->controller->smgr;
@@ -251,7 +252,7 @@ bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHul
 	if (!objIrr) return false;
 
 	BulletRigidBodyComponent* rbc = scene->assign<BulletRigidBodyComponent>(entityId);
-
+	rbc->shape = shape;
 	btTransform transform = btTransform();
 	transform.setIdentity();
 	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
@@ -259,8 +260,8 @@ bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHul
 
 	btVector3 localInertia;
 	f32 mass = 1.f;
-	shape->calculateLocalInertia(mass, localInertia);
-	rbc->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
+	rbc->shape.calculateLocalInertia(mass, localInertia);
+	rbc->rigidBody = btRigidBody(mass, motionState, &rbc->shape, localInertia);
 	rbc->rigidBody.setSleepingThresholds(0, 0);
 
 	rbc->rigidBody.setUserIndex(getEntityIndex(entityId));
@@ -281,9 +282,7 @@ bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 s
 	auto shipComp = scene->get<ShipComponent>(entityId);
 
 	if (!shipComp) return false;
-	auto shape = new btConvexHullShape(cont->shipData[shipId]->collisionShape);
-	//dont want to screw with the inertia so we make a copy
-	return initializeBtRigidBody(manager, entityId, shape);
+	return initializeBtRigidBody(manager, entityId, cont->shipData[shipId]->collisionShape);
 }
 
 bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
