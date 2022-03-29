@@ -52,3 +52,9 @@ std::string fprecis(f32 num, s32 round)
 	ret.resize(ret.size() - round);
 	return ret;
 }
+
+std::wstring wstr(std::string& str)
+{
+	return std::wstring(str.begin(), str.end());
+}
+

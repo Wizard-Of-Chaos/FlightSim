@@ -16,9 +16,11 @@ public:
 	~HUDHealthBar() override;
 	virtual void updateElement(SceneManager* manager, EntityId playerId);
 	IGUIImage* health;
+	IGUIImage* shield;
 	IGUIImage* fuel;
 	IGUIStaticText* fuelNum;
 	IGUIStaticText* healthNum;
+	IGUIStaticText* shieldNum;
 };
 
 #endif

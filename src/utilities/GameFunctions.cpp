@@ -481,6 +481,7 @@ EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos)
 	initializeShipCollisionBody(manager, shipEntity, stCtrl->playerShip);
 	initializeNeutralFaction(manager, shipEntity);
 	initializeDefaultHealth(manager, shipEntity);
+	initializeDefaultShields(manager, shipEntity);
 	initializeDefaultSensors(manager, shipEntity);
 	initializeDefaultHUD(manager, shipEntity);
 	initializeShipParticles(manager, shipEntity);
