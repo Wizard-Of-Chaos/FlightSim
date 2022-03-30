@@ -159,7 +159,7 @@ bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
 #endif 
 	btCollisionWorld::AllHitsRayResultCallback cb(pos, futurePos);
 	manager->bulletWorld->rayTest(pos, futurePos, cb);
-	manager->controller->driver->draw3DLine(btVecToIrr(pos), btVecToIrr(futurePos));
+
 	if (cb.hasHit()) {
 		std::cout << "AAAAAA I'M GOING TO CRASH \n";
 		return true;
