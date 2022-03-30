@@ -1,6 +1,7 @@
 #include "ShipMovementUtils.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include "GameStateController.h"
 
 #include <iostream>
 
@@ -10,37 +11,6 @@ void QuaternionToEuler(const btQuaternion& TQuat, btVector3& TEuler) {
 	TQuat.getEulerZYX(z, y, x);
 	TEuler.setValue(x, y, z);
 	TEuler *= RADTODEG;
-}
-
-btVector3 getRigidBodyForward(btRigidBody* body)
-{
-	btVector3 forward(0, 0, 1);
-	btQuaternion transRot = body->getCenterOfMassTransform().getRotation();
-	return forward.rotate(transRot.getAxis(), transRot.getAngle());
-}
-btVector3 getRigidBodyBackward(btRigidBody* body)
-{
-	return -getRigidBodyForward(body);
-}
-btVector3 getRigidBodyRight(btRigidBody* body)
-{
-	btVector3 right(1, 0, 0);
-	btQuaternion transRot = body->getCenterOfMassTransform().getRotation();
-	return right.rotate(transRot.getAxis(), transRot.getAngle());
-}
-btVector3 getRigidBodyLeft(btRigidBody* body)
-{
-	return -getRigidBodyRight(body);
-}
-btVector3 getRigidBodyUp(btRigidBody* body)
-{
-	btVector3 up(0, 1, 0);
-	btQuaternion transRot = body->getCenterOfMassTransform().getRotation();
-	return up.rotate(transRot.getAxis(), transRot.getAngle());
-}
-btVector3 getRigidBodyDown(btRigidBody* body)
-{
-	return -getRigidBodyUp(body);
 }
 
 btVector3 getForceForward(btRigidBody* body, ShipComponent* ship)
@@ -173,8 +143,6 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 
 bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
 {
-	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
-
 	auto ship = manager->scene.get<ShipComponent>(id);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 	auto irr = manager->scene.get<IrrlichtComponent>(id);
@@ -184,19 +152,18 @@ bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
 
 	btVector3 velocity = body->getLinearVelocity();
 	btVector3 dir = velocitySafeNormalize(velocity);
-	vector3df pos = irr->node->getPosition();
-	vector3df futurePos = pos + (btVecToIrr(dir) * velocity.length() * 3.f);
-
-	line3df trajectory(pos, futurePos);
-	ISceneNode* obstacle = coll->getSceneNodeFromRayBB(trajectory, ID_IsAvoidable);
-
-	if (obstacle) {
-		EntityId obstacleId = strToId(std::string(obstacle->getName()));
-		if (target != INVALID_ENTITY && obstacleId == target) return false;
-
-		//now what?
-
+	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
+	btVector3 futurePos = pos + (velocity); //where will it be three seconds from now
+#if _DEBUG
+	manager->controller->stateController->addDebugLine(line3df(btVecToIrr(pos), btVecToIrr(futurePos)));
+#endif 
+	btCollisionWorld::AllHitsRayResultCallback cb(pos, futurePos);
+	manager->bulletWorld->rayTest(pos, futurePos, cb);
+	manager->controller->driver->draw3DLine(btVecToIrr(pos), btVecToIrr(futurePos));
+	if (cb.hasHit()) {
+		std::cout << "AAAAAA I'M GOING TO CRASH \n";
 		return true;
 	}
+
 	return false;
 }

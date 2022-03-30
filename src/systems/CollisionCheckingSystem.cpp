@@ -2,18 +2,6 @@
 #include "SceneManager.h"
 #include <iostream>
 
-EntityId getIdFromBt(btCollisionObject* object)
-{
-	EntityIndex ind = object->getUserIndex();
-	EntityVersion ver = object->getUserIndex2();
-	int hasEnt = object->getUserIndex3();
-	EntityId id = INVALID_ENTITY;
-	if (hasEnt) {
-		id = createEntityId(ind, ver);
-	}
-	return id;
-}
-
 void projectileCollider(SceneManager* manager, EntityId projectile, EntityId impacted)
 {
 	auto hp = manager->scene.get<HealthComponent>(impacted);
@@ -34,12 +22,7 @@ void projectileCollider(SceneManager* manager, EntityId projectile, EntityId imp
 		}
 		hp->health -= overflow;
 	}
-	/*
-	std::cout << "Impact! ";
-	if (shield) std::cout << "Shields: " << shield->shields;
-	if (hp) std::cout << " Health: " << hp->health;
-	std::cout << std::endl;
-	*/
+
 	projectileImpact(manager, irr->node->getPosition(), .2f);
 	destroyProjectile(manager, projectile);
 }

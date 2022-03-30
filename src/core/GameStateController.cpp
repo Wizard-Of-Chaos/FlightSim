@@ -158,6 +158,7 @@ void GameStateController::mainLoop()
 				break;
 			case GAME_RUNNING:
 				gameController->update();
+				gameController->bWorld->debugDrawWorld();
 				break;
 			case GAME_PAUSED:
 				guiController->update();
@@ -167,10 +168,23 @@ void GameStateController::mainLoop()
 				break;
 		}
 		then = now;
-
+#if _DEBUG
+		driver->setTransform(ETS_WORLD, IdentityMatrix);
+		SMaterial material;
+		material.Lighting = false;
+		material.BackfaceCulling = false;
+		material.ZBuffer = ECFN_ALWAYS;
+		driver->setMaterial(material);
+#endif 
 		driver->beginScene(true, true, SColor(255, 20, 20, 20));
 		smgr->drawAll();
 		guienv->drawAll();
+#if _DEBUG
+		for (line3df line : debugLines) {
+			driver->draw3DLine(line.start, line.end);
+		}
+		debugLines.clear();
+#endif 
 		driver->endScene();
 
 		int fps = driver->getFPS();

@@ -205,43 +205,6 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	return initializeWeaponFromId(1, manager, shipId, hardpoint);
 }
 
-/*
-bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId)
-{
-	Scene* scene = &manager->scene;
-	ISceneManager* smgr = manager->controller->smgr;
-
-	auto objIrr = scene->get<IrrlichtComponent>(objectId);
-	
-	if (!objIrr) return false;
-
-	BulletRigidBodyComponent* rbc = scene->assign<BulletRigidBodyComponent>(objectId);
-
-	btTransform transform = btTransform();
-	transform.setIdentity();
-	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
-	auto motionState = new btDefaultMotionState(transform);
-	aabbox3df bounds = objIrr->node->getBoundingBox();
-	vector3df maxEdge = bounds.MaxEdge;
-	vector3df minEdge = bounds.MinEdge;
-	btVector3 halves((maxEdge.X - minEdge.X) * .5f, (maxEdge.Y - minEdge.Y) * .5f, (maxEdge.Z - minEdge.Z) * .5f);
-	auto shape = btBoxShape(halves)
-	btVector3 localInertia;
-	f32 mass = 1.f;
-	shape.calculateLocalInertia(mass, localInertia);
-	rbc->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
-	rbc->rigidBody.setSleepingThresholds(0, 0);
-
-	rbc->rigidBody.setUserIndex(getEntityIndex(objectId));
-	rbc->rigidBody.setUserIndex2(getEntityVersion(objectId));
-	rbc->rigidBody.setUserIndex3(1);
-
-	manager->bulletWorld->addRigidBody(&(rbc->rigidBody));
-
-	return true;
-}
-*/
-
 bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape)
 {
 	Scene* scene = &manager->scene;

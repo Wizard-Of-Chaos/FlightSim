@@ -118,6 +118,9 @@
     <ClCompile Include="src\gui\GuiLoadoutMenu.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\btUtils.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\AIComponent.h">
@@ -287,6 +290,9 @@
     </ClInclude>
     <ClInclude Include="src\components\ShieldComponent.h">
       <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\btUtils.h">
+      <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

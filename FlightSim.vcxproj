@@ -122,13 +122,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>irrlicht-1.8.4\include;bulletlibs\include;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems;$(SolutionDir)\src\gui\hud;$(SolutionDir)\lib\irrklang\include</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>irrlicht-1.8.4\lib\Win64-visualStudio;lib\bullet\lib\Debug;$(SolutionDir)\lib\irrklang\lib\Winx64-visualStudio</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\lib\irrlicht\lib\Win64-visualStudio;$(SolutionDir)\lib\bullet\lib\Debug;$(SolutionDir)\lib\irrklang\lib\Winx64-visualStudio</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -186,6 +186,7 @@
     <ClCompile Include="src\systems\ShipUpdateSystem.cpp" />
     <ClCompile Include="src\systems\WeaponFiringSystem.cpp" />
     <ClCompile Include="src\utilities\AttributeReaders.cpp" />
+    <ClCompile Include="src\utilities\btUtils.cpp" />
     <ClCompile Include="src\utilities\Config.cpp" />
     <ClCompile Include="src\utilities\GvReader.cpp" />
     <ClCompile Include="src\utilities\GameFunctions.cpp" />
@@ -242,6 +243,7 @@
     <ClInclude Include="src\systems\WeaponFiringSystem.h" />
     <ClInclude Include="src\components\WeaponInfoComponent.h" />
     <ClInclude Include="src\utilities\AttributeReaders.h" />
+    <ClInclude Include="src\utilities\btUtils.h" />
     <ClInclude Include="src\utilities\Config.h" />
     <ClInclude Include="src\utilities\GvReader.h" />
     <ClInclude Include="src\utilities\GameDefaults.h" />

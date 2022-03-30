@@ -19,7 +19,5 @@ void SceneManager::update(f32 time, f32 frameDelta)
 	irrlichtRigidBodyPositionSystem(scene, dt); //updates position based on rigidbody state
 	projectileSystem(this, dt); //kills projectiles after they have gone a set distance
 	playerUpdateSystem(this, scene, frameDelta); //updates camera location
-
-	bulletWorld->debugDrawWorld();
 }
 

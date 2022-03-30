@@ -10,14 +10,14 @@
 #include "HealthComponent.h"
 #include "ShieldComponent.h"
 #include "ProjectileUtils.h"
+#include "btUtils.h"
+
 
 class SceneManager;
 
 //Checks all collisions that are currently happening in the scene. This function handles things like projectiles hitting ships,
 //and updates health components accordingly.
 void collisionCheckingSystem(SceneManager* manager);
-//Convenience function to get the ID from a bullet collision object.
-EntityId getIdFromBt(btCollisionObject* object);
 
 //Checks two entities: the projectile and whatever got hit by the projectile. Removes the appropriate amount of health.
 void projectileCollider(SceneManager* manager, EntityId projectile, EntityId impacted);

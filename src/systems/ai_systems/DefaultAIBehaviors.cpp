@@ -67,6 +67,8 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 	vector3df facing = pursuitIrr->node->getPosition() - irr->node->getPosition();
 	facing.normalize();
 
+	if (avoidObstacles(manager, id, dt)) return;
+
 	//If it's not behind the ship, get behind it
 	if (dist.getLength() > 50.f) {
 		goToPoint(&rbc->rigidBody, ship, irrVecToBt(tailPos), dt);

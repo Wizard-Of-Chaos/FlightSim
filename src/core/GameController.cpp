@@ -27,14 +27,19 @@ void GameController::clearPlayerHUD()
 	}
 }
 
+#if _DEBUG
+void btDebugRenderer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
+{
+	controller->addDebugLine(line3df(btVecToIrr(from), btVecToIrr(to)));
+}
+#endif 
+
 void GameController::init()
 {
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
 	guienv = device->getGUIEnvironment();
 	then = device->getTimer()->getTime();
-
-	rend.setDriver(driver);
 
 	//bullet init
 	broadPhase = new btAxisSweep3(btVector3(-1000, -1000, -1000), btVector3(1000, 1000, 1000));
@@ -43,7 +48,11 @@ void GameController::init()
 	solver = new btSequentialImpulseConstraintSolver();
 	bWorld = new BulletPhysicsWorld(dispatcher, broadPhase, solver, collisionConfig);
 	bWorld->setGravity(btVector3(0, 0, 0));
+#if _DEBUG
+	rend.setController(stateController);
+	rend.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	bWorld->setDebugDrawer(&rend);
+#endif 
 	Scene scene;
 	sceneECS = SceneManager(scene, this, bWorld); //Sets up the ECS scene
 

@@ -42,20 +42,16 @@ class BulletPhysicsWorld : public btDiscreteDynamicsWorld
 		}
 };
 
+#if _DEBUG
 /*
 * This class is SUPPOSED to be able to make it so that bullet bodies use Irrlicht to draw themselves, but I have yet to get it functional.
 */
 class btDebugRenderer : public btIDebugDraw
 {
 public:
-	void setDriver(IVideoDriver* ndriver) { driver = ndriver; }
-	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color) {
-		matrix4 id;
-		id.makeIdentity();
-		driver->setTransform(ETS_WORLD, id);
-		driver->setMaterial(SMaterial());
-		driver->draw3DLine(btVecToIrr(from), btVecToIrr(to), SColor(255,255,255,255));
-	}
+	void setController(GameStateController* ctrl) { controller = ctrl; }
+	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color);
+
 	virtual void drawContactPoint(const btVector3& pointOnB, const btVector3& normalOnB, btScalar dist, int lifeTime, const btVector3& color)
 	{
 
@@ -69,9 +65,10 @@ public:
 	virtual void setDebugMode(int nmode) { mode = nmode; }
 	virtual int getDebugMode() const { return mode; }
 private:
-	IVideoDriver* driver;
+	GameStateController* controller;
 	int mode;
 };
+#endif 
 /*
 * The GameController class holds all the necessary information about what's actually going on in the game. It has pointers to the
 * various drivers for the game (the irrlicht device, video driver, Irrlicht scene manager, ECS manager, sound engine, etc) and handles
@@ -99,9 +96,9 @@ class GameController
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
 		collisionFilterCallback* collCb;
-		
+#if _DEBUG
 		btDebugRenderer rend;
-
+#endif 
 		GameController(GameStateController* controller);
 		void init();
 		void close();

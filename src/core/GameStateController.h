@@ -61,7 +61,9 @@ class GameStateController : public IEventReceiver
 		void loadShipAndWeaponData();
 		std::unordered_map<u32, ShipData*> shipData;
 		std::unordered_map<u32, WeaponData*> weaponData;
-
+#if _DEBUG
+		void addDebugLine(line3df line) { debugLines.push_back(line); }
+#endif 
 	private:
 		void stateChange();
 		u32 then;
@@ -71,7 +73,9 @@ class GameStateController : public IEventReceiver
 		GuiController* guiController;
 		bool stateChangeCalled = false;
 		bool gameInitialized = false;
-
+#if _DEBUG
+		std::vector<line3df> debugLines;
+#endif 
 
 };
 

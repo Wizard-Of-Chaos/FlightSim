@@ -62,9 +62,6 @@ bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int 
 //Adds a default weapon to the given ship at the given hardpoint.
 //Requires: Irrlicht component, ship component. Returns false without that.
 bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoint);
-//Sets up a default hitbox (an axis-aligned bounding box) on the given object.
-//Requires: Irrlicht component. Returns false otherwise.
-//bool initializeDefaultRigidBody(SceneManager* manager, EntityId objectId);
 //Adds on a player component and an input component to a given ship.
 //Requires: Irrlicht component. Returns false without that.
 bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId);
