@@ -62,8 +62,10 @@ void sensorSystem(SceneManager* manager, f32 dt)
 		auto sens = manager->scene.get<SensorComponent>(id);
 		auto fac = manager->scene.get<FactionComponent>(id);
 		auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
-
-		sens->contacts = getContacts(manager, rbc, sens, fac);
-
+		sens->timeSinceLastUpdate += dt;
+		if (sens->timeSinceLastUpdate >= sens->updateInterval) {
+			sens->contacts = getContacts(manager, rbc, sens, fac);
+			sens->timeSinceLastUpdate = 0;
+		}
 	}
 }

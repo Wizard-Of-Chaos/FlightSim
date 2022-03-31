@@ -321,6 +321,9 @@ void initializeDefaultSensors(SceneManager* manager, EntityId id)
 	sensors->closestHostileContact = INVALID_ENTITY;
 	sensors->targetContact = INVALID_ENTITY;
 	sensors->timeSelected = 0;
+
+	sensors->updateInterval = DEFAULT_SENSOR_UPDATE_INTERVAL;
+	sensors->timeSinceLastUpdate = 0;
 }
 
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
