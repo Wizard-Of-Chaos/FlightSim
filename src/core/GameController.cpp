@@ -46,8 +46,10 @@ void GameController::init()
 	collisionConfig = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfig);
 	solver = new btSequentialImpulseConstraintSolver();
+	gPairCb = new btGhostPairCallback();
 	bWorld = new BulletPhysicsWorld(dispatcher, broadPhase, solver, collisionConfig);
 	bWorld->setGravity(btVector3(0, 0, 0));
+	bWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(gPairCb);
 #if _DEBUG
 	rend.setController(stateController);
 	rend.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
@@ -77,7 +79,7 @@ void GameController::close()
 	delete solver;
 	delete bWorld; //this likely leaks some memory
 	delete collCb;
-
+	delete gPairCb;
 	//delete all the crap in the scenemanager too
 	for (ComponentPool* pool : sceneECS.scene.componentPools) {
 		delete pool; //pool's closed

@@ -16,6 +16,12 @@ void defaultIdleBehavior(SceneManager* manager, EntityId id, f32 dt)
 	//slows and stops the rigid body
 	rbc->rigidBody.applyTorqueImpulse(torque * dt);
 	rbc->rigidBody.applyCentralImpulse(force * dt);
+
+	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+		EntityId wep = ship->weapons[i];
+		auto wepInfo = manager->scene.get<WeaponInfoComponent>(wep);
+		wepInfo->isFiring = false;
+	}
 }
 
 void defaultFleeBehavior(SceneManager* manager, EntityId id, EntityId fleeTarget, f32 dt)

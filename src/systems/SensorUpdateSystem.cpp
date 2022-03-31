@@ -19,7 +19,7 @@ std::vector<ContactInfo> getContacts(SceneManager* manager, BulletRigidBodyCompo
 	btVector3 closeHostileDist(0, 0, 0);
 	btVector3 closeFriendlyDist(0, 0, 0);
 	btVector3 closeDist(0, 0, 0);
-	std::cout << ghost.getNumOverlappingObjects() << std::endl;
+
 	for (u32 i = 0; i < ghost.getNumOverlappingObjects(); ++i) {
 		btCollisionObject* obj = ghost.getOverlappingObject(i);
 		if (obj == &rbc->rigidBody) continue;
@@ -36,15 +36,16 @@ std::vector<ContactInfo> getContacts(SceneManager* manager, BulletRigidBodyCompo
 		btVector3 dist = objRBC->rigidBody.getCenterOfMassPosition() - rbc->rigidBody.getCenterOfMassPosition();
 		btScalar len = dist.length2();
 		//update closest hostile, friendly, and general contacts
-		if (len < closeDist.length2()) {
+		if (len > closeDist.length2()) {
 			closeDist = dist;
 			sens->closestContact = objId;
 		}
-		if (len < closeHostileDist.length2() && objFac->isHostile(fac)) {
+
+		if (len > closeHostileDist.length2() && objFac->isHostile(fac)) {
 			closeHostileDist = dist;
 			sens->closestHostileContact = objId;
 		}
-		if (len < closeFriendlyDist.length2() && objFac->isFriendly(fac)) {
+		if (len > closeFriendlyDist.length2() && objFac->isFriendly(fac)) {
 			closeFriendlyDist = dist;
 			sens->closestFriendlyContact = objId;
 		}
@@ -63,5 +64,6 @@ void sensorSystem(SceneManager* manager, f32 dt)
 		auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 
 		sens->contacts = getContacts(manager, rbc, sens, fac);
+
 	}
 }

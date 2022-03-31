@@ -96,6 +96,7 @@ class GameController
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
 		collisionFilterCallback* collCb;
+		btGhostPairCallback* gPairCb;
 #if _DEBUG
 		btDebugRenderer rend;
 #endif 
