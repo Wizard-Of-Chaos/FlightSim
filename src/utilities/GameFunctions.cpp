@@ -310,16 +310,17 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 void initializeDefaultSensors(SceneManager* manager, EntityId id)
 {
 	Scene* scene = &manager->scene;
-	auto irr = scene->get<IrrlichtComponent>(id);
+	auto rbc = scene->get<BulletRigidBodyComponent>(id);
 	auto fac = scene->get<FactionComponent>(id);
-	if (!irr || !fac) return; //check, because sensors REQUIRE an irrlicht pos
+	if (!rbc || !fac) return; //check, because sensors REQUIRE an irrlicht pos
 	auto sensors = scene->assign<SensorComponent>(id);
+	sensors->detectionRadius = DEFAULT_SENSOR_RANGE;
+
 	sensors->closestContact = INVALID_ENTITY;
 	sensors->closestFriendlyContact = INVALID_ENTITY;
 	sensors->closestHostileContact = INVALID_ENTITY;
 	sensors->targetContact = INVALID_ENTITY;
 	sensors->timeSelected = 0;
-	sensors->detectionRadius = DEFAULT_SENSOR_RANGE;
 }
 
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position)

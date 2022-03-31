@@ -8,10 +8,13 @@
 
 #include <vector>
 #include <map>
+#include <tuple>
 
 class HUDElement;
 class HUDContact;
 
+struct BulletRigidBodyComponent;
+struct FactionComponent;
 /*
 * The player component stores things that are exclusive to the player and get adjusted by the player.
 * It stores the camera scene node, which allows the player to actually view the scene, the target scene node,
@@ -34,7 +37,7 @@ struct PlayerComponent
 	IGUIElement* rootHUD;
 	std::vector<HUDElement*> HUD;
 
-	std::map<EntityId, HUDContact*> trackedContacts;
+	std::map<std::tuple<EntityId, BulletRigidBodyComponent*, FactionComponent*>, HUDContact*> trackedContacts;
 
 	void removeContact(HUDContact* contact);
 	void removeHUDElement(HUDElement* element);

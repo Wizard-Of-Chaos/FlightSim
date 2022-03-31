@@ -16,7 +16,8 @@ using namespace io;
 using namespace gui;
 
 #include <btBulletDynamicsCommon.h>
-#include "BulletCollision/CollisionShapes/btShapeHull.h"
+#include <BulletCollision/CollisionShapes/btShapeHull.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <irrKlang.h>
 using namespace irrklang;
 

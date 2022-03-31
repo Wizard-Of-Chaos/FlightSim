@@ -4,11 +4,13 @@
 #include "BaseHeader.h"
 #include "ECS.h"
 #include "ShipComponent.h"
-#include "IrrlichtComponent.h"
 #include "FactionComponent.h"
+#include "BulletRigidBodyComponent.h"
 
+#include <tuple>
+#include <vector>
 //Default range of a sensor
-#define DEFAULT_SENSOR_RANGE 500.f
+#define DEFAULT_SENSOR_RANGE 1000.f
 
 /*
 * The sensor component allows a given entity to "see" what's around it. It looks for any Irrlicht node
@@ -17,10 +19,13 @@
 * 
 * This component is updated in the SensorUpdateSystem.
 */
+
+typedef std::tuple<EntityId, BulletRigidBodyComponent*, FactionComponent*> ContactInfo;
+
 struct SensorComponent
 {
 	f32 detectionRadius;
-	array<EntityId> contacts;
+	std::vector<ContactInfo> contacts;
 	EntityId closestContact;
 	EntityId closestHostileContact;
 	EntityId closestFriendlyContact;

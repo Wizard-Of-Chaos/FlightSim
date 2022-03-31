@@ -2,9 +2,12 @@
 #include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
+#include "BulletRigidBodyComponent.h"
+#include "FactionComponent.h"
 
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 {
@@ -18,20 +21,21 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		SensorComponent* sensors = scene.get<SensorComponent>(entityId);
 
 		for (unsigned int i = 0; i < sensors->contacts.size(); ++i) {
-			EntityId contact = sensors->contacts[i];
-			if (player->trackedContacts[contact] == nullptr && scene.entityInUse(contact)) {
+			std::tuple<EntityId, BulletRigidBodyComponent*, FactionComponent*> info = sensors->contacts[i];
+			EntityId contact = std::get<0>(info);
+			if (player->trackedContacts[info] == nullptr && scene.entityInUse(contact)) {
 				HUDContact* elem = new HUDContact(manager, player->rootHUD, contact);
 				player->HUD.push_back(elem);
-				player->trackedContacts[contact] = elem;
+				player->trackedContacts[info] = elem;
 			}
 		}
 
-		for (auto [id, hud] : player->trackedContacts) {
-			if (!scene.entityInUse(id)) {
+		for (auto [info, hud] : player->trackedContacts) {
+			if (!scene.entityInUse(std::get<0>(info))) {
 				if (hud) player->removeContact(hud);
 				continue;
 			}
-			if (sensors->contacts.binary_search(id) == -1) {
+			if (std::find(sensors->contacts.begin(), sensors->contacts.end(), info) != sensors->contacts.end()) {
 				if (!hud) continue;
 				player->removeContact(hud);
 			}

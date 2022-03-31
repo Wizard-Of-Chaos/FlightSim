@@ -15,6 +15,10 @@ void PlayerComponent::removeHUDElement(HUDElement* element)
 void PlayerComponent::removeContact(HUDContact* contact)
 {
 	if (!contact) return;
-	trackedContacts[contact->contact] = nullptr; //Needed to fix the internal map of contacts to HHUD elements
-	removeHUDElement(contact);
+	for (auto [info, hud] : trackedContacts) {
+		if (std::get<0>(info) != contact->contact) continue;
+		trackedContacts[info] = nullptr;
+		removeHUDElement(contact);
+		return;
+	}
 }
