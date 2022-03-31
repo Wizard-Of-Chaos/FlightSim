@@ -152,19 +152,21 @@ bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
 
 	btVector3 velocity = body->getLinearVelocity();
 	btVector3 dir = velocitySafeNormalize(velocity);
-	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition() + (getRigidBodyForward(body) * 5.f);
-	btVector3 futurePos = pos + (velocity); //where will it be three seconds from now
+	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
+	btVector3 futurePos = pos + (velocity *3.f); //where will it be three seconds from now
 #if _DEBUG
 	manager->controller->stateController->addDebugLine(line3df(btVecToIrr(pos), btVecToIrr(futurePos)));
 #endif 
-	btCollisionWorld::ClosestConvexResultCallback cb(pos, futurePos);
-	btTransform from, to;
-	from.setOrigin(pos);
+	auto cb = btClosestNotMeConvexResultCallback(body, pos, futurePos, manager->bulletWorld->getPairCache(), manager->bulletWorld->getDispatcher());
+	auto shape = btSphereShape(3.f);
+	btTransform from(body->getOrientation(), pos);
+	btTransform to(body->getOrientation(), futurePos);
 	to.setOrigin(futurePos);
-	auto shape = btSphereShape(.3f);
-	//manager->bulletWorld->convexSweepTest(&shape, from, to, cb);
+	manager->bulletWorld->convexSweepTest(&shape, from, to, cb);
 	if (!cb.hasHit()) return false;
-
 	std::cout << "AAAAAA I'M GOING TO CRASH \n";
+	ship->moves[SHIP_STOP_VELOCITY] = true;
+	goToPoint(body, ship, (pos + getRigidBodyLeft(body) * 100.f), dt);
+
 	return true;
 }
