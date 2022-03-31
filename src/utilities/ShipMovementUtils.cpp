@@ -152,18 +152,19 @@ bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
 
 	btVector3 velocity = body->getLinearVelocity();
 	btVector3 dir = velocitySafeNormalize(velocity);
-	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
+	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition() + (getRigidBodyForward(body) * 5.f);
 	btVector3 futurePos = pos + (velocity); //where will it be three seconds from now
 #if _DEBUG
 	manager->controller->stateController->addDebugLine(line3df(btVecToIrr(pos), btVecToIrr(futurePos)));
 #endif 
-	btCollisionWorld::AllHitsRayResultCallback cb(pos, futurePos);
-	manager->bulletWorld->rayTest(pos, futurePos, cb);
+	btCollisionWorld::ClosestConvexResultCallback cb(pos, futurePos);
+	btTransform from, to;
+	from.setOrigin(pos);
+	to.setOrigin(futurePos);
+	auto shape = btSphereShape(.3f);
+	//manager->bulletWorld->convexSweepTest(&shape, from, to, cb);
+	if (!cb.hasHit()) return false;
 
-	if (cb.hasHit()) {
-		std::cout << "AAAAAA I'M GOING TO CRASH \n";
-		return true;
-	}
-
-	return false;
+	std::cout << "AAAAAA I'M GOING TO CRASH \n";
+	return true;
 }
