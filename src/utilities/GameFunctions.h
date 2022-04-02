@@ -85,6 +85,6 @@ EntityId explode(SceneManager* manager, vector3df position, f32 duration);
 //EntityId of the player.
 EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos);
 
-bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape);
+bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale);
 bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 shipId);
 #endif

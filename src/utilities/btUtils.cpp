@@ -12,6 +12,13 @@ EntityId getIdFromBt(btCollisionObject* object)
 	return id;
 }
 
+#if _DEBUG
+void btDebugRenderer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
+{
+	controller->addDebugLine(line3df(btVecToIrr(from), btVecToIrr(to)));
+}
+#endif 
+
 btVector3 getRigidBodyForward(btRigidBody* body)
 {
 	btVector3 forward(0, 0, 1);

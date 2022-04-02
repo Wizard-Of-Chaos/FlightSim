@@ -251,6 +251,7 @@
     <ClInclude Include="src\utilities\IrrlichtUtils.h" />
     <ClInclude Include="src\utilities\LoadoutData.h" />
     <ClInclude Include="src\utilities\ProjectileUtils.h" />
+    <ClInclude Include="src\utilities\Scenario.h" />
     <ClInclude Include="src\utilities\ShipMovementUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

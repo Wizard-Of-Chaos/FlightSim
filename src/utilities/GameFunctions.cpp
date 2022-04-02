@@ -143,7 +143,8 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
 	irrComp->node->setName(idToStr(roidEntity).c_str());
 	irrComp->name = "Asteroid";
 
-	initializeBtRigidBody(manager, roidEntity, createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh));
+	btVector3 scale(1.f, 1.f, 1.f);
+	initializeBtRigidBody(manager, roidEntity, createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh), scale);
 	initializeNeutralFaction(manager, roidEntity);
 	initializeDefaultHealth(manager, roidEntity);
 
@@ -205,7 +206,7 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	return initializeWeaponFromId(1, manager, shipId, hardpoint);
 }
 
-bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape)
+bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale)
 {
 	Scene* scene = &manager->scene;
 	ISceneManager* smgr = manager->controller->smgr;
@@ -216,6 +217,7 @@ bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHul
 
 	BulletRigidBodyComponent* rbc = scene->assign<BulletRigidBodyComponent>(entityId);
 	rbc->shape = shape;
+	rbc->shape.setLocalScaling(scale);
 	btTransform transform = btTransform();
 	transform.setIdentity();
 	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
@@ -245,7 +247,8 @@ bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 s
 	auto shipComp = scene->get<ShipComponent>(entityId);
 
 	if (!shipComp) return false;
-	return initializeBtRigidBody(manager, entityId, cont->shipData[shipId]->collisionShape);
+	btVector3 scale(1.f, 1.f, 1.f);
+	return initializeBtRigidBody(manager, entityId, cont->shipData[shipId]->collisionShape, scale);
 }
 
 bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)

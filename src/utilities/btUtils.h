@@ -4,6 +4,55 @@
 #include "BaseHeader.h"
 #include "ECS.h"
 
+//An extension of the bullet physics world with a helpful function that effectively deletes the world. Otherwise, it's the same.
+class BulletPhysicsWorld : public btDiscreteDynamicsWorld
+{
+public:
+	BulletPhysicsWorld(btDispatcher* dispatcher, btBroadphaseInterface* broadphasePairCache, btSequentialImpulseConstraintSolver* solver, btCollisionConfiguration* collisionConfiguration) :
+		btDiscreteDynamicsWorld(dispatcher, broadphasePairCache, solver, collisionConfiguration)
+	{
+	}
+	void clearObjects()
+	{
+		getBroadphase()->~btBroadphaseInterface();
+		new(getBroadphase())btDbvtBroadphase();
+		m_collisionObjects.clear();
+		m_nonStaticRigidBodies.clear();
+		m_sortedConstraints.clear();
+		m_constraints.clear();
+		m_actions.clear();
+		m_predictiveManifolds.clear();
+	}
+};
+
+#if _DEBUG
+/*
+* This class is SUPPOSED to be able to make it so that bullet bodies use Irrlicht to draw themselves, but I have yet to get it functional.
+*/
+class btDebugRenderer : public btIDebugDraw
+{
+public:
+	void setController(GameStateController* ctrl) { controller = ctrl; }
+	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color);
+
+	virtual void drawContactPoint(const btVector3& pointOnB, const btVector3& normalOnB, btScalar dist, int lifeTime, const btVector3& color)
+	{
+
+	}
+	virtual void reportErrorWarning(const char* warning) {
+		printf(warning);
+	}
+	virtual void draw3dText(const btVector3& location, const char* text) {
+
+	}
+	virtual void setDebugMode(int nmode) { mode = nmode; }
+	virtual int getDebugMode() const { return mode; }
+private:
+	GameStateController* controller;
+	int mode;
+};
+#endif 
+
 //Convenience function to get the ID from a bullet collision object.
 EntityId getIdFromBt(btCollisionObject* object);
 

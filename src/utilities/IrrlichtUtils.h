@@ -10,6 +10,15 @@
 * Also includes functions to yank out the EntityId associated with an Irrlicht node.
 */
 
+//The different types of ID an irrlicht node might have. Used to determine whether or not a player can
+//"select" the object (or whether or not an AI can avoid the object). Tack on more if you need them.
+enum SELECTIONS
+{
+	ID_IsNotSelectable = 0,
+	ID_IsSelectable = 1 << 0,
+	ID_IsAvoidable = 1 << 1
+};
+
 //Normalized forward vector for a given node.
 vector3df getNodeForward(ISceneNode* node);
 //Normalized backward vector for a given node.

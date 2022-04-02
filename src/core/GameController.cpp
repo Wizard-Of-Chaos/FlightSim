@@ -16,26 +16,29 @@ GameController::GameController(GameStateController* controller)
 	bWorld = 0;
 }
 
-void GameController::clearPlayerHUD()
+void GameController::update()
 {
-	for (auto id : SceneView<PlayerComponent>(sceneECS.scene)) {
-		auto player = sceneECS.scene.get<PlayerComponent>(id);
-		for (HUDElement* hud : player->HUD) {
-			delete hud;
-		}
-		player->rootHUD->remove();
+	u32 now = device->getTimer()->getTime();
+	f32 delta = (f32)(now - then) / 1000.f;
+	if (delta > .25) { //If the delta is too big, it's .25.
+		delta = .25;
 	}
-}
+	then = now;
+	accumulator += delta;
+	while (accumulator >= dt) {
+		sceneECS.update(dt, delta); //in-game logic and physics
+		t += dt;
+		accumulator -= dt;
+	}
 
-#if _DEBUG
-void btDebugRenderer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
-{
-	controller->addDebugLine(line3df(btVecToIrr(from), btVecToIrr(to)));
+	//interpolate leftover time?
+	const f32 alpha = accumulator / dt;
 }
-#endif 
 
 void GameController::init()
 {
+	if (open) return;
+
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
 	guienv = device->getGUIEnvironment();
@@ -85,6 +88,17 @@ void GameController::close()
 		delete pool; //pool's closed
 	}
 	open = false;
+}
+
+void GameController::clearPlayerHUD()
+{
+	for (auto id : SceneView<PlayerComponent>(sceneECS.scene)) {
+		auto player = sceneECS.scene.get<PlayerComponent>(id);
+		for (HUDElement* hud : player->HUD) {
+			delete hud;
+		}
+		player->rootHUD->remove();
+	}
 }
 
 bool GameController::OnEvent(const SEvent& event)
@@ -175,21 +189,19 @@ void GameController::initDefaultScene()
 	std::cout << "Loaded.\n";
 }
 
-void GameController::update()
+void GameController::initScenario()
 {
-	u32 now = device->getTimer()->getTime();
-	f32 delta = (f32)(now - then) / 1000.f;
-	if (delta > .25) { //If the delta is too big, it's .25.
-		delta = .25;
+	std::cout << "Loading scenario...\n";
+	switch (currentScenario.type) {
+	case SCENARIO_KILL_HOSTILES:
+		killHostilesScenario();
+		break;
+	default:
+		break;
 	}
-	then = now;
-	accumulator += delta;
-	while (accumulator >= dt) {
-		sceneECS.update(dt, delta); //in-game logic and physics
-		t += dt;
-		accumulator -= dt;
-	}
+	std::cout << "Loaded.\n";
+}
+void GameController::killHostilesScenario()
+{
 
-	//interpolate leftover time?
-	const f32 alpha = accumulator / dt;
 }

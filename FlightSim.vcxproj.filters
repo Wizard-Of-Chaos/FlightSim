@@ -294,6 +294,9 @@
     <ClInclude Include="src\utilities\btUtils.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="src\utilities\Scenario.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
