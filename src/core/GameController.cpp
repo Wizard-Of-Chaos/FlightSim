@@ -155,7 +155,7 @@ void GameController::initDefaultScene()
 	std::cout << "Loading into game...\n";
 	EntityId playerId = createPlayerShipFromLoadout(&sceneECS, vector3df(0, 0, -50));
 
-	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40));
+	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40), vector3df(1,1,1));
 
 	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
 	initializeHostileFaction(&sceneECS, aiId);
@@ -192,6 +192,11 @@ void GameController::initDefaultScene()
 void GameController::initScenario()
 {
 	std::cout << "Loading scenario...\n";
+
+	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 5000, 0),
+		SColor(200, 255, 180, 180), 20000.f);
+	n->setID(ID_IsNotSelectable);
+
 	switch (currentScenario.type) {
 	case SCENARIO_KILL_HOSTILES:
 		killHostilesScenario();
@@ -199,9 +204,31 @@ void GameController::initScenario()
 	default:
 		break;
 	}
+
+	device->getCursorControl()->setActiveIcon(ECI_CROSS);
+
 	std::cout << "Loaded.\n";
 }
+
 void GameController::killHostilesScenario()
 {
+	EntityId player = createPlayerShipFromLoadout(&sceneECS, currentScenario.playerStartPos);
 
+	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
+		vector3df pos = currentScenario.enemyStartPos;
+		pos.X += (std::rand() % 10 - 5) * 20; //keep it close to the default position, but spaced out
+		pos.Y += (std::rand() % 10 - 5) * 20; //get it? spaced out?
+		pos.Z += (std::rand() % 10 - 5) * 20;
+		EntityId enemy = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40)); //todo: create AI ship generator that pulls from loaded ships
+		initializeHostileFaction(&sceneECS, enemy);
+		initializeDefaultSensors(&sceneECS, enemy);
+		initializeShipParticles(&sceneECS, enemy);
+		currentScenario.objectives[i] = enemy;
+	}
+
+	//let's get us some rocks to bump around
+	for (u32 i = 0; i < (std::rand() % 200); ++i) {
+		u32 scale = std::rand() % 10;
+		EntityId rock = createDefaultObstacle(&sceneECS, randomVectorSetDistance(currentScenario.playerStartPos, 300), vector3df(scale, scale, scale));
+	}
 }

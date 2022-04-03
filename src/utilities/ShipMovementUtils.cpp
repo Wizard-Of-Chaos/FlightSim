@@ -164,7 +164,7 @@ bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
 	to.setOrigin(futurePos);
 	manager->bulletWorld->convexSweepTest(&shape, from, to, cb);
 	if (!cb.hasHit()) return false;
-	std::cout << "AAAAAA I'M GOING TO CRASH \n";
+	//std::cout << "AAAAAA I'M GOING TO CRASH \n";
 	ship->moves[SHIP_STOP_VELOCITY] = true;
 	goToPoint(body, ship, (pos + getRigidBodyLeft(body) * 100.f), dt);
 

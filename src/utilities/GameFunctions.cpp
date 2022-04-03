@@ -34,6 +34,15 @@ vector3df randomRotationVector()
 	return vector3df(x, y, z);
 }
 
+vector3df randomVectorSetDistance(vector3df& other, u32 dist) //this should probably be generated in a sphere sorta thing but that's a problem for future me
+{
+	while (true) {
+		vector3df test = randomVector();
+		vector3df dir = test - other;
+		if (dir.getLength() >= dist) return test;
+	}
+}
+
 //Sets the defaults in the scene manager for ship meshes.
 void setDefaults(SceneManager* manager)
 {
@@ -130,7 +139,7 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 	return shipEntity;
 }
 
-EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
+EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector3df scale)
 {
 	ISceneManager* smgr = manager->controller->smgr;
 	Scene* scene = &manager->scene;
@@ -141,10 +150,11 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position)
 	irrComp->node->setID(ID_IsSelectable | ID_IsAvoidable);
 	irrComp->node->setPosition(position);
 	irrComp->node->setName(idToStr(roidEntity).c_str());
+	irrComp->node->setScale(scale);
 	irrComp->name = "Asteroid";
 
-	btVector3 scale(1.f, 1.f, 1.f);
-	initializeBtRigidBody(manager, roidEntity, createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh), scale);
+	btVector3 btscale(irrVecToBt(scale));
+	initializeBtRigidBody(manager, roidEntity, createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh), btscale);
 	initializeNeutralFaction(manager, roidEntity);
 	initializeDefaultHealth(manager, roidEntity);
 
@@ -446,7 +456,6 @@ EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos)
 	}
 
 	initializeDefaultPlayer(manager, shipEntity);
-	//initializeDefaultRigidBody(manager, shipEntity);
 	initializeShipCollisionBody(manager, shipEntity, stCtrl->playerShip);
 	initializeNeutralFaction(manager, shipEntity);
 	initializeDefaultHealth(manager, shipEntity);

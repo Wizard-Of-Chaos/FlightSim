@@ -31,6 +31,7 @@ vector3df btVecToIrr(btVector3 vec);
 btVector3 irrVecToBt(vector3df vec);
 vector3df randomVector();
 vector3df randomRotationVector();
+vector3df randomVectorSetDistance(vector3df& other, u32 dist);
 
 //Creates a faction component on the given entity set to neutral.
 void initializeNeutralFaction(SceneManager* manager, EntityId id);
@@ -49,7 +50,7 @@ EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position);
 //Does include two default weapon entities and an irrlicht component / ship component. Returns the ID.
 EntityId createDefaultShip(SceneManager* manager, vector3df position);
 //Creates a default obstacle (asteroid) at the given position. Includes health, irrlicht, rigid body, and faction components. Returns the ID.
-EntityId createDefaultObstacle(SceneManager* manager, vector3df position);
+EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector3df scale);
 //Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, and health components. Returns the ID.
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position);
 
