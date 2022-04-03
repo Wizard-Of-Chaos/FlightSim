@@ -3,6 +3,7 @@
 #include "GameController.h"
 #include "GameStateController.h"
 #include "IrrlichtUtils.h"
+#include <iostream>
 
 //Convenience functions to swap back and forth between irrlicht and bullet vectors.
 vector3df btVecToIrr(btVector3 vec)
@@ -336,7 +337,8 @@ void initializeDefaultSensors(SceneManager* manager, EntityId id)
 	sensors->timeSelected = 0;
 
 	sensors->updateInterval = DEFAULT_SENSOR_UPDATE_INTERVAL;
-	sensors->timeSinceLastUpdate = 0;
+	f32 start = 10 / (f32)(std::rand() % 100);
+	sensors->timeSinceLastUpdate = start; //stagger sensor updates so it doesn't all happen at once
 }
 
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position)

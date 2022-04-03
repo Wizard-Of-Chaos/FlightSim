@@ -15,9 +15,9 @@ void PlayerComponent::removeHUDElement(HUDElement* element)
 void PlayerComponent::removeContact(HUDContact* contact)
 {
 	if (!contact) return;
-	for (auto [info, hud] : trackedContacts) {
-		if (std::get<0>(info) != contact->contact) continue;
-		trackedContacts[info] = nullptr;
+	for (auto [id, hud] : trackedContacts) {
+		if (id != contact->contact) continue;
+		trackedContacts[id] = nullptr;
 		removeHUDElement(contact);
 		return;
 	}

@@ -20,24 +20,18 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 
 		SensorComponent* sensors = scene.get<SensorComponent>(entityId);
 
-		for (unsigned int i = 0; i < sensors->contacts.size(); ++i) { //debug required: sensors not creating new HUD contacts
-			std::tuple<EntityId, BulletRigidBodyComponent*, FactionComponent*> info = sensors->contacts[i];
-			EntityId contact = std::get<0>(info);
-			if (player->trackedContacts[info] == nullptr && scene.entityInUse(contact)) {
-				HUDContact* elem = new HUDContact(manager, player->rootHUD, contact);
-				player->HUD.push_back(elem);
-				player->trackedContacts[info] = elem;
+		for (ContactInfo info : sensors->contacts) {
+			EntityId id = std::get<0>(info);
+			if (player->trackedContacts[id] == nullptr && scene.entityInUse(id)) {
+				HUDContact* ct = new HUDContact(manager, player->rootHUD, id);
+				player->HUD.push_back(ct);
+				player->trackedContacts[id] = ct;
 			}
 		}
-
-		for (auto [info, hud] : player->trackedContacts) {
-			if (!scene.entityInUse(std::get<0>(info))) {
+		for (auto [id, hud] : player->trackedContacts) {
+			if (!scene.entityInUse(id)) {
 				if (hud) player->removeContact(hud);
 				continue;
-			}
-			if (std::find(sensors->contacts.begin(), sensors->contacts.end(), info) != sensors->contacts.end()) {
-				if (!hud) continue;
-				player->removeContact(hud);
 			}
 		}
 

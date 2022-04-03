@@ -7,7 +7,7 @@
 #include "ECS.h"
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <tuple>
 
 class HUDElement;
@@ -37,7 +37,7 @@ struct PlayerComponent
 	IGUIElement* rootHUD;
 	std::vector<HUDElement*> HUD;
 
-	std::map<std::tuple<EntityId, BulletRigidBodyComponent*, FactionComponent*>, HUDContact*> trackedContacts;
+	std::unordered_map<EntityId, HUDContact*> trackedContacts;
 
 	void removeContact(HUDContact* contact);
 	void removeHUDElement(HUDElement* element);
