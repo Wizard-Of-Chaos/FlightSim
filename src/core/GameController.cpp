@@ -44,6 +44,8 @@ void GameController::init()
 	guienv = device->getGUIEnvironment();
 	then = device->getTimer()->getTime();
 
+	currentScenario = Scenario(SCENARIO_KILL_HOSTILES, 5, vector3df(0, 0, -50), vector3df(10, 20, 80));
+
 	//bullet init
 	broadPhase = new btAxisSweep3(btVector3(-1000, -1000, -1000), btVector3(1000, 1000, 1000));
 	collisionConfig = new btDefaultCollisionConfiguration();
@@ -206,14 +208,18 @@ void GameController::initScenario()
 	}
 
 	device->getCursorControl()->setActiveIcon(ECI_CROSS);
-
-	std::cout << "Loaded.\n";
+	ITexture* sky = driver->getTexture("effects/starskybox.png");
+	n = smgr->addSkyBoxSceneNode(sky, sky, sky, sky, sky, sky);
+	n->setID(ID_IsNotSelectable);
+	std::cout << "Scenario loaded.\n";
 }
 
 void GameController::killHostilesScenario()
 {
 	EntityId player = createPlayerShipFromLoadout(&sceneECS, currentScenario.playerStartPos);
+	initializePlayerFaction(&sceneECS, player);
 
+	std::cout << "Building hostiles... ";
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
 		vector3df pos = currentScenario.enemyStartPos;
 		pos.X += (std::rand() % 10 - 5) * 20; //keep it close to the default position, but spaced out
@@ -225,10 +231,13 @@ void GameController::killHostilesScenario()
 		initializeShipParticles(&sceneECS, enemy);
 		currentScenario.objectives[i] = enemy;
 	}
+	std::cout << "Done. \n";
 
 	//let's get us some rocks to bump around
-	for (u32 i = 0; i < (std::rand() % 200); ++i) {
+	std::cout << "Building obstacles... ";
+	for (u32 i = 0; i < (std::rand() % 50); ++i) {
 		u32 scale = std::rand() % 10;
-		EntityId rock = createDefaultObstacle(&sceneECS, randomVectorSetDistance(currentScenario.playerStartPos, 300), vector3df(scale, scale, scale));
+		EntityId rock = createDefaultObstacle(&sceneECS, randomVector(), vector3df(scale, scale, scale));
 	}
+	std::cout << "Done. \n";
 }

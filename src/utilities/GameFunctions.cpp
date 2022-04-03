@@ -35,15 +35,6 @@ vector3df randomRotationVector()
 	return vector3df(x, y, z);
 }
 
-vector3df randomVectorSetDistance(vector3df& other, u32 dist) //this should probably be generated in a sphere sorta thing but that's a problem for future me
-{
-	while (true) {
-		vector3df test = randomVector();
-		vector3df dir = test - other;
-		if (dir.getLength() >= dist) return test;
-	}
-}
-
 //Sets the defaults in the scene manager for ship meshes.
 void setDefaults(SceneManager* manager)
 {

@@ -4,7 +4,6 @@
 
 GuiController::GuiController(GameStateController* controller)
 {
-	std::srand(time(NULL));
 	stateController = controller;
 	device = controller->device;
 	driver = device->getVideoDriver();

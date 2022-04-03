@@ -3,6 +3,7 @@
 
 GameStateController::GameStateController(IrrlichtDevice* dev, VideoConfig vconf)
 {
+	std::srand(time(NULL));
 	gameInitialized = false;
 	device = dev;
 	driver = 0;
@@ -66,12 +67,13 @@ void GameStateController::loadShipAndWeaponData()
 		loadShipData(file.path().string(), this, in);
 		in.clear();
 	}
+	std::cout << "Done loading ships. \n";
 	std::cout << "Loading weapons... \n";
 	for (const auto& file : std::filesystem::directory_iterator(weaponpath)) {
 		loadWeaponData(file.path().string(), this, in);
 		in.clear();
 	}
-	std::cout << "Done. \n";
+	std::cout << "Done loading weapons. \n";
 	std::cout << "Number of weapons: " << weaponData.size() << std::endl;
 	std::cout << "Number of ships: " << shipData.size() << std::endl;
 }
@@ -119,7 +121,8 @@ void GameStateController::stateChange() //Messy handler for the different states
 	if (oldState == GAME_MENUS && state == GAME_RUNNING) {
 		guiController->close();
 		gameController->init();
-		gameController->initDefaultScene();
+		gameController->initScenario();
+		//gameController->initDefaultScene();
 	}
 	else if (oldState == GAME_PAUSED && state == GAME_MENUS) {
 		gameController->close();

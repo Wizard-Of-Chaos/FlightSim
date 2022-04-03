@@ -31,7 +31,6 @@ vector3df btVecToIrr(btVector3 vec);
 btVector3 irrVecToBt(vector3df vec);
 vector3df randomVector();
 vector3df randomRotationVector();
-vector3df randomVectorSetDistance(vector3df& other, u32 dist);
 
 //Creates a faction component on the given entity set to neutral.
 void initializeNeutralFaction(SceneManager* manager, EntityId id);

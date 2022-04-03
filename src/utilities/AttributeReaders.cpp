@@ -17,7 +17,7 @@ vector3df strToVec(std::string str) //Turns a string to a vector, splitting on a
 
 bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
 {
-	std::cout << "Reading ship in from: " << path << "... \n";
+	std::cout << "Reading ship in from: " << path << "... ";
 	in.read(path);
 	if (in.lines.empty()) return false;
 	in.readLinesToValues();
@@ -93,13 +93,13 @@ bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
 	data->shipComponent.safetyOverride = false;
 
 	cont->shipData[id] = data;
-	std::cout << "Done loading " << path << ". \n";
+	std::cout << "Done.\n";
 	return true;
 }
 
 bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 {
-	std::cout << "Reading weapon in from: " << path << "... \n";
+	std::cout << "Reading weapon in from: " << path << "... ";
 	in.read(path);
 	if (in.lines.empty()) return false;
 	in.readLinesToValues();
@@ -147,7 +147,7 @@ bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	data->weaponComponent.timeSinceLastShot = 0.f;
 
 	cont->weaponData[id] = data;
-	std::cout << "Done loading " << path << ". \n";
+	std::cout << "Done.\n";
 	return true;
 }
 
