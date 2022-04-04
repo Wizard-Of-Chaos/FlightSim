@@ -191,6 +191,18 @@ void GameController::initDefaultScene()
 	std::cout << "Loaded.\n";
 }
 
+bool GameController::checkRunningScenario()
+{
+	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
+		if (!sceneECS.scene.entityInUse(currentScenario.objectives[i])) {
+			currentScenario.objectives[i] = INVALID_ENTITY;
+			--currentScenario.activeObjectiveCount;
+		}
+	}
+	if (currentScenario.activeObjectiveCount == 0) return true;
+	return false;
+}
+
 void GameController::initScenario()
 {
 	std::cout << "Loading scenario...\n";
@@ -208,36 +220,54 @@ void GameController::initScenario()
 	}
 
 	device->getCursorControl()->setActiveIcon(ECI_CROSS);
+
 	ITexture* sky = driver->getTexture("effects/starskybox.png");
 	n = smgr->addSkyBoxSceneNode(sky, sky, sky, sky, sky, sky);
 	n->setID(ID_IsNotSelectable);
+
 	std::cout << "Scenario loaded.\n";
 }
 
 void GameController::killHostilesScenario()
 {
+
 	EntityId player = createPlayerShipFromLoadout(&sceneECS, currentScenario.playerStartPos);
 	initializePlayerFaction(&sceneECS, player);
 
+	std::vector<vector3df> obstaclePositions;
+
+	for (u32 i = 0; i < 300; ++i) {
+		vector3df pos = getPointInSphere(vector3df(0, 0, 0), 300.f);
+		obstaclePositions.push_back(pos);
+	}
+	std::cout << "\n Done. Culling obstacles... ";
+	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
+		vector3df pos = obstaclePositions[i];
+		f32 radius = 25.f;
+		if (pow(pos.X - currentScenario.playerStartPos.X, 2.f) + pow(pos.X - currentScenario.playerStartPos.X, 2.f) + pow(pos.X - currentScenario.playerStartPos.X, 2.f) < pow(radius, 2)) {
+			obstaclePositions.erase(obstaclePositions.begin() + i);
+			continue;
+		}
+		if (pow(pos.X - currentScenario.enemyStartPos.X, 2.f) + pow(pos.X - currentScenario.enemyStartPos.X, 2.f) + pow(pos.X - currentScenario.enemyStartPos.X, 2.f) < pow(radius, 2)) {
+			obstaclePositions.erase(obstaclePositions.begin() + i);
+		}
+	}
+	std::cout << "Done. Obstacles remaining: " << obstaclePositions.size() << "\n Building obstacles...";
+	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
+		u32 scale = std::rand() % 10;
+		EntityId rock = createDefaultObstacle(&sceneECS, obstaclePositions[i], vector3df(scale, scale, scale));
+	}
+	std::cout << "Done.";
+
 	std::cout << "Building hostiles... ";
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
-		vector3df pos = currentScenario.enemyStartPos;
-		pos.X += (std::rand() % 10 - 5) * 20; //keep it close to the default position, but spaced out
-		pos.Y += (std::rand() % 10 - 5) * 20; //get it? spaced out?
-		pos.Z += (std::rand() % 10 - 5) * 20;
-		EntityId enemy = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40)); //todo: create AI ship generator that pulls from loaded ships
+		vector3df pos = getPointInSphere(currentScenario.enemyStartPos, 25.f);
+		EntityId enemy = createDefaultAIShip(&sceneECS, pos); //todo: create AI ship generator that pulls from loaded ships
 		initializeHostileFaction(&sceneECS, enemy);
 		initializeDefaultSensors(&sceneECS, enemy);
 		initializeShipParticles(&sceneECS, enemy);
 		currentScenario.objectives[i] = enemy;
 	}
 	std::cout << "Done. \n";
-
 	//let's get us some rocks to bump around
-	std::cout << "Building obstacles... ";
-	for (u32 i = 0; i < (std::rand() % 50); ++i) {
-		u32 scale = std::rand() % 10;
-		EntityId rock = createDefaultObstacle(&sceneECS, randomVector(), vector3df(scale, scale, scale));
-	}
-	std::cout << "Done. \n";
 }

@@ -35,6 +35,22 @@ vector3df randomRotationVector()
 	return vector3df(x, y, z);
 }
 
+vector3df getPointInSphere(vector3df center, f32 radius)
+{
+	f32 dist = 0;
+	f32 x, y, z;
+	while (sqrt(dist) < 1) {
+		f32 low = -1.f;
+		f32 high = 1.f;
+		x = low + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (high - low)));
+		y = low + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (high - low)));
+		z = low + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (high - low)));
+		dist = x * x + y* y + z* z;
+	}
+	vector3df pos(x * radius, y * radius, z * radius);
+	return center + pos;
+}
+
 //Sets the defaults in the scene manager for ship meshes.
 void setDefaults(SceneManager* manager)
 {
@@ -144,10 +160,11 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector
 	irrComp->node->setName(idToStr(roidEntity).c_str());
 	irrComp->node->setScale(scale);
 	irrComp->name = "Asteroid";
+	irrComp->node->setMaterialFlag(EMF_NORMALIZE_NORMALS, true);
 
 	btVector3 btscale(irrVecToBt(scale));
 	initializeBtRigidBody(manager, roidEntity, createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh), btscale);
-	initializeNeutralFaction(manager, roidEntity);
+	auto rbc = manager->scene.get<BulletRigidBodyComponent>(roidEntity);
 	initializeDefaultHealth(manager, roidEntity);
 
 	return roidEntity;

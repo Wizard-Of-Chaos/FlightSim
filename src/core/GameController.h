@@ -49,6 +49,7 @@ class GameController
 		std::vector<Scenario> usedScenarios; //might need it later?
 		Scenario currentScenario;
 		void initScenario();
+		bool checkRunningScenario();
 
 	private:
 		bool open;
