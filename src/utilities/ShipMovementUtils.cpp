@@ -139,6 +139,9 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 			ship->moves[SHIP_THRUST_FORWARD] = true;
 		}
 	}
+	else {
+		ship->moves[SHIP_STOP_VELOCITY] = true;
+	}
 }
 
 bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)

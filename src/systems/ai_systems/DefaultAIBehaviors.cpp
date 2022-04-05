@@ -81,6 +81,7 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 	}
 	else {
 		//if it is behind it, start turning towards it
+		ship->moves[SHIP_STOP_VELOCITY] = true;
 		smoothTurnToDirection(&rbc->rigidBody, ship, irrVecToBt(facing), dt);
 		auto pursuitBody = manager->scene.get<BulletRigidBodyComponent>(sensors->closestContact);
 	}

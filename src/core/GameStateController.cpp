@@ -27,6 +27,7 @@ void GameStateController::init()
 	guienv->setUserEventReceiver(this);
 	then = device->getTimer()->getTime();
 	state = GAME_MENUS; //Initial state
+	driver->setMinHardwareBufferVertexCount(0);
 
 	playerShip = 0;
 	playerWeapons[0] = 1;
@@ -188,6 +189,12 @@ void GameStateController::mainLoop()
 		}
 		debugLines.clear();
 #endif 
+		/*
+		if (now - then > 100) {
+			driver->runAllOcclusionQueries(false);
+			driver->updateAllOcclusionQueries();
+		}
+		*/
 		driver->endScene();
 
 		int fps = driver->getFPS();

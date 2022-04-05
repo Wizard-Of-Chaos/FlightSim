@@ -154,7 +154,7 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector
 
 	auto roidEntity = scene->newEntity();
 	auto irrComp = scene->assign<IrrlichtComponent>(roidEntity);
-	irrComp->node = smgr->addMeshSceneNode(manager->defaults.defaultObstacleMesh);
+	irrComp->node = smgr->addOctreeSceneNode(manager->defaults.defaultObstacleMesh);
 	irrComp->node->setID(ID_IsSelectable | ID_IsAvoidable);
 	irrComp->node->setPosition(position);
 	irrComp->node->setName(idToStr(roidEntity).c_str());
@@ -162,9 +162,15 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector
 	irrComp->name = "Asteroid";
 	irrComp->node->setMaterialFlag(EMF_NORMALIZE_NORMALS, true);
 
+	IMeshSceneNode* n = (IMeshSceneNode*)irrComp->node;
+	n->getMesh()->setHardwareMappingHint(EHM_STATIC);
+	//manager->controller->driver->addOcclusionQuery(irrComp->node, n->getMesh());
+
 	btVector3 btscale(irrVecToBt(scale));
 	initializeBtRigidBody(manager, roidEntity, createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh), btscale);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(roidEntity);
+	rbc->rigidBody.setActivationState(0);
+
 	initializeDefaultHealth(manager, roidEntity);
 
 	return roidEntity;
