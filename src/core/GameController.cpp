@@ -30,6 +30,9 @@ void GameController::update()
 		t += dt;
 		accumulator -= dt;
 	}
+	if (checkRunningScenario()) {
+		stateController->setState(GAME_DEAD);
+	}
 
 	//interpolate leftover time?
 	const f32 alpha = accumulator / dt;
@@ -194,7 +197,7 @@ void GameController::initDefaultScene()
 bool GameController::checkRunningScenario()
 {
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
-		if (!sceneECS.scene.entityInUse(currentScenario.objectives[i])) {
+		if (currentScenario.objectives[i] != INVALID_ENTITY && !sceneECS.scene.entityInUse(currentScenario.objectives[i])) {
 			currentScenario.objectives[i] = INVALID_ENTITY;
 			--currentScenario.activeObjectiveCount;
 		}
@@ -225,7 +228,7 @@ void GameController::initScenario()
 	n = smgr->addSkyBoxSceneNode(sky, sky, sky, sky, sky, sky);
 	n->setID(ID_IsNotSelectable);
 
-	std::cout << "Scenario loaded.\n";
+	std::cout << "Scenario loaded. \n";
 }
 
 void GameController::killHostilesScenario()
