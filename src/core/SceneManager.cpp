@@ -11,7 +11,6 @@ void SceneManager::update(f32 time, f32 frameDelta)
 	AIUpdateSystem(this, dt); //updates AI components
 	weaponFiringSystem(this, dt); //fires guns
 	bulletWorld->stepSimulation(dt, 60); //applies the PHYSICS
-	sensorSystem(this, dt); //updates sensors and nearby active contacts
 	collisionCheckingSystem(this); //destroys projectiles on hit
 	updateHealthSystem(this); //updates health and removes objects with no health
 	updateShieldSystem(this, dt); //updates shields and recharging thereof
@@ -19,5 +18,6 @@ void SceneManager::update(f32 time, f32 frameDelta)
 	irrlichtRigidBodyPositionSystem(scene, dt); //updates position based on rigidbody state
 	projectileSystem(this, dt); //kills projectiles after they have gone a set distance
 	playerUpdateSystem(this, scene, frameDelta); //updates camera location
+	sensorSystem(this, dt); //updates sensors and nearby active contacts
 }
 

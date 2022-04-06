@@ -44,7 +44,7 @@ void GameController::init()
 	guienv = device->getGUIEnvironment();
 	then = device->getTimer()->getTime();
 
-	currentScenario = Scenario(SCENARIO_KILL_HOSTILES, 1, vector3df(0, 0, -50), vector3df(10, 20, 80));
+	currentScenario = Scenario(SCENARIO_KILL_HOSTILES, 2, vector3df(0, 0, -50), vector3df(10, 20, 80));
 
 	//bullet init
 	broadPhase = new btAxisSweep3(btVector3(-1000, -1000, -1000), btVector3(1000, 1000, 1000));

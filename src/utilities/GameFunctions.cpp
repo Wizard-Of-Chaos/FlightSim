@@ -37,15 +37,15 @@ vector3df randomRotationVector()
 
 vector3df getPointInSphere(vector3df center, f32 radius)
 {
-	f32 dist = 0;
+	f32 dist = 1.5f; // init to greater than 1
 	f32 x, y, z;
-	while (sqrt(dist) < 1) {
+	while (dist > 1.f) {
 		f32 low = -1.f;
 		f32 high = 1.f;
 		x = low + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (high - low)));
 		y = low + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (high - low)));
 		z = low + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (high - low)));
-		dist = x * x + y* y + z* z;
+		dist = (x * x) + (y* y) + (z* z);
 	}
 	vector3df pos(x * radius, y * radius, z * radius);
 	return center + pos;

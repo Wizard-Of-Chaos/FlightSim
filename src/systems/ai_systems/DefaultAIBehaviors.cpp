@@ -76,7 +76,7 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 	if (avoidObstacles(manager, id, dt)) return;
 
 	//If it's not behind the ship, get behind it
-	if (dist.getLength() > 50.f) {
+	if (dist.getLength() > 8.f) {
 		goToPoint(&rbc->rigidBody, ship, irrVecToBt(tailPos), dt);
 	}
 	else {
