@@ -67,5 +67,10 @@ void sensorSystem(SceneManager* manager, f32 dt)
 			sens->contacts = getContacts(manager, rbc, sens, fac);
 			sens->timeSinceLastUpdate = 0;
 		}
+		if (sens->targetContact != INVALID_ENTITY) {
+			sens->timeSelected += dt;
+		} else {
+			sens->timeSelected = 0;
+		}
 	}
 }

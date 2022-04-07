@@ -43,6 +43,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 			if (selection->getID() != -1 && selection != playerIrr->node) {
 				EntityId id = strToId(selection->getName());
 				if(manager->scene.entityInUse(id)) sensors->targetContact = id;
+
 				auto irr = manager->scene.get<IrrlichtComponent>(id);
 				std::wstring widestr = std::wstring(irr->name.begin(), irr->name.end());
 				name->setText(widestr.c_str());
