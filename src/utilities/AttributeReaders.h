@@ -33,4 +33,7 @@ bool loadShipData(std::string path, GameStateController* cont, gvReader& in);
 bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in);
 
 btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh);
+
+bool saveHull(std::string path, btConvexHullShape& shape);
+bool loadHull(std::string path, btConvexHullShape& shape);
 #endif 

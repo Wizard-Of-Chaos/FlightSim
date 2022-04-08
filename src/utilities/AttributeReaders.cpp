@@ -221,3 +221,21 @@ btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh)
 	delete hull;
 	return ret;
 }
+
+bool saveHull(std::string path, btConvexHullShape& shape)
+{
+	btDefaultSerializer serializer;
+	serializer.startSerialization();
+	shape.serializeSingleShape(&serializer);
+	serializer.finishSerialization();
+
+	FILE* f = fopen(path.c_str(), "w");
+	if (!f) return false;
+
+	fwrite(serializer.getBufferPointer(), serializer.getCurrentBufferSize(), 1, f);
+	fclose(f);
+	return true;
+}
+bool loadHull(std::string path, btConvexHullShape& shape)
+{
+}
