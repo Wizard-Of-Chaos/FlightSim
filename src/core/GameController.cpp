@@ -255,14 +255,12 @@ void GameController::killHostilesScenario()
 			obstaclePositions.erase(obstaclePositions.begin() + i);
 		}
 	}
-	std::cout << "Done. Obstacles remaining: " << obstaclePositions.size() << "\n Building obstacles...";
+	std::cout << "Done. Obstacles remaining: " << obstaclePositions.size() << "\n Building obstacles... ";
 	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 10;
 		EntityId rock = createDefaultObstacle(&sceneECS, obstaclePositions[i], vector3df(scale, scale, scale));
 	}
-	std::cout << "Done.";
-
-	std::cout << "Building hostiles... ";
+	std::cout << "Done. Building hostiles... ";
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(currentScenario.enemyStartPos, 25.f);
 		EntityId enemy = createDefaultAIShip(&sceneECS, pos); //todo: create AI ship generator that pulls from loaded ships

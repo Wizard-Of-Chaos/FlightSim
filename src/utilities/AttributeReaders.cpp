@@ -15,11 +15,14 @@ vector3df strToVec(std::string str) //Turns a string to a vector, splitting on a
 	return vector3df(std::stof(xstr), std::stof(ystr), std::stof(zstr));
 }
 
-bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
+u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
 {
 	std::cout << "Reading ship in from: " << path << "... ";
 	in.read(path);
-	if (in.lines.empty()) return false;
+	if (in.lines.empty()) {
+		std::cout << "Could not read " << path << "!\n";
+		return -1;
+	}
 	in.readLinesToValues();
 	u32 id = std::stoi(in.values["id"]);
 	std::string name = in.values["name"];
@@ -34,7 +37,7 @@ bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
 
 	data->shipMesh = cont->smgr->getMesh(meshpath.c_str());
 	data->shipTexture = cont->driver->getTexture(texpath.c_str());
-	data->collisionShape = createCollisionShapeFromMesh(data->shipMesh);
+	//data->collisionShape = createCollisionShapeFromMesh(data->shipMesh);
 
 	std::string jetpath = "effects/" + in.values["jet"];
 	std::string enginepath = "effects/" + in.values["engine"];
@@ -94,14 +97,16 @@ bool loadShipData(std::string path, GameStateController* cont, gvReader& in)
 
 	cont->shipData[id] = data;
 	std::cout << "Done.\n";
-	return true;
+	return id;
 }
 
-bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
+u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 {
 	std::cout << "Reading weapon in from: " << path << "... ";
 	in.read(path);
-	if (in.lines.empty()) return false;
+	if (in.lines.empty()) {
+		std::cout << "Could not read " << path << "!\n";
+	}
 	in.readLinesToValues();
 
 	u32 id = std::stoi(in.values["id"]);
@@ -148,7 +153,7 @@ bool loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 
 	cont->weaponData[id] = data;
 	std::cout << "Done.\n";
-	return true;
+	return id;
 }
 
 bool loadShip(u32 id, EntityId entity, SceneManager* manager)
@@ -229,7 +234,7 @@ bool saveHull(std::string path, btConvexHullShape& shape)
 	shape.serializeSingleShape(&serializer);
 	serializer.finishSerialization();
 
-	FILE* f = fopen(path.c_str(), "w");
+	FILE* f = fopen(path.c_str(), "wb");
 	if (!f) return false;
 
 	fwrite(serializer.getBufferPointer(), serializer.getCurrentBufferSize(), 1, f);
@@ -238,4 +243,18 @@ bool saveHull(std::string path, btConvexHullShape& shape)
 }
 bool loadHull(std::string path, btConvexHullShape& shape)
 {
+	btBulletWorldImporter importer(0);
+	if (!importer.loadFile(path.c_str())) {
+		std::cout << "Could not load hull file! \n";
+		return false;
+	}
+	if (!importer.getNumCollisionShapes()) {
+		std::cout << "Hull file not properly formatted! \n";
+		return false;
+	}
+	btConvexHullShape* coll = (btConvexHullShape*)importer.getCollisionShapeByIndex(0);
+	shape = *coll;
+
+	return true;
+	
 }

@@ -153,6 +153,10 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector
 	Scene* scene = &manager->scene;
 
 	auto roidEntity = scene->newEntity();
+
+	auto obst = scene->assign<ObstacleComponent>(roidEntity);
+	obst->type = OBSTACLE::ASTEROID;
+
 	auto irrComp = scene->assign<IrrlichtComponent>(roidEntity);
 	irrComp->node = smgr->addOctreeSceneNode(manager->defaults.defaultObstacleMesh);
 	irrComp->node->setID(ID_IsSelectable | ID_IsAvoidable);
@@ -167,7 +171,14 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector
 	//manager->controller->driver->addOcclusionQuery(irrComp->node, n->getMesh());
 
 	btVector3 btscale(irrVecToBt(scale));
-	initializeBtRigidBody(manager, roidEntity, createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh), btscale);
+	btConvexHullShape shape;
+	if (!loadHull("attributes/hulls/Asteroid.bullet", shape)) {
+		std::cout << "No hull shape. Building hull... ";
+		shape = createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh);
+		saveHull("attributes/hulls/Asteroid.bullet", shape);
+		std::cout << "Done. \n";
+	}
+	initializeBtRigidBody(manager, roidEntity, shape, btscale);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(roidEntity);
 	rbc->rigidBody.setActivationState(0);
 

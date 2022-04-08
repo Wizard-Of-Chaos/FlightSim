@@ -61,11 +61,26 @@ void GameStateController::loadShipAndWeaponData()
 	std::string basepath = "attributes/";
 	std::string weaponpath = basepath + "weapons/";
 	std::string shippath = basepath + "ships/";
+	std::string hullpath = basepath + "hulls/";
 
 	gvReader in;
 	std::cout << "Loading ships... \n";
 	for (const auto& file : std::filesystem::directory_iterator(shippath)) {
-		loadShipData(file.path().string(), this, in);
+		u32 id = loadShipData(file.path().string(), this, in);
+		if (id != -1) {
+			btConvexHullShape hull;
+			std::string fname = hullpath + shipData[id]->name + ".bullet";
+			if (loadHull(fname, hull)) {
+				std::cout << "Hull loaded for " << file.path().string() << ".\n";
+				shipData[id]->collisionShape = hull;
+			}
+			else {
+				std::cout << "Could not load hull for " << file.path().string() << ". Building hull... ";
+				shipData[id]->collisionShape = createCollisionShapeFromMesh(shipData[id]->shipMesh);
+				saveHull(fname, shipData[id]->collisionShape);
+				std::cout << "Done. New hull saved to " << fname << ".\n";
+			}
+		}
 		in.clear();
 	}
 	std::cout << "Done loading ships. \n";
