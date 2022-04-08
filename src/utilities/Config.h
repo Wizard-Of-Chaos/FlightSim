@@ -43,18 +43,21 @@ struct KeyConfig
 	std::unordered_map<INPUT, EKEY_CODE> keybinds;
 };
 
+enum class PARTICLE_LEVEL
+{
+	OFF,
+	LOW,
+	HIGH
+};
+
 struct GameConfig
 {
 	GameConfig();
 	void loadConfig(std::string filename);
 	void saveConfig(std::string filename);
-	bool particles; //placeholder for other stuff
-};
+	PARTICLE_LEVEL particleLevel;
+	bool spaceFriction;
+	bool constantThrust;
 
-struct Loadout
-{
-	void load(GameStateController* controller, EntityId playerEntity);
-	std::string ship;
-	std::vector<std::string> weapons;
 };
 #endif 

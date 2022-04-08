@@ -1,4 +1,5 @@
 #include "ShipUpdateSystem.h"
+#include <iostream>
 
 void jetOn(IParticleEmitter* jet)
 {

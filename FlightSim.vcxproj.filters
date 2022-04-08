@@ -297,6 +297,9 @@
     <ClInclude Include="src\utilities\Scenario.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\ObstacleComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

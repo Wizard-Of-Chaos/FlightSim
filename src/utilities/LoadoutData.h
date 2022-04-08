@@ -4,6 +4,7 @@
 #include "ShipComponent.h"
 #include "WeaponInfoComponent.h"
 #include "MissileComponent.h"
+#include "ObstacleComponent.h"
 
 /*
 * Contains all data necessary to be able to properly load a ship in the game.
@@ -45,4 +46,13 @@ struct MissileData : public WeaponData
 {
 	MissileInfoComponent missileComponent;
 	IMesh* missileMesh;
+};
+
+struct ObstacleData
+{
+	u32 id;
+	IMesh* obstacleMesh;
+	ITexture* obstacleTexture;
+	OBSTACLE type;
+	f32 health;
 };
