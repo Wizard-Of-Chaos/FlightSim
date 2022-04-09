@@ -65,6 +65,8 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 	auto ai = manager->scene.get<AIComponent>(id);
 	auto sensors = manager->scene.get<SensorComponent>(id);
 
+	sensors->targetContact = pursuitTarget;
+
 	auto pursuitIrr = manager->scene.get<IrrlichtComponent>(pursuitTarget);
 	if (!pursuitIrr) return;
 	vector3df tailPos = getNodeBackward(pursuitIrr->node) * 30.f; //change to backward
