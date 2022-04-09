@@ -97,8 +97,8 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 
 		if (input->mouseControlEnabled) {
 
-			btTransform inv = rbc->rigidBody.getCenterOfMassTransform().inverse();
-			btVector3 localAng = inv(rbc->rigidBody.getAngularVelocity());
+			btVector3 ang = rbc->rigidBody.getAngularVelocity();
+			auto localAng = ang * rbc->rigidBody.getWorldTransform().getBasis().transpose();
 
 			f32 pitch = ship->angularMaxVelocity * input->mousePosition.Y;
 			f32 yaw = ship->angularMaxVelocity * input->mousePosition.X;
