@@ -88,15 +88,30 @@ void KeyConfig::saveConfig(std::string filename)
 
 GameConfig::GameConfig()
 {
-
+	particleLevel = PARTICLE_LEVEL::HIGH;
+	spaceFriction = false;
+	constantThrust = false;
 }
 
 void GameConfig::loadConfig(std::string filename)
 {
+	gvReader in;
+	in.read(filename);
+	in.readLinesToValues();
+	if (in.lines.empty()) return;
 
+	particleLevel = (PARTICLE_LEVEL)std::stoi(in.values["particleLevel"]);
+	spaceFriction = std::stoi(in.values["spaceFriction"]);
+	constantThrust = std::stoi(in.values["constantThrust"]);
 }
 
 void GameConfig::saveConfig(std::string filename)
 {
+	gvReader out;
+	out.values["particleLevel"] = std::to_string((int)particleLevel);
+	out.values["spaceFriction"] = std::to_string(spaceFriction);
+	out.values["constantThrust"] = std::to_string(constantThrust);
 
+	out.readValuesToLines();
+	out.write(filename);
 }

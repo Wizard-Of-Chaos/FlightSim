@@ -10,6 +10,7 @@
 #include "InputComponent.h"
 #include "GameFunctions.h"
 #include "Scenario.h"
+#include "Config.h"
 
 class GameStateController;
 
@@ -50,6 +51,8 @@ class GameController
 		Scenario currentScenario;
 		void initScenario();
 		bool checkRunningScenario();
+
+		GameConfig gameConfig;
 
 	private:
 		bool open;

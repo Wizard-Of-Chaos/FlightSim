@@ -13,6 +13,26 @@ void mouseTurnTo(ShipComponent* ship, f32 angVelocity, f32 move, SHIP_MOVEMENT d
 	}
 }
 
+void checkSpaceFriction(ShipComponent* ship)
+{
+	bool thrust = false;
+	bool rot = false;
+	for (u32 i = 0; i < 7; ++i) {
+		if (ship->moves[i]) {
+			thrust = true;
+			break;
+		}
+	}
+	for (u32 i = 7; i < 13; ++i) {
+		if (ship->moves[i]) {
+			rot = true;
+			break;
+		}
+	}
+	if (!thrust) ship->moves[SHIP_STOP_VELOCITY] = true;
+	if (!rot) ship->moves[SHIP_STOP_ROTATION] = true;
+}
+
 void shipControlSystem(SceneManager* manager, f32 dt)
 { //This whole thing needs to be abstracted out to player-defined keybinds
 	Scene& scene = manager->scene;
@@ -72,6 +92,8 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 			ship->moves[SHIP_STOP_ROTATION] = true;
 			ship->moves[SHIP_STOP_VELOCITY] = true;
 		}
+
+		if (manager->controller->gameConfig.spaceFriction) checkSpaceFriction(ship);
 
 		if (input->mouseControlEnabled) {
 
