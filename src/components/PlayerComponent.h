@@ -31,7 +31,7 @@ struct PlayerComponent
 	ISceneNode* target;
 	//values for how much the camera swings around
 	f32 slerpFactor = .009f;
-	f32 velocityFactor = .1f;
+	f32 velocityFactor = .01f;
 
 	//hud
 	IGUIElement* rootHUD;

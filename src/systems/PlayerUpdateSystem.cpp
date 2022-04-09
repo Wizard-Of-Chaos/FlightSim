@@ -15,8 +15,6 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		IrrlichtComponent* irrcomp = scene.get<IrrlichtComponent>(entityId);
 		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
-		WeaponInfoComponent* wep = scene.get<WeaponInfoComponent>(entityId);
-		HealthComponent* hp = scene.get<HealthComponent>(entityId);
 
 		SensorComponent* sensors = scene.get<SensorComponent>(entityId);
 
@@ -60,11 +58,10 @@ void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* 
 	quaternion nodeRot(playerShip->getRotation() * DEGTORAD);
 	quaternion targetRot(targetnode->getRotation() * DEGTORAD);
 
-	f32 slerp = (abs(angle) + abs(rollAngle)) / 2;
-
+	f32 slerp = (abs(angle) + abs(rollAngle));
 	quaternion desiredRot;
 	vector3df targetRotVec(0, 0, 0);
-	desiredRot.slerp(targetRot, nodeRot, player->slerpFactor*(slerp*10.f)); //remove the magic number here later
+	desiredRot.slerp(targetRot, nodeRot, player->slerpFactor*(slerp*5.f)); //remove the magic number here later
 	desiredRot.toEuler(targetRotVec);
 	targetRotVec *= RADTODEG;
 
