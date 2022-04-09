@@ -57,13 +57,17 @@ void defaultFleeBehavior(SceneManager* manager, EntityId id, EntityId fleeTarget
 //TLDR is try and get behind the ship and match its velocity.
 void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuitTarget, f32 dt)
 {
-	if (pursuitTarget == INVALID_ENTITY) return;
+	auto sensors = manager->scene.get<SensorComponent>(id);
+
+	if (pursuitTarget == INVALID_ENTITY) {
+		sensors->targetContact = INVALID_ENTITY;
+		return; 
+	}
 
 	auto irr = manager->scene.get<IrrlichtComponent>(id);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 	auto ship = manager->scene.get<ShipComponent>(id);
 	auto ai = manager->scene.get<AIComponent>(id);
-	auto sensors = manager->scene.get<SensorComponent>(id);
 
 	sensors->targetContact = pursuitTarget;
 
