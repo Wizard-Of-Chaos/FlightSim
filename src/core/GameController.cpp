@@ -14,8 +14,8 @@ GameController::GameController(GameStateController* controller)
 	driver = 0;
 	then = 0;
 	bWorld = 0;
-	gameConfig.loadConfig("gameconfig.gdat");
-	gameConfig.saveConfig("gameconfig.gdat");
+	gameConfig.loadConfig("cfg/gameconfig.gdat");
+	gameConfig.saveConfig("cfg/gameconfig.gdat");
 }
 
 void GameController::update()
