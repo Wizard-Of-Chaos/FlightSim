@@ -64,36 +64,39 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 		return; 
 	}
 
-	auto irr = manager->scene.get<IrrlichtComponent>(id);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 	auto ship = manager->scene.get<ShipComponent>(id);
 	auto ai = manager->scene.get<AIComponent>(id);
 
 	sensors->targetContact = pursuitTarget;
 
-	auto pursuitIrr = manager->scene.get<IrrlichtComponent>(pursuitTarget);
-	if (!pursuitIrr) return;
-	vector3df tailPos = getNodeBackward(pursuitIrr->node) * 30.f; //change to backward
-	vector3df dist = tailPos - irr->node->getPosition();
+	auto targetRBC = manager->scene.get<BulletRigidBodyComponent>(pursuitTarget);
+	if (!targetRBC) return;
 
-	vector3df facing = pursuitIrr->node->getPosition() - irr->node->getPosition();
-	facing.normalize();
+	btVector3 targetPos = targetRBC->rigidBody.getCenterOfMassPosition();
+	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
+
+	btVector3 tailPos = targetPos + (getRigidBodyBackward(&rbc->rigidBody) * 20.f);//targetPos();
+	btVector3 dist = tailPos - pos;
+
+	btVector3 facing = targetPos - pos;
+	facing = facing.normalize();
 
 	if (avoidObstacles(manager, id, dt)) return;
 
 	//If it's not behind the ship, get behind it
-	if (dist.getLength() > 8.f) {
-		goToPoint(&rbc->rigidBody, ship, irrVecToBt(tailPos), dt);
+	if (dist.length() > 30.f) {
+		goToPoint(&rbc->rigidBody, ship, tailPos, dt);
 	}
 	else {
 		//if it is behind it, start turning towards it
 		ship->moves[SHIP_STOP_VELOCITY] = true;
-		smoothTurnToDirection(&rbc->rigidBody, ship, irrVecToBt(facing), dt);
+		smoothTurnToDirection(&rbc->rigidBody, ship, facing, dt);
 		auto pursuitBody = manager->scene.get<BulletRigidBodyComponent>(sensors->closestContact);
 	}
 
 	btVector3 forward = getRigidBodyForward(&rbc->rigidBody);
-	btScalar angle = forward.angle(irrVecToBt(facing));
+	btScalar angle = forward.angle(facing);
 	//if it's facing the ship, start shooting
 	if ((angle * RADTODEG) < 30.f) {
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
@@ -102,7 +105,7 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 			auto irrComp = manager->scene.get<IrrlichtComponent>(wep);
 			wepInfo->isFiring = true;
 			wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
-			wepInfo->firingDirection = getNodeForward(irrComp->node);
+			wepInfo->firingDirection = btVecToIrr(facing); //getNodeForward(irrComp->node);
 		}
 	}
 	else {
