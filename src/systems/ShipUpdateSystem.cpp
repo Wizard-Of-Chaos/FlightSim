@@ -148,27 +148,22 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 			afterburnerJetOff(ship->engineJetEmit->getEmitter(), ship->engineLight);
 		}
 
-		f32 pitchSensitivity = 1.f;
-		f32 yawSensitivity = 1.f;
-		if (ship->curPitch > 0 || ship->curPitch < 0) pitchSensitivity = ship->curPitch * .5f;
-		if (ship->curYaw > 0 || ship->curYaw < 0) pitchSensitivity = ship->curYaw * .5f;
-
 		//Updates the ship's torque based on what it's currently trying to do
 		if (ship->moves[SHIP_PITCH_UP] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyLeft(body))) {
 			jetPairOn(down2, up1);
-			torque += getTorquePitchUp(body, ship) * pitchSensitivity;
+			torque += getTorquePitchUp(body, ship);
 		}
 		if (ship->moves[SHIP_PITCH_DOWN] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyRight(body))) {
 			jetPairOn(down1, up2);
-			torque += getTorquePitchDown(body, ship) * pitchSensitivity;
+			torque += getTorquePitchDown(body, ship);
 		}
 		if (ship->moves[SHIP_YAW_LEFT] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyDown(body))) {
 			jetPairOn(right2, left1);
-			torque += getTorqueYawLeft(body, ship) * yawSensitivity;
+			torque += getTorqueYawLeft(body, ship);
 		}
 		if (ship->moves[SHIP_YAW_RIGHT] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyUp(body))) {
 			jetPairOn(right1, left2);
-			torque += getTorqueYawRight(body, ship) * yawSensitivity;
+			torque += getTorqueYawRight(body, ship);
 		}
 		if (ship->moves[SHIP_ROLL_LEFT] && angularSafetyCheck(angVel, ship, angDir, getRigidBodyForward(body))) {
 			torque += getTorqueRollLeft(body, ship);
@@ -188,8 +183,6 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		for (u32 i = 0; i < SHIP_MAX_MOVEMENTS; ++i) {
 			ship->moves[i] = false;
 		}
-		ship->curPitch = 0.f;
-		ship->curYaw = 0.f;
 
 		rbc->rigidBody.applyTorqueImpulse(torque * dt);
 		rbc->rigidBody.applyCentralImpulse(force * dt);

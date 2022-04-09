@@ -90,8 +90,6 @@ u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
 	data->shipComponent.maxAfterburnerFuel = data->shipComponent.afterburnerFuel;
 	data->shipComponent.afterburnerFuelEfficiency = std::stof(in.values["afterburnerFuelEfficiency"]);
 
-	data->shipComponent.curPitch = 0;
-	data->shipComponent.curYaw = 0;
 	data->shipComponent.afterburnerOn = false;
 	data->shipComponent.safetyOverride = false;
 

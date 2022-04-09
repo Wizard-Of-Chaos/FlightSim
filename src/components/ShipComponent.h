@@ -76,9 +76,6 @@ struct ShipComponent {
 	f32 yawThrust;
 	f32 rollThrust;
 
-	f32 curPitch;
-	f32 curYaw;
-
 	f32 afterburnerFuel;
 	f32 maxAfterburnerFuel;
 	f32 afterburnerFuelEfficiency;

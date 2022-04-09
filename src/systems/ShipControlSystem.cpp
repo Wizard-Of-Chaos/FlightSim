@@ -3,13 +3,24 @@
 #include "GameController.h"
 #include <iostream>
 
+void mouseTurnTo(ShipComponent* ship, f32 angVelocity, f32 move, SHIP_MOVEMENT dir, SHIP_MOVEMENT opp)
+{
+	if (move < angVelocity) {
+		ship->moves[dir] = true;
+	}
+	else if (move > angVelocity) {
+		ship->moves[opp] = true;
+	}
+}
+
 void shipControlSystem(SceneManager* manager, f32 dt)
 { //This whole thing needs to be abstracted out to player-defined keybinds
 	Scene& scene = manager->scene;
-	for(auto entityId : SceneView<InputComponent, ShipComponent, PlayerComponent>(scene)) {
+	for(auto entityId : SceneView<InputComponent, ShipComponent, PlayerComponent, BulletRigidBodyComponent>(scene)) {
 		InputComponent* input = scene.get<InputComponent>(entityId);
 		ShipComponent* ship = scene.get<ShipComponent>(entityId);
 		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
+		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
 
 		//strafing
 		ship->safetyOverride = input->safetyOverride;
@@ -63,28 +74,18 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		}
 
 		if (input->mouseControlEnabled) {
-			f32 mX = input->mousePosition.X;
-			f32 mY = input->mousePosition.Y;
 
-			if (mX > .2f || mX < -.2f) {
-				if (mX > 0.f) {
-					ship->moves[SHIP_YAW_RIGHT] = true;
-				} else {
-					ship->moves[SHIP_YAW_LEFT] = true;
-				}
-				ship->curYaw = mX;
-			}
-			if (mY > .2f || mY < -.2f) {
-				if (mY > 0.f) {
-					ship->moves[SHIP_PITCH_DOWN] = true;
-				} else {
-					ship->moves[SHIP_PITCH_UP] = true;
-				}
-				ship->curPitch = mY;
-			}
-			if ((mX <= .2f && mX >= -.2f) && (mY <= .2f && mY >= -.2f)) {
-				ship->moves[SHIP_STOP_ROTATION] = true;
-			}
+			btTransform world;
+			world.setIdentity();
+			btTransform inv = world.inverse();
+			btVector3 localAng = inv(rbc->rigidBody.getAngularVelocity());
+
+			f32 pitch = ship->angularMaxVelocity * input->mousePosition.Y;
+			f32 yaw = ship->angularMaxVelocity * input->mousePosition.X;
+
+			mouseTurnTo(ship, localAng.x(), pitch, SHIP_PITCH_UP, SHIP_PITCH_DOWN);
+			mouseTurnTo(ship, localAng.y(), yaw, SHIP_YAW_LEFT, SHIP_YAW_RIGHT);
+
 		}
 		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
 
