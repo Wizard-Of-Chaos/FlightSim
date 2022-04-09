@@ -76,6 +76,12 @@ btVector3 getRigidBodyUp(btRigidBody* body);
 //Down directional vector for a rigid body.
 btVector3 getRigidBodyDown(btRigidBody* body);
 
+//Returns the angular velocity of the body transformed into local coordinates (X is pitch, Y is yaw, Z is roll).
+btVector3 getLocalAngularVelocity(btRigidBody* body);
+
+//Returns the linear velocity of the body transformed into local coordinates (Z is forward/backward, X is left/right, Y is up/down).
+btVector3 getLocalLinearVelocity(btRigidBody* body);
+
 //Used for sphere sweeps with collision avoidance.
 //This code ripped directly from Bullet's own source. It's declared in a .cpp file. I don't know why
 //it isn't in a damned header, but, y'know, whatever works. Original declaration in btDiscreteDynamicsWorld.cpp

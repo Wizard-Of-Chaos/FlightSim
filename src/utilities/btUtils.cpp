@@ -49,3 +49,13 @@ btVector3 getRigidBodyDown(btRigidBody* body)
 {
 	return -getRigidBodyUp(body);
 }
+
+btVector3 getLocalAngularVelocity(btRigidBody* body)
+{
+	return body->getAngularVelocity() * body->getWorldTransform().getBasis().transpose();
+}
+
+btVector3 getLocalLinearVelocity(btRigidBody* body)
+{
+	return body->getLinearVelocity() * body->getWorldTransform().getBasis().transpose();
+}

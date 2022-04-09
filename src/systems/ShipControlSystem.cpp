@@ -93,19 +93,19 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 			ship->moves[SHIP_STOP_VELOCITY] = true;
 		}
 
-		if (manager->controller->gameConfig.spaceFriction) checkSpaceFriction(ship);
+		if (manager->controller->gameConfig.spaceFriction) {
+			checkSpaceFriction(ship);
+		}
 
 		if (input->mouseControlEnabled) {
-
-			btVector3 ang = rbc->rigidBody.getAngularVelocity();
-			auto localAng = ang * rbc->rigidBody.getWorldTransform().getBasis().transpose();
 
 			f32 pitch = ship->angularMaxVelocity * input->mousePosition.Y;
 			f32 yaw = ship->angularMaxVelocity * input->mousePosition.X;
 
+			btVector3 localAng = getLocalAngularVelocity(&rbc->rigidBody);
+
 			mouseTurnTo(ship, localAng.x(), pitch, SHIP_PITCH_UP, SHIP_PITCH_DOWN);
 			mouseTurnTo(ship, localAng.y(), yaw, SHIP_YAW_LEFT, SHIP_YAW_RIGHT);
-
 		}
 		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
 
