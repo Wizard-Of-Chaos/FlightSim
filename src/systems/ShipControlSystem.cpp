@@ -88,6 +88,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		ShipComponent* ship = scene.get<ShipComponent>(entityId);
 		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
+		IrrlichtComponent* irr = scene.get<IrrlichtComponent>(entityId);
 
 		//strafing
 		ship->safetyOverride = input->safetyOverride;
@@ -172,6 +173,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		}
 
 		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
+		ISceneNode* coll = manager->controller->smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
 
 		if (input->mouseControlEnabled) {
 			vector3df viewpoint = input->cameraRay.getMiddle();
@@ -180,7 +182,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 
 			btScalar angle = getRigidBodyForward(&rbc->rigidBody).angle(irrVecToBt(viewpoint));
 			btVector3 ang = rbc->rigidBody.getAngularVelocity();
-			if (angle * RADTODEG >= .5f) {
+			if (angle * RADTODEG >= .8f) {
 				turnToDirection(&rbc->rigidBody, ship, irrVecToBt(viewpoint));
 			}
 			else {
@@ -199,6 +201,9 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 				wepInfo->isFiring = true;
 				wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
 				vector3df target = input->cameraRay.getMiddle();
+				if (coll && coll != irr->node) {
+					target = coll->getPosition();
+				}
 				vector3df dir = target - wepInfo->spawnPosition;
 				dir.normalize();
 				wepInfo->firingDirection = dir;
