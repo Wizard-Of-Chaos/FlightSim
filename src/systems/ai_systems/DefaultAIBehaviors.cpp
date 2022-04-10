@@ -44,7 +44,7 @@ void defaultFleeBehavior(SceneManager* manager, EntityId id, EntityId fleeTarget
 
 	force += getForceForward(&rbc->rigidBody, ship);
 
-	smoothTurnToDirection(&rbc->rigidBody, ship, irrVecToBt(targetVector), dt);
+	smoothTurnToDirection(&rbc->rigidBody, ship, irrVecToBt(targetVector));
 	rbc->rigidBody.applyCentralImpulse(force * dt);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
@@ -91,7 +91,7 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 	else {
 		//if it is behind it, start turning towards it
 		ship->moves[SHIP_STOP_VELOCITY] = true;
-		smoothTurnToDirection(&rbc->rigidBody, ship, facing, dt);
+		smoothTurnToDirection(&rbc->rigidBody, ship, facing);
 		auto pursuitBody = manager->scene.get<BulletRigidBodyComponent>(sensors->closestContact);
 	}
 

@@ -52,7 +52,7 @@ void GameController::init()
 	currentScenario = Scenario(SCENARIO_KILL_HOSTILES, 2, vector3df(0, 0, -50), vector3df(10, 20, 80));
 
 	//bullet init
-	broadPhase = new btAxisSweep3(btVector3(-1000, -1000, -1000), btVector3(1000, 1000, 1000));
+	broadPhase = new btAxisSweep3(btVector3(-10000, -10000, -10000), btVector3(10000, 10000, 10000));
 	collisionConfig = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfig);
 	solver = new btSequentialImpulseConstraintSolver();

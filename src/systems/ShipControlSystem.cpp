@@ -3,16 +3,6 @@
 #include "GameController.h"
 #include <iostream>
 
-void mouseTurnTo(ShipComponent* ship, f32 angVelocity, f32 move, SHIP_MOVEMENT dir, SHIP_MOVEMENT opp)
-{
-	if (move < angVelocity) {
-		ship->moves[dir] = true;
-	}
-	else if (move > angVelocity) {
-		ship->moves[opp] = true;
-	}
-}
-
 void checkSpaceFriction(ShipComponent* ship)
 {
 	bool thrust = false;
@@ -96,18 +86,25 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		if (manager->controller->gameConfig.spaceFriction) {
 			checkSpaceFriction(ship);
 		}
+		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
 
 		if (input->mouseControlEnabled) {
+			f32 mX = input->mousePosition.X;
+			f32 mY = input->mousePosition.Y;
+			if ((mX > .08f || mX < -.08f) && (mY > .08f || mY < -.8f)) { //deadzone
+				vector3df viewpoint = input->cameraRay.getMiddle();
+				viewpoint.normalize();
 
-			f32 pitch = ship->angularMaxVelocity * input->mousePosition.Y;
-			f32 yaw = ship->angularMaxVelocity * input->mousePosition.X;
-
-			btVector3 localAng = getLocalAngularVelocity(&rbc->rigidBody);
-
-			mouseTurnTo(ship, localAng.x(), pitch, SHIP_PITCH_UP, SHIP_PITCH_DOWN);
-			mouseTurnTo(ship, localAng.y(), yaw, SHIP_YAW_LEFT, SHIP_YAW_RIGHT);
+				btScalar angle = getRigidBodyForward(&rbc->rigidBody).angle(irrVecToBt(viewpoint));
+				btVector3 ang = rbc->rigidBody.getAngularVelocity();
+				if (angle * RADTODEG >= 3.f) {
+					turnToDirection(&rbc->rigidBody, ship, irrVecToBt(viewpoint));
+				}
+				else {
+					ship->moves[SHIP_STOP_ROTATION] = true;
+				}
+			}
 		}
-		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
 
 		if (input->leftMouseDown) {
 			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {

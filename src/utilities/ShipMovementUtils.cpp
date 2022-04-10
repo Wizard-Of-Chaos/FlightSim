@@ -109,7 +109,7 @@ void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
 	}
 }
 
-void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir, f32 dt)
+void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
 {
 	btScalar angle = getRigidBodyForward(body).angle(dir);
 	btVector3 ang = body->getAngularVelocity();
@@ -126,7 +126,7 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 	btVector3 path = dest - shipPos;
 	btVector3 dir = path.normalized();
 	btScalar angle = getRigidBodyForward(body).angle(dir) * RADTODEG;
-	smoothTurnToDirection(body, ship, dir, dt);
+	smoothTurnToDirection(body, ship, dir);
 	if (angle < 20.f) {
 		btScalar brakePower = ship->brakeThrust + ship->strafeThrust;
 		btVector3 velocity = body->getLinearVelocity();
