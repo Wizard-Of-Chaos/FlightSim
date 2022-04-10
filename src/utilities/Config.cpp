@@ -90,7 +90,7 @@ GameConfig::GameConfig()
 {
 	particleLevel = PARTICLE_LEVEL::HIGH;
 	spaceFriction = false;
-	constantThrust = false;
+	flightAssist = true;
 }
 
 void GameConfig::loadConfig(std::string filename)
@@ -102,7 +102,7 @@ void GameConfig::loadConfig(std::string filename)
 
 	particleLevel = (PARTICLE_LEVEL)std::stoi(in.values["particleLevel"]);
 	spaceFriction = std::stoi(in.values["spaceFriction"]);
-	constantThrust = std::stoi(in.values["constantThrust"]);
+	flightAssist = std::stoi(in.values["flightAssist"]);
 }
 
 void GameConfig::saveConfig(std::string filename)
@@ -110,7 +110,7 @@ void GameConfig::saveConfig(std::string filename)
 	gvReader out;
 	out.values["particleLevel"] = std::to_string((int)particleLevel);
 	out.values["spaceFriction"] = std::to_string(spaceFriction);
-	out.values["constantThrust"] = std::to_string(constantThrust);
+	out.values["flightAssist"] = std::to_string(flightAssist);
 
 	out.readValuesToLines();
 	out.write(filename);

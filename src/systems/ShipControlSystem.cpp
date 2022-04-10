@@ -2,8 +2,9 @@
 #include "SceneManager.h"
 #include "GameController.h"
 #include <iostream>
+#include <algorithm>
 
-void checkSpaceFriction(ShipComponent* ship)
+void checkSpaceFriction(ShipComponent* ship, vector3df& throttle, vector3df& rotate)
 {
 	bool thrust = false;
 	bool rot = false;
@@ -19,8 +20,64 @@ void checkSpaceFriction(ShipComponent* ship)
 			break;
 		}
 	}
-	if (!thrust) ship->moves[SHIP_STOP_VELOCITY] = true;
-	if (!rot) ship->moves[SHIP_STOP_ROTATION] = true;
+	if (!thrust) {
+		ship->moves[SHIP_STOP_VELOCITY] = true;
+		throttle = vector3df(0, 0, 0);
+	}
+	if (!rot) {
+		ship->moves[SHIP_STOP_ROTATION] = true;
+		rotate = vector3df(0, 0, 0);
+	}
+}
+
+void setVelocity(ShipComponent* ship, f32& local, f32& desired, SHIP_MOVEMENT pos, SHIP_MOVEMENT neg)
+{
+	if (std::abs(local) < std::abs(desired)) {
+		if (desired > 0) {
+			ship->moves[pos] = true;
+		} if (desired < 0) {
+			ship->moves[neg] = true;
+		}
+	}
+	else if (std::abs(local) > std::abs(desired)) {
+		if (desired > 0) {
+			ship->moves[neg] = true;
+		} if (desired < 0) {
+			ship->moves[pos] = true;
+		}
+	}
+}
+
+void throttleToShip(ShipComponent* ship, btRigidBody* body, vector3df& thrust, vector3df& rot)
+{
+	f32 desiredZ = thrust.Z * ship->linearMaxVelocity;
+	f32 desiredY = thrust.Y * ship->linearMaxVelocity;
+	f32 desiredX = thrust.X * ship->linearMaxVelocity;
+
+	btVector3 ang = body->getAngularVelocity();
+	btVector3 lin = body->getLinearVelocity();
+
+	btScalar localZ = lin.dot(getRigidBodyForward(body));
+	btScalar localX = lin.dot(getRigidBodyRight(body));
+	btScalar localY = lin.dot(getRigidBodyUp(body));
+
+
+	setVelocity(ship, localZ, desiredZ, SHIP_THRUST_FORWARD, SHIP_THRUST_BACKWARD);
+	setVelocity(ship, localY, desiredY, SHIP_STRAFE_UP, SHIP_STRAFE_DOWN);
+	setVelocity(ship, localX, desiredX, SHIP_STRAFE_RIGHT, SHIP_STRAFE_LEFT);
+
+	f32 desiredPitch = rot.X * ship->angularMaxVelocity;
+	f32 desiredYaw = rot.Y * ship->angularMaxVelocity;
+	f32 desiredRoll = rot.Z * ship->angularMaxVelocity;
+
+	f32 localPitch = ang.dot(getRigidBodyRight(body));
+	f32 localYaw = ang.dot(getRigidBodyUp(body));
+	f32 localRoll = ang.dot(getRigidBodyForward(body));
+
+	std::cout << localPitch << ", " << desiredPitch << std::endl;
+	setVelocity(ship, localPitch, desiredPitch, SHIP_PITCH_DOWN, SHIP_PITCH_UP);
+	setVelocity(ship, localYaw, desiredYaw, SHIP_YAW_RIGHT, SHIP_YAW_LEFT);
+	setVelocity(ship, localRoll, desiredRoll, SHIP_ROLL_RIGHT, SHIP_ROLL_LEFT);
 }
 
 void shipControlSystem(SceneManager* manager, f32 dt)
@@ -35,71 +92,101 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		//strafing
 		ship->safetyOverride = input->safetyOverride;
 
+		bool fa = manager->controller->gameConfig.flightAssist;
+
 		if(input->isKeyDown(KEY_KEY_W)) {
-			ship->moves[SHIP_THRUST_FORWARD] = true;
+			player->thrust.Z += dt;
+			if (!fa) ship->moves[SHIP_THRUST_FORWARD] = true;
 		}
 		if(input->isKeyDown(KEY_KEY_S)) {
-			ship->moves[SHIP_STRAFE_BACKWARD] = true;
+			player->thrust.Z -= dt;
+			if (!fa) ship->moves[SHIP_THRUST_BACKWARD] = true;
 		}
+		player->thrust.Z = std::clamp(player->thrust.Z, -1.f, 1.f);
+
 		if(input->isKeyDown(KEY_KEY_A)) {
-			ship->moves[SHIP_STRAFE_LEFT] = true;
+			player->thrust.X -= dt;
+			if (!fa) ship->moves[SHIP_STRAFE_LEFT] = true;
 		}
 		if(input->isKeyDown(KEY_KEY_D)) {
-			ship->moves[SHIP_STRAFE_RIGHT] = true;
+			player->thrust.X += dt;
+			if (!fa) ship->moves[SHIP_STRAFE_RIGHT] = true;
 		}
+		player->thrust.X = std::clamp(player->thrust.X, -1.f, 1.f);
 		if(input->isKeyDown(KEY_SPACE)) {
-			ship->moves[SHIP_STRAFE_UP] = true;
+			player->thrust.Y += dt;
+			if (!fa) ship->moves[SHIP_STRAFE_UP] = true;
 		}
 		if(input->isKeyDown(KEY_LCONTROL)) {
-			ship->moves[SHIP_STRAFE_DOWN] = true;
+			player->thrust.Y -= dt;
+			if (!fa) ship->moves[SHIP_STRAFE_DOWN] = true;
 		}
+		player->thrust.Y = std::clamp(player->thrust.Y, -1.f, 1.f);
 		if (input->isKeyDown(KEY_TAB)) {
 			ship->moves[SHIP_AFTERBURNER] = true;
 		}
 
 		//rotations
+		if (input->isKeyDown(KEY_KEY_C)) {
+			player->rotation.Z -= dt;
+			if (!fa) ship->moves[SHIP_ROLL_RIGHT] = true;
+		}
 		if(input->isKeyDown(KEY_KEY_Z)) {
-			ship->moves[SHIP_ROLL_LEFT] = true;
+			player->rotation.Z += dt;
+			if (!fa) ship->moves[SHIP_ROLL_LEFT] = true;
 		}
-		if(input->isKeyDown(KEY_KEY_C)) {
-			ship->moves[SHIP_ROLL_RIGHT] = true;
-		}
+		player->rotation.Z = std::clamp(player->rotation.Z, -1.f, 1.f);
 		if(input->isKeyDown(KEY_KEY_R)) {
-			ship->moves[SHIP_PITCH_UP] = true;
+			player->rotation.X -= dt;
+			if (!fa) ship->moves[SHIP_PITCH_UP] = true;
 		}
 		if(input->isKeyDown(KEY_KEY_F)) {
-			ship->moves[SHIP_PITCH_DOWN] = true;
+			player->rotation.X += dt;
+			if (!fa) ship->moves[SHIP_PITCH_DOWN] = true;
 		}
+		player->rotation.X = std::clamp(player->rotation.X, -1.f, 1.f);
 		if (input->isKeyDown(KEY_KEY_Q)) {
-			ship->moves[SHIP_YAW_LEFT] = true;
+			player->rotation.Y -= dt;
+			if (!fa) ship->moves[SHIP_YAW_LEFT] = true;
 		}
 		if(input->isKeyDown(KEY_KEY_E)) {
-			ship->moves[SHIP_YAW_RIGHT] = true;
+			player->rotation.Y += dt;
+			if (!fa) ship->moves[SHIP_YAW_RIGHT] = true;
 		}
+		player->rotation.Y = std::clamp(player->rotation.Y, -1.f, 1.f);
 
 		//STOOOOOOOOOOOOOOOOOOOP
 		if (input->isKeyDown(KEY_KEY_X)) {
 			ship->moves[SHIP_STOP_ROTATION] = true;
 			ship->moves[SHIP_STOP_VELOCITY] = true;
+			player->thrust = vector3df(0, 0, 0);
+			player->rotation = vector3df(0, 0, 0);
+		}
+
+		if (fa) {
+			throttleToShip(ship, &rbc->rigidBody, player->thrust, player->rotation);
 		}
 
 		if (manager->controller->gameConfig.spaceFriction) {
-			checkSpaceFriction(ship);
+			checkSpaceFriction(ship, player->thrust, player->rotation);
 		}
+
 		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
 
 		if (input->mouseControlEnabled) {
 			vector3df viewpoint = input->cameraRay.getMiddle();
+			viewpoint = viewpoint - btVecToIrr(rbc->rigidBody.getCenterOfMassPosition());
 			viewpoint.normalize();
 
 			btScalar angle = getRigidBodyForward(&rbc->rigidBody).angle(irrVecToBt(viewpoint));
 			btVector3 ang = rbc->rigidBody.getAngularVelocity();
-			if (angle * RADTODEG >= 3.f) {
+			if (angle * RADTODEG >= .5f) {
 				turnToDirection(&rbc->rigidBody, ship, irrVecToBt(viewpoint));
 			}
 			else {
 				ship->moves[SHIP_STOP_ROTATION] = true;
 			}
+
 		}
 
 		if (input->leftMouseDown) {
@@ -126,6 +213,5 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 				wepInfo->isFiring = false;
 			}
 		}
-
 	}
 }

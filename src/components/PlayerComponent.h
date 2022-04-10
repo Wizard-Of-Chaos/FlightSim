@@ -37,6 +37,9 @@ struct PlayerComponent
 	IGUIElement* rootHUD;
 	std::vector<HUDElement*> HUD;
 
+	vector3df thrust;
+	vector3df rotation;
+
 	std::unordered_map<EntityId, HUDContact*> trackedContacts;
 
 	void removeContact(HUDContact* contact);

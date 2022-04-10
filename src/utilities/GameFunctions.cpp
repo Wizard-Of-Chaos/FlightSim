@@ -298,10 +298,13 @@ bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 	target->setPosition(shipIrr->node->getPosition());
 	ICameraSceneNode* camera = smgr->addCameraSceneNode(target, vector3df(0, 5, -15), shipIrr->node->getPosition(), ID_IsNotSelectable, true);
 	scene->assign<InputComponent>(shipId);
-	auto playerCamera = scene->assign<PlayerComponent>(shipId);
-	playerCamera->camera = camera;
-	playerCamera->target = target;
-	//playerCamera->activeSelection = INVALID_ENTITY;
+	auto player = scene->assign<PlayerComponent>(shipId);
+	player->camera = camera;
+	player->target = target;
+
+	player->thrust = vector3df(0, 0, 0);
+	player->rotation = vector3df(0, 0, 0);
+
 	return true;
 }
 

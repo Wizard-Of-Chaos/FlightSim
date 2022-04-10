@@ -16,7 +16,7 @@
 enum SHIP_MOVEMENT {
 	SHIP_THRUST_FORWARD,
 	SHIP_AFTERBURNER,
-	SHIP_STRAFE_BACKWARD,
+	SHIP_THRUST_BACKWARD,
 	SHIP_STRAFE_LEFT,
 	SHIP_STRAFE_RIGHT,
 	SHIP_STRAFE_UP,
@@ -81,8 +81,6 @@ struct ShipComponent {
 	f32 afterburnerFuelEfficiency;
 	//Holds the movements that the ship is currently trying to make (pitch, yaw, thrust, etc).
 	bool moves[SHIP_MAX_MOVEMENTS];
-	bool constThrottle = false;
-	f32 throttle = 1.f;
 
 	//Positions on the ship for where the thrust emissions come from.
 	vector3df upJetPos[2];

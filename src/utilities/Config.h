@@ -57,7 +57,7 @@ struct GameConfig
 	void saveConfig(std::string filename);
 	PARTICLE_LEVEL particleLevel;
 	bool spaceFriction;
-	bool constantThrust;
+	bool flightAssist;
 
 };
 #endif 

@@ -128,7 +128,7 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		if (ship->moves[SHIP_THRUST_FORWARD] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyForward(body))) {
 			force += getForceForward(body, ship);
 		}
-		if (ship->moves[SHIP_STRAFE_BACKWARD] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyBackward(body))) {
+		if (ship->moves[SHIP_THRUST_BACKWARD] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyBackward(body))) {
 			jetPairOn(back1, back2);
 			force += getForceBackward(body, ship);
 		}
