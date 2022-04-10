@@ -69,7 +69,7 @@ void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* 
 
 	vector3df targetUp = getNodeUp(targetnode);
 	camera->setUpVector(targetUp);
-	vector3df target = playerShip->getPosition() + btVecToIrr(body->getLinearVelocity()) * player->velocityFactor;
+	vector3df target = playerShip->getPosition() + (getNodeUp(playerShip) * 5.f) + btVecToIrr(body->getLinearVelocity()) * player->velocityFactor;
 	camera->setTarget(target);
 }
 

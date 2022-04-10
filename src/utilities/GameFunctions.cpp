@@ -296,7 +296,7 @@ bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 	if (!shipIrr) return false;
 	ISceneNode* target = smgr->addEmptySceneNode(0);
 	target->setPosition(shipIrr->node->getPosition());
-	ICameraSceneNode* camera = smgr->addCameraSceneNode(target, vector3df(0, 5, -15), shipIrr->node->getPosition(), ID_IsNotSelectable, true);
+	ICameraSceneNode* camera = smgr->addCameraSceneNode(target, vector3df(0, 5, -20), shipIrr->node->getPosition(), ID_IsNotSelectable, true);
 	scene->assign<InputComponent>(shipId);
 	auto player = scene->assign<PlayerComponent>(shipId);
 	player->camera = camera;
@@ -338,11 +338,11 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	dimension2du baseSize = dimension2du(960, 540);
 	player->rootHUD = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
 
-	HUDElement* crossHUD = new HUDCrosshair(manager, player->rootHUD);
+	//HUDElement* crossHUD = new HUDCrosshair(manager, player->rootHUD);
 	HUDElement* selectHUD = new HUDActiveSelection(manager, player->rootHUD);
 	HUDElement* healthHUD = new HUDHealthBar(manager, player->rootHUD);
 	HUDElement* speedHUD = new HUDVelocityBar(manager, player->rootHUD);
-	player->HUD.push_back(crossHUD);
+	//player->HUD.push_back(crossHUD);
 	player->HUD.push_back(selectHUD);
 	player->HUD.push_back(healthHUD);
 	player->HUD.push_back(speedHUD);
