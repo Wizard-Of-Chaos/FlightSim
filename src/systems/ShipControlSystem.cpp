@@ -89,20 +89,16 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
 
 		if (input->mouseControlEnabled) {
-			f32 mX = input->mousePosition.X;
-			f32 mY = input->mousePosition.Y;
-			if ((mX > .08f || mX < -.08f) && (mY > .08f || mY < -.8f)) { //deadzone
-				vector3df viewpoint = input->cameraRay.getMiddle();
-				viewpoint.normalize();
+			vector3df viewpoint = input->cameraRay.getMiddle();
+			viewpoint.normalize();
 
-				btScalar angle = getRigidBodyForward(&rbc->rigidBody).angle(irrVecToBt(viewpoint));
-				btVector3 ang = rbc->rigidBody.getAngularVelocity();
-				if (angle * RADTODEG >= 3.f) {
-					turnToDirection(&rbc->rigidBody, ship, irrVecToBt(viewpoint));
-				}
-				else {
-					ship->moves[SHIP_STOP_ROTATION] = true;
-				}
+			btScalar angle = getRigidBodyForward(&rbc->rigidBody).angle(irrVecToBt(viewpoint));
+			btVector3 ang = rbc->rigidBody.getAngularVelocity();
+			if (angle * RADTODEG >= 3.f) {
+				turnToDirection(&rbc->rigidBody, ship, irrVecToBt(viewpoint));
+			}
+			else {
+				ship->moves[SHIP_STOP_ROTATION] = true;
 			}
 		}
 
