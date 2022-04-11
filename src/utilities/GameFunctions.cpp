@@ -62,6 +62,11 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultShipTexture = driver->getTexture("models/tux/BulletShipTex.png");
 	manager->defaults.defaultWeaponMesh = smgr->getMesh("models/wazer/wazer.obj");
 	manager->defaults.defaultObstacleMesh = smgr->getMesh("models/asteroid/Asteroid.obj");
+	manager->defaults.defaultObstacleTexture = driver->getTexture("models/asteroid/Asteroid.jpg");
+	if (!loadHull("attributes/hulls/Asteroid.bullet", manager->defaults.defaultObstacleHull)) {
+		manager->defaults.defaultObstacleHull = createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh);
+		saveHull("attributes/hulls/Asteroid.bullet", manager->defaults.defaultObstacleHull);
+	}
 	manager->defaults.defaultMissileMesh = smgr->getMesh("models/basicmissile/Missile.obj");
 
 	manager->defaults.defaultProjectileTexture = driver->getTexture("effects/particlered.bmp");
@@ -147,7 +152,7 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 	return shipEntity;
 }
 
-EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector3df scale)
+EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
 	ISceneManager* smgr = manager->controller->smgr;
 	Scene* scene = &manager->scene;
@@ -158,27 +163,22 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector
 	obst->type = OBSTACLE::ASTEROID;
 
 	auto irrComp = scene->assign<IrrlichtComponent>(roidEntity);
-	irrComp->node = smgr->addOctreeSceneNode(manager->defaults.defaultObstacleMesh);
+	irrComp->node = smgr->addMeshSceneNode(manager->defaults.defaultObstacleMesh);
+	irrComp->node->setMaterialTexture(0, manager->defaults.defaultObstacleTexture);
 	irrComp->node->setID(ID_IsSelectable | ID_IsAvoidable);
 	irrComp->node->setPosition(position);
 	irrComp->node->setName(idToStr(roidEntity).c_str());
 	irrComp->node->setScale(scale);
 	irrComp->name = "Asteroid";
 	irrComp->node->setMaterialFlag(EMF_NORMALIZE_NORMALS, true);
+	irrComp->node->setRotation(rotation);
 
 	IMeshSceneNode* n = (IMeshSceneNode*)irrComp->node;
 	n->getMesh()->setHardwareMappingHint(EHM_STATIC);
 	//manager->controller->driver->addOcclusionQuery(irrComp->node, n->getMesh());
 
 	btVector3 btscale(irrVecToBt(scale));
-	btConvexHullShape shape;
-	if (!loadHull("attributes/hulls/Asteroid.bullet", shape)) {
-		std::cout << "No hull shape. Building hull... ";
-		shape = createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh);
-		saveHull("attributes/hulls/Asteroid.bullet", shape);
-		std::cout << "Done. \n";
-	}
-	initializeBtRigidBody(manager, roidEntity, shape, btscale);
+	initializeBtRigidBody(manager, roidEntity, manager->defaults.defaultObstacleHull, btscale, mass);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(roidEntity);
 	rbc->rigidBody.setActivationState(0);
 
@@ -242,7 +242,7 @@ bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoi
 	return initializeWeaponFromId(1, manager, shipId, hardpoint);
 }
 
-bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale)
+bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
 {
 	Scene* scene = &manager->scene;
 	ISceneManager* smgr = manager->controller->smgr;
@@ -257,10 +257,13 @@ bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHul
 	btTransform transform = btTransform();
 	transform.setIdentity();
 	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
+	btQuaternion q;
+	btVector3 rot = irrVecToBt(objIrr->node->getRotation());
+	q.setEuler(rot.y(), rot.x(), rot.z());
+	transform.setRotation(q);
 	auto motionState = new btDefaultMotionState(transform);
 
 	btVector3 localInertia;
-	f32 mass = 1.f;
 	rbc->shape.calculateLocalInertia(mass, localInertia);
 	rbc->rigidBody = btRigidBody(mass, motionState, &rbc->shape, localInertia);
 	rbc->rigidBody.setSleepingThresholds(0, 0);
@@ -284,7 +287,7 @@ bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 s
 
 	if (!shipComp) return false;
 	btVector3 scale(1.f, 1.f, 1.f);
-	return initializeBtRigidBody(manager, entityId, cont->shipData[shipId]->collisionShape, scale);
+	return initializeBtRigidBody(manager, entityId, cont->shipData[shipId]->collisionShape, scale, 1.f);
 }
 
 bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)

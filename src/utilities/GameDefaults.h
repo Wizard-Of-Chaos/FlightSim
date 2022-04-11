@@ -10,6 +10,8 @@ struct GameDefaults
 	IMesh* defaultShipMesh;
 	IMesh* defaultWeaponMesh;
 	IMesh* defaultObstacleMesh;
+	ITexture* defaultObstacleTexture;
+	btConvexHullShape defaultObstacleHull;
 	IMesh* defaultMissileMesh;
 
 	ITexture* defaultShipTexture;

@@ -52,7 +52,7 @@ void GameController::init()
 	currentScenario = Scenario(SCENARIO_KILL_HOSTILES, 1, vector3df(0, 0, -50), vector3df(10, 20, 80));
 
 	//bullet init
-	broadPhase = new btAxisSweep3(btVector3(-10000, -10000, -10000), btVector3(10000, 10000, 10000));
+	broadPhase = new bt32BitAxisSweep3(btVector3(-100000, -100000, -100000), btVector3(100000, 100000, 100000));
 	collisionConfig = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfig);
 	solver = new btSequentialImpulseConstraintSolver();
@@ -162,7 +162,7 @@ void GameController::initDefaultScene()
 	std::cout << "Loading into game...\n";
 	EntityId playerId = createPlayerShipFromLoadout(&sceneECS, vector3df(0, 0, -50));
 
-	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40), vector3df(1,1,1));
+	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40), vector3df(0,0,0), vector3df(1,1,1), 1.f);
 
 	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
 	initializeHostileFaction(&sceneECS, aiId);
@@ -212,8 +212,8 @@ void GameController::initScenario()
 {
 	std::cout << "Loading scenario...\n";
 
-	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 5000, 0),
-		SColor(200, 255, 180, 180), 20000.f);
+	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 10000, 0),
+		SColor(200, 255, 180, 180), 50000.f);
 	n->setID(ID_IsNotSelectable);
 
 	switch (currentScenario.type) {
@@ -235,14 +235,13 @@ void GameController::initScenario()
 
 void GameController::killHostilesScenario()
 {
-
 	EntityId player = createPlayerShipFromLoadout(&sceneECS, currentScenario.playerStartPos);
 	initializeNeutralFaction(&sceneECS, player);
 
 	std::vector<vector3df> obstaclePositions;
 
-	for (u32 i = 0; i < 300; ++i) {
-		vector3df pos = getPointInSphere(vector3df(0, 0, 0), 300.f);
+	for (u32 i = 0; i < 1000; ++i) {
+		vector3df pos = getPointInSphere(vector3df(0, 0, 0), 5000.f);
 		obstaclePositions.push_back(pos);
 	}
 	std::cout << "\n Done. Culling obstacles... ";
@@ -257,12 +256,22 @@ void GameController::killHostilesScenario()
 			obstaclePositions.erase(obstaclePositions.begin() + i);
 		}
 	}
-	std::cout << "Done. Obstacles remaining: " << obstaclePositions.size() << "\n Building obstacles... ";
+	std::cout << "Done. Obstacles remaining: " << obstaclePositions.size() << "\n Building obstacles... \n ";
 	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
-		u32 scale = std::rand() % 10;
-		EntityId rock = createDefaultObstacle(&sceneECS, obstaclePositions[i], vector3df(scale, scale, scale));
+		u32 scale = std::rand() % 100;
+		f32 mass = (f32)scale / 5.f;
+		EntityId rock = createDefaultObstacle(&sceneECS, obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
+		/*
+		u32 then = device->getTimer()->getRealTime();
+		u32 now = then + 1;
+		while (now < then + 5) {
+			now = device->getTimer()->getRealTime();
+		}
+		std::cout << "obstacle number: " << i << "\r" << std::flush;
+		*/
 	}
-	std::cout << "Done. Building hostiles... ";
+
+	std::cout << "\nDone. Building hostiles... ";
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(currentScenario.enemyStartPos, 25.f);
 		EntityId enemy = createDefaultAIShip(&sceneECS, pos); //todo: create AI ship generator that pulls from loaded ships

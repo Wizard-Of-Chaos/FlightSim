@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>lib\irrklang\include;lib\irrlicht\include;lib\bullet\src;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems;$(SolutionDir)\src\gui\hud;lib\bullet\Extras</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib\irrklang\include;lib\irrlicht\include;lib\bullet\src;src\components;src\gui;src\systems;src\utilities;src\core;%(AdditionalIncludeDirectories);$(SolutionDir)src\systems\ai_systems;$(SolutionDir)\src\gui\hud;lib\bullet\Extras;src\extras</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>

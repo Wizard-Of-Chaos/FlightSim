@@ -17,7 +17,7 @@ typedef uint32_t EntityIndex;
 typedef uint32_t EntityVersion;
 typedef uint64_t EntityId;
 const int MAX_COMPONENTS = 32;
-const int MAX_ENTITIES = 400;
+const int MAX_ENTITIES = 4000;
 typedef std::bitset<MAX_COMPONENTS> ComponentMask;
 
 extern int componentCounter;

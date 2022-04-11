@@ -51,7 +51,7 @@ EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position);
 //Does include two default weapon entities and an irrlicht component / ship component. Returns the ID.
 EntityId createDefaultShip(SceneManager* manager, vector3df position);
 //Creates a default obstacle (asteroid) at the given position. Includes health, irrlicht, rigid body, and faction components. Returns the ID.
-EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector3df scale);
+EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector3df rotation, vector3df scale, f32 mass);
 //Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, and health components. Returns the ID.
 EntityId createDefaultAIShip(SceneManager* manager, vector3df position);
 
@@ -87,6 +87,6 @@ EntityId explode(SceneManager* manager, vector3df position, f32 duration);
 //EntityId of the player.
 EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos);
 
-bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale);
+bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass);
 bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 shipId);
 #endif
