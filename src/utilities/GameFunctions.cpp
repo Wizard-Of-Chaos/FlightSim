@@ -51,6 +51,11 @@ vector3df getPointInSphere(vector3df center, f32 radius)
 	return center + pos;
 }
 
+bool isPointInSphere(vector3df& point, vector3df& center, f32& radius)
+{
+	return (pow(point.X - center.X, 2.f) + pow(point.Y - center.Y, 2.f) + pow(point.Z - center.Z, 2.f) < pow(radius, 2));
+}
+
 //Sets the defaults in the scene manager for ship meshes.
 void setDefaults(SceneManager* manager)
 {

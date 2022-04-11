@@ -248,11 +248,11 @@ void GameController::killHostilesScenario()
 	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
 		vector3df pos = obstaclePositions[i];
 		f32 radius = 25.f;
-		if (pow(pos.X - currentScenario.playerStartPos.X, 2.f) + pow(pos.X - currentScenario.playerStartPos.X, 2.f) + pow(pos.X - currentScenario.playerStartPos.X, 2.f) < pow(radius, 2)) {
+		if (isPointInSphere(pos, currentScenario.playerStartPos, radius)) {
 			obstaclePositions.erase(obstaclePositions.begin() + i);
 			continue;
 		}
-		if (pow(pos.X - currentScenario.enemyStartPos.X, 2.f) + pow(pos.X - currentScenario.enemyStartPos.X, 2.f) + pow(pos.X - currentScenario.enemyStartPos.X, 2.f) < pow(radius, 2)) {
+		if (isPointInSphere(pos, currentScenario.enemyStartPos, radius)) {
 			obstaclePositions.erase(obstaclePositions.begin() + i);
 		}
 	}
@@ -261,14 +261,7 @@ void GameController::killHostilesScenario()
 		u32 scale = std::rand() % 100;
 		f32 mass = (f32)scale / 5.f;
 		EntityId rock = createDefaultObstacle(&sceneECS, obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
-		/*
-		u32 then = device->getTimer()->getRealTime();
-		u32 now = then + 1;
-		while (now < then + 5) {
-			now = device->getTimer()->getRealTime();
-		}
-		std::cout << "obstacle number: " << i << "\r" << std::flush;
-		*/
+
 	}
 
 	std::cout << "\nDone. Building hostiles... ";
