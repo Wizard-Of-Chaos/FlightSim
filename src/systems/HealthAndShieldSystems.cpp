@@ -20,9 +20,7 @@ void updateHealthSystem(SceneManager* manager)
 				vector3df pos = irr->node->getAbsolutePosition();
 				vector3df scale = irr->node->getScale();
 				f32 avgscale = (scale.X + scale.Y + scale.Z) / 6.f;
-				std::cout << avgscale << " ";
 				f32 rad = irr->node->getBoundingBox().getExtent().getLength() * avgscale;
-				std::cout << rad << std::endl;
 				explode(manager, pos, 3.f, avgscale, rad, 50.f, 800.f);
 			}
 			destroyObject(manager, id); //get rid of the object first, THEN change state

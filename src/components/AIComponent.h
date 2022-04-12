@@ -27,7 +27,7 @@ const enum AI_TYPE //different ships would have different AI patterns
 //Default reaction time. Default is to check state once per second.
 const f32 AI_DEFAULT_REACTION_TIME = 1.f;
 //The AI will run when it is below 25% health, by default. Represented as a float.
-const f32 AI_DEFAULT_DAMAGE_TOLERANCE = .25f;
+const f32 AI_DEFAULT_DAMAGE_TOLERANCE = .4f;
 
 //The component that controls the AI for a given AI ship.
 //Includes the type of AI, the current state of the AI, how quickly it reacts

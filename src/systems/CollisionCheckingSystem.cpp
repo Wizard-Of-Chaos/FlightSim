@@ -10,7 +10,7 @@ void projectileCollider(SceneManager* manager, EntityId projectile, EntityId imp
 	auto irr = manager->scene.get<IrrlichtComponent>(projectile);
 
 	if (proj->type == WEP_MISSILE) {
-		explode(manager, irr->node->getAbsolutePosition(), 1.f, 1.f, 10.f, proj->damage, 100.f);
+		explode(manager, irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
 		destroyProjectile(manager, projectile);
 		return;
 	}

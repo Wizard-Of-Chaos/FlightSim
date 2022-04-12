@@ -17,9 +17,14 @@ void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
 		EntityId objId = getIdFromBt(obj);
 		if (!manager->scene.entityInUse(objId)) continue;
 		auto objRBC = manager->scene.get<BulletRigidBodyComponent>(objId);
-		btVector3 dist = center - objRBC->rigidBody.getCenterOfMassPosition();
+		btVector3 dist = objRBC->rigidBody.getCenterOfMassPosition() - center;
 		btVector3 dir = dist.normalized();
 		f32 distfactor = (exp->radius - dist.length()) / exp->radius;
+		if (std::abs(distfactor) > 1.f) {
+			f32 over;
+			distfactor = 1.f;
+		}
+
 		objRBC->rigidBody.applyCentralImpulse(dir * (exp->force * distfactor));
 		objRBC->rigidBody.applyTorqueImpulse(dir * (exp->force * distfactor / 10.f));
 		objRBC->rigidBody.activate(true);
@@ -27,6 +32,7 @@ void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
 		auto hp = manager->scene.get<HealthComponent>(objId);
 		if (hp) {
 			hp->health -= exp->damage * distfactor;
+			std::cout << hp->health;
 			//BUG: If the radius isn't large enough but they still collide this will actually ADD health.
 			//Need to determine point of contact
 		}
