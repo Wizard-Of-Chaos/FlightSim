@@ -10,6 +10,7 @@
 struct ExplosionComponent
 {
 	IParticleSystemSceneNode* explosion;
+	ILightSceneNode* light;
 	f32 duration;
 	f32 lifetime;
 	f32 force;

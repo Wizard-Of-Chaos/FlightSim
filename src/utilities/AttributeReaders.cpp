@@ -111,6 +111,7 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	u32 id = std::stoi(in.values["id"]);
 	std::string name = in.values["name"];
 	WEAPON_TYPE type = (WEAPON_TYPE)std::stoi(in.values["type"]);
+	DAMAGE_TYPE dmgtype = (DAMAGE_TYPE)std::stoi(in.values["dmgtype"]);
 	WeaponData* data = new WeaponData;
 	if (type == WEP_PLASMA) {
 		//nothing for now
@@ -144,6 +145,7 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 
 	data->weaponComponent.isFiring = false;
 	data->weaponComponent.type = type;
+	data->weaponComponent.dmgtype = dmgtype;
 	data->weaponComponent.firingSpeed = std::stof(in.values["firingSpeed"]);
 	data->weaponComponent.projectileSpeed = std::stof(in.values["projectileSpeed"]);
 	data->weaponComponent.damage = std::stof(in.values["damage"]);

@@ -69,7 +69,7 @@ class GameController
 		btDefaultCollisionConfiguration* collisionConfig;
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
-		collisionFilterCallback* collCb;
+		broadCallback* collCb;
 		btGhostPairCallback* gPairCb;
 
 		//scenario init and generation

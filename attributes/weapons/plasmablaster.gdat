@@ -5,6 +5,7 @@ id=1
 name=Plasma Blaster
 description=The plasma blaster fire balls of superheated gas designed to cook anything in its way.
 type=0
+dmgtype=1
 firingSpeed=.5
 projectileSpeed=50
 range=500

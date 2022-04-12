@@ -321,6 +321,7 @@ void initializeDefaultHealth(SceneManager* manager, EntityId objectId)
 	Scene* scene = &manager->scene;
 
 	auto healthComp = scene->assign<HealthComponent>(objectId);
+	auto dmgtracker = scene->assign<DamageTrackingComponent>(objectId);
 	healthComp->health = DEFAULT_MAX_HEALTH;
 	healthComp->maxHealth = DEFAULT_MAX_HEALTH;
 }
@@ -481,10 +482,7 @@ EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 sc
 	f32 scalefac = scale;
 	auto em = exp->explosion->createPointEmitter(vector3df(0.04f * scalefac, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
 		50, 1000, 360, dimension2df(1.f, 1.f), dimension2df(5.f * scalefac, 5.f * scalefac));
-	/*
-	auto em = exp->explosion->createSphereEmitter(vector3df(0,0,0), radius, vector3df(0.04f * scalefac, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
-		50, 1000, 360, dimension2df(1.f, 1.f), dimension2df(10.f * scalefac, 10.f * scalefac));
-		*/
+
 	exp->explosion->setEmitter(em);
 	em->drop();
 	IParticleAffector* paf = exp->explosion->createFadeOutParticleAffector(SColor(0,0,0,0),100);
@@ -494,6 +492,8 @@ EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 sc
 	exp->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
 	exp->explosion->setMaterialTexture(0, manager->defaults.defaultExplosion);
 	exp->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	exp->light = manager->controller->smgr->addLightSceneNode(0, position, SColorf(1.f, .9f, .1f));
 
 	exp->force = force;
 	exp->damage = damage;

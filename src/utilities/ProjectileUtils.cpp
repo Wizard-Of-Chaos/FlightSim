@@ -28,6 +28,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 
 	auto projectileInfo = scene->assign<ProjectileInfoComponent>(projectileEntity);
 	projectileInfo->type = wepInfo->type;
+	projectileInfo->dmgtype = wepInfo->dmgtype;
 	projectileInfo->speed = wepInfo->projectileSpeed;
 	projectileInfo->startPos = spawnPos;
 	projectileInfo->range = wepInfo->range;
@@ -199,6 +200,8 @@ EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duratio
 	explodeinfo->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
 	explodeinfo->explosion->setMaterialTexture(0, manager->defaults.defaultProjectileTexture);
 	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	explodeinfo->light = nullptr;
 
 	explodeinfo->damage = 0;
 	explodeinfo->radius = 1.f;

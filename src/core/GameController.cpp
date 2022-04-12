@@ -68,7 +68,7 @@ void GameController::init()
 	Scene scene;
 	sceneECS = SceneManager(scene, this, bWorld); //Sets up the ECS scene
 
-	collCb = new collisionFilterCallback();
+	collCb = new broadCallback();
 	collCb->manager = &sceneECS;
 	bWorld->getPairCache()->setOverlapFilterCallback(collCb);
 

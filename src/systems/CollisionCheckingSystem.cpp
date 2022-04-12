@@ -1,33 +1,19 @@
 #include "CollisionCheckingSystem.h"
 #include "SceneManager.h"
+#include "GameController.h"
 #include <iostream>
 
 void projectileCollider(SceneManager* manager, EntityId projectile, EntityId impacted)
 {
-	auto hp = manager->scene.get<HealthComponent>(impacted);
-	auto shield = manager->scene.get<ShieldComponent>(impacted);
+	auto dmg = manager->scene.get<DamageTrackingComponent>(impacted);
 	auto proj = manager->scene.get<ProjectileInfoComponent>(projectile);
 	auto irr = manager->scene.get<IrrlichtComponent>(projectile);
 
 	if (proj->type == WEP_MISSILE) {
 		explode(manager, irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
-		destroyProjectile(manager, projectile);
-		return;
 	}
-	if (hp) {
-		f32 overflow = 0;
-		if (shield) {
-			shield->shields -= proj->damage;
-			if (shield->shields <= 0) {
-				overflow += -shield->shields;
-				shield->shields = 0;
-			}
-			shield->timeSinceLastHit = 0;
-		} else {
-			overflow = proj->damage;
-		}
-		hp->health -= overflow;
-	}
+
+	if (dmg) dmg->registerDamageInstance(DamageInstance(projectile, impacted, proj->dmgtype, proj->damage, manager->controller->device->getTimer()->getTime()));
 
 	projectileImpact(manager, irr->node->getPosition(), .2f);
 	destroyProjectile(manager, projectile);
@@ -37,8 +23,8 @@ void collisionDamage(SceneManager* manager, EntityId A, EntityId B)
 {
 	auto rbcA = manager->scene.get<BulletRigidBodyComponent>(A);
 	auto rbcB = manager->scene.get<BulletRigidBodyComponent>(B);
-	auto hpA = manager->scene.get<HealthComponent>(A);
-	auto hpB = manager->scene.get<HealthComponent>(B);
+	auto dmgA = manager->scene.get<DamageTrackingComponent>(A);
+	auto dmgB = manager->scene.get<DamageTrackingComponent>(B);
 
 	if (!rbcA || !rbcB) return;
 
@@ -54,10 +40,10 @@ void collisionDamage(SceneManager* manager, EntityId A, EntityId B)
 	else kinetic = (velB * rbcB->rigidBody.getMass()) / 2;
 
 	//balancing for later
-	kinetic = kinetic / 10000.f;
+	kinetic = kinetic / 8000.f;
 	if (kinetic < .1f) return;
-	if (hpA) hpA->health -= kinetic / 2;
-	if (hpB) hpB->health -= kinetic / 2;
+	if (dmgA) dmgA->registerDamageInstance(DamageInstance(B, A, DAMAGE_TYPE::IMPACT, kinetic / 2, manager->controller->device->getTimer()->getTime()));
+	if (dmgB) dmgA->registerDamageInstance(DamageInstance(A, B, DAMAGE_TYPE::IMPACT, kinetic / 2, manager->controller->device->getTimer()->getTime()));
 }
 
 void collisionCheckingSystem(SceneManager* manager)
@@ -66,38 +52,43 @@ void collisionCheckingSystem(SceneManager* manager)
 
 	for (int i = 0; i < numManifolds; ++i) {
 		btPersistentManifold* contact = manager->bulletWorld->getDispatcher()->getManifoldByIndexInternal(i);
+		int numContacts = contact->getNumContacts();
 		btCollisionObject* objA = const_cast<btCollisionObject*>(contact->getBody0());
 		btCollisionObject* objB = const_cast<btCollisionObject*>(contact->getBody1());
+
 		btRigidBody* rbcA = (btRigidBody*)objA;
 		btRigidBody* rbcB = (btRigidBody*)objB;
 
 		EntityId idA = getIdFromBt(objA);
 		EntityId idB = getIdFromBt(objB);
+		if (idA == INVALID_ENTITY || idB == INVALID_ENTITY) return;
+		auto projA = manager->scene.get<ProjectileInfoComponent>(idA);
+		auto projB = manager->scene.get<ProjectileInfoComponent>(idB);
+		if (projA && !projB) {
+			projectileCollider(manager, idA, idB);
+			continue;
+		}
+		else if (projB && !projA) {
+			projectileCollider(manager, idB, idA);
+			continue;
+		}
+		else if (projB && projA) {
+			destroyProjectile(manager, idA);
+			destroyProjectile(manager, idB);
+			continue;
+		}
 
-		if (idA != INVALID_ENTITY && idB != INVALID_ENTITY) {
-			//projectile handling
-			auto projA = manager->scene.get<ProjectileInfoComponent>(idA);
-			auto projB = manager->scene.get<ProjectileInfoComponent>(idB);
-			if (projA && !projB) {
-				projectileCollider(manager, idA, idB);
-				continue;
+		for (int j = 0; j < numContacts; ++j) {
+			if (contact->getContactPoint(j).getDistance() >= 0.f) continue;
+			if (idA != INVALID_ENTITY && idB != INVALID_ENTITY) {
+				//projectile cases have been handled. now for impact damage
+				collisionDamage(manager, idA, idB);
 			}
-			else if (projB && !projA) {
-				projectileCollider(manager, idB, idA);
-				continue;
-			} 
-			else if (projB && projA) {
-				destroyProjectile(manager, idA);
-				destroyProjectile(manager, idB);
-				continue;
-			}
-			//projectile cases have been handled. now for impact damage
-			collisionDamage(manager, idA, idB);
 		}
 	}
 }
 
-bool collisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) const
+bool broadCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) const
 {
 	btCollisionObject* a = static_cast<btCollisionObject*>(proxy0->m_clientObject);
 	btCollisionObject* b = static_cast<btCollisionObject*>(proxy1->m_clientObject);
@@ -130,7 +121,7 @@ bool collisionFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0,
 	return true;
 }
 
-bool collisionFilterCallback::isProjectileHittingParent(EntityId proj, EntityId other) const
+bool broadCallback::isProjectileHittingParent(EntityId proj, EntityId other) const
 {
 	auto wepParent = manager->scene.get<ParentComponent>(proj);
 	if (!wepParent) return true;

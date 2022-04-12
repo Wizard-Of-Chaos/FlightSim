@@ -15,6 +15,7 @@
 #include "AIUpdateSystem.h"
 #include "ExplosionSystem.h"
 #include "HealthAndShieldSystems.h"
+#include "DamageSystem.h"
 #include "GameDefaults.h"
 
 class GameController;

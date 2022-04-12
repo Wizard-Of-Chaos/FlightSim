@@ -5,6 +5,7 @@ id=0
 name=None
 description=None
 type=-1
+dmgtype=0
 firingSpeed=0
 projectileSpeed=0
 range=0
