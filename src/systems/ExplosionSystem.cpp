@@ -27,6 +27,8 @@ void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
 		auto hp = manager->scene.get<HealthComponent>(objId);
 		if (hp) {
 			hp->health -= exp->damage * distfactor;
+			//BUG: If the radius isn't large enough but they still collide this will actually ADD health.
+			//Need to determine point of contact
 		}
 
 	}
