@@ -14,7 +14,8 @@ enum WEAPON_TYPE {
 	WEP_NONE = -1,
 	WEP_PLASMA = 0,
 	WEP_MISSILE = 1,
-	WEP_GRAPPLE = 2
+	WEP_GRAPPLE = 2,
+	WEP_IMPULSE = 3
 };
 
 //WEAPON ENTITIES:
@@ -39,6 +40,7 @@ struct WeaponInfoComponent
 	bool isFiring;
 	vector3df firingDirection;
 	vector3df spawnPosition;
+	ITexture* particle;
 };
 
 //PROJECTILE ENTITIES:

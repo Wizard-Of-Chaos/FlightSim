@@ -1,0 +1,12 @@
+anisotropicFiltering=1
+antialiasing=1
+bilinearFiltering=0
+driver=Direct3D9
+fullscreen=0
+resX=960
+resY=540
+shadows=1
+stencilBuffer=1
+trilinearFiltering=1
+useScreenRes=1
+vsync=0

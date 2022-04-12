@@ -33,9 +33,6 @@ void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
 		if (dmg) {
 			dmg->registerDamageInstance(DamageInstance(INVALID_ENTITY, objId, DAMAGE_TYPE::EXPLOSIVE,
 				exp->damage * distfactor, manager->controller->device->getTimer()->getTime()));
-
-			//BUG: If the radius isn't large enough but they still collide this will actually ADD health.
-			//Need to determine point of contact
 		}
 
 	}

@@ -46,6 +46,7 @@ struct MissileData : public WeaponData
 {
 	MissileInfoComponent missileComponent;
 	IMesh* missileMesh;
+	ITexture* missileTexture;
 };
 
 struct ObstacleData

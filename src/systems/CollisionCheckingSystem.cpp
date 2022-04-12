@@ -12,6 +12,9 @@ void projectileCollider(SceneManager* manager, EntityId projectile, EntityId imp
 	if (proj->type == WEP_MISSILE) {
 		explode(manager, irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
 	}
+	if (proj->type == WEP_IMPULSE) {
+		explode(manager, irr->node->getAbsolutePosition(), 1.f, 1.f, 80.f, proj->damage, 500.f);
+	}
 
 	if (dmg) dmg->registerDamageInstance(DamageInstance(projectile, impacted, proj->dmgtype, proj->damage, manager->controller->device->getTimer()->getTime()));
 

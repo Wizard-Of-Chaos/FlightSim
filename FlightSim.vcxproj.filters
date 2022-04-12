@@ -126,12 +126,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\components\AIComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\BulletRigidBodyComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
@@ -174,17 +168,8 @@
     <ClInclude Include="src\gui\GuiPauseMenu.h">
       <Filter>Headers\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\HealthComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
     <ClInclude Include="src\systems\HealthAndShieldSystems.h">
       <Filter>Headers\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\InputComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\IrrlichtComponent.h">
-      <Filter>Headers\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\IrrlichtRigidBodyPositionSystem.h">
       <Filter>Headers\Systems</Filter>
@@ -198,9 +183,6 @@
     <ClInclude Include="src\core\Networking.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\PlayerComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
     <ClInclude Include="src\systems\PlayerUpdateSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
@@ -210,9 +192,6 @@
     <ClInclude Include="src\core\SceneManager.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\ShipComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
     <ClInclude Include="src\systems\ShipControlSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
@@ -221,12 +200,6 @@
     </ClInclude>
     <ClInclude Include="src\systems\WeaponFiringSystem.h">
       <Filter>Headers\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\WeaponInfoComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\FactionComponent.h">
-      <Filter>Headers\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\hud\HUDElement.h">
       <Filter>Headers\Gui\HUD</Filter>
@@ -239,9 +212,6 @@
     </ClInclude>
     <ClInclude Include="src\gui\hud\HUDCrosshair.h">
       <Filter>Headers\Gui\HUD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\SensorComponent.h">
-      <Filter>Headers\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\SensorUpdateSystem.h">
       <Filter>Headers\Systems</Filter>
@@ -267,9 +237,6 @@
     <ClInclude Include="src\systems\ShipUpdateSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\ExplosionComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
     <ClInclude Include="src\systems\ExplosionSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
@@ -282,17 +249,11 @@
     <ClInclude Include="src\utilities\ProjectileUtils.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\MissileComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
     <ClInclude Include="src\utilities\LoadoutData.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\GuiLoadoutMenu.h">
       <Filter>Headers\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\ShieldComponent.h">
-      <Filter>Headers\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\utilities\btUtils.h">
       <Filter>Headers\Utilities</Filter>
@@ -300,17 +261,56 @@
     <ClInclude Include="src\utilities\Scenario.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\ObstacleComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\HarpoonComponent.h">
-      <Filter>Headers\Components</Filter>
-    </ClInclude>
     <ClInclude Include="src\systems\DamageSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\HarpoonComponent.h">
+      <Filter>Headers\Components\Weapon Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\MissileComponent.h">
+      <Filter>Headers\Components\Weapon Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\WeaponInfoComponent.h">
+      <Filter>Headers\Components\Weapon Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\BulletRigidBodyComponent.h">
+      <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\IrrlichtComponent.h">
+      <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\ObstacleComponent.h">
+      <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\PlayerComponent.h">
+      <Filter>Headers\Components\Player Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\InputComponent.h">
+      <Filter>Headers\Components\Player Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\ShieldComponent.h">
+      <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\HealthComponent.h">
+      <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
     <ClInclude Include="src\components\DamageTrackingComponent.h">
-      <Filter>Headers\Components</Filter>
+      <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\ShipComponent.h">
+      <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\AIComponent.h">
+      <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\FactionComponent.h">
+      <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\SensorComponent.h">
+      <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\ExplosionComponent.h">
+      <Filter>Headers\Components\Basic Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -361,6 +361,18 @@
     </Filter>
     <Filter Include="Sources\Components">
       <UniqueIdentifier>{13738754-442e-423d-96c3-6fc200ce8b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Components\Weapon Components">
+      <UniqueIdentifier>{fe4cbde4-5ea3-4e5c-a940-3ca3610efd4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Components\Basic Components">
+      <UniqueIdentifier>{c096e14b-0749-4336-a970-e3eb0dd66c3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Components\Player Components">
+      <UniqueIdentifier>{5c4a17a4-0fea-4c3a-9834-d547c16129bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Components\Ship Components">
+      <UniqueIdentifier>{51853e36-36ad-4933-91a1-dba052db2787}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

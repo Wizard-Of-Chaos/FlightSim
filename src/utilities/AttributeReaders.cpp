@@ -131,16 +131,18 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	
 	std::string effectpath = "effects/" + in.values["particle"];
 	data->weaponEffect = cont->driver->getTexture(effectpath.c_str());
+
 	
 	if (type == WEP_MISSILE) {
 		std::string misspath = "models/" + in.values["missilemodel"];
 		std::string misstexpath = "models/" + in.values["missiletexture"];
 		MissileData* miss = (MissileData*)data;
 		miss->missileMesh = cont->smgr->getMesh(misspath.c_str());
-		miss->missileMesh = cont->smgr->getMesh(misstexpath.c_str());
+		miss->missileTexture = cont->driver->getTexture(misstexpath.c_str());
 		miss->missileComponent.maxMissileVelocity = std::stof(in.values["maxMissileVelocity"]);
 		miss->missileComponent.missileRotThrust = std::stof(in.values["missileRotThrust"]);
 		miss->missileComponent.timeToLock = std::stof(in.values["timeToLock"]);
+		miss->missileComponent.missileMesh = miss->missileMesh;
 	}
 
 	data->weaponComponent.isFiring = false;
@@ -151,6 +153,7 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	data->weaponComponent.damage = std::stof(in.values["damage"]);
 	data->weaponComponent.range = std::stof(in.values["range"]);
 	data->weaponComponent.timeSinceLastShot = 0.f;
+	data->weaponComponent.particle = data->weaponEffect;
 
 	cont->weaponData[id] = data;
 	std::cout << "Done.\n";

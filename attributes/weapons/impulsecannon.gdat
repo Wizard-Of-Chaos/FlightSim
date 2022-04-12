@@ -1,0 +1,12 @@
+model=impulseblaster/gravgun.obj
+texture=impulseblaster/gravguntex.png
+particle=particlewhite.bmp
+id=3
+name=Impulse Cannon
+description=The impulse cannon applies a massive blast of force to anything nearby.
+type=3
+dmgtype=2
+firingSpeed=.5
+projectileSpeed=70
+range=800
+damage=1

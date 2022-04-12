@@ -50,23 +50,25 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 
 	shape->calculateLocalInertia(mass, localInertia);
 	rigidBodyInfo->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
-
-	if (projectileInfo->type == WEP_PLASMA) rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
-
 	rigidBodyInfo->rigidBody.setUserIndex(getEntityIndex(projectileEntity));
 	rigidBodyInfo->rigidBody.setUserIndex2(getEntityVersion(projectileEntity));
 	rigidBodyInfo->rigidBody.setUserIndex3(1);
 
 	switch (projectileInfo->type) {
 	case WEP_PLASMA:
+		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
 		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
 		break;
 	case WEP_GRAPPLE:
 		break;
 	case WEP_MISSILE:
 		mass = .3f;
-		auto missInfo = manager->scene.get<MissileInfoComponent>(weaponId);
-		createMissileProjectile(manager, projectileEntity, missInfo, direction, spawnPos);
+		//auto missInfo = manager->scene.get<MissileInfoComponent>(weaponId);
+		createMissileProjectile(manager, projectileEntity, manager->scene.get<MissileInfoComponent>(weaponId), direction, spawnPos);
+		break;
+	case WEP_IMPULSE:
+		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
+		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
 		break;
 	}
 
@@ -78,6 +80,8 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn)
 {
 	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
+	auto wepPar = manager->scene.get<ParentComponent>(projId);
+	auto wepComp = manager->scene.get<WeaponInfoComponent>(wepPar->parentId);
 
 	ISceneManager* smgr = manager->controller->smgr;
 	//this needs to be abstracted out to creating different types of node, for now it's just the laser with a crappy particle
@@ -86,7 +90,7 @@ void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df di
 	ISceneNode* bill = smgr->addBillboardSceneNode(irr->node, dimension2d<f32>(3.f, 3.f));
 	bill->setMaterialFlag(EMF_LIGHTING, false);
 	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
-	bill->setMaterialTexture(0, manager->defaults.defaultProjectileTexture);
+	bill->setMaterialTexture(0, wepComp->particle);
 
 	irr->node->setID(ID_IsNotSelectable);
 	irr->node->setName(idToStr(projId).c_str());
@@ -105,13 +109,16 @@ void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df di
 	paf->drop();
 	ps->setMaterialFlag(EMF_LIGHTING, false);
 	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	ps->setMaterialTexture(0, manager->defaults.defaultProjectileTexture);
+	ps->setMaterialTexture(0, wepComp->particle);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 }
 
 void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfoComponent* missInfo, vector3df dir, vector3df spawn)
 {
 	auto wepParent = manager->scene.get<ParentComponent>(projId);
+	auto wepComp = manager->scene.get<WeaponInfoComponent>(wepParent->parentId);
+	auto missComp = manager->scene.get<MissileInfoComponent>(wepParent->parentId);
+
 	auto shipParent = manager->scene.get<ParentComponent>(wepParent->parentId);
 	auto sensors = manager->scene.get<SensorComponent>(shipParent->parentId);
 	if (!sensors) return; // need a similar check for AI component
@@ -124,7 +131,7 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfo
 
 	auto irrship = manager->scene.get<IrrlichtComponent>(shipParent->parentId);
 	vector3df rot = irrship->node->getRotation();
-	irr->node = manager->controller->smgr->addMeshSceneNode(manager->defaults.defaultMissileMesh, 0, ID_IsNotSelectable, spawn, rot, vector3df(.2f, .2f, .2f));
+	irr->node = manager->controller->smgr->addMeshSceneNode(missComp->missileMesh, 0, ID_IsNotSelectable, spawn, rot, vector3df(.2f, .2f, .2f));
 	irr->name = "missile";
 	irr->node->setName(idToStr(projId).c_str());
 
@@ -156,7 +163,7 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfo
 	paf->drop();
 	ps->setMaterialFlag(EMF_LIGHTING, false);
 	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	ps->setMaterialTexture(0, manager->defaults.defaultJetTexture);
+	ps->setMaterialTexture(0, wepComp->particle);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 }
 
