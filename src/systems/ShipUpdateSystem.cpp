@@ -94,21 +94,20 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		IParticleEmitter* right2 = ship->rightJetEmit[1]->getEmitter();
 		IParticleEmitter* back1 = ship->reverseJetEmit[0]->getEmitter();
 		IParticleEmitter* back2 = ship->reverseJetEmit[1]->getEmitter();
-		IParticleEmitter* engine = ship->engineJetEmit->getEmitter();
+		IVolumeLightSceneNode* engine = ship->engineJetEmit;
 
 		setPairDir(up1, up2, getNodeUp(irr->node));
 		setPairDir(down1, down2, getNodeDown(irr->node));
 		setPairDir(left1, left2, getNodeLeft(irr->node));
 		setPairDir(right1, right2, getNodeRight(irr->node));
 		setPairDir(back1, back2, getNodeForward(irr->node));
-		engine->setDirection(getNodeBackward(irr->node) * .02f);
+		engine->setScale(vector3df(1, 1, 1));
 
 		jetPairOff(up1, up2);
 		jetPairOff(down1, down2);
 		jetPairOff(left1, left2);
 		jetPairOff(right1, right2);
 		jetPairOff(back1, back2);
-		//jetOff(engine);
 		if (ship->moves[SHIP_STRAFE_DOWN] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyDown(body))) {
 			jetPairOn(up1, up2);
 			force += getForceDown(body, ship);
@@ -139,13 +138,13 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 			force += getForceAfterburner(body, ship);
 		}
 		if (aft != ship->afterburnerOn && ship->afterburnerFuel > 0) {
-			if (aft) afterburnerJetOn(ship->engineJetEmit->getEmitter(), ship->engineLight);
-			else afterburnerJetOff(ship->engineJetEmit->getEmitter(), ship->engineLight);
+			//if (aft) afterburnerJetOn(ship->engineJetEmit->getEmitter(), ship->engineLight);
+			//else afterburnerJetOff(ship->engineJetEmit->getEmitter(), ship->engineLight);
 
 			ship->afterburnerOn = aft;
 		}
 		if (ship->afterburnerFuel <= 0) {
-			afterburnerJetOff(ship->engineJetEmit->getEmitter(), ship->engineLight);
+			//afterburnerJetOff(ship->engineJetEmit->getEmitter(), ship->engineLight);
 		}
 
 		//Updates the ship's torque based on what it's currently trying to do
@@ -186,6 +185,8 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 
 		rbc->rigidBody.applyTorqueImpulse(torque * dt);
 		rbc->rigidBody.applyCentralImpulse(force * dt);
+		f32 zPercent = rbc->rigidBody.getLinearVelocity().length() / ship->linearMaxVelocity;
+		engine->setScale(vector3df(std::max(2.f*zPercent, .8f), std::max(5*zPercent, .1f), std::max(2.f * zPercent, .8f)));
 
 		auto hp = scene.get<HealthComponent>(entityId);
 		if (!hp) continue;

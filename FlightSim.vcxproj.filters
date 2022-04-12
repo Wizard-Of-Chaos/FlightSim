@@ -300,6 +300,9 @@
     <ClInclude Include="src\components\ObstacleComponent.h">
       <Filter>Headers\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\HarpoonComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

@@ -94,7 +94,7 @@ struct ShipComponent {
 	vector3df reverseJetPos[2];
 	IParticleSystemSceneNode* reverseJetEmit[2];
 	vector3df engineJetPos;
-	IParticleSystemSceneNode* engineJetEmit;
+	IVolumeLightSceneNode* engineJetEmit;
 	ILightSceneNode* engineLight; //The engine light is on! Check your oil.
 
 	bool afterburnerOn;

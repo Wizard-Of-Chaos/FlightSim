@@ -435,30 +435,40 @@ void initializeShipParticles(SceneManager* manager, EntityId id)
 		ship->rightJetEmit[i] = createShipJet(manager, irr->node, ship->rightJetPos[i], getNodeRight(irr->node));
 		ship->reverseJetEmit[i] = createShipJet(manager, irr->node, ship->reverseJetPos[i], getNodeForward(irr->node));
 	}
-	ship->engineJetEmit = manager->controller->smgr->addParticleSystemSceneNode(true, irr->node);
-	ship->engineJetEmit->setID(ID_IsNotSelectable);
-	auto em = ship->engineJetEmit->createSphereEmitter(
-		ship->engineJetPos, .6f, getNodeBackward(irr->node) * .002f,
-		100, 300, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
-		50, 200, 1, dimension2df(1.2f, 1.2f), dimension2df(1.4f, 1.4f));
-	ship->engineJetEmit->setEmitter(em);
-	em->drop();
-	IParticleAffector* paf = ship->engineJetEmit->createFadeOutParticleAffector();
-	ship->engineJetEmit->addAffector(paf);
-	paf->drop();
+	ship->engineJetEmit = manager->controller->smgr->addVolumeLightSceneNode(irr->node,
+		ID_IsNotSelectable, 256, 256, SColor(255, 100, 250, 100), SColor(0, 0, 0, 0), ship->engineJetPos,
+		vector3df(-90, 0, 0), vector3df(2, 1, 2));
+
+	array<ITexture*> tex;
+	IVideoDriver* driver = manager->controller->driver;
+	for (s32 i = 4; i > 0; --i) {
+		stringc str = "effects/engine/engine";
+		str += i;
+		str += ".png";
+		ITexture* t = driver->getTexture(str.c_str());
+		if(t) tex.push_back(t);
+	}
+	ISceneNodeAnimator* glowie = manager->controller->smgr->createTextureAnimator(tex, 50);
+	ship->engineJetEmit->addAnimator(glowie);
+	glowie->drop(); //Terry would be proud
+
 	ship->engineJetEmit->setMaterialFlag(EMF_LIGHTING, false);
 	ship->engineJetEmit->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
 	ship->engineJetEmit->setMaterialTexture(0, manager->defaults.defaultEngineJetTexture);
 	ship->engineJetEmit->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
+
 	auto engine = manager->controller->smgr->addLightSceneNode(irr->node, ship->engineJetPos, SColorf(0.f, 1.f, 0.f), 1.3f);
 	ship->engineLight = engine;
-	auto bill = manager->controller->smgr->addBillboardSceneNode(engine, dimension2df(2.f, 2.f));
+	//auto bill = manager->controller->smgr->addBillboardSceneNode(engine, dimension2df(2.f, 2.f));
 	engine->setID(ID_IsNotSelectable);
+	/*
 	bill->setID(ID_IsNotSelectable);
 	bill->setMaterialTexture(0, manager->defaults.defaultEngineJetTexture);
 	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 	bill->setMaterialFlag(EMF_LIGHTING, false);
+	*/
+
 }
 
 EntityId explode(SceneManager* manager, vector3df position, f32 duration)
