@@ -33,22 +33,7 @@ enum SHIP_MOVEMENT {
 };
 
 //The maximum amount of weapons any ship can have.
-const int MAX_HARDPOINTS = 8;
-
-//Default thrust capacity for a ship.
-const f32 DEFAULT_FORWARD_THRUST = 75.f;
-const f32 DEFAULT_BRAKE_THRUST = 45.f;
-const f32 DEFAULT_STRAFE_THRUST = 20.f;
-const f32 DEFAULT_PITCH_THRUST = 90.f;
-const f32 DEFAULT_YAW_THRUST = 80.f;
-const f32 DEFAULT_ROLL_THRUST = 45.f;
-const f32 DEFAULT_AFTERBURNER_THRUST = 50.f;
-const f32 DEFAULT_VELOCITY_TOLERANCE = 1.f;
-const f32 DEFAULT_BASE_MAX_VELOCITY = 100.f;
-const f32 DEFAULT_TOTAL_MAX_VELOCITY = 150.f;
-const f32 DEFAULT_MAX_ANGULAR_VELOCITY = 1.f; //radians
-const f32 DEFAULT_AFTERBURNER_FUEL = 100.f;
-const f32 DEFAULT_AFTERBURNER_FUEL_EFFICIENCY = 2.f;
+const int MAX_HARDPOINTS = 6;
 
 /*
 * The ship component holds a lot of information about what a ship is.
@@ -67,6 +52,9 @@ struct ShipComponent {
 	//This and the weapons array are initialized to the maximum of 8.
 	vector3df hardpoints[MAX_HARDPOINTS];
 	EntityId weapons[MAX_HARDPOINTS];
+
+	vector3df physWeaponHardpoint;
+	EntityId physWeapon;
 
 	f32 forwardThrust;
 	f32 brakeThrust;

@@ -18,7 +18,8 @@ void updateHealthSystem(SceneManager* manager)
 			}
 			if (irr) {
 				vector3df pos = irr->node->getAbsolutePosition();
-				explode(manager, pos, 1.f);
+				f32 rad = irr->node->getBoundingBox().getExtent().getLength() * irr->node->getScale().X;
+				explode(manager, pos, 3.f, rad, 50.f, 800.f);
 			}
 			destroyObject(manager, id); //get rid of the object first, THEN change state
 			if (playerDead) {

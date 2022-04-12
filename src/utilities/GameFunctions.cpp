@@ -471,24 +471,28 @@ void initializeShipParticles(SceneManager* manager, EntityId id)
 
 }
 
-EntityId explode(SceneManager* manager, vector3df position, f32 duration)
+EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 radius, f32 damage, f32 force)
 {
 	EntityId id = manager->scene.newEntity();
-	auto explodeinfo = manager->scene.assign<ExplosionComponent>(id);
-	explodeinfo->duration = duration;
-	explodeinfo->lifetime = 0;
-	explodeinfo->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
-	auto em = explodeinfo->explosion->createSphereEmitter(vector3df(0,0,0), 5.f, vector3df(0.05f, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
-		50, 200, 360, dimension2df(1.f, 1.f), dimension2df(10.f, 10.f));
-	explodeinfo->explosion->setEmitter(em);
+	auto exp = manager->scene.assign<ExplosionComponent>(id);
+	exp->duration = duration;
+	exp->lifetime = 0;
+	exp->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
+	auto em = exp->explosion->createSphereEmitter(vector3df(0,0,0), radius, vector3df(0.3f, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+		50, 1000, 360, dimension2df(1.f, 1.f), dimension2df(100.f, 100.f));
+	exp->explosion->setEmitter(em);
 	em->drop();
-	IParticleAffector* paf = explodeinfo->explosion->createFadeOutParticleAffector(SColor(0,0,0,0),100);
-	explodeinfo->explosion->addAffector(paf);
+	IParticleAffector* paf = exp->explosion->createFadeOutParticleAffector(SColor(0,0,0,0),100);
+	exp->explosion->addAffector(paf);
 	paf->drop();
-	explodeinfo->explosion->setMaterialFlag(EMF_LIGHTING, false);
-	explodeinfo->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	explodeinfo->explosion->setMaterialTexture(0, manager->defaults.defaultExplosion);
-	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+	exp->explosion->setMaterialFlag(EMF_LIGHTING, false);
+	exp->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	exp->explosion->setMaterialTexture(0, manager->defaults.defaultExplosion);
+	exp->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	exp->force = force;
+	exp->damage = damage;
+	exp->radius = radius;
 
 	return id;
 }

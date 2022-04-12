@@ -12,6 +12,9 @@ struct ExplosionComponent
 	IParticleSystemSceneNode* explosion;
 	f32 duration;
 	f32 lifetime;
+	f32 force;
+	f32 radius;
+	f32 damage;
 };
 
 #endif 

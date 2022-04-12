@@ -200,6 +200,9 @@ EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duratio
 	explodeinfo->explosion->setMaterialTexture(0, manager->defaults.defaultProjectileTexture);
 	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
+	explodeinfo->damage = 0;
+	explodeinfo->radius = 1.f;
+	explodeinfo->force = 0;
 	return id;
 }
 

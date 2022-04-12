@@ -81,6 +81,7 @@ u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
 		data->shipComponent.reverseJetPos[i] = strToVec(in.values[val]);
 	}
 	data->shipComponent.engineJetPos = strToVec(in.values["engineJetPos"]);
+	data->shipComponent.physWeaponHardpoint = strToVec(in.values["physWeaponHardpoint"]);
 
 	data->shipComponent.velocityTolerance = std::stof(in.values["velocityTolerance"]);
 	data->shipComponent.linearMaxVelocity = std::stof(in.values["linearMaxVelocity"]);
