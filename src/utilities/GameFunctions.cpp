@@ -471,15 +471,20 @@ void initializeShipParticles(SceneManager* manager, EntityId id)
 
 }
 
-EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 radius, f32 damage, f32 force)
+EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
 {
 	EntityId id = manager->scene.newEntity();
 	auto exp = manager->scene.assign<ExplosionComponent>(id);
 	exp->duration = duration;
 	exp->lifetime = 0;
 	exp->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
-	auto em = exp->explosion->createSphereEmitter(vector3df(0,0,0), radius, vector3df(0.3f, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
-		50, 1000, 360, dimension2df(1.f, 1.f), dimension2df(100.f, 100.f));
+	f32 scalefac = scale;
+	auto em = exp->explosion->createPointEmitter(vector3df(0.04f * scalefac, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+		50, 1000, 360, dimension2df(1.f, 1.f), dimension2df(5.f * scalefac, 5.f * scalefac));
+	/*
+	auto em = exp->explosion->createSphereEmitter(vector3df(0,0,0), radius, vector3df(0.04f * scalefac, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+		50, 1000, 360, dimension2df(1.f, 1.f), dimension2df(10.f * scalefac, 10.f * scalefac));
+		*/
 	exp->explosion->setEmitter(em);
 	em->drop();
 	IParticleAffector* paf = exp->explosion->createFadeOutParticleAffector(SColor(0,0,0,0),100);

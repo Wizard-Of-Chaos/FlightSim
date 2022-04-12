@@ -8,6 +8,12 @@ void projectileCollider(SceneManager* manager, EntityId projectile, EntityId imp
 	auto shield = manager->scene.get<ShieldComponent>(impacted);
 	auto proj = manager->scene.get<ProjectileInfoComponent>(projectile);
 	auto irr = manager->scene.get<IrrlichtComponent>(projectile);
+
+	if (proj->type == WEP_MISSILE) {
+		explode(manager, irr->node->getAbsolutePosition(), 1.f, 1.f, 10.f, proj->damage, 100.f);
+		destroyProjectile(manager, projectile);
+		return;
+	}
 	if (hp) {
 		f32 overflow = 0;
 		if (shield) {

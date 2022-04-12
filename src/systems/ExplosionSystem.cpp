@@ -17,11 +17,11 @@ void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
 		EntityId objId = getIdFromBt(obj);
 		if (!manager->scene.entityInUse(objId)) continue;
 		auto objRBC = manager->scene.get<BulletRigidBodyComponent>(objId);
-		btVector3 dist = objRBC->rigidBody.getCenterOfMassPosition() - center;
+		btVector3 dist = center - objRBC->rigidBody.getCenterOfMassPosition();
 		btVector3 dir = dist.normalized();
 		f32 distfactor = (exp->radius - dist.length()) / exp->radius;
 		objRBC->rigidBody.applyCentralImpulse(dir * (exp->force * distfactor));
-		objRBC->rigidBody.applyTorqueImpulse(dir * (exp->force * distfactor / 20.f));
+		objRBC->rigidBody.applyTorqueImpulse(dir * (exp->force * distfactor / 10.f));
 		objRBC->rigidBody.activate(true);
 
 		auto hp = manager->scene.get<HealthComponent>(objId);

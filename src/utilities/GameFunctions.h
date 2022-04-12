@@ -82,7 +82,7 @@ IParticleSystemSceneNode* createShipJet(SceneManager* manager, ISceneNode* node,
 void initializeShipParticles(SceneManager* manager, EntityId id);
 
 //Creates an explosion at the point that lasts for the duration.
-EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 radius, f32 damage, f32 force);
+EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force);
 
 //Creates all the necessary details and components to set up the player's current loadout at the given position. Returns the
 //EntityId of the player.
