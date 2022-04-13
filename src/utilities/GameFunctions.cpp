@@ -194,6 +194,7 @@ EntityId createDefaultObstacle(SceneManager* manager, vector3df position, vector
 
 void destroyObject(SceneManager* manager, EntityId id)
 {
+	if (!manager->scene.entityInUse(id)) return;
 	auto irrComp = manager->scene.get<IrrlichtComponent>(id);
 	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
 
