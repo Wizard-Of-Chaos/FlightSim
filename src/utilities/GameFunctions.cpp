@@ -91,6 +91,9 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultMusic = sndeng->getSoundSource("audio/music/space_boogaloo.ogg");
 	manager->defaults.defaultEngineSoundLoop = sndeng->getSoundSource("audio/engineloop.ogg");
 	manager->defaults.defaultLaserSound = sndeng->getSoundSource("audio/laser_shoot.ogg");
+	manager->defaults.bonk = sndeng->getSoundSource("audio/bonk.ogg");
+	manager->defaults.bonk->setDefaultVolume(10.f);
+	manager->defaults.bonk->setDefaultMinDistance(200.f);
 
 	manager->defaults.defaultHUDFont = manager->controller->guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");
 }
@@ -245,7 +248,7 @@ bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int 
 
 bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoint)
 {
-	return initializeWeaponFromId(1, manager, shipId, hardpoint);
+	return initializeWeaponFromId(3, manager, shipId, hardpoint);
 }
 
 bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
@@ -464,13 +467,6 @@ void initializeShipParticles(SceneManager* manager, EntityId id)
 	ship->engineLight = engine;
 	//auto bill = manager->controller->smgr->addBillboardSceneNode(engine, dimension2df(2.f, 2.f));
 	engine->setID(ID_IsNotSelectable);
-	/*
-	bill->setID(ID_IsNotSelectable);
-	bill->setMaterialTexture(0, manager->defaults.defaultEngineJetTexture);
-	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
-	bill->setMaterialFlag(EMF_LIGHTING, false);
-	*/
-
 }
 
 EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
