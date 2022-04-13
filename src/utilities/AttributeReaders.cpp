@@ -41,7 +41,9 @@ u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
 	data->shipNorm = cont->driver->getTexture(normpath.c_str());
 	if (data->shipNorm) {
 		cont->driver->makeNormalMapTexture(data->shipNorm, 7.f);
-		data->shipMesh = cont->smgr->getMeshManipulator()->createMeshWithTangents(data->shipMesh); //drop this somewhere
+		IMesh* tmesh = cont->smgr->getMeshManipulator()->createMeshWithTangents(data->shipMesh); //drop this somewhere
+		cont->smgr->getMeshCache()->removeMesh(data->shipMesh);
+		data->shipMesh = tmesh;
 	}
 	//data->collisionShape = createCollisionShapeFromMesh(data->shipMesh);
 
