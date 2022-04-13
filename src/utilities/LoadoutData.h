@@ -21,6 +21,7 @@ struct ShipData
 	ITexture* shipTexture;
 	ITexture* engineTexture;
 	ITexture* jetTexture;
+	ITexture* shipNorm;
 };
 
 /*

@@ -34,9 +34,15 @@ u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
 
 	std::string meshpath = "models/" + in.values["model"];
 	std::string texpath = "models/" + in.values["texture"];
+	std::string normpath = "models/" + in.values["norm"];
 
 	data->shipMesh = cont->smgr->getMesh(meshpath.c_str());
 	data->shipTexture = cont->driver->getTexture(texpath.c_str());
+	data->shipNorm = cont->driver->getTexture(normpath.c_str());
+	if (data->shipNorm) {
+		cont->driver->makeNormalMapTexture(data->shipNorm, 7.f);
+		data->shipMesh = cont->smgr->getMeshManipulator()->createMeshWithTangents(data->shipMesh); //drop this somewhere
+	}
 	//data->collisionShape = createCollisionShapeFromMesh(data->shipMesh);
 
 	std::string jetpath = "effects/" + in.values["jet"];
@@ -176,6 +182,10 @@ bool loadShip(u32 id, EntityId entity, SceneManager* manager)
 
 	irr->node = smgr->addMeshSceneNode(data->shipMesh);
 	irr->node->setMaterialTexture(0, data->shipTexture);
+	if (data->shipNorm) {
+		irr->node->setMaterialTexture(1, data->shipNorm);
+		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
+	}
 	irr->node->setName(idToStr(entity).c_str());
 	irr->node->setID(ID_IsSelectable | ID_IsAvoidable);
 

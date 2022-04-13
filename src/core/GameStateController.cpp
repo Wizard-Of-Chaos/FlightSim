@@ -28,6 +28,7 @@ void GameStateController::init()
 	then = device->getTimer()->getTime();
 	state = GAME_MENUS; //Initial state
 	driver->setMinHardwareBufferVertexCount(0);
+	driver->setTextureCreationFlag(ETCF_ALWAYS_32_BIT, true);
 
 	playerShip = 0;
 	playerWeapons[0] = 1;

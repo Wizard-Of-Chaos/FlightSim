@@ -94,6 +94,8 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.bonk = sndeng->getSoundSource("audio/bonk.ogg");
 	manager->defaults.bonk->setDefaultVolume(10.f);
 	manager->defaults.bonk->setDefaultMinDistance(200.f);
+	manager->defaults.defaultLaserSound->setDefaultVolume(1.f);
+	manager->defaults.defaultLaserSound->setDefaultMinDistance(2.f);
 
 	manager->defaults.defaultHUDFont = manager->controller->guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");
 }
@@ -151,7 +153,7 @@ EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position)
 
 EntityId createDefaultShip(SceneManager* manager, vector3df position)
 {
-	EntityId shipEntity = createShipFromId(0, manager, position);
+	EntityId shipEntity = createShipFromId(1, manager, position);
 	auto ship = manager->scene.get<ShipComponent>(shipEntity);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
@@ -248,7 +250,7 @@ bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int 
 
 bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoint)
 {
-	return initializeWeaponFromId(3, manager, shipId, hardpoint);
+	return initializeWeaponFromId(1, manager, shipId, hardpoint);
 }
 
 bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
