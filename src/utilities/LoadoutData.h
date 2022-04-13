@@ -37,6 +37,7 @@ struct WeaponData
 	IMesh* weaponMesh;
 	ITexture* weaponTexture;
 	ITexture* weaponEffect;
+	ITexture* weaponNorm;
 };
 
 /*

@@ -12,7 +12,7 @@ void projectileCollider(SceneManager* manager, EntityId projectile, EntityId imp
 	if (proj->type == WEP_MISSILE) {
 		explode(manager, irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
 	}
-	if (proj->type == WEP_IMPULSE) {
+	if (proj->type == WEP_PHYS_IMPULSE) {
 		manager->controller->soundEngine->play3D(manager->defaults.bonk, irr->node->getAbsolutePosition());
 		explode(manager, irr->node->getAbsolutePosition(), 1.f, 1.f, 80.f, proj->damage, 500.f);
 	}

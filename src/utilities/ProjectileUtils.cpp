@@ -66,7 +66,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 		//auto missInfo = manager->scene.get<MissileInfoComponent>(weaponId);
 		createMissileProjectile(manager, projectileEntity, manager->scene.get<MissileInfoComponent>(weaponId), direction, spawnPos);
 		break;
-	case WEP_IMPULSE:
+	case WEP_PHYS_IMPULSE:
 		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
 		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
 		break;
@@ -255,6 +255,7 @@ void missileGoTo(SceneManager* manager, EntityId id, f32 dt)
 		else {
 			btVector3 stopTorque = -angNorm * miss->rotThrust;
 			torque += stopTorque;
+
 		}
 	} else {
 		if (right.dot(dir) > left.dot(dir)) {

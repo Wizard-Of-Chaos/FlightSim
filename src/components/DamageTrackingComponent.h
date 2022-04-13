@@ -10,7 +10,8 @@ enum DAMAGE_TYPE {
 	NONE,
 	PLASMA,
 	EXPLOSIVE,
-	IMPACT,
+	KINETIC, //bullets
+	IMPACT, //smacking into something
 	VELOCITY, // moving too fast
 	EMP
 };

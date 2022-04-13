@@ -199,6 +199,7 @@
     <ClInclude Include="src\components\DamageTrackingComponent.h" />
     <ClInclude Include="src\components\ExplosionComponent.h" />
     <ClInclude Include="src\components\HarpoonComponent.h" />
+    <ClInclude Include="src\components\KineticComponent.h" />
     <ClInclude Include="src\components\MissileComponent.h" />
     <ClInclude Include="src\components\ObstacleComponent.h" />
     <ClInclude Include="src\components\SensorComponent.h" />

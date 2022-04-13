@@ -133,13 +133,19 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	data->description = in.values["description"];
 	std::string meshpath = "models/" + in.values["model"];
 	std::string texpath = "models/" + in.values["texture"];
+	std::string normpath = "models/" + in.values["norm"];
 
 	data->weaponMesh = cont->smgr->getMesh(meshpath.c_str());
 	data->weaponTexture = cont->driver->getTexture(meshpath.c_str());
-	
+	data->weaponNorm = cont->driver->getTexture(normpath.c_str());
+	if (data->weaponNorm) {
+		cont->driver->makeNormalMapTexture(data->weaponNorm, 7.f);
+		IMesh* tmesh = cont->smgr->getMeshManipulator()->createMeshWithTangents(data->weaponMesh); //drop this somewhere
+		cont->smgr->getMeshCache()->removeMesh(data->weaponMesh);
+		data->weaponMesh = tmesh;
+	}
 	std::string effectpath = "effects/" + in.values["particle"];
 	data->weaponEffect = cont->driver->getTexture(effectpath.c_str());
-
 	
 	if (type == WEP_MISSILE) {
 		std::string misspath = "models/" + in.values["missilemodel"];
@@ -214,6 +220,10 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager
 	irr->node->setMaterialTexture(0, data->weaponTexture);
 	irr->node->setName(idToStr(weaponEntity).c_str());
 	irr->node->setID(ID_IsNotSelectable);
+	if (data->weaponNorm) {
+		irr->node->setMaterialTexture(1, data->weaponNorm);
+		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
+	}
 
 	*wep = data->weaponComponent;
 	if (data->weaponComponent.type == WEP_MISSILE) {

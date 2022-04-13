@@ -312,6 +312,9 @@
     <ClInclude Include="src\components\ExplosionComponent.h">
       <Filter>Headers\Components\Basic Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\KineticComponent.h">
+      <Filter>Headers\Components\Weapon Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

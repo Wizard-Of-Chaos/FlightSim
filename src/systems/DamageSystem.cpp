@@ -56,6 +56,9 @@ void damageSystem(SceneManager* manager, f32 dt)
 			case DAMAGE_TYPE::PLASMA:
 				handleShieldedInstance(inst, hp, shld);
 				break;
+			case DAMAGE_TYPE::KINETIC:
+				handleShieldedInstance(inst, hp, shld);
+				break;
 			case DAMAGE_TYPE::EMP:
 				handleEMPInstance(inst, shld);
 				break;
