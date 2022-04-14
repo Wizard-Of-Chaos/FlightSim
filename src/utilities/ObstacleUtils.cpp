@@ -17,8 +17,8 @@ EntityId createGasCloud(SceneManager* manager, vector3df position, vector3df sca
 
 	auto ps = smgr->addParticleSystemSceneNode(true, 0, ID_IsSelectable, position, vector3df(0, 0, 0), scale);
 	irr->node = ps;
-	auto em = ps->createSphereEmitter(position, scale.X/2, vector3df(0, .00005f, 0),
-		5, 20, SColor(10, 100, 100, 100), SColor(50, 100, 100, 100), 6000, 20000, 360,
+	auto em = ps->createSphereEmitter(vector3df(0,0,0), scale.X/2, vector3df(0, .00005f, 0),
+		20, 100, SColor(10, 100, 100, 100), SColor(50, 100, 100, 100), 1000, 2000, 360,
 		dimension2df(scale.X / 5, scale.X / 5), dimension2df(scale.X * 10, scale.X * 10));
 	ps->setEmitter(em);
 	em->drop();

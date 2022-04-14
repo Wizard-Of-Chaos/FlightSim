@@ -248,7 +248,7 @@ void GameController::killHostilesScenario()
 	std::cout << "\n Done. Culling obstacles... ";
 	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
 		vector3df pos = obstaclePositions[i];
-		f32 radius = 25.f;
+		f32 radius = 75.f;
 		if (isPointInSphere(pos, currentScenario.playerStartPos, radius)) {
 			obstaclePositions.erase(obstaclePositions.begin() + i);
 			continue;
@@ -275,7 +275,7 @@ void GameController::killHostilesScenario()
 		currentScenario.objectives[i] = enemy;
 	}
 
-	auto cloud = createGasCloud(&sceneECS, currentScenario.enemyStartPos, vector3df(10, 10, 10));
+	//auto cloud = createGasCloud(&sceneECS, currentScenario.enemyStartPos, vector3df(10, 10, 10));
 
 	std::cout << "Done. \n";
 	//let's get us some rocks to bump around
