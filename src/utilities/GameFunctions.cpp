@@ -97,6 +97,8 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultLaserSound->setDefaultVolume(1.f);
 	manager->defaults.defaultLaserSound->setDefaultMinDistance(2.f);
 
+	manager->defaults.defaultCloudTexture = driver->getTexture("effects/cloud.png");
+
 	manager->defaults.defaultHUDFont = manager->controller->guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");
 }
 

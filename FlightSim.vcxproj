@@ -192,6 +192,7 @@
     <ClCompile Include="src\utilities\GvReader.cpp" />
     <ClCompile Include="src\utilities\GameFunctions.cpp" />
     <ClCompile Include="src\utilities\IrrlichtUtils.cpp" />
+    <ClCompile Include="src\utilities\ObstacleUtils.cpp" />
     <ClCompile Include="src\utilities\ProjectileUtils.cpp" />
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp" />
   </ItemGroup>
@@ -256,6 +257,7 @@
     <ClInclude Include="src\utilities\GameFunctions.h" />
     <ClInclude Include="src\utilities\IrrlichtUtils.h" />
     <ClInclude Include="src\utilities\LoadoutData.h" />
+    <ClInclude Include="src\utilities\ObstacleUtils.h" />
     <ClInclude Include="src\utilities\ProjectileUtils.h" />
     <ClInclude Include="src\utilities\Scenario.h" />
     <ClInclude Include="src\utilities\ShipMovementUtils.h" />

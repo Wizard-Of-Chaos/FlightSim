@@ -28,6 +28,8 @@ struct GameDefaults
 	ITexture* defaultEngineJetTexture;
 	ITexture* defaultExplosion;
 
+	ITexture* defaultCloudTexture;
+
 	ISoundSource* defaultLaserSound;
 	ISoundSource* bonk;
 	ISoundSource* defaultEngineSoundLoop;

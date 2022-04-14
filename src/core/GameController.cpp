@@ -1,5 +1,6 @@
 #include "GameController.h"
 #include "GameStateController.h"
+#include "ObstacleUtils.h"
 #include <iostream>
 #include <random>
 
@@ -236,7 +237,7 @@ void GameController::initScenario()
 void GameController::killHostilesScenario()
 {
 	EntityId player = createPlayerShipFromLoadout(&sceneECS, currentScenario.playerStartPos);
-	initializePlayerFaction(&sceneECS, player);
+	initializeNeutralFaction(&sceneECS, player);
 
 	std::vector<vector3df> obstaclePositions;
 
@@ -273,6 +274,9 @@ void GameController::killHostilesScenario()
 		initializeShipParticles(&sceneECS, enemy);
 		currentScenario.objectives[i] = enemy;
 	}
+
+	auto cloud = createGasCloud(&sceneECS, currentScenario.enemyStartPos, vector3df(10, 10, 10));
+
 	std::cout << "Done. \n";
 	//let's get us some rocks to bump around
 }
