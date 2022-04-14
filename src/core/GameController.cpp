@@ -196,7 +196,7 @@ void GameController::initScenario()
 
 void GameController::killHostilesScenario()
 {
-	EntityId player = createPlayerShipFromLoadout(&sceneECS, currentScenario.playerStartPos);
+	EntityId player = createPlayerShipFromLoadout(&sceneECS, currentScenario.playerStartPos, vector3df(0,0,0));
 	initializeNeutralFaction(&sceneECS, player);
 
 	std::vector<vector3df> obstaclePositions;
@@ -228,14 +228,14 @@ void GameController::killHostilesScenario()
 	std::cout << "\nDone. Building hostiles... ";
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(currentScenario.enemyStartPos, 25.f);
-		EntityId enemy = createDefaultAIShip(&sceneECS, pos); //todo: create AI ship generator that pulls from loaded ships
+		EntityId enemy = createDefaultAIShip(&sceneECS, pos, vector3df(0,180,0)); //todo: create AI ship generator that pulls from loaded ships
 		initializeHostileFaction(&sceneECS, enemy);
 		initializeDefaultSensors(&sceneECS, enemy);
 		initializeShipParticles(&sceneECS, enemy);
 		currentScenario.objectives[i] = enemy;
 	}
 
-	auto cloud = createGasCloud(&sceneECS, currentScenario.enemyStartPos, vector3df(10, 10, 10));
+	auto cloud = createGasCloud(&sceneECS, vector3df(100,0,0), vector3df(10, 10, 10));
 
 	std::cout << "Done. \n";
 	//let's get us some rocks to bump around

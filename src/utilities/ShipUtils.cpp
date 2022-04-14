@@ -3,7 +3,7 @@
 #include "GameController.h"
 #include "GameStateController.h"
 
-EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position)
+EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position, vector3df rotation)
 {
 	Scene* scene = &manager->scene;
 	ISceneManager* smgr = manager->controller->smgr;
@@ -14,6 +14,7 @@ EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position)
 	auto ship = scene->get<ShipComponent>(shipEntity);
 	auto irr = scene->get<IrrlichtComponent>(shipEntity);
 	irr->node->setPosition(position);
+	irr->node->setRotation(rotation);
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
 		ship->weapons[i] = INVALID_ENTITY;
 	}
@@ -21,9 +22,9 @@ EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position)
 	return shipEntity;
 }
 
-EntityId createDefaultShip(SceneManager* manager, vector3df position)
+EntityId createDefaultShip(SceneManager* manager, vector3df position, vector3df rotation)
 {
-	EntityId shipEntity = createShipFromId(1, manager, position);
+	EntityId shipEntity = createShipFromId(1, manager, position, rotation);
 	auto ship = manager->scene.get<ShipComponent>(shipEntity);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
@@ -32,11 +33,11 @@ EntityId createDefaultShip(SceneManager* manager, vector3df position)
 	return shipEntity;
 }
 
-EntityId createDefaultAIShip(SceneManager* manager, vector3df position)
+EntityId createDefaultAIShip(SceneManager* manager, vector3df position, vector3df rotation)
 {
 	Scene* scene = &manager->scene;
 
-	EntityId id = createDefaultShip(manager, position);
+	EntityId id = createDefaultShip(manager, position, rotation);
 	auto irr = scene->get<IrrlichtComponent>(id);
 	irr->name = "AI Ship";
 	initializeDefaultHealth(manager, id);
@@ -64,10 +65,10 @@ bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 s
 	return initializeBtRigidBody(manager, entityId, cont->shipData[shipId]->collisionShape, scale, 1.f);
 }
 
-EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos)
+EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos, vector3df rot)
 {
 	GameStateController* stCtrl = manager->controller->stateController;
-	EntityId shipEntity = createShipFromId(stCtrl->playerShip, manager, pos);
+	EntityId shipEntity = createShipFromId(stCtrl->playerShip, manager, pos, rot);
 	auto ship = manager->scene.get<ShipComponent>(shipEntity);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
@@ -191,7 +192,7 @@ IParticleSystemSceneNode* createShipJet(SceneManager* manager, ISceneNode* node,
 	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(true, node);
 	ps->setID(ID_IsNotSelectable);
 	IParticleEmitter* em = ps->createSphereEmitter(
-		pos, .1f, dir * .02f,
+		vector3df(0,0,0), .1f, dir * .02f,
 		0, 0, SColor(255, 180, 180, 180), SColor(255, 210, 210, 210),
 		50, 200, 2, dimension2df(.2f, .2f), dimension2df(.35f, .35f)
 	);

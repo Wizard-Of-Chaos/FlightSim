@@ -12,15 +12,15 @@ class GameStateController;
 //Creates a ship using the data at the given id in the GameStateController.
 //Example: The "Tuxedo" ship has the id 0 in the GameStateController. Throw that ID in here and it will load the ship.
 //Adds: ShipComponent, IrrlichtComponent
-EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position);
+EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position, vector3df rotation);
 //Creates a default ship entity at the given position. Does not include hitbox, health, or other components.
 //Does include two default weapon entities and an irrlicht component / ship component. Returns the ID.
-EntityId createDefaultShip(SceneManager* manager, vector3df position);
+EntityId createDefaultShip(SceneManager* manager, vector3df position, vector3df rotation);
 //Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, and health components. Returns the ID.
-EntityId createDefaultAIShip(SceneManager* manager, vector3df position);
+EntityId createDefaultAIShip(SceneManager* manager, vector3df position, vector3df rotation);
 //Creates all the necessary details and components to set up the player's current loadout at the given position. Returns the
 //EntityId of the player.
-EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos);
+EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos, vector3df rot);
 //Adds on the ship's collision body (i.e., the rigid body component) to the entity.
 bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 shipId);
 
