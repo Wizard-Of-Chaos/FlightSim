@@ -186,7 +186,7 @@ void shipUpdateSystem(Scene& scene, f32 dt)
 		rbc->rigidBody.applyTorqueImpulse(torque * dt);
 		rbc->rigidBody.applyCentralImpulse(force * dt);
 		f32 zPercent = rbc->rigidBody.getLinearVelocity().length() / ship->linearMaxVelocity;
-		engine->setScale(vector3df(std::max(2.f*zPercent, .8f), std::max(5*zPercent, .1f), std::max(2.f * zPercent, .8f)));
+		engine->setScale(vector3df(std::max(zPercent, 3.5f), std::max(5*zPercent, .1f), std::max(zPercent, 3.5f)));
 
 		auto hp = scene.get<HealthComponent>(entityId);
 		if (!hp) continue;

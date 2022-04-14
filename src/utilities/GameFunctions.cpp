@@ -63,8 +63,8 @@ void setDefaults(SceneManager* manager)
 	IVideoDriver* driver = manager->controller->driver;
 	ISoundEngine* sndeng = manager->controller->soundEngine;
 
-	manager->defaults.defaultShipMesh = smgr->getMesh("models/tux/Tux.obj");
-	manager->defaults.defaultShipTexture = driver->getTexture("models/tux/BulletShipTex.png");
+	manager->defaults.defaultShipMesh = smgr->getMesh("models/tux/Tuxedo.obj");
+	manager->defaults.defaultShipTexture = driver->getTexture("models/tux/tuxedotex.png");
 	manager->defaults.defaultWeaponMesh = smgr->getMesh("models/wazer/wazer.obj");
 	manager->defaults.defaultObstacleMesh = smgr->getMesh("models/asteroid/Asteroid.obj");
 	manager->defaults.defaultObstacleTexture = driver->getTexture("models/asteroid/Asteroid.jpg");
