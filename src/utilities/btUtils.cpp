@@ -1,4 +1,41 @@
 #include "btUtils.h"
+#include "SceneManager.h"
+#include "GameController.h"
+
+bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
+{
+	Scene* scene = &manager->scene;
+	ISceneManager* smgr = manager->controller->smgr;
+
+	auto objIrr = scene->get<IrrlichtComponent>(entityId);
+
+	if (!objIrr) return false;
+
+	BulletRigidBodyComponent* rbc = scene->assign<BulletRigidBodyComponent>(entityId);
+	rbc->shape = shape;
+	rbc->shape.setLocalScaling(scale);
+	btTransform transform = btTransform();
+	transform.setIdentity();
+	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
+	btQuaternion q;
+	btVector3 rot = irrVecToBt(objIrr->node->getRotation());
+	q.setEuler(rot.y(), rot.x(), rot.z());
+	transform.setRotation(q);
+	auto motionState = new btDefaultMotionState(transform);
+
+	btVector3 localInertia;
+	rbc->shape.calculateLocalInertia(mass, localInertia);
+	rbc->rigidBody = btRigidBody(mass, motionState, &rbc->shape, localInertia);
+	rbc->rigidBody.setSleepingThresholds(0, 0);
+
+	rbc->rigidBody.setUserIndex(getEntityIndex(entityId));
+	rbc->rigidBody.setUserIndex2(getEntityVersion(entityId));
+	rbc->rigidBody.setUserIndex3(1);
+
+	manager->bulletWorld->addRigidBody(&(rbc->rigidBody));
+
+	return true;
+}
 
 EntityId getIdFromBt(btCollisionObject* object)
 {
@@ -11,13 +48,6 @@ EntityId getIdFromBt(btCollisionObject* object)
 	}
 	return id;
 }
-
-#if _DEBUG
-void btDebugRenderer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
-{
-	controller->addDebugLine(line3df(btVecToIrr(from), btVecToIrr(to)));
-}
-#endif 
 
 btVector3 getRigidBodyForward(btRigidBody* body)
 {
@@ -59,3 +89,10 @@ btVector3 getLocalLinearVelocity(btRigidBody* body)
 {
 	return body->getLinearVelocity() * body->getWorldTransform().getBasis().transpose();
 }
+
+#if _DEBUG
+void btDebugRenderer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
+{
+	controller->addDebugLine(line3df(btVecToIrr(from), btVecToIrr(to)));
+}
+#endif 

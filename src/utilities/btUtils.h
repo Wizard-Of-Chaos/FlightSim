@@ -4,6 +4,37 @@
 #include "BaseHeader.h"
 #include "ECS.h"
 
+class SceneManager;
+class GameController;
+
+//Convenience function to get the ID from a bullet collision object.
+EntityId getIdFromBt(btCollisionObject* object);
+
+/* DIRECTIONAL VECTORS */
+
+//Forward directional vector for a rigid body.
+btVector3 getRigidBodyForward(btRigidBody* body);
+//Backward directional vector for a rigid body.
+btVector3 getRigidBodyBackward(btRigidBody* body);
+//Right directional vector for a rigid body.
+btVector3 getRigidBodyRight(btRigidBody* body);
+//Left directional vector for a rigid body.
+btVector3 getRigidBodyLeft(btRigidBody* body);
+//Up directional vector for a rigid body.
+btVector3 getRigidBodyUp(btRigidBody* body);
+//Down directional vector for a rigid body.
+btVector3 getRigidBodyDown(btRigidBody* body);
+
+//Returns the angular velocity of the body transformed into local coordinates (X is pitch, Y is yaw, Z is roll).
+btVector3 getLocalAngularVelocity(btRigidBody* body);
+//Returns the linear velocity of the body transformed into local coordinates (Z is forward/backward, X is left/right, Y is up/down).
+btVector3 getLocalLinearVelocity(btRigidBody* body);
+
+//Adds a bullet rigid body to the given entity.
+bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass);
+
+
+
 //An extension of the bullet physics world with a helpful function that effectively deletes the world. Otherwise, it's the same.
 class BulletPhysicsWorld : public btDiscreteDynamicsWorld
 {
@@ -51,36 +82,7 @@ private:
 	GameStateController* controller;
 	int mode;
 };
-#endif 
-
-//Convenience function to get the ID from a bullet collision object.
-EntityId getIdFromBt(btCollisionObject* object);
-
-/* DIRECTIONAL VECTORS */
-
-//Forward directional vector for a rigid body.
-btVector3 getRigidBodyForward(btRigidBody* body);
-
-//Backward directional vector for a rigid body.
-btVector3 getRigidBodyBackward(btRigidBody* body);
-
-//Right directional vector for a rigid body.
-btVector3 getRigidBodyRight(btRigidBody* body);
-
-//Left directional vector for a rigid body.
-btVector3 getRigidBodyLeft(btRigidBody* body);
-
-//Up directional vector for a rigid body.
-btVector3 getRigidBodyUp(btRigidBody* body);
-
-//Down directional vector for a rigid body.
-btVector3 getRigidBodyDown(btRigidBody* body);
-
-//Returns the angular velocity of the body transformed into local coordinates (X is pitch, Y is yaw, Z is roll).
-btVector3 getLocalAngularVelocity(btRigidBody* body);
-
-//Returns the linear velocity of the body transformed into local coordinates (Z is forward/backward, X is left/right, Y is up/down).
-btVector3 getLocalLinearVelocity(btRigidBody* body);
+#endif
 
 //Used for sphere sweeps with collision avoidance.
 //This code ripped directly from Bullet's own source. It's declared in a .cpp file. I don't know why

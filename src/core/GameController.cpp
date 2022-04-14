@@ -157,46 +157,6 @@ bool GameController::OnEvent(const SEvent& event)
 	return false;
 }
 
-//Init for a default scene, with a player and some AI ships and obstacles. Mostly for testing.
-void GameController::initDefaultScene()
-{
-	std::cout << "Loading into game...\n";
-	EntityId playerId = createPlayerShipFromLoadout(&sceneECS, vector3df(0, 0, -50));
-
-	EntityId roidId = createDefaultObstacle(&sceneECS, vector3df(0,0,40), vector3df(0,0,0), vector3df(1,1,1), 1.f);
-
-	EntityId aiId = createDefaultAIShip(&sceneECS, vector3df(-100, 15, 40));
-	initializeHostileFaction(&sceneECS, aiId);
-	initializeDefaultSensors(&sceneECS, aiId);
-	initializeShipParticles(&sceneECS, aiId);
-
-	EntityId friendlyId = createDefaultAIShip(&sceneECS, vector3df(100, 15, 40));
-	initializePlayerFaction(&sceneECS, friendlyId);
-	initializeDefaultSensors(&sceneECS, friendlyId);
-	initializeShipParticles(&sceneECS, friendlyId);
-
-	//make the light node an entity as well
-	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 5000, 0),
-		SColor(200, 255, 180, 180), 20000.f);
-	n->setID(ID_IsNotSelectable);
-	ILightSceneNode* light = (ILightSceneNode*)n;
-	light->enableCastShadow(true);
-
-	n = smgr->addBillboardSceneNode(n, dimension2d<f32>(25, 25));
-	n->setMaterialFlag(EMF_LIGHTING, false);
-	n->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
-	n->setMaterialTexture(0, driver->getTexture("effects/particlewhite.bmp"));
-	n->setID(ID_IsNotSelectable);
-
-	ITexture* sky = driver->getTexture("effects/starskybox.png");
-	n = smgr->addSkyBoxSceneNode(sky, sky, sky, sky, sky, sky);
-	n->setID(ID_IsNotSelectable);
-
-	device->getCursorControl()->setActiveIcon(ECI_CROSS);
-
-	std::cout << "Loaded.\n";
-}
-
 bool GameController::checkRunningScenario()
 {
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
@@ -261,7 +221,7 @@ void GameController::killHostilesScenario()
 	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 100;
 		f32 mass = (f32)scale / 5.f;
-		EntityId rock = createDefaultObstacle(&sceneECS, obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
+		EntityId rock = createAsteroid(&sceneECS, obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
 
 	}
 
@@ -275,7 +235,7 @@ void GameController::killHostilesScenario()
 		currentScenario.objectives[i] = enemy;
 	}
 
-	//auto cloud = createGasCloud(&sceneECS, currentScenario.enemyStartPos, vector3df(10, 10, 10));
+	auto cloud = createGasCloud(&sceneECS, currentScenario.enemyStartPos, vector3df(10, 10, 10));
 
 	std::cout << "Done. \n";
 	//let's get us some rocks to bump around

@@ -127,6 +127,9 @@
     <ClCompile Include="src\utilities\ObstacleUtils.cpp">
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\ShipUtils.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -319,6 +322,9 @@
       <Filter>Headers\Components\Weapon Components</Filter>
     </ClInclude>
     <ClInclude Include="src\utilities\ObstacleUtils.h">
+      <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\ShipUtils.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>

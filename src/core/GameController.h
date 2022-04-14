@@ -9,6 +9,8 @@
 #include "IrrlichtComponent.h"
 #include "InputComponent.h"
 #include "GameFunctions.h"
+#include "ShipUtils.h"
+#include "ObstacleUtils.h"
 #include "Scenario.h"
 #include "Config.h"
 
@@ -42,7 +44,6 @@ class GameController
 		void init();
 		void close();
 
-		void initDefaultScene();
 		void update();
 
 		void clearPlayerHUD();
