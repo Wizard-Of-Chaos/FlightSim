@@ -1,6 +1,7 @@
 #include "ObstacleUtils.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include "BulletGhostComponent.h"
 
 EntityId createAsteroid(SceneManager* manager, vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
@@ -65,6 +66,18 @@ EntityId createGasCloud(SceneManager* manager, vector3df position, vector3df sca
 	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
 	ps->setMaterialTexture(0, manager->defaults.defaultCloudTexture);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	auto ghost = scene->assign<BulletGhostComponent>(cloud);
+	ghost->shape = btSphereShape(scale.X / 4);
+	ghost->ghost = btGhostObject();
+	btTransform transform;
+	transform.setOrigin(irrVecToBt(position));
+	ghost->ghost.setWorldTransform(transform);
+	ghost->ghost.setCollisionShape(&ghost->shape);
+	manager->bulletWorld->addCollisionObject(&ghost->ghost);
+	ghost->ghost.setUserIndex(getEntityIndex(cloud));
+	ghost->ghost.setUserIndex2(getEntityVersion(cloud));
+	ghost->ghost.setUserIndex3(1);
 
 	initializeDefaultHealth(manager, cloud);
 

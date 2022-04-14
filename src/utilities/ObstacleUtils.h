@@ -2,6 +2,7 @@
 #ifndef OBSTACLEUTILS_H
 #define OBSTACLEUTILS_H
 #include "BaseHeader.h"
+#include "BulletGhostComponent.h"
 #include "ECS.h"
 
 class GameController;

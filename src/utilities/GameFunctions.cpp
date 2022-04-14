@@ -123,6 +123,10 @@ void destroyObject(SceneManager* manager, EntityId id)
 	if (rbc) {
 		manager->bulletWorld->removeRigidBody(&rbc->rigidBody);
 	}
+	auto ghost = manager->scene.get<BulletGhostComponent>(id);
+	if (ghost) {
+		manager->bulletWorld->removeCollisionObject(&ghost->ghost);
+	}
 
 	manager->scene.destroyEntity(id);
 }
