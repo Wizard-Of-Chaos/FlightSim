@@ -327,6 +327,9 @@
     <ClInclude Include="src\utilities\ShipUtils.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\BulletGhostComponent.h">
+      <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
