@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
+#include <iostream>
 
 EntityId createShipFromId(u32 id, SceneManager* manager, vector3df position, vector3df rotation)
 {
@@ -74,6 +75,7 @@ EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos, vecto
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		initializeWeaponFromId(stCtrl->playerWeapons[i], manager, shipEntity, i);
 	}
+	initializeWeaponFromId(stCtrl->playerPhysWeapon, manager, shipEntity, 0, true);
 
 	initializeDefaultPlayer(manager, shipEntity);
 	initializeShipCollisionBody(manager, shipEntity, stCtrl->playerShip);
@@ -87,7 +89,7 @@ EntityId createPlayerShipFromLoadout(SceneManager* manager, vector3df pos, vecto
 	return shipEntity;
 }
 
-bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int hardpoint)
+bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int hardpoint, bool phys)
 {
 	if (id <= 0) return false;
 
@@ -100,13 +102,18 @@ bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int 
 	if (!shipIrr || !shipComp) return false;
 
 	auto wepEntity = scene->newEntity();
-	loadWeapon(id, wepEntity, shipId, manager);
+	loadWeapon(id, wepEntity, shipId, manager, phys);
 	auto irr = scene->get<IrrlichtComponent>(wepEntity);
 	irr->node->setParent(shipIrr->node);
-	irr->node->setPosition(shipComp->hardpoints[hardpoint]);
+	if (!phys) {
+		irr->node->setPosition(shipComp->hardpoints[hardpoint]);
+		shipComp->weapons[hardpoint] = wepEntity;
+	}
+	else {
+		irr->node->setPosition(shipComp->physWeaponHardpoint);
+		shipComp->physWeapon = wepEntity;
+	}
 	irr->node->setScale(vector3df(.5f, .5f, .5f));
-
-	shipComp->weapons[hardpoint] = wepEntity;
 
 	auto parentCmp = scene->assign<ParentComponent>(wepEntity);
 	parentCmp->parentId = shipId;

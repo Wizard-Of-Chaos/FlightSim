@@ -57,10 +57,12 @@ class GameStateController : public IEventReceiver
 
 		u32 playerShip;
 		u32 playerWeapons[MAX_HARDPOINTS];
+		u32 playerPhysWeapon;
 
 		void loadShipAndWeaponData();
 		std::unordered_map<u32, ShipData*> shipData;
 		std::unordered_map<u32, WeaponData*> weaponData;
+		std::unordered_map<u32, WeaponData*> physWeaponData;
 #if _DEBUG
 		void addDebugLine(line3df line) { debugLines.push_back(line); }
 #endif 

@@ -25,7 +25,7 @@ vector3df strToVec(std::string str);
 bool loadShip(u32 id, EntityId entity, SceneManager* manager);
 //Loads the weapon data from the game state controller onto the given entity.
 //Includes a WeaponInfoComponent, an Irrlicht component, a ParentComponent, and whatever other components are necessary (e.g., a MissileInfoComponent).
-bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager);
+bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager, bool phys);
 
 //Pulls the ship data from the given .gdat file and saves it in the game state controller. Returns the ID.
 u32 loadShipData(std::string path, GameStateController* cont, gvReader& in);

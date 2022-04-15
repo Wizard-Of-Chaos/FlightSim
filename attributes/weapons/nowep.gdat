@@ -2,6 +2,7 @@ model=none
 texture=none
 particle=particlered.bmp
 id=0
+phys=0
 name=None
 description=None
 type=-1

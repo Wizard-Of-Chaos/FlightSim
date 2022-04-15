@@ -10,6 +10,7 @@
 * This enum holds the different types of weapons that a thing can be.
 * Currently only WEP_PLASMA is properly implemented. More to come.
 */
+
 enum WEAPON_TYPE {
 	WEP_NONE = -1,
 	WEP_PLASMA = 0,

@@ -4,6 +4,7 @@ particle=smokejet.png
 missilemodel=basicmissile/Missile.obj
 missiletexture=basicmissile/Missile.png
 id=2
+phys=0
 name=Halberd Missile
 description=The Halberd missile launcher fires long-range ordnance with a short lock-on period.
 type=1

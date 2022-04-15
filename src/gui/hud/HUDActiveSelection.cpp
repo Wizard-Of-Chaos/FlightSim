@@ -38,7 +38,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 		sensors->targetContact = INVALID_ENTITY;
 	}
 
-	if (input->rightMouseDown) { //Uses the input component to hurl out a ray selecting anything in its path
+	if (input->isKeyDown(KEY_KEY_T)) { //Uses the input component to hurl out a ray selecting anything in its path
 		ISceneNode* selection = coll->getSceneNodeFromRayBB(ray, ID_IsSelectable);
 		if (selection) {
 			if (selection->getID() != -1 && selection != playerIrr->node) {

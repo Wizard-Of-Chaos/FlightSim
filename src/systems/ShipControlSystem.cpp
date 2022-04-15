@@ -80,6 +80,41 @@ void throttleToShip(ShipComponent* ship, btRigidBody* body, vector3df& thrust, v
 	setVelocity(ship, localRoll, desiredRoll, SHIP_ROLL_RIGHT, SHIP_ROLL_LEFT);
 }
 
+void fireWeapon(SceneManager* manager, PlayerComponent* player, IrrlichtComponent* playerIrr, InputComponent* input, EntityId wep)
+{
+	auto wepInfo = manager->scene.get<WeaponInfoComponent>(wep);
+	auto irrComp = manager->scene.get<IrrlichtComponent>(wep);
+	wepInfo->isFiring = true;
+	wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
+	vector3df target = input->cameraRay.getMiddle();
+	ISceneNode* coll = manager->controller->smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
+
+	bool mouseOverHUD = false;
+	//auto-aim for aiming at a contact
+	for (HUDElement* h : player->HUD) {
+		if (h->type != HUD_ELEM_TYPE::CONTACT) continue;
+
+		HUDContact* cont = (HUDContact*)h;
+		if (cont->contactView->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
+			for (auto [id, c] : player->trackedContacts) {
+				if (c != cont) continue;
+				auto targetIrr = manager->scene.get<IrrlichtComponent>(id);
+				target = targetIrr->node->getPosition();
+				mouseOverHUD = true;
+				break;
+			}
+		}
+		if (mouseOverHUD) break;
+	}
+	//auto-aim for aiming at whatever your cursor is hovering over
+	if (!mouseOverHUD && coll && coll != playerIrr->node) {
+		target = coll->getPosition();
+	}
+	vector3df dir = target - wepInfo->spawnPosition;
+	dir.normalize();
+	wepInfo->firingDirection = dir;
+}
+
 void shipControlSystem(SceneManager* manager, f32 dt)
 { //This whole thing needs to be abstracted out to player-defined keybinds
 	Scene& scene = manager->scene;
@@ -195,37 +230,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 				EntityId wep = ship->weapons[i];
 				if (!scene.entityInUse(wep)) continue;
-
-				auto wepInfo = scene.get<WeaponInfoComponent>(wep);
-				auto irrComp = scene.get<IrrlichtComponent>(wep);
-				wepInfo->isFiring = true;
-				wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
-				vector3df target = input->cameraRay.getMiddle();
-
-				bool mouseOverHUD = false;
-				//auto-aim for aiming at a contact
-				for (HUDElement* h : player->HUD) {
-					if (h->type != HUD_ELEM_TYPE::CONTACT) continue;
-
-					HUDContact* cont = (HUDContact*)h;
-					if (cont->contactView->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
-						for (auto [id, c] : player->trackedContacts) {
-							if (c != cont) continue;
-							auto targetIrr = scene.get<IrrlichtComponent>(id);
-							target = targetIrr->node->getPosition();
-							mouseOverHUD = true;
-							break;
-						}
-					}
-					if (mouseOverHUD) break;
-				}
-				//auto-aim for aiming at whatever your cursor is hovering over
-				if (!mouseOverHUD && coll && coll != irr->node) {
-					target = coll->getPosition();
-				}
-				vector3df dir = target - wepInfo->spawnPosition;
-				dir.normalize();
-				wepInfo->firingDirection = dir;
+				fireWeapon(manager, player, irr, input, wep);
 			}
 		}
 		else {
@@ -236,6 +241,14 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 				auto wepInfo = scene.get<WeaponInfoComponent>(wep);
 				wepInfo->isFiring = false;
 			}
+		}
+
+		if (input->rightMouseDown) {
+			fireWeapon(manager, player, irr, input, ship->physWeapon);
+		}
+		else {
+			auto wepInfo = scene.get<WeaponInfoComponent>(ship->physWeapon);
+			wepInfo->isFiring = false;
 		}
 	}
 }

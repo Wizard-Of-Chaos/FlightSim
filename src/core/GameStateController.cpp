@@ -36,6 +36,8 @@ void GameStateController::init()
 	for (int i = 2; i < MAX_HARDPOINTS; ++i) {
 		playerWeapons[i] = WEAPONID_INVALID;
 	}
+	playerPhysWeapon = 1;
+
 	loadShipAndWeaponData();
 
 	soundEngine = createIrrKlangDevice();
@@ -92,6 +94,7 @@ void GameStateController::loadShipAndWeaponData()
 	}
 	std::cout << "Done loading weapons. \n";
 	std::cout << "Number of weapons: " << weaponData.size() << std::endl;
+	std::cout << "Number of physics weapons: " << physWeaponData.size() << std::endl;
 	std::cout << "Number of ships: " << shipData.size() << std::endl;
 }
 

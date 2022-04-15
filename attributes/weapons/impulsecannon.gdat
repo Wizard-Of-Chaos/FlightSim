@@ -1,7 +1,8 @@
 model=impulseblaster/gravgun.obj
 texture=impulseblaster/gravguntex.png
 particle=particlewhite.bmp
-id=3
+id=1
+phys=1
 name=Impulse Cannon
 description=The impulse cannon applies a massive blast of force to anything nearby.
 type=4

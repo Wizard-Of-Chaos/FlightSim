@@ -26,7 +26,8 @@ bool initializeShipCollisionBody(SceneManager* manager, EntityId entityId, u32 s
 
 //Initializes a weapon component on the given ship at the given hardpoint from the ID given.
 //Example: The "Plasma Blaster" has the weapon id 1. Pass in 1 to this function to load a Plasma Blaster onto the hardpoint.
-bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int hardpoint);
+//If you want to load a physics weapon set the bool to "true".
+bool initializeWeaponFromId(u32 id, SceneManager* manager, EntityId shipId, int hardpoint, bool phys=false);
 //Adds a default weapon to the given ship at the given hardpoint.
 //Requires: Irrlicht component, ship component. Returns false without that.
 bool initializeDefaultWeapon(SceneManager* manager, EntityId shipId, int hardpoint);

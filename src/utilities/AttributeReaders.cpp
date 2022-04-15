@@ -169,7 +169,15 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	data->weaponComponent.timeSinceLastShot = 0.f;
 	data->weaponComponent.particle = data->weaponEffect;
 
-	cont->weaponData[id] = data;
+	bool phys = std::stoi(in.values["phys"]);
+	if (id == 0) {
+		cont->weaponData[id] = data;
+		cont->physWeaponData[id] = data;
+	} else if (phys) {
+		cont->physWeaponData[id] = data;
+	} else {
+		cont->weaponData[id] = data;
+	}
 	std::cout << "Done.\n";
 	return id;
 }
@@ -200,13 +208,16 @@ bool loadShip(u32 id, EntityId entity, SceneManager* manager)
 	return true;
 }
 
-bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager)
+bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager, bool phys)
 {
 	ISceneManager* smgr = manager->controller->smgr;
 	IVideoDriver* driver = manager->controller->driver;
 	GameStateController* stateCtrl = manager->controller->stateController;
 
-	WeaponData* data = stateCtrl->weaponData[id];
+	WeaponData* data;
+	if (phys) data = stateCtrl->physWeaponData[id];
+	else data = stateCtrl->weaponData[id];
+
 	if (!data) return false;
 
 	auto wep = manager->scene.assign<WeaponInfoComponent>(weaponEntity);

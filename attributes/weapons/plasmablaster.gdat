@@ -2,6 +2,7 @@ model=wazer/wazer.obj
 texture=wazer/wazer.png
 particle=particlered.bmp
 id=1
+phys=0
 name=Plasma Blaster
 description=The plasma blaster fire balls of superheated gas designed to cook anything in its way.
 type=0

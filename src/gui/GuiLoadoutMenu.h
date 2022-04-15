@@ -79,6 +79,10 @@ class GuiLoadoutMenu : public GuiDialog
 		bool onWeaponHover(const SEvent& event);
 		bool onReturn(const SEvent& event);
 
+		bool onPhysWeaponChangeRight(const SEvent& event);
+		bool onPhysWeaponChangeLeft(const SEvent& event);
+		bool onPhysWeaponHover(const SEvent& event);
+
 	private:
 		/*
 		* This function requires a bit of explaining. It will set up a button pair at the given position.
