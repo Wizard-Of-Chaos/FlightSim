@@ -203,6 +203,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 				vector3df target = input->cameraRay.getMiddle();
 
 				bool mouseOverHUD = false;
+				//auto-aim for aiming at a contact
 				for (HUDElement* h : player->HUD) {
 					if (h->type != HUD_ELEM_TYPE::CONTACT) continue;
 
@@ -218,7 +219,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 					}
 					if (mouseOverHUD) break;
 				}
-
+				//auto-aim for aiming at whatever your cursor is hovering over
 				if (!mouseOverHUD && coll && coll != irr->node) {
 					target = coll->getPosition();
 				}

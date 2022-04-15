@@ -16,29 +16,35 @@ void GuiLoadoutMenu::loadoutToWString()
 	}
 }
 
-void GuiLoadoutMenu::createButtonPair(u32 num)
+ButtonPair GuiLoadoutMenu::createButtonPair(u32 num, position2di pos, u32 left, u32 right, u32 cent)
 {
-	u32 yval = buf + (buf * num) + (buttonVert * num);
 	IGUIEnvironment* env = guiController->guienv;
 
-	weaponbuttons[num].buttonL = env->addButton(rect<s32>(position2di(baseSize.Width / 2, yval), buttonSize), root, 3+(3*num)-2, L"<");
-	weaponbuttons[num].buttonL->setName(std::to_string(num).c_str());
-	weaponbuttons[num].name = env->addStaticText(weps[num].c_str(), rect<s32>(position2di(baseSize.Width / 2 + buf + buttonHoriz, yval), textSize), false, true, root, 3 + (3 * num) - 3);
-	weaponbuttons[num].name->setName(std::to_string(num).c_str());
-	weaponbuttons[num].buttonR = env->addButton(rect<s32>(position2di(baseSize.Width / 2 + buf * 2 + buttonHoriz + textHoriz, yval), buttonSize), root, 3 + (3 * num) - 1, L">");
-	weaponbuttons[num].buttonR->setName(std::to_string(num).c_str());
+	ButtonPair pair;
+	auto newPos = pos;
+	pair.buttonL = env->addButton(rect<s32>(pos, buttonSize), root, left, L"<");
+	newPos.X = pos.X + buf + buttonHoriz;
 
-	scaleAlign(weaponbuttons[num].buttonL);
-	scaleAlign(weaponbuttons[num].buttonR);
-	scaleAlign(weaponbuttons[num].name);
-	weaponbuttons[num].buttonL->setScaleImage();
-	weaponbuttons[num].buttonR->setScaleImage();
-	weaponbuttons[num].name->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-	weaponbuttons[num].name->setOverrideColor(SColor(255, 200, 200, 200));
-	
-	guiController->setCallback(weaponbuttons[num].buttonL, std::bind(&GuiLoadoutMenu::onWeaponChangeLeft, this, std::placeholders::_1));
-	guiController->setCallback(weaponbuttons[num].buttonR, std::bind(&GuiLoadoutMenu::onWeaponChangeRight, this, std::placeholders::_1));
-	guiController->setCallback(weaponbuttons[num].name, std::bind(&GuiLoadoutMenu::onWeaponHover, this, std::placeholders::_1));
+	pair.name = env->addStaticText(L"", rect<s32>(newPos, textSize), false, true, root, cent);
+	newPos.X = pos.X + buf * 2 + buttonHoriz + textHoriz;
+
+	pair.buttonR = env->addButton(rect<s32>(newPos, buttonSize), root, right, L">");
+
+	if (num != -1) {
+		pair.name->setText(weps[num].c_str());
+		pair.buttonL->setName(std::to_string(num).c_str());
+		pair.name->setName(std::to_string(num).c_str());
+		pair.buttonR->setName(std::to_string(num).c_str());
+	}
+	scaleAlign(pair.buttonL);
+	scaleAlign(pair.buttonR);
+	scaleAlign(pair.name);
+	pair.buttonL->setScaleImage();
+	pair.buttonR->setScaleImage();
+	pair.name->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+	pair.name->setOverrideColor(SColor(255, 200, 200, 200));
+
+	return pair;
 }
 
 void GuiLoadoutMenu::init()
@@ -55,38 +61,39 @@ void GuiLoadoutMenu::init()
 
 	IGUIEnvironment* env = guiController->guienv;
 	loadoutToWString();
-	shipL = env->addButton(rect<s32>(position2di(buf, baseSize.Height / 2), buttonSize), root, LOADOUTMENU_SHIP_SELECT_L, L"<");
-	shipR = env->addButton(rect<s32>(position2di(buf * 3 + textHoriz + buttonHoriz, baseSize.Height / 2), buttonSize), root, LOADOUTMENU_SHIP_SELECT_R, L">");
-	ship = env->addStaticText(name.c_str(), rect<s32>(position2di(buf * 2 + buttonHoriz, baseSize.Height / 2), textSize), false, true, root, LOADOUTMENU_SHIP_SELECT);
 	shipDescription = env->addStaticText(desc.c_str(), rect<s32>(position2di(buf, baseSize.Height / 2 + buf + buttonVert), dimension2du(textHoriz + buttonHoriz*2, textVert*3)), false, true, root, LOADOUTMENU_SHIP_DESC);
 	wepDescription = env->addStaticText(L"", rect<s32>(position2di(buf, buf * 2 + textVert), dimension2du(buttonHoriz * 2 + textHoriz + buf * 2, baseSize.Height / 3 - buf)), false, true, root, LOADOUTMENU_WEP_DESC);
 	returnToMain = env->addButton(rect<s32>(position2di(buf, buf), textSize), root, LOADOUTMENU_RETURN_TO_MAIN, L"Return to Main", L"Return to the main menu.");
 
-	for (int i = 0; i < MAX_HARDPOINTS; ++i) {
-		createButtonPair(i);
+	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
+		u32 yval = (buf + buf * i) + (buttonVert * i);
+		u32 left = 3 + (3 * i) - 2;
+		u32 center = 3 + (3 * i) - 3;
+		u32 right = 3 + (3 * i) - 1;
+		weaponButtons[i] = createButtonPair(i, position2di(baseSize.Width / 2, yval), left, right, center);
+		guiController->setCallback(weaponButtons[i].buttonL, std::bind(&GuiLoadoutMenu::onWeaponChangeLeft, this, std::placeholders::_1));
+		guiController->setCallback(weaponButtons[i].buttonR, std::bind(&GuiLoadoutMenu::onWeaponChangeRight, this, std::placeholders::_1));
+		guiController->setCallback(weaponButtons[i].name, std::bind(&GuiLoadoutMenu::onWeaponHover, this, std::placeholders::_1));
 	}
 
-	scaleAlign(shipL);
-	scaleAlign(shipR);
-	scaleAlign(ship);
+	shipButtons = createButtonPair(-1, position2di(buf, baseSize.Height / 2), LOADOUTMENU_SHIP_SELECT_L, LOADOUTMENU_SHIP_SELECT_R, LOADOUTMENU_SHIP_SELECT);
+	shipButtons.name->setText(name.c_str());
+	guiController->setCallback(shipButtons.buttonL, std::bind(&GuiLoadoutMenu::onShipChangeLeft, this, std::placeholders::_1));
+	guiController->setCallback(shipButtons.buttonR, std::bind(&GuiLoadoutMenu::onShipChangeRight, this, std::placeholders::_1));
+
+	physWeaponButtons = createButtonPair(-1, position2di(baseSize.Width / 2, (buf + buf * 7) + (buttonVert * 7)), LOADOUTMENU_PHYSWEP_L, LOADOUTMENU_PHYSWEP_R, LOADOUTMENU_PHYSWEP);
+
 	scaleAlign(shipDescription);
 	scaleAlign(wepDescription);
 
 	scaleAlign(returnToMain);
-	shipL->setScaleImage();
-	shipR->setScaleImage();
 	returnToMain->setScaleImage();
+	guiController->setCallback(returnToMain, std::bind(&GuiLoadoutMenu::onReturn, this, std::placeholders::_1));
 
-	ship->setOverrideColor(SColor(255, 200, 200, 200));
-	ship->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 	shipDescription->setOverrideColor(SColor(255, 200, 200, 200));
 	shipDescription->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 	wepDescription->setOverrideColor(SColor(255, 200, 200, 200));
 	wepDescription->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-
-	guiController->setCallback(returnToMain, std::bind(&GuiLoadoutMenu::onReturn, this, std::placeholders::_1));
-	guiController->setCallback(shipL, std::bind(&GuiLoadoutMenu::onShipChangeLeft, this, std::placeholders::_1));
-	guiController->setCallback(shipR, std::bind(&GuiLoadoutMenu::onShipChangeRight, this, std::placeholders::_1));
 	hide();
 }
 
@@ -96,18 +103,19 @@ void GuiLoadoutMenu::setShipNameAndDesc(u32 shipId)
 	stCtrl->playerShip = shipId;
 	std::string name = stCtrl->shipData[shipId]->name;
 	std::string desc = stCtrl->shipData[shipId]->description;
-	ship->setText(std::wstring(name.begin(), name.end()).c_str());
+	shipButtons.name->setText(std::wstring(name.begin(), name.end()).c_str());
 	shipDescription->setText(std::wstring(desc.begin(), desc.end()).c_str());
+
 	for (u32 i = 0; i < stCtrl->shipData[shipId]->shipComponent.hardpointCount; ++i) {
 		stCtrl->playerWeapons[i] = WEAPONID_NONE;
-		ButtonPair p = weaponbuttons[i];
+		ButtonPair p = weaponButtons[i];
 		WeaponData* data = stCtrl->weaponData[0];
-		weaponbuttons[i].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
+		weaponButtons[i].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
 	}
 	for (u32 i = stCtrl->shipData[shipId]->shipComponent.hardpointCount; i < MAX_HARDPOINTS; ++i) {
 		stCtrl->playerWeapons[i] = WEAPONID_INVALID;
-		ButtonPair p = weaponbuttons[i];
-		weaponbuttons[i].name->setText(L"");
+		ButtonPair p = weaponButtons[i];
+		weaponButtons[i].name->setText(L"");
 	}
 }
 
@@ -155,7 +163,7 @@ bool GuiLoadoutMenu::onWeaponChangeLeft(const SEvent& event)
 	}
 	stCtrl->playerWeapons[num] = wepId;
 	WeaponData* data = stCtrl->weaponData[wepId];
-	weaponbuttons[num].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
+	weaponButtons[num].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
 
 	return false;
 }
@@ -175,7 +183,7 @@ bool GuiLoadoutMenu::onWeaponChangeRight(const SEvent& event)
 	}
 	stCtrl->playerWeapons[num] = wepId;
 	WeaponData* data = stCtrl->weaponData[wepId];
-	weaponbuttons[num].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
+	weaponButtons[num].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
 
 	return false;
 }

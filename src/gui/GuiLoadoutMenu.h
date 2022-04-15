@@ -11,7 +11,7 @@ class GameStateController;
 //This header is a doozy.
 
 //Enum containing all the buttons available on the loadout menu (probably unnecessary, but just in case).
-enum LOADOUT_MENU_BUTTONS
+enum LOADOUT_MENU_BUTTON
 {
 	LOADOUTMENU_WEAPON_0,
 	LOADOUTMENU_WEAPON_0_L,
@@ -37,9 +37,14 @@ enum LOADOUT_MENU_BUTTONS
 	LOADOUTMENU_WEAPON_7,
 	LOADOUTMENU_WEAPON_7_L,
 	LOADOUTMENU_WEAPON_7_R,
+
 	LOADOUTMENU_SHIP_SELECT,
 	LOADOUTMENU_SHIP_SELECT_L,
 	LOADOUTMENU_SHIP_SELECT_R,
+
+	LOADOUTMENU_PHYSWEP,
+	LOADOUTMENU_PHYSWEP_L,
+	LOADOUTMENU_PHYSWEP_R,
 
 	LOADOUTMENU_RETURN_TO_MAIN,
 	LOADOUTMENU_SHIP_DESC,
@@ -75,17 +80,28 @@ class GuiLoadoutMenu : public GuiDialog
 		bool onReturn(const SEvent& event);
 
 	private:
-		void createButtonPair(u32 num);
+		/*
+		* This function requires a bit of explaining. It will set up a button pair at the given position.
+		* Inputs:
+		* num - The number slot the button pair corresponds to. If it's -1, this will be ignored. If you want to create
+		* a button pair corresponding to hardpoint 4 on the ship, you would pass in 3.
+		* pos - The position on the screen. This is calculated during the setup as to where the buttons get placed.
+		* left - a u32 value corresponding to the enum for the ID. LOADOUTMENU_WEAPON_4_L is 13.
+		* right - a u32 value corresponding to the enum for the ID. LOADOUTMENU_WEAPON_4_R is 14.
+		* cent - a u32 value corresponding to the enum for the ID. LOADOUTMENU_WEAPON_4 is 12.
+		* 
+		* Note that this will NOT set the callbacks for the buttons; you can apply callbacks on the button pair returned.
+		*/
+		ButtonPair createButtonPair(u32 num, position2di pos, u32 left, u32 right, u32 cent);
 		void loadoutToWString();
 		void setShipNameAndDesc(u32 shipId);
 
-		ButtonPair weaponbuttons[MAX_HARDPOINTS];
+		ButtonPair weaponButtons[MAX_HARDPOINTS];
+		ButtonPair physWeaponButtons;
+		ButtonPair shipButtons;
 
-		IGUIStaticText* ship;
 		IGUIStaticText* shipDescription;
 		IGUIStaticText* wepDescription;
-		IGUIButton* shipL;
-		IGUIButton* shipR;
 		IGUIButton* returnToMain;
 
 		u32 buttonVert;
