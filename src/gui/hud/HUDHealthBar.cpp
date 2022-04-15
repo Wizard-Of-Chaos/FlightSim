@@ -6,6 +6,7 @@
 
 HUDHealthBar::HUDHealthBar(SceneManager* manager, IGUIElement* root) : HUDElement(manager, root)
 {
+	type = HUD_ELEM_TYPE::HEALTH_BAR;
 	rect<s32> screenrect = root->getRelativePosition();
 	health = manager->controller->guienv->addImage(manager->defaults.defaultHealthBarTexture, position2di(0, screenrect.getHeight()-64), root);
 	healthNum = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 96), dimension2du(300,24)),false, true, root);

@@ -5,9 +5,10 @@
 
 HUDActiveSelection::HUDActiveSelection(SceneManager* man, IGUIElement* root) : HUDElement(man, root)
 {
+	type = HUD_ELEM_TYPE::ACTIVE_SELECTION;
 	selectGUI = man->controller->guienv->addImage(man->defaults.defaultSelectionTexture, position2di(0, 0), root);
 	name = man->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), dimension2du(128, 128)), false, false, root);
-	name->setOverrideColor(SColor(255, 255, 255, 255));
+	name->setOverrideColor(SColor(255, 100, 255, 100));
 	name->setOverrideFont(man->defaults.defaultHUDFont);
 	name->enableOverrideColor(true);
 	//activeSelection = INVALID_ENTITY;

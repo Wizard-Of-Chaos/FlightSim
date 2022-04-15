@@ -5,6 +5,7 @@
 
 HUDContact::HUDContact(SceneManager* man, IGUIElement* root, EntityId contactId) : HUDElement(man, root) 
 {
+	type = HUD_ELEM_TYPE::CONTACT;
 	offscreenMarker = man->controller->guienv->addImage(man->defaults.defaultContactMarkerTexture, position2di(0, 0), root);
 	contactView = man->controller->guienv->addImage(man->defaults.defaultContactTexture, position2di(0, 0), root);
 	contact = contactId;

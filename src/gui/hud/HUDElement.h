@@ -9,6 +9,14 @@
 
 class SceneManager;
 
+enum class HUD_ELEM_TYPE
+{
+	ACTIVE_SELECTION,
+	CONTACT,
+	HEALTH_BAR,
+	VELOCITY_BAR
+};
+
 /*
 * The base class for all HUD elements. HUD elements should inherit from this class.
 * Includes the root node for the HUD element as part of the constructor, but doesn't actually HOLD
@@ -18,6 +26,7 @@ class SceneManager;
 class HUDElement
 {
 public:
+	HUD_ELEM_TYPE type;
 	HUDElement(SceneManager* man, IGUIElement* root) {}
 	virtual ~HUDElement() {}
 	virtual void updateElement(SceneManager* manager, EntityId playerId) = 0;

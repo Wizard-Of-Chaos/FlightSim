@@ -73,9 +73,6 @@
     <ClCompile Include="src\gui\hud\HUDActiveSelection.cpp">
       <Filter>Sources\Gui\HUD</Filter>
     </ClCompile>
-    <ClCompile Include="src\gui\hud\HUDCrosshair.cpp">
-      <Filter>Sources\Gui\HUD</Filter>
-    </ClCompile>
     <ClCompile Include="src\systems\SensorUpdateSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
@@ -214,9 +211,6 @@
       <Filter>Headers\Gui\HUD</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\hud\HUDHeader.h">
-      <Filter>Headers\Gui\HUD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gui\hud\HUDCrosshair.h">
       <Filter>Headers\Gui\HUD</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\SensorUpdateSystem.h">

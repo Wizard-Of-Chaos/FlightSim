@@ -18,6 +18,7 @@ void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
 		EntityId objId = getIdFromBt(obj);
 		if (!manager->scene.entityInUse(objId)) continue;
 		auto objRBC = manager->scene.get<BulletRigidBodyComponent>(objId);
+		if (!objRBC) continue;
 		btVector3 dist = objRBC->rigidBody.getCenterOfMassPosition() - center;
 		btVector3 dir = dist.normalized();
 		f32 distfactor = (exp->radius - dist.length()) / exp->radius;

@@ -7,6 +7,7 @@ HUDVelocityBar::HUDVelocityBar(SceneManager* manager, IGUIElement* root) : HUDEl
 {
 	rect<s32> screen = root->getRelativePosition();
 
+	type = HUD_ELEM_TYPE::VELOCITY_BAR;
 	IGUIEnvironment* env = manager->controller->guienv;
 	velocity = env->addImage(manager->defaults.defaultVelocityBarTexture, position2di(screen.getWidth() - 192, screen.getHeight() - 64), root);
 	position = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - (screen.getWidth()/2)-150, screen.getHeight() - 32), dimension2du(280, 32)), false, true, root);

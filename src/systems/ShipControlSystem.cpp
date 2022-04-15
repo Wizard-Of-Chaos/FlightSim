@@ -201,7 +201,25 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 				wepInfo->isFiring = true;
 				wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
 				vector3df target = input->cameraRay.getMiddle();
-				if (coll && coll != irr->node) {
+
+				bool mouseOverHUD = false;
+				for (HUDElement* h : player->HUD) {
+					if (h->type != HUD_ELEM_TYPE::CONTACT) continue;
+
+					HUDContact* cont = (HUDContact*)h;
+					if (cont->contactView->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
+						for (auto [id, c] : player->trackedContacts) {
+							if (c != cont) continue;
+							auto targetIrr = scene.get<IrrlichtComponent>(id);
+							target = targetIrr->node->getPosition();
+							mouseOverHUD = true;
+							break;
+						}
+					}
+					if (mouseOverHUD) break;
+				}
+
+				if (!mouseOverHUD && coll && coll != irr->node) {
 					target = coll->getPosition();
 				}
 				vector3df dir = target - wepInfo->spawnPosition;
