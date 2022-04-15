@@ -1,0 +1,17 @@
+model=machinegun/gun.obj
+texture=machinegun/guntexture.png
+norm=machinegun/gunnorm.png
+particle=bullet.bmp
+id=3
+phys=0
+name=Tsunami LMG
+description=The Tsunami LMG spews high-velocity metal shards to carve a glowing path straight through enemy hulls.
+type=3
+dmgtype=3
+firingSpeed=.1
+projectileSpeed=60
+range=500
+damage=4
+maxAmmunition=40
+clip=40
+reloadTime=1.5

@@ -54,12 +54,20 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	rigidBodyInfo->rigidBody.setUserIndex2(getEntityVersion(projectileEntity));
 	rigidBodyInfo->rigidBody.setUserIndex3(1);
 
+	f32 spread = (f32)(std::rand() % 10) -5.f;
+	spread /= 400.f;
+
 	switch (projectileInfo->type) {
 	case WEP_PLASMA:
 		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
 		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
 		break;
-	case WEP_GRAPPLE:
+	case WEP_KINETIC:
+		direction.X += spread;
+		direction.Y += spread;
+		direction.Y += spread;
+		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
+		createKineticProjectile(manager, projectileEntity, direction, spawnPos);
 		break;
 	case WEP_MISSILE:
 		mass = .3f;
@@ -75,6 +83,24 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	manager->bulletWorld->addRigidBody(&rigidBodyInfo->rigidBody);
 
 	return projectileEntity;
+}
+
+void createKineticProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn)
+{
+	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
+	auto wepPar = manager->scene.get<ParentComponent>(projId);
+	auto wepComp = manager->scene.get<WeaponInfoComponent>(wepPar->parentId);
+
+	ISceneManager* smgr = manager->controller->smgr;
+	irr->node = smgr->addLightSceneNode(0, spawn, SColorf(.8f, .8f, .1f, .5f), 5.f);
+	irr->name = "bullet";
+	ISceneNode* bill = smgr->addBillboardSceneNode(irr->node, dimension2d<f32>(1.f, 1.f));
+	bill->setMaterialFlag(EMF_LIGHTING, false);
+	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+	bill->setMaterialTexture(0, wepComp->particle);
+	irr->node->setID(ID_IsNotSelectable);
+	irr->node->setName(idToStr(projId).c_str());
+	bill->setID(ID_IsNotSelectable);
 }
 
 void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn)

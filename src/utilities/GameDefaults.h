@@ -35,6 +35,7 @@ struct GameDefaults
 	ISoundSource* defaultEngineSoundLoop;
 	ISoundSource* defaultMusic;
 	ISoundSource* defaultJetSoundLoop;
+	ISoundSource* defaultGunSound;
 
 	IGUIFont* defaultHUDFont;
 };

@@ -121,8 +121,9 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	WEAPON_TYPE type = (WEAPON_TYPE)std::stoi(in.values["type"]);
 	DAMAGE_TYPE dmgtype = (DAMAGE_TYPE)std::stoi(in.values["dmgtype"]);
 	WeaponData* data = new WeaponData;
-	if (type == WEP_PLASMA) {
-		//nothing for now
+	if (type == WEP_KINETIC) {
+		delete data;
+		data = new KineticData;
 	}
 	else if (type == WEP_MISSILE) {
 		delete data;
@@ -157,6 +158,15 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 		miss->missileComponent.missileRotThrust = std::stof(in.values["missileRotThrust"]);
 		miss->missileComponent.timeToLock = std::stof(in.values["timeToLock"]);
 		miss->missileComponent.missileMesh = miss->missileMesh;
+	}
+	if (type == WEP_KINETIC) {
+		KineticData* kin = (KineticData*)data;
+		kin->kineticComponent.maxAmmunition = std::stoi(in.values["maxAmmunition"]);
+		kin->kineticComponent.ammunition = kin->kineticComponent.maxAmmunition;
+		kin->kineticComponent.maxClip = std::stoi(in.values["clip"]);
+		kin->kineticComponent.reloadTime = std::stof(in.values["reloadTime"]);
+		kin->kineticComponent.clip = kin->kineticComponent.clip;
+		kin->kineticComponent.timeReloading = 0;
 	}
 
 	data->weaponComponent.isFiring = false;
@@ -241,6 +251,12 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager
 		auto miss = manager->scene.assign<MissileInfoComponent>(weaponEntity);
 		MissileData* mdata = (MissileData*)data;
 		*miss = mdata->missileComponent;
+	}
+	if (data->weaponComponent.type == WEP_KINETIC) {
+		auto kin = manager->scene.assign<KineticInfoComponent>(weaponEntity);
+		KineticData* kdata = (KineticData*)data;
+		*kin = kdata->kineticComponent;
+		kin->clip = kin->maxClip;
 	}
 
 	return true; 
