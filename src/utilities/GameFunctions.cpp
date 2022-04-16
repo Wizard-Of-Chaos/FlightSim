@@ -40,7 +40,7 @@ void setDefaults(SceneManager* manager)
 	manager->defaults.defaultMusic = sndeng->getSoundSource("audio/music/space_boogaloo.ogg");
 	manager->defaults.defaultEngineSoundLoop = sndeng->getSoundSource("audio/engineloop.ogg");
 	manager->defaults.defaultLaserSound = sndeng->getSoundSource("audio/laser_shoot.ogg");
-	manager->defaults.bonk = sndeng->getSoundSource("audio/bonk.ogg");
+	manager->defaults.bonk = sndeng->getSoundSource("audio/impulsecannon.ogg");
 	manager->defaults.bonk->setDefaultVolume(10.f);
 	manager->defaults.bonk->setDefaultMinDistance(200.f);
 	manager->defaults.defaultLaserSound->setDefaultVolume(1.f);
