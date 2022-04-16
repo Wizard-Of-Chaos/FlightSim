@@ -85,7 +85,7 @@ void fireWeapon(SceneManager* manager, PlayerComponent* player, IrrlichtComponen
 	auto wepInfo = manager->scene.get<WeaponInfoComponent>(wep);
 	auto irrComp = manager->scene.get<IrrlichtComponent>(wep);
 	wepInfo->isFiring = true;
-	wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
+	wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
 	vector3df target = input->cameraRay.getMiddle();
 	ISceneNode* coll = manager->controller->smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
 

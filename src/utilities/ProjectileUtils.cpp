@@ -55,7 +55,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	rigidBodyInfo->rigidBody.setUserIndex3(1);
 
 	f32 spread = (f32)(std::rand() % 10) -5.f;
-	spread /= 400.f;
+	spread /= 300.f;
 
 	switch (projectileInfo->type) {
 	case WEP_PLASMA:
@@ -65,7 +65,7 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	case WEP_KINETIC:
 		direction.X += spread;
 		direction.Y += spread;
-		direction.Y += spread;
+		direction.Z += spread;
 		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
 		createKineticProjectile(manager, projectileEntity, direction, spawnPos);
 		break;

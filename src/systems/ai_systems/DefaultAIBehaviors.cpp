@@ -104,8 +104,8 @@ void defaultPursuitBehavior(SceneManager* manager, EntityId id, EntityId pursuit
 			auto wepInfo = manager->scene.get<WeaponInfoComponent>(wep);
 			auto irrComp = manager->scene.get<IrrlichtComponent>(wep);
 			wepInfo->isFiring = true;
-			wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 15.f);
-			wepInfo->firingDirection = btVecToIrr(facing); //getNodeForward(irrComp->node);
+			wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
+			wepInfo->firingDirection = btVecToIrr(facing); 
 		}
 	}
 	else {
