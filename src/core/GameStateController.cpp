@@ -19,8 +19,8 @@ void GameStateController::init()
 	driver->setTextureCreationFlag(ETCF_ALWAYS_32_BIT, true);
 
 	playerShip = 0;
-	playerWeapons[0] = 1;
-	playerWeapons[1] = 1;
+	playerWeapons[0] = 3;
+	playerWeapons[1] = 3;
 	for (int i = 2; i < MAX_HARDPOINTS; ++i) {
 		playerWeapons[i] = WEAPONID_INVALID;
 	}

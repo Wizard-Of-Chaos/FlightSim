@@ -9,4 +9,6 @@
 EntityId createGasCloud(vector3df position, vector3df scale);
 //Creates an asteroid at the given position. Includes health, irrlicht, and rigid body components. Returns the ID.
 EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass);
+
+void gasDeathExplosion(EntityId id);
 #endif 

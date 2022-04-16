@@ -16,7 +16,10 @@ void updateHealthSystem()
 				playerDead = true;
 				gameController->clearPlayerHUD();
 			}
-			if (irr) {
+			if (gameController->hasDeathCallback(id)) {
+				gameController->deathCallbacks[id](id);
+			}
+			else if (irr) {
 				vector3df pos = irr->node->getAbsolutePosition();
 				vector3df scale = irr->node->getScale();
 				f32 avgscale = (scale.X + scale.Y + scale.Z) / 6.f;

@@ -77,7 +77,17 @@ EntityId createGasCloud(vector3df position, vector3df scale)
 	ghost->ghost.setUserIndex2(getEntityVersion(cloud));
 	ghost->ghost.setUserIndex3(1);
 
-	initializeDefaultHealth(cloud);
-
+	initializeHealth(cloud, 10);
+	gameController->registerDeathCallback(cloud, gasDeathExplosion);
 	return cloud;
+}
+
+void gasDeathExplosion(EntityId id)
+{
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+	vector3df pos = irr->node->getAbsolutePosition();
+	vector3df scale = irr->node->getScale();
+	f32 avgscale = (scale.X + scale.Y + scale.Z);
+	f32 rad = irr->node->getBoundingBox().getExtent().getLength() * avgscale;
+	explode(pos, 3.f, avgscale, rad, 80.f, 1200.f);
 }

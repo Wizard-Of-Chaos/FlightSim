@@ -13,6 +13,7 @@
 #include "ObstacleUtils.h"
 #include "Scenario.h"
 #include "Config.h"
+#include <functional>
 
 /*
 * The GameController class holds all the necessary information about what's actually going on in the game. It has pointers to the
@@ -22,6 +23,9 @@
 * The init() function is used to initialize the game (set up the physics world, irrlicht stuff, some other things), and the close() function
 * gets rid of those (such as when you return to the game menus). Many things include the GameController as a pointer - such as the SceneManager class.
 */
+
+typedef std::function<void(EntityId)> deathCallback;
+
 class GameController
 {
 	public:
@@ -44,6 +48,9 @@ class GameController
 
 		GameConfig gameConfig;
 
+		std::unordered_map<EntityId, deathCallback> deathCallbacks;
+		void registerDeathCallback(EntityId id, deathCallback cb) { deathCallbacks[id] = cb; }
+		bool hasDeathCallback(EntityId id) { return (deathCallbacks.find(id) != deathCallbacks.end()); }
 	private:
 		bool open;
 

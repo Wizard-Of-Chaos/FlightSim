@@ -213,8 +213,8 @@ void GameController::killHostilesScenario()
 	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 100;
 		f32 mass = (f32)scale / 5.f;
+		//EntityId gas = createGasCloud(obstaclePositions[i], vector3df(scale, scale, scale));
 		EntityId rock = createAsteroid(obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
-
 	}
 
 	std::cout << "\nDone. Building hostiles... ";

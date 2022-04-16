@@ -30,10 +30,13 @@ void ExplodeAOE(ExplosionComponent* exp)
 		objRBC->rigidBody.applyTorqueImpulse(dir * (exp->force * distfactor / 10.f));
 		objRBC->rigidBody.activate(true);
 
+		f32 damage = exp->damage * distfactor;
+		if (damage < 0) damage = 0;
+
 		auto dmg = sceneManager->scene.get<DamageTrackingComponent>(objId);
 		if (dmg) {
 			dmg->registerDamageInstance(DamageInstance(INVALID_ENTITY, objId, DAMAGE_TYPE::EXPLOSIVE,
-				exp->damage * distfactor, device->getTimer()->getTime()));
+				damage, device->getTimer()->getTime()));
 		}
 
 	}
