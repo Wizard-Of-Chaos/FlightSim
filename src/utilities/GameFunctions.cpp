@@ -46,6 +46,10 @@ void setDefaults()
 	sceneManager->defaults.defaultGunSound->setDefaultVolume(1.f);
 	sceneManager->defaults.defaultGunSound->setDefaultMinDistance(3.f);
 
+	sceneManager->defaults.crunch = soundEngine->getSoundSource("audio/impact_d.mp3");
+	sceneManager->defaults.crunch->setDefaultMinDistance(100.f);
+	sceneManager->defaults.crunch->setDefaultVolume(5.f);
+
 	sceneManager->defaults.defaultCloudTexture = driver->getTexture("effects/cloud.png");
 
 	sceneManager->defaults.defaultHUDFont = guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");

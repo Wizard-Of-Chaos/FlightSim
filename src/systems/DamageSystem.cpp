@@ -39,6 +39,8 @@ void damageSystem(f32 dt)
 		auto dmg = sceneManager->scene.get<DamageTrackingComponent>(id);
 		auto hp = sceneManager->scene.get<HealthComponent>(id);
 		auto shld = sceneManager->scene.get<ShieldComponent>(id);
+		auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+		auto obst = sceneManager->scene.get<ObstacleComponent>(id);
 
 		for (DamageInstance inst : dmg->instances) {
 			switch (inst.type) {
@@ -48,6 +50,7 @@ void damageSystem(f32 dt)
 				handleShieldedInstance(inst, hp, shld);
 				break;
 			case DAMAGE_TYPE::IMPACT:
+				if (inst.time >= dmg->lastDamageTime + 500 && !obst) soundEngine->play3D(sceneManager->defaults.crunch, irr->node->getAbsolutePosition());
 				handleInstance(inst, hp);
 				break;
 			case DAMAGE_TYPE::VELOCITY:

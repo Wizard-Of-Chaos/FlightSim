@@ -32,6 +32,7 @@ struct GameDefaults
 
 	ISoundSource* defaultLaserSound;
 	ISoundSource* bonk;
+	ISoundSource* crunch;
 	ISoundSource* defaultEngineSoundLoop;
 	ISoundSource* defaultMusic;
 	ISoundSource* defaultJetSoundLoop;
