@@ -17,9 +17,6 @@
 #include "HealthAndShieldSystems.h"
 #include "DamageSystem.h"
 #include "GameDefaults.h"
-
-class GameController;
-
 /*
 * The poorly-named SceneManager (seriously, Irrlicht already took that name!) manages the ECS scene. It calls the various systems
 * to update all the components in the scene, as well as holds the default textures and such for the scene. Update is called from the main
@@ -27,13 +24,11 @@ class GameController;
 */
 class SceneManager {
 	public:
-		SceneManager(Scene scene, GameController* controller, btDiscreteDynamicsWorld* bulletWorld) : controller(controller), scene(scene), bulletWorld(bulletWorld) {}
-		SceneManager() : controller(0), bulletWorld(0) {} 
+		SceneManager(Scene scene) : scene(scene) {}
+		SceneManager() {} 
 		void update(f32 dt, f32 frameDelta);
 		f32 dt = 0;
 		Scene scene;
-		GameController* controller;
-		btDiscreteDynamicsWorld* bulletWorld;
 		GameDefaults defaults;
 };
 

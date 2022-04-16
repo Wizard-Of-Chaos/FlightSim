@@ -3,13 +3,13 @@
 #include "GameController.h"
 #include <iostream>
 
-HUDActiveSelection::HUDActiveSelection(SceneManager* man, IGUIElement* root) : HUDElement(man, root)
+HUDActiveSelection::HUDActiveSelection(IGUIElement* root) : HUDElement(root)
 {
 	type = HUD_ELEM_TYPE::ACTIVE_SELECTION;
-	selectGUI = man->controller->guienv->addImage(man->defaults.defaultSelectionTexture, position2di(0, 0), root);
-	name = man->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), dimension2du(128, 128)), false, false, root);
+	selectGUI = guienv->addImage(sceneManager->defaults.defaultSelectionTexture, position2di(0, 0), root);
+	name = guienv->addStaticText(L"", rect<s32>(position2di(0, 0), dimension2du(128, 128)), false, false, root);
 	name->setOverrideColor(SColor(255, 100, 255, 100));
-	name->setOverrideFont(man->defaults.defaultHUDFont);
+	name->setOverrideFont(sceneManager->defaults.defaultHUDFont);
 	name->enableOverrideColor(true);
 	//activeSelection = INVALID_ENTITY;
 	selectGUI->setVisible(false);
@@ -22,19 +22,19 @@ HUDActiveSelection::~HUDActiveSelection()
 	name->remove();
 }
 
-void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
+void HUDActiveSelection::updateElement(EntityId playerId)
 {
-	auto player = manager->scene.get<PlayerComponent>(playerId);
-	auto input = manager->scene.get<InputComponent>(playerId);
-	auto playerIrr = manager->scene.get<IrrlichtComponent>(playerId);
-	auto sensors = manager->scene.get<SensorComponent>(playerId);
+	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
+	auto input = sceneManager->scene.get<InputComponent>(playerId);
+	auto playerIrr = sceneManager->scene.get<IrrlichtComponent>(playerId);
+	auto sensors = sceneManager->scene.get<SensorComponent>(playerId);
 
 	ICameraSceneNode* camera = player->camera;
 
-	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
+	ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
 	line3df ray = input->cameraRay;
 
-	if (!manager->scene.entityInUse(sensors->targetContact)) { //Check to see if the entity still exists
+	if (!sceneManager->scene.entityInUse(sensors->targetContact)) { //Check to see if the entity still exists
 		sensors->targetContact = INVALID_ENTITY;
 	}
 
@@ -43,9 +43,9 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 		if (selection) {
 			if (selection->getID() != -1 && selection != playerIrr->node) {
 				EntityId id = strToId(selection->getName());
-				if(manager->scene.entityInUse(id)) sensors->targetContact = id;
+				if(sceneManager->scene.entityInUse(id)) sensors->targetContact = id;
 
-				auto irr = manager->scene.get<IrrlichtComponent>(id);
+				auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 				std::wstring widestr = std::wstring(irr->name.begin(), irr->name.end());
 				name->setText(widestr.c_str());
 				selectGUI->setVisible(true);
@@ -63,7 +63,7 @@ void HUDActiveSelection::updateElement(SceneManager* manager, EntityId playerId)
 		name->setVisible(false);
 		return;
 	}
-	auto irr = manager->scene.get<IrrlichtComponent>(sensors->targetContact);
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(sensors->targetContact);
 	if (!irr) {
 		sensors->targetContact = INVALID_ENTITY;
 		return;

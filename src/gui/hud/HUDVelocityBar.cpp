@@ -3,31 +3,30 @@
 #include "GameController.h"
 #include <iostream>
 
-HUDVelocityBar::HUDVelocityBar(SceneManager* manager, IGUIElement* root) : HUDElement(manager, root)
+HUDVelocityBar::HUDVelocityBar(IGUIElement* root) : HUDElement(root)
 {
 	rect<s32> screen = root->getRelativePosition();
 
 	type = HUD_ELEM_TYPE::VELOCITY_BAR;
-	IGUIEnvironment* env = manager->controller->guienv;
-	velocity = env->addImage(manager->defaults.defaultVelocityBarTexture, position2di(screen.getWidth() - 192, screen.getHeight() - 64), root);
-	position = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - (screen.getWidth()/2)-150, screen.getHeight() - 32), dimension2du(280, 32)), false, true, root);
-	velocityNum = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 96), dimension2du(192, 32)), false, true, root);
-	rotationSpeed = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 128), dimension2du(192, 32)), false, true, root);
-	overrideStatus = env->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 160), dimension2du(192, 32)), false, true, root);
+	velocity = guienv->addImage(sceneManager->defaults.defaultVelocityBarTexture, position2di(screen.getWidth() - 192, screen.getHeight() - 64), root);
+	position = guienv->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - (screen.getWidth()/2)-150, screen.getHeight() - 32), dimension2du(280, 32)), false, true, root);
+	velocityNum = guienv->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 96), dimension2du(192, 32)), false, true, root);
+	rotationSpeed = guienv->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 128), dimension2du(192, 32)), false, true, root);
+	overrideStatus = guienv->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 160), dimension2du(192, 32)), false, true, root);
 	velocity->setScaleImage(false);
 	velocity->setVisible(true);
 	velocityNum->setVisible(true);
 	velocityNum->setOverrideColor(SColor(255, 200, 200, 200));
-	velocityNum->setOverrideFont(manager->defaults.defaultHUDFont);
+	velocityNum->setOverrideFont(sceneManager->defaults.defaultHUDFont);
 	position->setVisible(true);
 	position->setOverrideColor(SColor(255, 200, 200, 200));
-	position->setOverrideFont(manager->defaults.defaultHUDFont);
+	position->setOverrideFont(sceneManager->defaults.defaultHUDFont);
 	rotationSpeed->setVisible(true);
 	rotationSpeed->setOverrideColor(SColor(255, 200, 200, 200));
-	rotationSpeed->setOverrideFont(manager->defaults.defaultHUDFont);
+	rotationSpeed->setOverrideFont(sceneManager->defaults.defaultHUDFont);
 	overrideStatus->setVisible(true);
 	overrideStatus->setOverrideColor(SColor(255, 200, 200, 200));
-	overrideStatus->setOverrideFont(manager->defaults.defaultHUDFont);;
+	overrideStatus->setOverrideFont(sceneManager->defaults.defaultHUDFont);
 }
 
 HUDVelocityBar::~HUDVelocityBar()
@@ -39,12 +38,12 @@ HUDVelocityBar::~HUDVelocityBar()
 	overrideStatus->remove();
 }
 
-void HUDVelocityBar::updateElement(SceneManager* manager, EntityId playerId)
+void HUDVelocityBar::updateElement(EntityId playerId)
 {
-	auto irr = manager->scene.get<IrrlichtComponent>(playerId);
-	auto ship = manager->scene.get<ShipComponent>(playerId);
-	auto rbc = manager->scene.get<BulletRigidBodyComponent>(playerId);
-	auto player = manager->scene.get<PlayerComponent>(playerId);
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(playerId);
+	auto ship = sceneManager->scene.get<ShipComponent>(playerId);
+	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(playerId);
+	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
 
 	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
 	btScalar velLen = rbc->rigidBody.getLinearVelocity().length();

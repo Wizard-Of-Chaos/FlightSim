@@ -6,9 +6,7 @@
 #include "AIComponent.h"
 #include "DefaultAIUpdateSystem.h"
 
-class SceneManager;
-
 //Updates all AI components in the scene (allied, friendly, and neutral ships).
-void AIUpdateSystem(SceneManager* manager, f32 dt);
+void AIUpdateSystem(f32 dt);
 
 #endif 

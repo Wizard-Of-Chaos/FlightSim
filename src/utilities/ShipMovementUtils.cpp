@@ -144,11 +144,11 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 	}
 }
 
-bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
+bool avoidObstacles(EntityId id, f32 dt, EntityId target)
 {
-	auto ship = manager->scene.get<ShipComponent>(id);
-	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
-	auto irr = manager->scene.get<IrrlichtComponent>(id);
+	auto ship = sceneManager->scene.get<ShipComponent>(id);
+	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 
 	if (!ship || !rbc) return false;
 	btRigidBody* body = &rbc->rigidBody;
@@ -158,14 +158,14 @@ bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target)
 	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
 	btVector3 futurePos = pos + (velocity *3.f); //where will it be three seconds from now
 #if _DEBUG
-	manager->controller->stateController->addDebugLine(line3df(btVecToIrr(pos), btVecToIrr(futurePos)));
+	stateController->addDebugLine(line3df(btVecToIrr(pos), btVecToIrr(futurePos)));
 #endif 
-	auto cb = btClosestNotMeConvexResultCallback(body, pos, futurePos, manager->bulletWorld->getPairCache(), manager->bulletWorld->getDispatcher());
+	auto cb = btClosestNotMeConvexResultCallback(body, pos, futurePos, bWorld->getPairCache(), bWorld->getDispatcher());
 	auto shape = btSphereShape(3.f);
 	btTransform from(body->getOrientation(), pos);
 	btTransform to(body->getOrientation(), futurePos);
 	to.setOrigin(futurePos);
-	manager->bulletWorld->convexSweepTest(&shape, from, to, cb);
+	bWorld->convexSweepTest(&shape, from, to, cb);
 	if (!cb.hasHit()) return false;
 	//std::cout << "AAAAAA I'M GOING TO CRASH \n";
 	ship->moves[SHIP_STOP_VELOCITY] = true;

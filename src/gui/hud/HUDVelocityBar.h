@@ -7,9 +7,9 @@
 class HUDVelocityBar : public HUDElement
 {
 public:
-	HUDVelocityBar(SceneManager* manager, IGUIElement* root);
+	HUDVelocityBar(IGUIElement* root);
 	~HUDVelocityBar() override;
-	virtual void updateElement(SceneManager* manager, EntityId playerId);
+	virtual void updateElement(EntityId playerId);
 	IGUIImage* velocity;
 	IGUIStaticText* velocityNum;
 	IGUIStaticText* position;

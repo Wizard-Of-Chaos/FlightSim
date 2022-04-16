@@ -3,11 +3,11 @@
 #include "GameController.h"
 #include <iostream>
 
-HUDContact::HUDContact(SceneManager* man, IGUIElement* root, EntityId contactId) : HUDElement(man, root) 
+HUDContact::HUDContact(IGUIElement* root, EntityId contactId) : HUDElement(root) 
 {
 	type = HUD_ELEM_TYPE::CONTACT;
-	offscreenMarker = man->controller->guienv->addImage(man->defaults.defaultContactMarkerTexture, position2di(0, 0), root);
-	contactView = man->controller->guienv->addImage(man->defaults.defaultContactTexture, position2di(0, 0), root);
+	offscreenMarker = guienv->addImage(sceneManager->defaults.defaultContactMarkerTexture, position2di(0, 0), root);
+	contactView = guienv->addImage(sceneManager->defaults.defaultContactTexture, position2di(0, 0), root);
 	contact = contactId;
 }
 
@@ -17,17 +17,17 @@ HUDContact::~HUDContact()
 	contactView->remove();
 }
 
-void HUDContact::updateElement(SceneManager* manager, EntityId playerId)
+void HUDContact::updateElement(EntityId playerId)
 {
-	auto player = manager->scene.get<PlayerComponent>(playerId);
+	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
 
-	if (!manager->scene.entityInUse(contact)) return;
+	if (!sceneManager->scene.entityInUse(contact)) return;
 	ICameraSceneNode* camera = player->camera;
-	ISceneCollisionManager* coll = manager->controller->smgr->getSceneCollisionManager();
-	IrrlichtComponent* irr = manager->scene.get<IrrlichtComponent>(contact);
+	ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
+	IrrlichtComponent* irr = sceneManager->scene.get<IrrlichtComponent>(contact);
 	if (!irr) return;
 
-	dimension2du screenSize = manager->controller->driver->getScreenSize();
+	dimension2du screenSize = driver->getScreenSize();
 	position2di contactScreenPos = coll->getScreenCoordinatesFrom3DPosition(irr->node->getAbsolutePosition(), camera);
 	//if it's off-screen, set basic element to not visible and the marker to visible
 	//else do the reverse

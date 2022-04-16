@@ -19,7 +19,7 @@ enum DEATH_MENU_BUTTONS
 class GuiDeathMenu : public GuiDialog
 {
 	public:
-		GuiDeathMenu(GuiController* controller) : GuiDialog(controller), returnToMenu(0), taunt(0) {}
+		GuiDeathMenu() : GuiDialog(), returnToMenu(0), taunt(0) {}
 		virtual void init();
 		bool onReturn(const SEvent& event);
 	private:

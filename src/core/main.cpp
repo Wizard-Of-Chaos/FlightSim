@@ -3,6 +3,18 @@
 #include "GvReader.h"
 #include "Config.h"
 
+GameStateController* stateController = 0;
+GameController* gameController = 0;
+GuiController* guiController = 0;
+SceneManager* sceneManager = 0;
+
+IrrlichtDevice* device = 0;
+IVideoDriver* driver = 0;
+ISceneManager* smgr = 0;
+IGUIEnvironment* guienv = 0;
+ISoundEngine* soundEngine = 0;
+BulletPhysicsWorld* bWorld = 0;
+
 int main()
 {
 	VideoConfig config;
@@ -14,10 +26,14 @@ int main()
 		res = nullDev->getVideoModeList()->getDesktopResolution();
 		nullDev->drop();
 	}
-	IrrlichtDevice* device = createDevice(config.driver, res, 32, config.fullscreen, config.stencilBuffer, config.vsync, 0);
-	GameStateController controller(device, config);
-	controller.videoConfig = config;
-	controller.mainLoop();
+	device = createDevice(config.driver, res, 32, config.fullscreen, config.stencilBuffer, config.vsync, 0);
+	driver = device->getVideoDriver();
+	smgr = device->getSceneManager();
+	guienv = device->getGUIEnvironment();
+	stateController = new GameStateController(config);
+	stateController->videoConfig = config;
+	stateController->init();
+	stateController->mainLoop();
 	device->drop();
 	return 0;
 

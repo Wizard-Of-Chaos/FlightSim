@@ -14,8 +14,6 @@
 #include "Scenario.h"
 #include "Config.h"
 
-class GameStateController;
-
 /*
 * The GameController class holds all the necessary information about what's actually going on in the game. It has pointers to the
 * various drivers for the game (the irrlicht device, video driver, Irrlicht scene manager, ECS manager, sound engine, etc) and handles
@@ -28,19 +26,10 @@ class GameController
 {
 	public:
 		bool OnEvent(const SEvent& event);
-
-		IrrlichtDevice* device;
-		IVideoDriver* driver;
-		ISceneManager* smgr;
-		IGUIEnvironment* guienv;
-		BulletPhysicsWorld* bWorld;
-		ISoundEngine* soundEngine;
-		
-		GameStateController* stateController;
 #if _DEBUG
 		btDebugRenderer rend;
 #endif 
-		GameController(GameStateController* controller);
+		GameController();
 		void init();
 		void close();
 
@@ -58,8 +47,6 @@ class GameController
 	private:
 		bool open;
 
-		//scene management
-		SceneManager sceneECS; 
 		u32 then;
 		f32 accumulator = 0.0f;
 		f32 dt = 0.005f;

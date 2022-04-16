@@ -2,12 +2,12 @@
 #include "DefaultAIUpdateSystem.h"
 #include <iostream>
 
-void defaultAIStateCheck(SceneManager* manager, EntityId id)
+void defaultAIStateCheck(EntityId id)
 {
-	auto irrAI = manager->scene.get<IrrlichtComponent>(id);
-	auto aiComp = manager->scene.get<AIComponent>(id);
-	auto sensors = manager->scene.get<SensorComponent>(id);
-	auto hp = manager->scene.get<HealthComponent>(id);
+	auto irrAI = sceneManager->scene.get<IrrlichtComponent>(id);
+	auto aiComp = sceneManager->scene.get<AIComponent>(id);
+	auto sensors = sceneManager->scene.get<SensorComponent>(id);
+	auto hp = sceneManager->scene.get<HealthComponent>(id);
 
 	if (sensors->closestHostileContact == INVALID_ENTITY) {
 		aiComp->state = AI_STATE_IDLE;
@@ -23,26 +23,26 @@ void defaultAIStateCheck(SceneManager* manager, EntityId id)
 	//whoop its ass!
 }
 
-void defaultAIUpdateSystem(SceneManager* manager, EntityId id, f32 dt)
+void defaultAIUpdateSystem(EntityId id, f32 dt)
 {
-	auto ai = manager->scene.get<AIComponent>(id);
-	auto sensors = manager->scene.get<SensorComponent>(id);
+	auto ai = sceneManager->scene.get<AIComponent>(id);
+	auto sensors = sceneManager->scene.get<SensorComponent>(id);
 
 	ai->timeSinceLastStateCheck += dt;
 	if (ai->timeSinceLastStateCheck >= ai->reactionSpeed) {
-		defaultAIStateCheck(manager, id);
+		defaultAIStateCheck(id);
 		ai->timeSinceLastStateCheck = 0;
 	}
 	
 	switch (ai->state) {
 	case AI_STATE_IDLE:
-		defaultIdleBehavior(manager, id, dt);
+		defaultIdleBehavior(id, dt);
 		break;
 	case AI_STATE_FLEE:
-		defaultFleeBehavior(manager, id, sensors->closestHostileContact, dt);
+		defaultFleeBehavior(id, sensors->closestHostileContact, dt);
 		break;
 	case AI_STATE_PURSUIT:
-		defaultPursuitBehavior(manager, id, sensors->closestHostileContact, dt);
+		defaultPursuitBehavior(id, sensors->closestHostileContact, dt);
 		break;
 	default:
 		break;

@@ -5,27 +5,27 @@
 
 void GuiSettingsMenu::init()
 {
-	vConfig = &guiController->stateController->videoConfig;
+	vConfig = &stateController->videoConfig;
 
 	u32 height = baseSize.Height / 8;
 	u32 width = baseSize.Width / 4;
 	dimension2du size(width,height);
-	filtering = guiController->guienv->addComboBox(rect<s32>(position2di(16, 16), size), root, SETTINGSMENU_FILTERING_BOX);
+	filtering = guienv->addComboBox(rect<s32>(position2di(16, 16), size), root, SETTINGSMENU_FILTERING_BOX);
 	filtering->addItem(L"Bilinear");
 	filtering->addItem(L"Trilinear");
 	filtering->addItem(L"Anisotropic");
-	resolution = guiController->guienv->addComboBox(rect<s32>(position2di(16, height + 16), size), root, SETTINGSMENU_RESOLUTION);
+	resolution = guienv->addComboBox(rect<s32>(position2di(16, height + 16), size), root, SETTINGSMENU_RESOLUTION);
 	resolution->addItem(L"Auto");
 	resolution->addItem(L"1920x1080");
 	resolution->addItem(L"960x540");
-	fullscreen = guiController->guienv->addCheckBox(false, rect<s32>(position2di(16, (height * 2) + 16), size), root, SETTINGSMENU_FULLSCREEN, L"Fullscreen");
-	vsync = guiController->guienv->addCheckBox(false, rect<s32>(position2di(16, (height * 3) + 16), size), root, SETTINGSMENU_VSYNC, L"Vsync");
-	antialiasing = guiController->guienv->addCheckBox(false, rect<s32>(position2di(16, (height * 4) + 16), size), root, SETTINGSMENU_ANTIALIASING, L"Antialiasing");
-	shadows = guiController->guienv->addCheckBox(false, rect<s32>(position2di(16, (height * 5) + 16), size), root, SETTINGSMENU_SHADOWS, L"Shadows");
+	fullscreen = guienv->addCheckBox(false, rect<s32>(position2di(16, (height * 2) + 16), size), root, SETTINGSMENU_FULLSCREEN, L"Fullscreen");
+	vsync = guienv->addCheckBox(false, rect<s32>(position2di(16, (height * 3) + 16), size), root, SETTINGSMENU_VSYNC, L"Vsync");
+	antialiasing = guienv->addCheckBox(false, rect<s32>(position2di(16, (height * 4) + 16), size), root, SETTINGSMENU_ANTIALIASING, L"Antialiasing");
+	shadows = guienv->addCheckBox(false, rect<s32>(position2di(16, (height * 5) + 16), size), root, SETTINGSMENU_SHADOWS, L"Shadows");
 
-	keybinds = guiController->guienv->addButton(rect<s32>(position2di(width + 16, 16), size), root, SETTINGSMENU_KEYBINDS, L"Set Keybinds", L"Adjust keybinds.");
-	returnToMain = guiController->guienv->addButton(rect<s32>(position2di(width  + 16, height + 16), size), root, SETTINGSMENU_RETURN_TO_MAIN, L"Return To Main", L"Restart the game to apply settings.");
-	restart = guiController->guienv->addStaticText(L"A restart is required to apply settings.", rect<s32>(position2di(baseSize.Width - width, 32), size), false, true, root);
+	keybinds = guienv->addButton(rect<s32>(position2di(width + 16, 16), size), root, SETTINGSMENU_KEYBINDS, L"Set Keybinds", L"Adjust keybinds.");
+	returnToMain = guienv->addButton(rect<s32>(position2di(width  + 16, height + 16), size), root, SETTINGSMENU_RETURN_TO_MAIN, L"Return To Main", L"Restart the game to apply settings.");
+	restart = guienv->addStaticText(L"A restart is required to apply settings.", rect<s32>(position2di(baseSize.Width - width, 32), size), false, true, root);
 	restartReminder = false;
 	restart->setVisible(false);
 	restart->setOverrideColor(SColor(255, 255, 255, 255));

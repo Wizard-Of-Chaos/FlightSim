@@ -10,8 +10,6 @@
 #include "btUtils.h"
 
 class SceneManager;
-class GameController;
-class GameStateController;
 
 const f32 DEGENERATE_VECTOR_LENGTH = 0.0000001f;
 
@@ -87,6 +85,6 @@ void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir
 void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt);
 
 //Applies torque and force to avoid smacking into something. Returns true if actively avoiding an obstacle, and false otherwise.
-bool avoidObstacles(SceneManager* manager, EntityId id, f32 dt, EntityId target=INVALID_ENTITY);
+bool avoidObstacles(EntityId id, f32 dt, EntityId target=INVALID_ENTITY);
 
 #endif 

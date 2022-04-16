@@ -5,20 +5,20 @@
 void SceneManager::update(f32 time, f32 frameDelta)
 {
 	dt = time;
-	parentUpdate(scene); //checks to see whether parents are currently in use
-	shipControlSystem(this, dt); //updates ship control scheme
-	shipUpdateSystem(scene, dt); //applies forces, applies particle effects on ships
-	AIUpdateSystem(this, dt); //updates AI components
-	weaponFiringSystem(this, dt); //fires guns
-	bulletWorld->stepSimulation(dt, 60); //applies the PHYSICS
-	collisionCheckingSystem(this); //destroys projectiles on hit
-	damageSystem(this, dt); //Updates damage tracking components
-	updateHealthSystem(this); //updates health and removes objects with no health
-	updateShieldSystem(this, dt); //updates shields and recharging thereof
-	explosionSystem(this, dt); //Handles explosion lifetimes
-	irrlichtRigidBodyPositionSystem(scene, dt); //updates position based on rigidbody state
-	projectileSystem(this, dt); //kills projectiles after they have gone a set distance
-	playerUpdateSystem(this, scene, frameDelta); //updates camera location
-	sensorSystem(this, dt); //updates sensors and nearby active contacts
+	parentUpdate(sceneManager->scene); //checks to see whether parents are currently in use
+	shipControlSystem(dt); //updates ship control scheme
+	shipUpdateSystem(dt); //applies forces, applies particle effects on ships
+	AIUpdateSystem(dt); //updates AI components
+	weaponFiringSystem(dt); //fires guns
+	bWorld->stepSimulation(dt, 60); //applies the PHYSICS
+	collisionCheckingSystem(); //destroys projectiles on hit
+	damageSystem(dt); //Updates damage tracking components
+	updateHealthSystem(); //updates health and removes objects with no health
+	updateShieldSystem(dt); //updates shields and recharging thereof
+	explosionSystem(dt); //Handles explosion lifetimes
+	irrlichtRigidBodyPositionSystem(sceneManager->scene, dt); //updates position based on rigidbody state
+	projectileSystem(dt); //kills projectiles after they have gone a set distance
+	playerUpdateSystem(sceneManager->scene, frameDelta); //updates camera location
+	sensorSystem(dt); //updates sensors and nearby active contacts
 }
 

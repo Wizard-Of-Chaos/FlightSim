@@ -7,8 +7,6 @@
 #include <unordered_map>
 #include <functional>
 
-class GameStateController;
-
 typedef std::function<bool(const SEvent&)> GuiCallback;
 
 /*
@@ -23,15 +21,8 @@ typedef std::function<bool(const SEvent&)> GuiCallback;
 class GuiController
 {
 	public:
-		GuiController(GameStateController* controller);
+		GuiController();
 		bool OnEvent(const SEvent& event);
-		IrrlichtDevice* device;
-		IVideoDriver* driver;
-		ISceneManager* smgr;
-		IGUIEnvironment* guienv;
-		ISoundEngine* soundEngine;
-
-		GameStateController* stateController;
 		void init();
 		void close();
 		void update();

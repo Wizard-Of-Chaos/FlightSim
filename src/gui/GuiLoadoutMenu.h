@@ -70,7 +70,7 @@ struct ButtonPair
 class GuiLoadoutMenu : public GuiDialog
 {
 	public:
-		GuiLoadoutMenu(GuiController* controller) : GuiDialog(controller) {}
+		GuiLoadoutMenu() : GuiDialog() {}
 		virtual void init();
 		bool onShipChangeRight(const SEvent& event);
 		bool onShipChangeLeft(const SEvent& event);

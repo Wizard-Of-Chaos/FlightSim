@@ -15,7 +15,7 @@ vector3df strToVec(std::string str) //Turns a string to a vector, splitting on a
 	return vector3df(std::stof(xstr), std::stof(ystr), std::stof(zstr));
 }
 
-u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
+u32 loadShipData(std::string path, gvReader& in)
 {
 	std::cout << "Reading ship in from: " << path << "... ";
 	in.read(path);
@@ -36,13 +36,13 @@ u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
 	std::string texpath = "models/" + in.values["texture"];
 	std::string normpath = "models/" + in.values["norm"];
 
-	data->shipMesh = cont->smgr->getMesh(meshpath.c_str());
-	data->shipTexture = cont->driver->getTexture(texpath.c_str());
-	data->shipNorm = cont->driver->getTexture(normpath.c_str());
+	data->shipMesh = smgr->getMesh(meshpath.c_str());
+	data->shipTexture = driver->getTexture(texpath.c_str());
+	data->shipNorm = driver->getTexture(normpath.c_str());
 	if (data->shipNorm) {
-		cont->driver->makeNormalMapTexture(data->shipNorm, 7.f);
-		IMesh* tmesh = cont->smgr->getMeshManipulator()->createMeshWithTangents(data->shipMesh); //drop this somewhere
-		cont->smgr->getMeshCache()->removeMesh(data->shipMesh);
+		driver->makeNormalMapTexture(data->shipNorm, 7.f);
+		IMesh* tmesh = smgr->getMeshManipulator()->createMeshWithTangents(data->shipMesh); //drop this somewhere
+		smgr->getMeshCache()->removeMesh(data->shipMesh);
 		data->shipMesh = tmesh;
 	}
 	//data->collisionShape = createCollisionShapeFromMesh(data->shipMesh);
@@ -50,8 +50,8 @@ u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
 	std::string jetpath = "effects/" + in.values["jet"];
 	std::string enginepath = "effects/" + in.values["engine"];
 
-	data->engineTexture = cont->driver->getTexture(enginepath.c_str());
-	data->jetTexture = cont->driver->getTexture(jetpath.c_str());
+	data->engineTexture = driver->getTexture(enginepath.c_str());
+	data->jetTexture = driver->getTexture(jetpath.c_str());
 
 	data->shipComponent.forwardThrust = std::stof(in.values["forwardThrust"]);
 	data->shipComponent.brakeThrust = std::stof(in.values["brakeThrust"]);
@@ -102,12 +102,12 @@ u32 loadShipData(std::string path, GameStateController* cont, gvReader& in)
 	data->shipComponent.afterburnerOn = false;
 	data->shipComponent.safetyOverride = false;
 
-	cont->shipData[id] = data;
+	stateController->shipData[id] = data;
 	std::cout << "Done.\n";
 	return id;
 }
 
-u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
+u32 loadWeaponData(std::string path, gvReader& in)
 {
 	std::cout << "Reading weapon in from: " << path << "... ";
 	in.read(path);
@@ -136,24 +136,24 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 	std::string texpath = "models/" + in.values["texture"];
 	std::string normpath = "models/" + in.values["norm"];
 
-	data->weaponMesh = cont->smgr->getMesh(meshpath.c_str());
-	data->weaponTexture = cont->driver->getTexture(meshpath.c_str());
-	data->weaponNorm = cont->driver->getTexture(normpath.c_str());
+	data->weaponMesh = smgr->getMesh(meshpath.c_str());
+	data->weaponTexture = driver->getTexture(meshpath.c_str());
+	data->weaponNorm = driver->getTexture(normpath.c_str());
 	if (data->weaponNorm) {
-		cont->driver->makeNormalMapTexture(data->weaponNorm, 7.f);
-		IMesh* tmesh = cont->smgr->getMeshManipulator()->createMeshWithTangents(data->weaponMesh); //drop this somewhere
-		cont->smgr->getMeshCache()->removeMesh(data->weaponMesh);
+		driver->makeNormalMapTexture(data->weaponNorm, 7.f);
+		IMesh* tmesh = smgr->getMeshManipulator()->createMeshWithTangents(data->weaponMesh); //drop this somewhere
+		smgr->getMeshCache()->removeMesh(data->weaponMesh);
 		data->weaponMesh = tmesh;
 	}
 	std::string effectpath = "effects/" + in.values["particle"];
-	data->weaponEffect = cont->driver->getTexture(effectpath.c_str());
+	data->weaponEffect = driver->getTexture(effectpath.c_str());
 	
 	if (type == WEP_MISSILE) {
 		std::string misspath = "models/" + in.values["missilemodel"];
 		std::string misstexpath = "models/" + in.values["missiletexture"];
 		MissileData* miss = (MissileData*)data;
-		miss->missileMesh = cont->smgr->getMesh(misspath.c_str());
-		miss->missileTexture = cont->driver->getTexture(misstexpath.c_str());
+		miss->missileMesh = smgr->getMesh(misspath.c_str());
+		miss->missileTexture = driver->getTexture(misstexpath.c_str());
 		miss->missileComponent.maxMissileVelocity = std::stof(in.values["maxMissileVelocity"]);
 		miss->missileComponent.missileRotThrust = std::stof(in.values["missileRotThrust"]);
 		miss->missileComponent.timeToLock = std::stof(in.values["timeToLock"]);
@@ -181,28 +181,24 @@ u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in)
 
 	bool phys = std::stoi(in.values["phys"]);
 	if (id == 0) {
-		cont->weaponData[id] = data;
-		cont->physWeaponData[id] = data;
+		stateController->weaponData[id] = data;
+		stateController->physWeaponData[id] = data;
 	} else if (phys) {
-		cont->physWeaponData[id] = data;
+		stateController->physWeaponData[id] = data;
 	} else {
-		cont->weaponData[id] = data;
+		stateController->weaponData[id] = data;
 	}
 	std::cout << "Done.\n";
 	return id;
 }
 
-bool loadShip(u32 id, EntityId entity, SceneManager* manager)
+bool loadShip(u32 id, EntityId entity)
 {
-	ISceneManager* smgr = manager->controller->smgr;
-	IVideoDriver* driver = manager->controller->driver;
-	GameStateController* stateCtrl = manager->controller->stateController;
-
-	ShipData* data = stateCtrl->shipData[id];
+	ShipData* data = stateController->shipData[id];
 	if (!data) return false;
 
-	auto ship = manager->scene.assign<ShipComponent>(entity);
-	auto irr = manager->scene.assign<IrrlichtComponent>(entity);
+	auto ship = sceneManager->scene.assign<ShipComponent>(entity);
+	auto irr = sceneManager->scene.assign<IrrlichtComponent>(entity);
 	if (!irr || !ship) return false;
 	*ship = data->shipComponent;
 
@@ -218,21 +214,17 @@ bool loadShip(u32 id, EntityId entity, SceneManager* manager)
 	return true;
 }
 
-bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager, bool phys)
+bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 {
-	ISceneManager* smgr = manager->controller->smgr;
-	IVideoDriver* driver = manager->controller->driver;
-	GameStateController* stateCtrl = manager->controller->stateController;
-
 	WeaponData* data;
-	if (phys) data = stateCtrl->physWeaponData[id];
-	else data = stateCtrl->weaponData[id];
+	if (phys) data = stateController->physWeaponData[id];
+	else data = stateController->weaponData[id];
 
 	if (!data) return false;
 
-	auto wep = manager->scene.assign<WeaponInfoComponent>(weaponEntity);
-	auto irr = manager->scene.assign<IrrlichtComponent>(weaponEntity);
-	auto parent = manager->scene.assign<ParentComponent>(weaponEntity);
+	auto wep = sceneManager->scene.assign<WeaponInfoComponent>(weaponEntity);
+	auto irr = sceneManager->scene.assign<IrrlichtComponent>(weaponEntity);
+	auto parent = sceneManager->scene.assign<ParentComponent>(weaponEntity);
 	if (!wep || !irr || !parent) return false;
 	
 	parent->parentId = shipEntity;
@@ -248,12 +240,12 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager
 
 	*wep = data->weaponComponent;
 	if (data->weaponComponent.type == WEP_MISSILE) {
-		auto miss = manager->scene.assign<MissileInfoComponent>(weaponEntity);
+		auto miss = sceneManager->scene.assign<MissileInfoComponent>(weaponEntity);
 		MissileData* mdata = (MissileData*)data;
 		*miss = mdata->missileComponent;
 	}
 	if (data->weaponComponent.type == WEP_KINETIC) {
-		auto kin = manager->scene.assign<KineticInfoComponent>(weaponEntity);
+		auto kin = sceneManager->scene.assign<KineticInfoComponent>(weaponEntity);
 		KineticData* kdata = (KineticData*)data;
 		*kin = kdata->kineticComponent;
 		kin->clip = kin->maxClip;

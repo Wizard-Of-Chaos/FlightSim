@@ -24,7 +24,7 @@ enum SETTINGS_MENU_BUTTONS {
 class GuiSettingsMenu : public GuiDialog
 {
 	public:
-		GuiSettingsMenu(GuiController* controller) : GuiDialog(controller) {}
+		GuiSettingsMenu() : GuiDialog() {}
 		virtual void init();
 
 		void restartRequired();

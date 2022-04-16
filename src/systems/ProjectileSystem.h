@@ -10,11 +10,8 @@
 #include "BulletRigidBodyComponent.h"
 #include "GameFunctions.h"
 
-class GameController;
-class SceneManager;
-
 //Determines whether or not a projectile is out of range and deletes it accordingly. In the future,
 //this will also handle the different "types" of projectile - for example, how a missile moves, how a harpoon moves, etc.
-void projectileSystem(SceneManager* manager, f32 dt);
+void projectileSystem(f32 dt);
 
 #endif

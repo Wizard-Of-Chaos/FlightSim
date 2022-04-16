@@ -41,14 +41,7 @@ class GameStateController : public IEventReceiver
 {
 	public:
 		virtual bool OnEvent(const SEvent& event);
-
-		IrrlichtDevice* device;
-		IVideoDriver* driver;
-		ISceneManager* smgr;
-		IGUIEnvironment* guienv;
-		ISoundEngine* soundEngine;
-
-		GameStateController(IrrlichtDevice* dev, VideoConfig vconf);
+		GameStateController(VideoConfig vconf);
 		void init();
 		void mainLoop();
 		void setState(GAME_STATE newState);
@@ -71,8 +64,6 @@ class GameStateController : public IEventReceiver
 		u32 then;
 		GAME_STATE state;
 		GAME_STATE oldState;
-		GameController* gameController;
-		GuiController* guiController;
 		bool stateChangeCalled = false;
 		bool gameInitialized = false;
 #if _DEBUG

@@ -3,7 +3,7 @@
 #include "GameController.h"
 #include <iostream>
 
-std::vector<ContactInfo> getContacts(SceneManager* manager, BulletRigidBodyComponent* rbc, SensorComponent* sens, FactionComponent* fac)
+std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorComponent* sens, FactionComponent* fac)
 {
 	std::vector<ContactInfo> ret;
 
@@ -13,7 +13,7 @@ std::vector<ContactInfo> getContacts(SceneManager* manager, BulletRigidBodyCompo
 	transform.setOrigin(rbc->rigidBody.getCenterOfMassPosition());
 	ghost.setCollisionShape(&shape);
 	ghost.setWorldTransform(transform);
-	manager->bulletWorld->addCollisionObject(&ghost);
+	bWorld->addCollisionObject(&ghost);
 
 
 	btVector3 closeHostileDist(0, 0, 0);
@@ -25,10 +25,10 @@ std::vector<ContactInfo> getContacts(SceneManager* manager, BulletRigidBodyCompo
 		if (obj == &rbc->rigidBody) continue;
 
 		EntityId objId = getIdFromBt(obj);
-		if (!manager->scene.entityInUse(objId)) continue;
+		if (!sceneManager->scene.entityInUse(objId)) continue;
 
-		auto objRBC = manager->scene.get<BulletRigidBodyComponent>(objId);
-		auto objFac = manager->scene.get<FactionComponent>(objId);
+		auto objRBC = sceneManager->scene.get<BulletRigidBodyComponent>(objId);
+		auto objFac = sceneManager->scene.get<FactionComponent>(objId);
 		if (!objRBC || !objFac) continue; //throw out anything without a rigid body comp and a faction comp
 
 		ContactInfo info = { objId, objRBC, objFac };
@@ -52,19 +52,19 @@ std::vector<ContactInfo> getContacts(SceneManager* manager, BulletRigidBodyCompo
 		ret.push_back(ContactInfo{objId, objRBC, objFac});
 	}
 
-	manager->bulletWorld->removeCollisionObject(&ghost); //get rid of the sphere used to check
+	bWorld->removeCollisionObject(&ghost); //get rid of the sphere used to check
 	return ret;
 }
 
-void sensorSystem(SceneManager* manager, f32 dt)
+void sensorSystem(f32 dt)
 {
-	for (EntityId id : SceneView<BulletRigidBodyComponent, SensorComponent, FactionComponent>(manager->scene)) {
-		auto sens = manager->scene.get<SensorComponent>(id);
-		auto fac = manager->scene.get<FactionComponent>(id);
-		auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
+	for (EntityId id : SceneView<BulletRigidBodyComponent, SensorComponent, FactionComponent>(sceneManager->scene)) {
+		auto sens = sceneManager->scene.get<SensorComponent>(id);
+		auto fac = sceneManager->scene.get<FactionComponent>(id);
+		auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
 		sens->timeSinceLastUpdate += dt;
 		if (sens->timeSinceLastUpdate >= sens->updateInterval) {
-			sens->contacts = getContacts(manager, rbc, sens, fac);
+			sens->contacts = getContacts(rbc, sens, fac);
 			sens->timeSinceLastUpdate = 0;
 		}
 		if (sens->targetContact != INVALID_ENTITY) {

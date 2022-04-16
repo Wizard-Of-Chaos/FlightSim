@@ -4,23 +4,23 @@
 #include <iostream>
 #include <string>
 
-HUDHealthBar::HUDHealthBar(SceneManager* manager, IGUIElement* root) : HUDElement(manager, root)
+HUDHealthBar::HUDHealthBar(IGUIElement* root) : HUDElement(root)
 {
 	type = HUD_ELEM_TYPE::HEALTH_BAR;
 	rect<s32> screenrect = root->getRelativePosition();
-	health = manager->controller->guienv->addImage(manager->defaults.defaultHealthBarTexture, position2di(0, screenrect.getHeight()-64), root);
-	healthNum = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 96), dimension2du(300,24)),false, true, root);
-	fuel = manager->controller->guienv->addImage(manager->defaults.defaultFuelBarTexture, position2di(0, screenrect.getHeight() - 160), root);
-	fuelNum = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 192), dimension2du(300, 24)), false, true, root);
-	shield = manager->controller->guienv->addImage(manager->defaults.defaultVelocityBarTexture, position2di(300, screenrect.getHeight() - 64), root);
-	shieldNum = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(300, screenrect.getHeight() - 96), dimension2du(300, 24)), false, true, root);
+	health = guienv->addImage(sceneManager->defaults.defaultHealthBarTexture, position2di(0, screenrect.getHeight()-64), root);
+	healthNum = guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 96), dimension2du(300,24)),false, true, root);
+	fuel = guienv->addImage(sceneManager->defaults.defaultFuelBarTexture, position2di(0, screenrect.getHeight() - 160), root);
+	fuelNum = guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 192), dimension2du(300, 24)), false, true, root);
+	shield = guienv->addImage(sceneManager->defaults.defaultVelocityBarTexture, position2di(300, screenrect.getHeight() - 64), root);
+	shieldNum = guienv->addStaticText(L"", rect<s32>(position2di(300, screenrect.getHeight() - 96), dimension2du(300, 24)), false, true, root);
 
 	fuelNum->setOverrideColor(SColor(255, 200, 200, 200));
 	healthNum->setOverrideColor(SColor(255, 200, 200, 200));
 	shieldNum->setOverrideColor(SColor(255, 200, 200, 200));
-	healthNum->setOverrideFont(manager->defaults.defaultHUDFont);
-	fuelNum->setOverrideFont(manager->defaults.defaultHUDFont);
-	shieldNum->setOverrideFont(manager->defaults.defaultHUDFont);
+	healthNum->setOverrideFont(sceneManager->defaults.defaultHUDFont);
+	fuelNum->setOverrideFont(sceneManager->defaults.defaultHUDFont);
+	shieldNum->setOverrideFont(sceneManager->defaults.defaultHUDFont);
 	health->setScaleImage(false);
 	fuel->setScaleImage(false);
 	shield->setScaleImage(false);
@@ -44,12 +44,12 @@ HUDHealthBar::~HUDHealthBar()
 	shieldNum->remove();
 }
 
-void HUDHealthBar::updateElement(SceneManager* manager, EntityId playerId)
+void HUDHealthBar::updateElement(EntityId playerId)
 {
-	auto hpcomp = manager->scene.get<HealthComponent>(playerId);
-	auto shields = manager->scene.get<ShieldComponent>(playerId);
-	auto player = manager->scene.get<PlayerComponent>(playerId);
-	auto ship = manager->scene.get<ShipComponent>(playerId);
+	auto hpcomp = sceneManager->scene.get<HealthComponent>(playerId);
+	auto shields = sceneManager->scene.get<ShieldComponent>(playerId);
+	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
+	auto ship = sceneManager->scene.get<ShipComponent>(playerId);
 
 	std::string hp = fprecis(hpcomp->health, 5);
 	std::string maxhp = fprecis(hpcomp->maxHealth, 5);

@@ -6,53 +6,49 @@
 #include <iostream>
 
 //Sets the defaults in the scene manager for ship meshes.
-void setDefaults(SceneManager* manager)
+void setDefaults()
 {
-	ISceneManager* smgr = manager->controller->smgr;
-	IVideoDriver* driver = manager->controller->driver;
-	ISoundEngine* sndeng = manager->controller->soundEngine;
-
-	manager->defaults.defaultShipMesh = smgr->getMesh("models/tux/Tuxedo.obj");
-	manager->defaults.defaultShipTexture = driver->getTexture("models/tux/tuxedotex.png");
-	manager->defaults.defaultWeaponMesh = smgr->getMesh("models/wazer/wazer.obj");
-	manager->defaults.defaultObstacleMesh = smgr->getMesh("models/asteroid/Asteroid.obj");
-	manager->defaults.defaultObstacleTexture = driver->getTexture("models/asteroid/Asteroid.jpg");
-	if (!loadHull("attributes/hulls/Asteroid.bullet", manager->defaults.defaultObstacleHull)) {
-		manager->defaults.defaultObstacleHull = createCollisionShapeFromMesh(manager->defaults.defaultObstacleMesh);
-		saveHull("attributes/hulls/Asteroid.bullet", manager->defaults.defaultObstacleHull);
+	sceneManager->defaults.defaultShipMesh = smgr->getMesh("models/tux/Tuxedo.obj");
+	sceneManager->defaults.defaultShipTexture = driver->getTexture("models/tux/tuxedotex.png");
+	sceneManager->defaults.defaultWeaponMesh = smgr->getMesh("models/wazer/wazer.obj");
+	sceneManager->defaults.defaultObstacleMesh = smgr->getMesh("models/asteroid/Asteroid.obj");
+	sceneManager->defaults.defaultObstacleTexture = driver->getTexture("models/asteroid/Asteroid.jpg");
+	if (!loadHull("attributes/hulls/Asteroid.bullet", sceneManager->defaults.defaultObstacleHull)) {
+		sceneManager->defaults.defaultObstacleHull = createCollisionShapeFromMesh(sceneManager->defaults.defaultObstacleMesh);
+		saveHull("attributes/hulls/Asteroid.bullet", sceneManager->defaults.defaultObstacleHull);
 	}
-	manager->defaults.defaultMissileMesh = smgr->getMesh("models/basicmissile/Missile.obj");
+	sceneManager->defaults.defaultMissileMesh = smgr->getMesh("models/basicmissile/Missile.obj");
 
-	manager->defaults.defaultProjectileTexture = driver->getTexture("effects/particlered.bmp");
-	manager->defaults.defaultCrosshairTexture = driver->getTexture("hud/crosshair.png");
-	manager->defaults.defaultSelectionTexture = driver->getTexture("hud/selection.png");
-	manager->defaults.defaultContactTexture = driver->getTexture("hud/contact.png");
-	manager->defaults.defaultContactMarkerTexture = driver->getTexture("hud/contactmarker.png");
-	manager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
-	manager->defaults.defaultVelocityBarTexture = driver->getTexture("hud/speed.png");
-	manager->defaults.defaultFuelBarTexture = driver->getTexture("hud/fuel.png");
+	sceneManager->defaults.defaultProjectileTexture = driver->getTexture("effects/particlered.bmp");
+	sceneManager->defaults.defaultCrosshairTexture = driver->getTexture("hud/crosshair.png");
+	sceneManager->defaults.defaultSelectionTexture = driver->getTexture("hud/selection.png");
+	sceneManager->defaults.defaultContactTexture = driver->getTexture("hud/contact.png");
+	sceneManager->defaults.defaultContactMarkerTexture = driver->getTexture("hud/contactmarker.png");
+	sceneManager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
+	sceneManager->defaults.defaultVelocityBarTexture = driver->getTexture("hud/speed.png");
+	sceneManager->defaults.defaultFuelBarTexture = driver->getTexture("hud/fuel.png");
 
-	manager->defaults.defaultJetTexture = driver->getTexture("effects/smokejet.png");
-	manager->defaults.defaultEngineJetTexture = driver->getTexture("effects/tuxengine.png");
-	manager->defaults.defaultExplosion = driver->getTexture("effects/kaboom.png");
+	sceneManager->defaults.defaultJetTexture = driver->getTexture("effects/smokejet.png");
+	sceneManager->defaults.defaultEngineJetTexture = driver->getTexture("effects/tuxengine.png");
+	sceneManager->defaults.defaultExplosion = driver->getTexture("effects/kaboom.png");
 
-	manager->defaults.defaultJetSoundLoop = sndeng->getSoundSource("audio/jetthrust.ogg");
-	manager->defaults.defaultMusic = sndeng->getSoundSource("audio/music/space_boogaloo.ogg");
-	manager->defaults.defaultEngineSoundLoop = sndeng->getSoundSource("audio/engineloop.ogg");
-	manager->defaults.defaultLaserSound = sndeng->getSoundSource("audio/laser_shoot.ogg");
-	manager->defaults.bonk = sndeng->getSoundSource("audio/impulsecannon.ogg");
-	manager->defaults.bonk->setDefaultVolume(10.f);
-	manager->defaults.bonk->setDefaultMinDistance(200.f);
-	manager->defaults.defaultLaserSound->setDefaultVolume(1.f);
-	manager->defaults.defaultLaserSound->setDefaultMinDistance(2.f);
+	sceneManager->defaults.defaultJetSoundLoop = soundEngine->getSoundSource("audio/jetthrust.ogg");
+	sceneManager->defaults.defaultMusic = soundEngine->getSoundSource("audio/music/space_boogaloo.ogg");
+	sceneManager->defaults.defaultEngineSoundLoop = soundEngine->getSoundSource("audio/engineloop.ogg");
+	sceneManager->defaults.defaultLaserSound = soundEngine->getSoundSource("audio/laser_shoot.ogg");
+	sceneManager->defaults.bonk = soundEngine->getSoundSource("audio/impulsecannon.ogg");
+	sceneManager->defaults.bonk->setDefaultVolume(10.f);
+	sceneManager->defaults.bonk->setDefaultMinDistance(200.f);
+	sceneManager->defaults.defaultLaserSound->setDefaultVolume(1.f);
+	sceneManager->defaults.defaultLaserSound->setDefaultMinDistance(2.f);
 
-	manager->defaults.defaultGunSound = sndeng->getSoundSource("audio/pew.ogg");
-	manager->defaults.defaultGunSound->setDefaultVolume(1.f);
-	manager->defaults.defaultGunSound->setDefaultMinDistance(3.f);
+	sceneManager->defaults.defaultGunSound = soundEngine->getSoundSource("audio/pew.ogg");
+	sceneManager->defaults.defaultGunSound->setDefaultVolume(1.f);
+	sceneManager->defaults.defaultGunSound->setDefaultMinDistance(3.f);
 
-	manager->defaults.defaultCloudTexture = driver->getTexture("effects/cloud.png");
+	sceneManager->defaults.defaultCloudTexture = driver->getTexture("effects/cloud.png");
 
-	manager->defaults.defaultHUDFont = manager->controller->guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");
+	sceneManager->defaults.defaultHUDFont = guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");
 }
 
 
@@ -107,16 +103,16 @@ bool isPointInSphere(vector3df& point, vector3df center, f32 radius)
 	return (pow(point.X - center.X, 2.f) + pow(point.Y - center.Y, 2.f) + pow(point.Z - center.Z, 2.f) < pow(radius, 2));
 }
 
-void destroyObject(SceneManager* manager, EntityId id)
+void destroyObject(EntityId id)
 {
-	if (!manager->scene.entityInUse(id)) return;
-	auto irrComp = manager->scene.get<IrrlichtComponent>(id);
-	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
+	if (!sceneManager->scene.entityInUse(id)) return;
+	auto irrComp = sceneManager->scene.get<IrrlichtComponent>(id);
+	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
 
-	auto ship = manager->scene.get<ShipComponent>(id);
+	auto ship = sceneManager->scene.get<ShipComponent>(id);
 	if (ship) {
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-			destroyObject(manager, ship->weapons[i]);
+			destroyObject(ship->weapons[i]);
 		}
 	}
 
@@ -125,20 +121,19 @@ void destroyObject(SceneManager* manager, EntityId id)
 		irrComp->node->remove();
 	}
 	if (rbc) {
-		manager->bulletWorld->removeRigidBody(&rbc->rigidBody);
+		bWorld->removeRigidBody(&rbc->rigidBody);
 	}
-	auto ghost = manager->scene.get<BulletGhostComponent>(id);
+	auto ghost = sceneManager->scene.get<BulletGhostComponent>(id);
 	if (ghost) {
-		manager->bulletWorld->removeCollisionObject(&ghost->ghost);
+		bWorld->removeCollisionObject(&ghost->ghost);
 	}
 
-	manager->scene.destroyEntity(id);
+	sceneManager->scene.destroyEntity(id);
 }
 
-bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
+bool initializeDefaultPlayer(EntityId shipId)
 {
-	Scene* scene = &manager->scene;
-	ISceneManager* smgr = manager->controller->smgr;
+	Scene* scene = &sceneManager->scene;
 
 	auto shipIrr = scene->get<IrrlichtComponent>(shipId);
 	if (!shipIrr) return false;
@@ -156,31 +151,31 @@ bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId)
 	return true;
 }
 
-void initializeHealth(SceneManager* manager, EntityId id, f32 healthpool)
+void initializeHealth(EntityId id, f32 healthpool)
 {
-	auto hp = manager->scene.assign<HealthComponent>(id);
-	auto dmg = manager->scene.assign<DamageTrackingComponent>(id);
+	auto hp = sceneManager->scene.assign<HealthComponent>(id);
+	auto dmg = sceneManager->scene.assign<DamageTrackingComponent>(id);
 	hp->health = healthpool;
 	hp->maxHealth = healthpool;
 }
-void initializeDefaultHealth(SceneManager* manager, EntityId objectId)
+void initializeDefaultHealth(EntityId objectId)
 {
-	initializeHealth(manager, objectId, DEFAULT_MAX_HEALTH);
+	initializeHealth(objectId, DEFAULT_MAX_HEALTH);
 }
 
-bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
+bool initializeDefaultHUD(EntityId playerId)
 {
-	Scene* scene = &manager->scene;
+	Scene* scene = &sceneManager->scene;
 	auto player = scene->get<PlayerComponent>(playerId);
 	if (!player) return false;
 
 	dimension2du baseSize = dimension2du(960, 540);
-	player->rootHUD = manager->controller->guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
+	player->rootHUD = guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
 
-	//HUDElement* crossHUD = new HUDCrosshair(manager, player->rootHUD);
-	HUDElement* selectHUD = new HUDActiveSelection(manager, player->rootHUD);
-	HUDElement* healthHUD = new HUDHealthBar(manager, player->rootHUD);
-	HUDElement* speedHUD = new HUDVelocityBar(manager, player->rootHUD);
+	//HUDElement* crossHUD = new HUDCrosshair(player->rootHUD);
+	HUDElement* selectHUD = new HUDActiveSelection(player->rootHUD);
+	HUDElement* healthHUD = new HUDHealthBar(player->rootHUD);
+	HUDElement* speedHUD = new HUDVelocityBar(player->rootHUD);
 	//player->HUD.push_back(crossHUD);
 	player->HUD.push_back(selectHUD);
 	player->HUD.push_back(healthHUD);
@@ -188,13 +183,13 @@ bool initializeDefaultHUD(SceneManager* manager, EntityId playerId)
 	return true;
 }
 
-EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
+EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
 {
-	EntityId id = manager->scene.newEntity();
-	auto exp = manager->scene.assign<ExplosionComponent>(id);
+	EntityId id = sceneManager->scene.newEntity();
+	auto exp = sceneManager->scene.assign<ExplosionComponent>(id);
 	exp->duration = duration;
 	exp->lifetime = 0;
-	exp->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
+	exp->explosion = smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
 	f32 scalefac = scale;
 	auto em = exp->explosion->createPointEmitter(vector3df(0.04f * scalefac, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
 		50, 1000, 360, dimension2df(1.f, 1.f), dimension2df(5.f * scalefac, 5.f * scalefac));
@@ -206,10 +201,10 @@ EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 sc
 	paf->drop();
 	exp->explosion->setMaterialFlag(EMF_LIGHTING, false);
 	exp->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	exp->explosion->setMaterialTexture(0, manager->defaults.defaultExplosion);
+	exp->explosion->setMaterialTexture(0, sceneManager->defaults.defaultExplosion);
 	exp->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
-	exp->light = manager->controller->smgr->addLightSceneNode(0, position, SColorf(1.f, .9f, .1f));
+	exp->light = smgr->addLightSceneNode(0, position, SColorf(1.f, .9f, .1f));
 
 	exp->force = force;
 	exp->damage = damage;

@@ -1,21 +1,22 @@
 #include "ProjectileSystem.h"
 #include "GameController.h"
+#include "SceneManager.h"
 #include <iostream>
 
-void projectileSystem(SceneManager* manager, f32 dt)
+void projectileSystem(f32 dt)
 {
-	for (auto id : SceneView<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>(manager->scene)) {
-		auto projectileInfo = manager->scene.get<ProjectileInfoComponent>(id);
-		auto irr = manager->scene.get<IrrlichtComponent>(id);
-		auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
+	for (auto id : SceneView<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>(sceneManager->scene)) {
+		auto projectileInfo = sceneManager->scene.get<ProjectileInfoComponent>(id);
+		auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+		auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
 		vector3df distance = irr->node->getAbsolutePosition() - projectileInfo->startPos;
 		if (distance.getLength() >= projectileInfo->range) {
-			destroyProjectile(manager, id);
+			destroyProjectile(id);
 		}
 
-		auto miss = manager->scene.get<MissileProjectileComponent>(id);
+		auto miss = sceneManager->scene.get<MissileProjectileComponent>(id);
 		if (miss) {
-			missileGoTo(manager, id, dt);
+			missileGoTo(id, dt);
 			//handle missile management
 		}
 	}

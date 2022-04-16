@@ -5,30 +5,27 @@
 
 void GuiLoadoutMenu::loadoutToWString()
 {
-	GameStateController* stCtrl = guiController->stateController;
-	ShipData* shipdata = stCtrl->shipData[stCtrl->playerShip];
+	ShipData* shipdata = stateController->shipData[stateController->playerShip];
 
 	name = std::wstring(shipdata->name.begin(), shipdata->name.end());
 	desc = std::wstring(shipdata->description.begin(), shipdata->description.end());
 	for (int i = 0; i < shipdata->shipComponent.hardpointCount; ++i) {
-		std::string wep = stCtrl->weaponData[stCtrl->playerWeapons[i]]->name;
+		std::string wep = stateController->weaponData[stateController->playerWeapons[i]]->name;
 		weps[i] = std::wstring(wep.begin(), wep.end());
 	}
 }
 
 ButtonPair GuiLoadoutMenu::createButtonPair(u32 num, position2di pos, u32 left, u32 right, u32 cent)
 {
-	IGUIEnvironment* env = guiController->guienv;
-
 	ButtonPair pair;
 	auto newPos = pos;
-	pair.buttonL = env->addButton(rect<s32>(pos, buttonSize), root, left, L"<");
+	pair.buttonL = guienv->addButton(rect<s32>(pos, buttonSize), root, left, L"<");
 	newPos.X = pos.X + buf + buttonHoriz;
 
-	pair.name = env->addStaticText(L"", rect<s32>(newPos, textSize), false, true, root, cent);
+	pair.name = guienv->addStaticText(L"", rect<s32>(newPos, textSize), false, true, root, cent);
 	newPos.X = pos.X + buf * 2 + buttonHoriz + textHoriz;
 
-	pair.buttonR = env->addButton(rect<s32>(newPos, buttonSize), root, right, L">");
+	pair.buttonR = guienv->addButton(rect<s32>(newPos, buttonSize), root, right, L">");
 
 	if (num != -1) {
 		pair.name->setText(weps[num].c_str());
@@ -57,13 +54,10 @@ void GuiLoadoutMenu::init()
 	textSize = dimension2du(textHoriz, textVert);
 	buf = 8;
 
-	GameStateController* stCtrl = guiController->stateController;
-
-	IGUIEnvironment* env = guiController->guienv;
 	loadoutToWString();
-	shipDescription = env->addStaticText(desc.c_str(), rect<s32>(position2di(buf, baseSize.Height / 2 + buf + buttonVert), dimension2du(textHoriz + buttonHoriz*2, textVert*3)), false, true, root, LOADOUTMENU_SHIP_DESC);
-	wepDescription = env->addStaticText(L"", rect<s32>(position2di(buf, buf * 2 + textVert), dimension2du(buttonHoriz * 2 + textHoriz + buf * 2, baseSize.Height / 3 - buf)), false, true, root, LOADOUTMENU_WEP_DESC);
-	returnToMain = env->addButton(rect<s32>(position2di(buf, buf), textSize), root, LOADOUTMENU_RETURN_TO_MAIN, L"Return to Main", L"Return to the main menu.");
+	shipDescription = guienv->addStaticText(desc.c_str(), rect<s32>(position2di(buf, baseSize.Height / 2 + buf + buttonVert), dimension2du(textHoriz + buttonHoriz*2, textVert*3)), false, true, root, LOADOUTMENU_SHIP_DESC);
+	wepDescription = guienv->addStaticText(L"", rect<s32>(position2di(buf, buf * 2 + textVert), dimension2du(buttonHoriz * 2 + textHoriz + buf * 2, baseSize.Height / 3 - buf)), false, true, root, LOADOUTMENU_WEP_DESC);
+	returnToMain = guienv->addButton(rect<s32>(position2di(buf, buf), textSize), root, LOADOUTMENU_RETURN_TO_MAIN, L"Return to Main", L"Return to the main menu.");
 
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
 		u32 yval = (buf + buf * i) + (buttonVert * i);
@@ -82,7 +76,7 @@ void GuiLoadoutMenu::init()
 	guiController->setCallback(shipButtons.buttonR, std::bind(&GuiLoadoutMenu::onShipChangeRight, this, std::placeholders::_1));
 
 	physWeaponButtons = createButtonPair(-1, position2di(baseSize.Width / 2, (buf + buf * 7) + (buttonVert * 7)), LOADOUTMENU_PHYSWEP_L, LOADOUTMENU_PHYSWEP_R, LOADOUTMENU_PHYSWEP);
-	physWeaponButtons.name->setText(wstr(stCtrl->physWeaponData[stCtrl->playerPhysWeapon]->name).c_str());
+	physWeaponButtons.name->setText(wstr(stateController->physWeaponData[stateController->playerPhysWeapon]->name).c_str());
 	guiController->setCallback(physWeaponButtons.buttonL, std::bind(&GuiLoadoutMenu::onPhysWeaponChangeLeft, this, std::placeholders::_1));
 	guiController->setCallback(physWeaponButtons.buttonR, std::bind(&GuiLoadoutMenu::onPhysWeaponChangeRight, this, std::placeholders::_1));
 	guiController->setCallback(physWeaponButtons.name, std::bind(&GuiLoadoutMenu::onPhysWeaponHover, this, std::placeholders::_1));
@@ -103,21 +97,20 @@ void GuiLoadoutMenu::init()
 
 void GuiLoadoutMenu::setShipNameAndDesc(u32 shipId)
 {
-	GameStateController* stCtrl = guiController->stateController;
-	stCtrl->playerShip = shipId;
-	std::string name = stCtrl->shipData[shipId]->name;
-	std::string desc = stCtrl->shipData[shipId]->description;
+	stateController->playerShip = shipId;
+	std::string name = stateController->shipData[shipId]->name;
+	std::string desc = stateController->shipData[shipId]->description;
 	shipButtons.name->setText(std::wstring(name.begin(), name.end()).c_str());
 	shipDescription->setText(std::wstring(desc.begin(), desc.end()).c_str());
 
-	for (u32 i = 0; i < stCtrl->shipData[shipId]->shipComponent.hardpointCount; ++i) {
-		stCtrl->playerWeapons[i] = WEAPONID_NONE;
+	for (u32 i = 0; i < stateController->shipData[shipId]->shipComponent.hardpointCount; ++i) {
+		stateController->playerWeapons[i] = WEAPONID_NONE;
 		ButtonPair p = weaponButtons[i];
-		WeaponData* data = stCtrl->weaponData[0];
+		WeaponData* data = stateController->weaponData[0];
 		weaponButtons[i].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
 	}
-	for (u32 i = stCtrl->shipData[shipId]->shipComponent.hardpointCount; i < MAX_HARDPOINTS; ++i) {
-		stCtrl->playerWeapons[i] = WEAPONID_INVALID;
+	for (u32 i = stateController->shipData[shipId]->shipComponent.hardpointCount; i < MAX_HARDPOINTS; ++i) {
+		stateController->playerWeapons[i] = WEAPONID_INVALID;
 		ButtonPair p = weaponButtons[i];
 		weaponButtons[i].name->setText(L"");
 	}
@@ -126,10 +119,10 @@ void GuiLoadoutMenu::setShipNameAndDesc(u32 shipId)
 bool GuiLoadoutMenu::onShipChangeLeft(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	u32 shipId = guiController->stateController->playerShip;
+	u32 shipId = stateController->playerShip;
 	std::cout << shipId;
 	if (shipId == 0) {
-		shipId = guiController->stateController->shipData.size() - 1;
+		shipId = stateController->shipData.size() - 1;
 	}
 	else {
 		--shipId;
@@ -140,9 +133,8 @@ bool GuiLoadoutMenu::onShipChangeLeft(const SEvent& event)
 bool GuiLoadoutMenu::onShipChangeRight(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	GameStateController* stCtrl = guiController->stateController;
-	u32 shipId = guiController->stateController->playerShip;
-	if (shipId == guiController->stateController->shipData.size() - 1) {
+	u32 shipId = stateController->playerShip;
+	if (shipId == stateController->shipData.size() - 1) {
 		shipId = 0;
 	}
 	else {
@@ -156,17 +148,16 @@ bool GuiLoadoutMenu::onWeaponChangeLeft(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	u32 num = std::stoi(event.GUIEvent.Caller->getName());
-	GameStateController* stCtrl = guiController->stateController;
-	if (num >= stCtrl->shipData[stCtrl->playerShip]->shipComponent.hardpointCount) return true;
+	if (num >= stateController->shipData[stateController->playerShip]->shipComponent.hardpointCount) return true;
 
-	u32 wepId = stCtrl->playerWeapons[num];
+	u32 wepId = stateController->playerWeapons[num];
 	if (wepId == 0) {
-		wepId = stCtrl->weaponData.size()-1;
+		wepId = stateController->weaponData.size()-1;
 	} else {
 		--wepId;
 	}
-	stCtrl->playerWeapons[num] = wepId;
-	WeaponData* data = stCtrl->weaponData[wepId];
+	stateController->playerWeapons[num] = wepId;
+	WeaponData* data = stateController->weaponData[wepId];
 	weaponButtons[num].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
 
 	return false;
@@ -175,18 +166,17 @@ bool GuiLoadoutMenu::onWeaponChangeRight(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	u32 num = std::stoi(event.GUIEvent.Caller->getName());
-	GameStateController* stCtrl = guiController->stateController;
-	if (num >= stCtrl->shipData[stCtrl->playerShip]->shipComponent.hardpointCount) return true;
+	if (num >= stateController->shipData[stateController->playerShip]->shipComponent.hardpointCount) return true;
 
-	u32 wepId = stCtrl->playerWeapons[num];
-	if (wepId == stCtrl->weaponData.size() - 1) {
+	u32 wepId = stateController->playerWeapons[num];
+	if (wepId == stateController->weaponData.size() - 1) {
 		wepId = 0;
 	}
 	else {
 		++wepId;
 	}
-	stCtrl->playerWeapons[num] = wepId;
-	WeaponData* data = stCtrl->weaponData[wepId];
+	stateController->playerWeapons[num] = wepId;
+	WeaponData* data = stateController->weaponData[wepId];
 	weaponButtons[num].name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
 
 	return false;
@@ -194,12 +184,11 @@ bool GuiLoadoutMenu::onWeaponChangeRight(const SEvent& event)
 
 bool GuiLoadoutMenu::onWeaponHover(const SEvent& event)
 {
-	GameStateController* stCtrl = guiController->stateController;
 	u32 num = std::stoi(event.GUIEvent.Caller->getName());
-	if (num >= stCtrl->shipData[stCtrl->playerShip]->shipComponent.hardpointCount) return true;
+	if (num >= stateController->shipData[stateController->playerShip]->shipComponent.hardpointCount) return true;
 
 	if (event.GUIEvent.EventType == EGET_ELEMENT_HOVERED) {
-		WeaponData* data = stCtrl->weaponData[stCtrl->playerWeapons[num]];
+		WeaponData* data = stateController->weaponData[stateController->playerWeapons[num]];
 		wepDescription->setText(std::wstring(data->description.begin(), data->description.end()).c_str());
 		return false;
 	}
@@ -213,41 +202,38 @@ bool GuiLoadoutMenu::onWeaponHover(const SEvent& event)
 bool GuiLoadoutMenu::onPhysWeaponChangeLeft(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	GameStateController* stCtrl = guiController->stateController;
-	u32 wepId = stCtrl->playerPhysWeapon;
+	u32 wepId = stateController->playerPhysWeapon;
 	if (wepId == 0) {
-		wepId = stCtrl->physWeaponData.size() - 1;
+		wepId = stateController->physWeaponData.size() - 1;
 	}
 	else {
 		--wepId;
 	}
-	stCtrl->playerPhysWeapon = wepId;
-	WeaponData* data = stCtrl->physWeaponData[wepId];
+	stateController->playerPhysWeapon = wepId;
+	WeaponData* data = stateController->physWeaponData[wepId];
 	physWeaponButtons.name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
 	return true;
 }
 bool GuiLoadoutMenu::onPhysWeaponChangeRight(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	GameStateController* stCtrl = guiController->stateController;
-	u32 wepId = stCtrl->playerPhysWeapon;
-	if (wepId == stCtrl->physWeaponData.size() - 1) {
+	u32 wepId = stateController->playerPhysWeapon;
+	if (wepId == stateController->physWeaponData.size() - 1) {
 		wepId = 0;
 	}
 	else {
 		++wepId;
 	}
-	stCtrl->playerPhysWeapon = wepId;
-	WeaponData* data = stCtrl->physWeaponData[wepId];
+	stateController->playerPhysWeapon = wepId;
+	WeaponData* data = stateController->physWeaponData[wepId];
 	physWeaponButtons.name->setText(std::wstring(data->name.begin(), data->name.end()).c_str());
 	return true;
 	return true;
 }
 bool GuiLoadoutMenu::onPhysWeaponHover(const SEvent& event)
 {
-	GameStateController* stCtrl = guiController->stateController;
 	if (event.GUIEvent.EventType == EGET_ELEMENT_HOVERED) {
-		WeaponData* data = stCtrl->physWeaponData[stCtrl->playerPhysWeapon];
+		WeaponData* data = stateController->physWeaponData[stateController->playerPhysWeapon];
 		wepDescription->setText(std::wstring(data->description.begin(), data->description.end()).c_str());
 		return false;
 	}

@@ -22,15 +22,15 @@ class GameStateController;
 vector3df strToVec(std::string str);
 //Loads the ship data from the game state controller onto the given entity.
 //Includes an Irrlicht component andg6 a ShipComponent.
-bool loadShip(u32 id, EntityId entity, SceneManager* manager);
+bool loadShip(u32 id, EntityId entity);
 //Loads the weapon data from the game state controller onto the given entity.
 //Includes a WeaponInfoComponent, an Irrlicht component, a ParentComponent, and whatever other components are necessary (e.g., a MissileInfoComponent).
-bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, SceneManager* manager, bool phys);
+bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys);
 
 //Pulls the ship data from the given .gdat file and saves it in the game state controller. Returns the ID.
-u32 loadShipData(std::string path, GameStateController* cont, gvReader& in);
+u32 loadShipData(std::string path, gvReader& in);
 //Pulls the weapon data from the given .gdat file and saves it in the game state controller. Returns the ID.
-u32 loadWeaponData(std::string path, GameStateController* cont, gvReader& in);
+u32 loadWeaponData(std::string path, gvReader& in);
 
 btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh);
 

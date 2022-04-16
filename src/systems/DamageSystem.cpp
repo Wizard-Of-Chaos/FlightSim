@@ -33,12 +33,12 @@ void handleEMPInstance(DamageInstance& inst, ShieldComponent* shield)
 	}
 }
 
-void damageSystem(SceneManager* manager, f32 dt)
+void damageSystem(f32 dt)
 {
-	for (auto id : SceneView<DamageTrackingComponent, HealthComponent>(manager->scene)) { //making the assumption that anything that can take damage has health
-		auto dmg = manager->scene.get<DamageTrackingComponent>(id);
-		auto hp = manager->scene.get<HealthComponent>(id);
-		auto shld = manager->scene.get<ShieldComponent>(id);
+	for (auto id : SceneView<DamageTrackingComponent, HealthComponent>(sceneManager->scene)) { //making the assumption that anything that can take damage has health
+		auto dmg = sceneManager->scene.get<DamageTrackingComponent>(id);
+		auto hp = sceneManager->scene.get<HealthComponent>(id);
+		auto shld = sceneManager->scene.get<ShieldComponent>(id);
 
 		for (DamageInstance inst : dmg->instances) {
 			switch (inst.type) {

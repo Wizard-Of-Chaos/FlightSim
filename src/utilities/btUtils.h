@@ -4,9 +4,6 @@
 #include "BaseHeader.h"
 #include "ECS.h"
 
-class SceneManager;
-class GameController;
-
 //Convenience function to get the ID from a bullet collision object.
 EntityId getIdFromBt(btCollisionObject* object);
 
@@ -31,7 +28,7 @@ btVector3 getLocalAngularVelocity(btRigidBody* body);
 btVector3 getLocalLinearVelocity(btRigidBody* body);
 
 //Adds a bullet rigid body to the given entity.
-bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass);
+bool initializeBtRigidBody(EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass);
 
 
 

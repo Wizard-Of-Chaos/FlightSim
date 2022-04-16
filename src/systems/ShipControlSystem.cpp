@@ -80,14 +80,14 @@ void throttleToShip(ShipComponent* ship, btRigidBody* body, vector3df& thrust, v
 	setVelocity(ship, localRoll, desiredRoll, SHIP_ROLL_RIGHT, SHIP_ROLL_LEFT);
 }
 
-void fireWeapon(SceneManager* manager, PlayerComponent* player, IrrlichtComponent* playerIrr, InputComponent* input, EntityId wep)
+void fireWeapon(PlayerComponent* player, IrrlichtComponent* playerIrr, InputComponent* input, EntityId wep)
 {
-	auto wepInfo = manager->scene.get<WeaponInfoComponent>(wep);
-	auto irrComp = manager->scene.get<IrrlichtComponent>(wep);
+	auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
+	auto irrComp = sceneManager->scene.get<IrrlichtComponent>(wep);
 	wepInfo->isFiring = true;
 	wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
 	vector3df target = input->cameraRay.getMiddle();
-	ISceneNode* coll = manager->controller->smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
+	ISceneNode* coll = smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
 
 	bool mouseOverHUD = false;
 	//auto-aim for aiming at a contact
@@ -98,7 +98,7 @@ void fireWeapon(SceneManager* manager, PlayerComponent* player, IrrlichtComponen
 		if (cont->contactView->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
 			for (auto [id, c] : player->trackedContacts) {
 				if (c != cont) continue;
-				auto targetIrr = manager->scene.get<IrrlichtComponent>(id);
+				auto targetIrr = sceneManager->scene.get<IrrlichtComponent>(id);
 				target = targetIrr->node->getPosition();
 				mouseOverHUD = true;
 				break;
@@ -115,9 +115,9 @@ void fireWeapon(SceneManager* manager, PlayerComponent* player, IrrlichtComponen
 	wepInfo->firingDirection = dir;
 }
 
-void shipControlSystem(SceneManager* manager, f32 dt)
+void shipControlSystem(f32 dt)
 { //This whole thing needs to be abstracted out to player-defined keybinds
-	Scene& scene = manager->scene;
+	Scene& scene = sceneManager->scene;
 	for(auto entityId : SceneView<InputComponent, ShipComponent, PlayerComponent, BulletRigidBodyComponent>(scene)) {
 		InputComponent* input = scene.get<InputComponent>(entityId);
 		ShipComponent* ship = scene.get<ShipComponent>(entityId);
@@ -128,7 +128,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		//strafing
 		ship->safetyOverride = input->safetyOverride;
 
-		bool fa = manager->controller->gameConfig.flightAssist;
+		bool fa = gameController->gameConfig.flightAssist;
 
 		if(input->isKeyDown(KEY_KEY_W)) {
 			player->thrust.Z += dt;
@@ -203,12 +203,12 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 			throttleToShip(ship, &rbc->rigidBody, player->thrust, player->rotation);
 		}
 
-		if (manager->controller->gameConfig.spaceFriction) {
+		if (gameController->gameConfig.spaceFriction) {
 			checkSpaceFriction(ship, player->thrust, player->rotation);
 		}
 
-		input->cameraRay = manager->controller->smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
-		ISceneNode* coll = manager->controller->smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
+		input->cameraRay = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(input->mousePixPosition, player->camera);
+		ISceneNode* coll = smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
 
 		if (input->mouseControlEnabled) {
 			vector3df viewpoint = input->cameraRay.getMiddle();
@@ -230,7 +230,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 				EntityId wep = ship->weapons[i];
 				if (!scene.entityInUse(wep)) continue;
-				fireWeapon(manager, player, irr, input, wep);
+				fireWeapon(player, irr, input, wep);
 			}
 		}
 		else {
@@ -244,7 +244,7 @@ void shipControlSystem(SceneManager* manager, f32 dt)
 		}
 
 		if (input->rightMouseDown) {
-			fireWeapon(manager, player, irr, input, ship->physWeapon);
+			fireWeapon(player, irr, input, ship->physWeapon);
 		}
 		else {
 			auto wepInfo = scene.get<WeaponInfoComponent>(ship->physWeapon);

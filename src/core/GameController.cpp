@@ -4,17 +4,9 @@
 #include <iostream>
 #include <random>
 
-GameController::GameController(GameStateController* controller)
+GameController::GameController()
 {
-	stateController = controller;
-	device = controller->device;
-	soundEngine = controller->soundEngine;
 	open = false;
-	smgr = 0;
-	guienv = 0;
-	driver = 0;
-	then = 0;
-	bWorld = 0;
 	gameConfig.loadConfig("cfg/gameconfig.gdat");
 	gameConfig.saveConfig("cfg/gameconfig.gdat");
 }
@@ -29,7 +21,7 @@ void GameController::update()
 	then = now;
 	accumulator += delta;
 	while (accumulator >= dt) {
-		sceneECS.update(dt, delta); //in-game logic and physics
+		sceneManager->update(dt, delta); //in-game logic and physics
 		t += dt;
 		accumulator -= dt;
 	}
@@ -67,13 +59,12 @@ void GameController::init()
 	bWorld->setDebugDrawer(&rend);
 #endif 
 	Scene scene;
-	sceneECS = SceneManager(scene, this, bWorld); //Sets up the ECS scene
+	sceneManager = new SceneManager(scene); //Sets up the ECS scene
 
 	collCb = new broadCallback();
-	collCb->manager = &sceneECS;
 	bWorld->getPairCache()->setOverlapFilterCallback(collCb);
 
-	setDefaults(&sceneECS);
+	setDefaults();
 	open = true;
 }
 
@@ -92,16 +83,17 @@ void GameController::close()
 	delete collCb;
 	delete gPairCb;
 	//delete all the crap in the scenemanager too
-	for (ComponentPool* pool : sceneECS.scene.componentPools) {
+	for (ComponentPool* pool : sceneManager->scene.componentPools) {
 		delete pool; //pool's closed
 	}
+	delete sceneManager;
 	open = false;
 }
 
 void GameController::clearPlayerHUD()
 {
-	for (auto id : SceneView<PlayerComponent>(sceneECS.scene)) {
-		auto player = sceneECS.scene.get<PlayerComponent>(id);
+	for (auto id : SceneView<PlayerComponent>(sceneManager->scene)) {
+		auto player = sceneManager->scene.get<PlayerComponent>(id);
 		for (HUDElement* hud : player->HUD) {
 			delete hud;
 		}
@@ -112,8 +104,8 @@ void GameController::clearPlayerHUD()
 bool GameController::OnEvent(const SEvent& event)
 {
 	if (event.EventType == EET_KEY_INPUT_EVENT) {
-		for(auto entityId : SceneView<InputComponent>(sceneECS.scene)) { //Passes key input to the input components
-			InputComponent* input = sceneECS.scene.get<InputComponent>(entityId);
+		for(auto entityId : SceneView<InputComponent>(sceneManager->scene)) { //Passes key input to the input components
+			InputComponent* input = sceneManager->scene.get<InputComponent>(entityId);
 			input->keysDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
 			if(event.KeyInput.Key == KEY_KEY_Y && !input->keysDown[KEY_KEY_Y]) {
 				input->mouseControlEnabled = !input->mouseControlEnabled;
@@ -124,8 +116,8 @@ bool GameController::OnEvent(const SEvent& event)
 		}
 	}
 	if (event.EventType == EET_MOUSE_INPUT_EVENT) {
-		for(auto entityId: SceneView<InputComponent>(sceneECS.scene)) { //Passes mouse input to the input components
-			InputComponent* input = sceneECS.scene.get<InputComponent>(entityId);
+		for(auto entityId: SceneView<InputComponent>(sceneManager->scene)) { //Passes mouse input to the input components
+			InputComponent* input = sceneManager->scene.get<InputComponent>(entityId);
 			switch(event.MouseInput.Event) {
 			case EMIE_LMOUSE_PRESSED_DOWN:
 				input->leftMouseDown = true;
@@ -160,7 +152,7 @@ bool GameController::OnEvent(const SEvent& event)
 bool GameController::checkRunningScenario()
 {
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
-		if (currentScenario.objectives[i] != INVALID_ENTITY && !sceneECS.scene.entityInUse(currentScenario.objectives[i])) {
+		if (currentScenario.objectives[i] != INVALID_ENTITY && !sceneManager->scene.entityInUse(currentScenario.objectives[i])) {
 			currentScenario.objectives[i] = INVALID_ENTITY;
 			--currentScenario.activeObjectiveCount;
 		}
@@ -196,8 +188,8 @@ void GameController::initScenario()
 
 void GameController::killHostilesScenario()
 {
-	EntityId player = createPlayerShipFromLoadout(&sceneECS, currentScenario.playerStartPos, vector3df(0,0,0));
-	initializePlayerFaction(&sceneECS, player);
+	EntityId player = createPlayerShipFromLoadout(currentScenario.playerStartPos, vector3df(0,0,0));
+	initializePlayerFaction(player);
 
 	std::vector<vector3df> obstaclePositions;
 
@@ -221,21 +213,21 @@ void GameController::killHostilesScenario()
 	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 100;
 		f32 mass = (f32)scale / 5.f;
-		EntityId rock = createAsteroid(&sceneECS, obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
+		EntityId rock = createAsteroid(obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
 
 	}
 
 	std::cout << "\nDone. Building hostiles... ";
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(currentScenario.enemyStartPos, 25.f);
-		EntityId enemy = createDefaultAIShip(&sceneECS, pos, vector3df(0,180,0)); //todo: create AI ship generator that pulls from loaded ships
-		initializeHostileFaction(&sceneECS, enemy);
-		initializeDefaultSensors(&sceneECS, enemy);
-		initializeShipParticles(&sceneECS, enemy);
+		EntityId enemy = createDefaultAIShip(pos, vector3df(0,180,0)); //todo: create AI ship generator that pulls from loaded ships
+		initializeHostileFaction(enemy);
+		initializeDefaultSensors(enemy);
+		initializeShipParticles(enemy);
 		currentScenario.objectives[i] = enemy;
 	}
 
-	auto cloud = createGasCloud(&sceneECS, vector3df(100,0,0), vector3df(10, 10, 10));
+	auto cloud = createGasCloud(vector3df(100,0,0), vector3df(10, 10, 10));
 
 	std::cout << "Done. \n";
 	//let's get us some rocks to bump around

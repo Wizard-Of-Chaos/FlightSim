@@ -12,9 +12,9 @@
 class HUDActiveSelection : public HUDElement
 {
 public:
-	HUDActiveSelection(SceneManager* man, IGUIElement* root);
+	HUDActiveSelection(IGUIElement* root);
 	~HUDActiveSelection() override;
-	virtual void updateElement(SceneManager* manager, EntityId playerId);
+	virtual void updateElement(EntityId playerId);
 
 	IGUIStaticText* name;
 	IGUIImage* selectGUI;

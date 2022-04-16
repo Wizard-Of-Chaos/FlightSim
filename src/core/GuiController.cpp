@@ -2,14 +2,8 @@
 #include "GameStateController.h"
 #include <iostream>
 
-GuiController::GuiController(GameStateController* controller)
+GuiController::GuiController()
 {
-	stateController = controller;
-	device = controller->device;
-	driver = device->getVideoDriver();
-	smgr = device->getSceneManager();
-	soundEngine = controller->soundEngine;
-	guienv = device->getGUIEnvironment();
 	activeDialog = 0;
 
 	gvReader tauntReader;
@@ -23,15 +17,15 @@ void GuiController::init()
 {
 	//All menus get initialized here. Don't delete them.
 	//If you've just added a new menu, initialize it here.
-	menus.menuDialogs[GUI_MAIN_MENU] = new GuiMainMenu(this);
+	menus.menuDialogs[GUI_MAIN_MENU] = new GuiMainMenu;
 	menus.menuDialogs[GUI_MAIN_MENU]->init();
-	menus.menuDialogs[GUI_PAUSE_MENU] = new GuiPauseMenu(this);
+	menus.menuDialogs[GUI_PAUSE_MENU] = new GuiPauseMenu;
 	menus.menuDialogs[GUI_PAUSE_MENU]->init();
-	menus.menuDialogs[GUI_DEATH_MENU] = new GuiDeathMenu(this);
+	menus.menuDialogs[GUI_DEATH_MENU] = new GuiDeathMenu;
 	menus.menuDialogs[GUI_DEATH_MENU]->init();
-	menus.menuDialogs[GUI_SETTINGS_MENU] = new GuiSettingsMenu(this);
+	menus.menuDialogs[GUI_SETTINGS_MENU] = new GuiSettingsMenu;
 	menus.menuDialogs[GUI_SETTINGS_MENU]->init();
-	menus.menuDialogs[GUI_LOADOUT_MENU] = new GuiLoadoutMenu(this);
+	menus.menuDialogs[GUI_LOADOUT_MENU] = new GuiLoadoutMenu;
 	menus.menuDialogs[GUI_LOADOUT_MENU]->init();
 	//set up death menu
 

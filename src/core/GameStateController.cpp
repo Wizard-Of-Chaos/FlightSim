@@ -1,30 +1,18 @@
 #include "GameStateController.h"
 #include <iostream>
 
-GameStateController::GameStateController(IrrlichtDevice* dev, VideoConfig vconf)
+GameStateController::GameStateController(VideoConfig vconf)
 {
 	std::srand(time(NULL));
 	gameInitialized = false;
-	device = dev;
-	driver = 0;
-	smgr = 0;
-	guienv = 0;
-	soundEngine = 0;
-	then = 0;
-	gameController = 0;
 	videoConfig = vconf;
-	init();
 }
 
 void GameStateController::init()
 {
 	std::cout << "Starting game... \n";
-
-	driver = device->getVideoDriver();
-	smgr = device->getSceneManager();
-	guienv = device->getGUIEnvironment();
-	device->setEventReceiver(this);
-	guienv->setUserEventReceiver(this);
+	device->setEventReceiver(stateController);
+	guienv->setUserEventReceiver(stateController);
 	then = device->getTimer()->getTime();
 	state = GAME_MENUS; //Initial state
 	driver->setMinHardwareBufferVertexCount(0);
@@ -42,9 +30,9 @@ void GameStateController::init()
 
 	soundEngine = createIrrKlangDevice();
 	soundEngine->play2D("audio/music/space_boogaloo.ogg", true); //Todo: call this somewhere else
-	gameController = new GameController(this);
+	gameController = new GameController;
 
-	guiController = new GuiController(this);
+	guiController = new GuiController;
 	guiController->init();
 
 	IGUIFont* defaultFont = guienv->getFont("fonts/Courier16px/Courier16px.xml");
@@ -69,7 +57,7 @@ void GameStateController::loadShipAndWeaponData()
 	gvReader in;
 	std::cout << "Loading ships... \n";
 	for (const auto& file : std::filesystem::directory_iterator(shippath)) {
-		u32 id = loadShipData(file.path().string(), this, in);
+		u32 id = loadShipData(file.path().string(), in);
 		if (id != -1) {
 			btConvexHullShape hull;
 			std::string fname = hullpath + shipData[id]->name + ".bullet";
@@ -89,7 +77,7 @@ void GameStateController::loadShipAndWeaponData()
 	std::cout << "Done loading ships. \n";
 	std::cout << "Loading weapons... \n";
 	for (const auto& file : std::filesystem::directory_iterator(weaponpath)) {
-		loadWeaponData(file.path().string(), this, in);
+		loadWeaponData(file.path().string(), in);
 		in.clear();
 	}
 	std::cout << "Done loading weapons. \n";
@@ -181,7 +169,9 @@ void GameStateController::mainLoop()
 				break;
 			case GAME_RUNNING:
 				gameController->update();
-				gameController->bWorld->debugDrawWorld();
+#ifdef _DEBUG
+				bWorld->debugDrawWorld();
+#endif
 				break;
 			case GAME_PAUSED:
 				guiController->update();

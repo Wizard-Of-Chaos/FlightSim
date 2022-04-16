@@ -5,9 +5,6 @@
 #include "BaseHeader.h"
 #include "GuiDialog.h"
 
-class GuiController;
-class GameStateController;
-
 //Enum containing the IDs for buttons on the pause menu.
 enum PAUSE_MENU_BUTTONS
 {
@@ -22,7 +19,7 @@ enum PAUSE_MENU_BUTTONS
 class GuiPauseMenu : public GuiDialog
 {
 	public:
-		GuiPauseMenu(GuiController* controller) : GuiDialog(controller), resumeGame(0), pauseSettings(0), exitToMenus(0) {}
+		GuiPauseMenu() : GuiDialog(), resumeGame(0), pauseSettings(0), exitToMenus(0) {}
 		~GuiPauseMenu() {}
 
 		virtual void init();

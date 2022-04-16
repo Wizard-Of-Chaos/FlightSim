@@ -42,4 +42,22 @@ using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib")
 #endif
 
+class GameStateController;
+class GameController;
+class GuiController;
+class SceneManager;
+class BulletPhysicsWorld;
+
+extern GameStateController* stateController;
+extern GameController* gameController;
+extern GuiController* guiController;
+extern SceneManager* sceneManager;
+
+extern IrrlichtDevice* device;
+extern IVideoDriver* driver;
+extern ISceneManager* smgr;
+extern IGUIEnvironment* guienv;
+extern ISoundEngine* soundEngine;
+extern BulletPhysicsWorld* bWorld;
+
 #endif

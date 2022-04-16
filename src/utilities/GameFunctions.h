@@ -14,16 +14,12 @@
 #include "ExplosionComponent.h"
 #include "HUDHeader.h"
 
-class SceneManager;
-class GameController;
-class GameStateController;
-
 /*
 * A big file of convenience functions that are used with the game.
 */
 
 //Sets the default meshes for objects.
-void setDefaults(SceneManager* manager);
+void setDefaults();
 
 //Translates a bullet vector to an irrlicht vector.
 vector3df btVecToIrr(btVector3 vec);
@@ -38,19 +34,19 @@ vector3df getPointInSphere(vector3df center, f32 radius);
 bool isPointInSphere(vector3df& point, vector3df center, f32 radius);
 
 //Removes the given object from the scene.
-void destroyObject(SceneManager* manager, EntityId id);
+void destroyObject(EntityId id);
 
 //Adds on a player component and an input component to a given ship.
 //Requires: Irrlicht component. Returns false without that.
-bool initializeDefaultPlayer(SceneManager* manager, EntityId shipId);
+bool initializeDefaultPlayer(EntityId shipId);
 //Adds a health component to the given entity. 
-void initializeHealth(SceneManager* manager, EntityId id, f32 healthpool);
+void initializeHealth(EntityId id, f32 healthpool);
 //Adds default health component.
-void initializeDefaultHealth(SceneManager* manager, EntityId objectId);
+void initializeDefaultHealth(EntityId objectId);
 //Sets up the HUD for the given player entity.
 //Requires a player component; returns false otherwise.
-bool initializeDefaultHUD(SceneManager* manager, EntityId playerId);
+bool initializeDefaultHUD(EntityId playerId);
 
 //Creates an explosion at the point that lasts for the duration.
-EntityId explode(SceneManager* manager, vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force);
+EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force);
 #endif

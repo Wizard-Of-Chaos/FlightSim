@@ -8,13 +8,10 @@
 #include "ShipComponent.h"
 #include "GameFunctions.h"
 
-class GameController;
-class SceneManager;
-
 /*
 * This function handles whether or not a weapon is currently shooting and spawns the appropriate projectile entities
 * that are associated with that weapon. Used by both the player and the AI.
 */
-void weaponFiringSystem(SceneManager* manager, f32 dt);
+void weaponFiringSystem(f32 dt);
 
 #endif

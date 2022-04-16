@@ -9,7 +9,7 @@
 #include <cmath>
 #include <algorithm>
 
-void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
+void playerUpdateSystem(Scene& scene, f32 frameDelta)
 {
 	for (auto entityId : SceneView<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, InputComponent>(scene)) {
 		IrrlichtComponent* irrcomp = scene.get<IrrlichtComponent>(entityId);
@@ -21,7 +21,7 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		for (ContactInfo info : sensors->contacts) {
 			EntityId id = std::get<0>(info);
 			if (player->trackedContacts[id] == nullptr && scene.entityInUse(id)) {
-				HUDContact* ct = new HUDContact(manager, player->rootHUD, id);
+				HUDContact* ct = new HUDContact(player->rootHUD, id);
 				player->HUD.push_back(ct);
 				player->trackedContacts[id] = ct;
 			}
@@ -37,9 +37,9 @@ void playerUpdateSystem(SceneManager* manager, Scene& scene, f32 frameDelta)
 		cameraUpdate(player, irrcomp->node, &rbc->rigidBody);
 
 		//HUD work
-		hudUpdate(manager, player, entityId);
+		hudUpdate(player, entityId);
 
-		manager->controller->soundEngine->setListenerPosition(player->camera->getAbsolutePosition(), getNodeForward(player->camera), vec3df(0, 0, 0), getNodeUp(player->camera));
+		soundEngine->setListenerPosition(player->camera->getAbsolutePosition(), getNodeForward(player->camera), vec3df(0, 0, 0), getNodeUp(player->camera));
 	}
 }
 
@@ -73,10 +73,10 @@ void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* 
 	camera->setTarget(target);
 }
 
-void hudUpdate(SceneManager* manager, PlayerComponent* player, EntityId playerId)
+void hudUpdate(PlayerComponent* player, EntityId playerId)
 {
-	player->rootHUD->setRelativePosition(rect<s32>(position2di(0, 0), manager->controller->driver->getScreenSize()));
+	player->rootHUD->setRelativePosition(rect<s32>(position2di(0, 0), driver->getScreenSize()));
 	for (HUDElement* elem : player->HUD) {
-		elem->updateElement(manager, playerId);
+		elem->updateElement(playerId);
 	}
 }

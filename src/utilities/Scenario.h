@@ -4,9 +4,6 @@
 #include "BaseHeader.h"
 #include "GameFunctions.h"
 
-class GameController;
-class SceneManager;
-
 enum SCENARIO_TYPE
 {
 	SCENARIO_NOT_LOADED,
@@ -15,7 +12,7 @@ enum SCENARIO_TYPE
 	SCENARIO_SALVAGE
 };
 
-#define SCENARIO_MAX_OBJECTIVES 10
+const u32 SCENARIO_MAX_OBJECTIVES = 10;
 
 struct Scenario
 {

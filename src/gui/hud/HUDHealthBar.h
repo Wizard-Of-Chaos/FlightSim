@@ -12,9 +12,9 @@
 class HUDHealthBar : public HUDElement
 {
 public:
-	HUDHealthBar(SceneManager* manager, IGUIElement* root);
+	HUDHealthBar(IGUIElement* root);
 	~HUDHealthBar() override;
-	virtual void updateElement(SceneManager* manager, EntityId playerId);
+	virtual void updateElement(EntityId playerId);
 	IGUIImage* health;
 	IGUIImage* shield;
 	IGUIImage* fuel;

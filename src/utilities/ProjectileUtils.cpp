@@ -3,10 +3,9 @@
 #include "SceneManager.h"
 #include <iostream>
 
-EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vector3df direction, EntityId weaponId)
+EntityId createProjectileEntity(vector3df spawnPos, vector3df direction, EntityId weaponId)
 {
-	Scene* scene = &manager->scene;
-	ISceneManager* smgr = manager->controller->smgr;
+	Scene* scene = &sceneManager->scene;
 
 	auto wepInfo = scene->get<WeaponInfoComponent>(weaponId);
 	auto shipParent = scene->get<ParentComponent>(weaponId);
@@ -60,38 +59,37 @@ EntityId createProjectileEntity(SceneManager* manager, vector3df spawnPos, vecto
 	switch (projectileInfo->type) {
 	case WEP_PLASMA:
 		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
-		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
+		createPlasmaProjectile(projectileEntity, direction, spawnPos);
 		break;
 	case WEP_KINETIC:
 		direction.X += spread;
 		direction.Y += spread;
 		direction.Z += spread;
 		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
-		createKineticProjectile(manager, projectileEntity, direction, spawnPos);
+		createKineticProjectile(projectileEntity, direction, spawnPos);
 		break;
 	case WEP_MISSILE:
 		mass = .3f;
 		//auto missInfo = manager->scene.get<MissileInfoComponent>(weaponId);
-		createMissileProjectile(manager, projectileEntity, manager->scene.get<MissileInfoComponent>(weaponId), direction, spawnPos);
+		createMissileProjectile(projectileEntity, sceneManager->scene.get<MissileInfoComponent>(weaponId), direction, spawnPos);
 		break;
 	case WEP_PHYS_IMPULSE:
 		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
-		createPlasmaProjectile(manager, projectileEntity, direction, spawnPos);
+		createPlasmaProjectile(projectileEntity, direction, spawnPos);
 		break;
 	}
 
-	manager->bulletWorld->addRigidBody(&rigidBodyInfo->rigidBody);
+	bWorld->addRigidBody(&rigidBodyInfo->rigidBody);
 
 	return projectileEntity;
 }
 
-void createKineticProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn)
+void createKineticProjectile(EntityId projId, vector3df dir, vector3df spawn)
 {
-	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
-	auto wepPar = manager->scene.get<ParentComponent>(projId);
-	auto wepComp = manager->scene.get<WeaponInfoComponent>(wepPar->parentId);
+	auto irr = sceneManager->scene.assign<IrrlichtComponent>(projId);
+	auto wepPar = sceneManager->scene.get<ParentComponent>(projId);
+	auto wepComp = sceneManager->scene.get<WeaponInfoComponent>(wepPar->parentId);
 
-	ISceneManager* smgr = manager->controller->smgr;
 	irr->node = smgr->addLightSceneNode(0, spawn, SColorf(.8f, .8f, .1f, .5f), 5.f);
 	irr->name = "bullet";
 	ISceneNode* bill = smgr->addBillboardSceneNode(irr->node, dimension2d<f32>(1.f, 1.f));
@@ -103,13 +101,12 @@ void createKineticProjectile(SceneManager* manager, EntityId projId, vector3df d
 	bill->setID(ID_IsNotSelectable);
 }
 
-void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df dir, vector3df spawn)
+void createPlasmaProjectile(EntityId projId, vector3df dir, vector3df spawn)
 {
-	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
-	auto wepPar = manager->scene.get<ParentComponent>(projId);
-	auto wepComp = manager->scene.get<WeaponInfoComponent>(wepPar->parentId);
+	auto irr = sceneManager->scene.assign<IrrlichtComponent>(projId);
+	auto wepPar = sceneManager->scene.get<ParentComponent>(projId);
+	auto wepComp = sceneManager->scene.get<WeaponInfoComponent>(wepPar->parentId);
 
-	ISceneManager* smgr = manager->controller->smgr;
 	//this needs to be abstracted out to creating different types of node, for now it's just the laser with a crappy particle
 	irr->node = smgr->addLightSceneNode(0, spawn, SColorf(.8f, .2f, .2f), 30.f);
 	irr->name = "plasma ball";
@@ -139,36 +136,35 @@ void createPlasmaProjectile(SceneManager* manager, EntityId projId, vector3df di
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 }
 
-void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfoComponent* missInfo, vector3df dir, vector3df spawn)
+void createMissileProjectile(EntityId projId, MissileInfoComponent* missInfo, vector3df dir, vector3df spawn)
 {
-	auto wepParent = manager->scene.get<ParentComponent>(projId);
-	auto wepComp = manager->scene.get<WeaponInfoComponent>(wepParent->parentId);
-	auto missComp = manager->scene.get<MissileInfoComponent>(wepParent->parentId);
+	auto wepParent = sceneManager->scene.get<ParentComponent>(projId);
+	auto wepComp = sceneManager->scene.get<WeaponInfoComponent>(wepParent->parentId);
+	auto missComp = sceneManager->scene.get<MissileInfoComponent>(wepParent->parentId);
 
-	auto shipParent = manager->scene.get<ParentComponent>(wepParent->parentId);
-	auto sensors = manager->scene.get<SensorComponent>(shipParent->parentId);
+	auto shipParent = sceneManager->scene.get<ParentComponent>(wepParent->parentId);
+	auto sensors = sceneManager->scene.get<SensorComponent>(shipParent->parentId);
 	if (!sensors) return; // need a similar check for AI component
 	if (sensors && sensors->targetContact == INVALID_ENTITY) {
 		std::cout << "No entity is currently selected!\n";
 	}
-	ISceneManager* smgr = manager->controller->smgr;
 
-	auto irr = manager->scene.assign<IrrlichtComponent>(projId);
+	auto irr = sceneManager->scene.assign<IrrlichtComponent>(projId);
 
-	auto irrship = manager->scene.get<IrrlichtComponent>(shipParent->parentId);
+	auto irrship = sceneManager->scene.get<IrrlichtComponent>(shipParent->parentId);
 	vector3df rot = irrship->node->getRotation();
-	irr->node = manager->controller->smgr->addMeshSceneNode(missComp->missileMesh, 0, ID_IsNotSelectable, spawn, rot, vector3df(.2f, .2f, .2f));
+	irr->node = smgr->addMeshSceneNode(missComp->missileMesh, 0, ID_IsNotSelectable, spawn, rot, vector3df(.2f, .2f, .2f));
 	irr->name = "missile";
 	irr->node->setName(idToStr(projId).c_str());
 
-	auto missile = manager->scene.assign<MissileProjectileComponent>(projId);
+	auto missile = sceneManager->scene.assign<MissileProjectileComponent>(projId);
 	if (sensors && missInfo->timeToLock <= sensors->timeSelected) {
 		missile->target = sensors->targetContact;
 	} else {
 		std::cout << "Sensors unavailable or lock-time not established!\n";
 		missile->target = INVALID_ENTITY;
 	}
-	auto ai = manager->scene.get<AIComponent>(shipParent->parentId);
+	auto ai = sceneManager->scene.get<AIComponent>(shipParent->parentId);
 	if (ai) {
 		//set the target to whatever the AI is targeting
 	}
@@ -193,14 +189,13 @@ void createMissileProjectile(SceneManager* manager, EntityId projId, MissileInfo
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 }
 
-void destroyProjectile(SceneManager* manager, EntityId projectile)
+void destroyProjectile(EntityId projectile)
 {
-	Scene* scene = &manager->scene;
-	ISceneManager* smgr = manager->controller->smgr;
+	Scene* scene = &sceneManager->scene;
 
 	auto rigidBodyInfo = scene->get<BulletRigidBodyComponent>(projectile);
 	if (rigidBodyInfo) {
-		manager->bulletWorld->removeRigidBody(&rigidBodyInfo->rigidBody); //removes the rigid body from the bullet physics
+		bWorld->removeRigidBody(&rigidBodyInfo->rigidBody); //removes the rigid body from the bullet physics
 	}
 
 	auto irrComp = scene->get<IrrlichtComponent>(projectile);
@@ -215,13 +210,13 @@ void destroyProjectile(SceneManager* manager, EntityId projectile)
 	scene->destroyEntity(projectile); //bye bye your life goodbye
 }
 
-EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duration)
+EntityId projectileImpact(vector3df position, f32 duration)
 {
-	EntityId id = manager->scene.newEntity();
-	auto explodeinfo = manager->scene.assign<ExplosionComponent>(id);
+	EntityId id = sceneManager->scene.newEntity();
+	auto explodeinfo = sceneManager->scene.assign<ExplosionComponent>(id);
 	explodeinfo->duration = duration;
 	explodeinfo->lifetime = 0;
-	explodeinfo->explosion = manager->controller->smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
+	explodeinfo->explosion = smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
 	auto em = explodeinfo->explosion->createSphereEmitter(vector3df(0, 0, 0), .2f, vector3df(0.01f, 0.f, 0.f), 50, 100, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
 		50, 100, 360, dimension2df(1.f, 1.f), dimension2df(1.5f, 1.5f));
 	explodeinfo->explosion->setEmitter(em);
@@ -231,7 +226,7 @@ EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duratio
 	paf->drop();
 	explodeinfo->explosion->setMaterialFlag(EMF_LIGHTING, false);
 	explodeinfo->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	explodeinfo->explosion->setMaterialTexture(0, manager->defaults.defaultProjectileTexture);
+	explodeinfo->explosion->setMaterialTexture(0, sceneManager->defaults.defaultProjectileTexture);
 	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	explodeinfo->light = nullptr;
@@ -242,11 +237,11 @@ EntityId projectileImpact(SceneManager* manager, vector3df position, f32 duratio
 	return id;
 }
 
-void missileGoTo(SceneManager* manager, EntityId id, f32 dt)
+void missileGoTo(EntityId id, f32 dt)
 {
-	auto miss = manager->scene.get<MissileProjectileComponent>(id);
-	auto proj = manager->scene.get<ProjectileInfoComponent>(id);
-	auto rbc = manager->scene.get<BulletRigidBodyComponent>(id);
+	auto miss = sceneManager->scene.get<MissileProjectileComponent>(id);
+	auto proj = sceneManager->scene.get<ProjectileInfoComponent>(id);
+	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
 	if (!miss || !proj || !rbc) return;
 	btRigidBody* body = &rbc->rigidBody;
 
@@ -257,9 +252,9 @@ void missileGoTo(SceneManager* manager, EntityId id, f32 dt)
 	force += forward * proj->speed;
 	body->applyCentralImpulse(force * dt);
 
-	if(!manager->scene.entityInUse(miss->target)) return;
+	if(!sceneManager->scene.entityInUse(miss->target)) return;
 
-	auto targetirr = manager->scene.get<IrrlichtComponent>(miss->target);
+	auto targetirr = sceneManager->scene.get<IrrlichtComponent>(miss->target);
 
 	btVector3 path = irrVecToBt(targetirr->node->getPosition()) - body->getCenterOfMassPosition();
 	btVector3 dir = path.normalized();

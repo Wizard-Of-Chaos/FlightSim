@@ -2,10 +2,9 @@
 #include "SceneManager.h"
 #include "GameController.h"
 
-bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
+bool initializeBtRigidBody(EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
 {
-	Scene* scene = &manager->scene;
-	ISceneManager* smgr = manager->controller->smgr;
+	Scene* scene = &sceneManager->scene;
 
 	auto objIrr = scene->get<IrrlichtComponent>(entityId);
 
@@ -32,7 +31,7 @@ bool initializeBtRigidBody(SceneManager* manager, EntityId entityId, btConvexHul
 	rbc->rigidBody.setUserIndex2(getEntityVersion(entityId));
 	rbc->rigidBody.setUserIndex3(1);
 
-	manager->bulletWorld->addRigidBody(&(rbc->rigidBody));
+	bWorld->addRigidBody(&(rbc->rigidBody));
 
 	return true;
 }

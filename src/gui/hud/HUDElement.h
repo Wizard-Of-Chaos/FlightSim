@@ -7,8 +7,6 @@
 #include "InputComponent.h"
 #include "ECS.h"
 
-class SceneManager;
-
 enum class HUD_ELEM_TYPE
 {
 	ACTIVE_SELECTION,
@@ -27,9 +25,9 @@ class HUDElement
 {
 public:
 	HUD_ELEM_TYPE type;
-	HUDElement(SceneManager* man, IGUIElement* root) {}
+	HUDElement(IGUIElement* root) {}
 	virtual ~HUDElement() {}
-	virtual void updateElement(SceneManager* manager, EntityId playerId) = 0;
+	virtual void updateElement(EntityId playerId) = 0;
 };
 
 #endif

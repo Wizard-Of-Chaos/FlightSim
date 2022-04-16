@@ -5,10 +5,6 @@
 #include "BaseHeader.h"
 #include "IrrlichtUtils.h"
 
-class GuiController;
-class GameStateController;
-
-
 /*
 * The base class for all GUI dialogs. Includes a show/hide function as well as a root GUI element and a pointer to the controller.
 * All buttons and text and whatnot NEEDS to have the root GUI element as a parent, so the dialog can be shown or hidden.
@@ -17,7 +13,7 @@ class GuiDialog
 {
 	public:
 
-		GuiDialog(GuiController* controller);
+		GuiDialog();
 
 		//This function MUST be implemented. How that gets done can vary.
 		//For an example, go check GuiMainMenu.h
@@ -35,7 +31,6 @@ class GuiDialog
 		//The root node is an effectively empty node that show and hide gets called on. All following GUI elements
 		//need to be set as a child of the root node.
 		IGUIElement* root;
-		GuiController* guiController;
 };
 
 #endif

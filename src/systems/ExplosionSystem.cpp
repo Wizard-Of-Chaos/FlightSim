@@ -3,7 +3,7 @@
 #include "ExplosionSystem.h"
 #include <iostream>
 
-void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
+void ExplodeAOE(ExplosionComponent* exp)
 {
 	btVector3 center = irrVecToBt(exp->explosion->getPosition());
 	btSphereShape shape(exp->radius);
@@ -12,12 +12,12 @@ void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
 	transform.setOrigin(center);
 	ghost.setCollisionShape(&shape);
 	ghost.setWorldTransform(transform);
-	manager->bulletWorld->addCollisionObject(&ghost);
+	bWorld->addCollisionObject(&ghost);
 	for (u32 i = 0; i < ghost.getNumOverlappingObjects(); ++i) {
 		btCollisionObject* obj = ghost.getOverlappingObject(i);
 		EntityId objId = getIdFromBt(obj);
-		if (!manager->scene.entityInUse(objId)) continue;
-		auto objRBC = manager->scene.get<BulletRigidBodyComponent>(objId);
+		if (!sceneManager->scene.entityInUse(objId)) continue;
+		auto objRBC = sceneManager->scene.get<BulletRigidBodyComponent>(objId);
 		if (!objRBC) continue;
 		btVector3 dist = objRBC->rigidBody.getCenterOfMassPosition() - center;
 		btVector3 dir = dist.normalized();
@@ -30,22 +30,22 @@ void ExplodeAOE(ExplosionComponent* exp, SceneManager* manager)
 		objRBC->rigidBody.applyTorqueImpulse(dir * (exp->force * distfactor / 10.f));
 		objRBC->rigidBody.activate(true);
 
-		auto dmg = manager->scene.get<DamageTrackingComponent>(objId);
+		auto dmg = sceneManager->scene.get<DamageTrackingComponent>(objId);
 		if (dmg) {
 			dmg->registerDamageInstance(DamageInstance(INVALID_ENTITY, objId, DAMAGE_TYPE::EXPLOSIVE,
-				exp->damage * distfactor, manager->controller->device->getTimer()->getTime()));
+				exp->damage * distfactor, device->getTimer()->getTime()));
 		}
 
 	}
-	manager->bulletWorld->removeCollisionObject(&ghost);
+	bWorld->removeCollisionObject(&ghost);
 }
 
-void explosionSystem(SceneManager* manager, f32 dt)
+void explosionSystem(f32 dt)
 {
-	for (auto id : SceneView<ExplosionComponent>(manager->scene))
+	for (auto id : SceneView<ExplosionComponent>(sceneManager->scene))
 	{
-		auto exp = manager->scene.get<ExplosionComponent>(id);
-		if (exp->lifetime == 0 && exp->force > 0) ExplodeAOE(exp, manager);
+		auto exp = sceneManager->scene.get<ExplosionComponent>(id);
+		if (exp->lifetime == 0 && exp->force > 0) ExplodeAOE(exp);
 
 		exp->lifetime += dt;
 		auto em = exp->explosion->getEmitter();
@@ -67,7 +67,7 @@ void explosionSystem(SceneManager* manager, f32 dt)
 		if (exp->lifetime >= exp->duration + 3) {
 			exp->explosion->remove();
 			if(exp->light) exp->light->remove();
-			manager->scene.destroyEntity(id);
+			sceneManager->scene.destroyEntity(id);
 		}
 	}
 }

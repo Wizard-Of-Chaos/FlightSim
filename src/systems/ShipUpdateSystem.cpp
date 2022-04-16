@@ -1,4 +1,5 @@
 #include "ShipUpdateSystem.h"
+#include "SceneManager.h"
 #include <iostream>
 
 void jetOn(IParticleEmitter* jet)
@@ -65,8 +66,9 @@ bool angularSafetyCheck(f32 angVelocity, ShipComponent* ship, btVector3 velDir, 
 	return true;
 }
 
-void shipUpdateSystem(Scene& scene, f32 dt)
+void shipUpdateSystem(f32 dt)
 {
+	Scene& scene = sceneManager->scene;
 	for (auto entityId : SceneView<ShipComponent, BulletRigidBodyComponent>(scene)) {
 		auto ship = scene.get<ShipComponent>(entityId);
 		auto irr = scene.get<IrrlichtComponent>(entityId);
