@@ -87,6 +87,7 @@ void GameController::close()
 		delete pool; //pool's closed
 	}
 	delete sceneManager;
+	sounds.clear();
 	open = false;
 }
 

@@ -29,7 +29,9 @@ void GameStateController::init()
 	loadShipAndWeaponData();
 
 	soundEngine = createIrrKlangDevice();
-	soundEngine->play2D("audio/music/space_boogaloo.ogg", true); //Todo: call this somewhere else
+	auto music = soundEngine->play2D("audio/music/space_boogaloo.ogg", true, true); //Todo: call this somewhere else
+	music->setVolume(.3f);
+	music->setIsPaused(false);
 	gameController = new GameController;
 
 	guiController = new GuiController;

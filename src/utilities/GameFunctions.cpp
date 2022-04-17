@@ -50,6 +50,16 @@ void setDefaults()
 	sceneManager->defaults.crunch->setDefaultMinDistance(100.f);
 	sceneManager->defaults.crunch->setDefaultVolume(5.f);
 
+	sceneManager->defaults.shieldDown = soundEngine->getSoundSource("audio/shield_down.ogg");
+	sceneManager->defaults.shieldDown->setDefaultMinDistance(50.f);
+	sceneManager->defaults.shieldDown->setDefaultVolume(40.f);
+	sceneManager->defaults.shieldhitMinor = soundEngine->getSoundSource("audio/shieldhit_minor.ogg");
+	sceneManager->defaults.shieldhitMinor->setDefaultMinDistance(30.f);
+	sceneManager->defaults.shieldhitMinor->setDefaultVolume(.5f);
+	sceneManager->defaults.shieldhitMajor = soundEngine->getSoundSource("audio/shieldhit_major.ogg");
+	sceneManager->defaults.shieldhitMajor->setDefaultMinDistance(30.f);
+	sceneManager->defaults.shieldhitMajor->setDefaultVolume(5.f);
+
 	sceneManager->defaults.defaultCloudTexture = driver->getTexture("effects/cloud.png");
 
 	sceneManager->defaults.defaultHUDFont = guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");

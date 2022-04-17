@@ -38,6 +38,10 @@ struct GameDefaults
 	ISoundSource* defaultJetSoundLoop;
 	ISoundSource* defaultGunSound;
 
+	ISoundSource* shieldDown;
+	ISoundSource* shieldhitMinor;
+	ISoundSource* shieldhitMajor;
+
 	IGUIFont* defaultHUDFont;
 };
 
