@@ -26,6 +26,12 @@
 
 typedef std::function<void(EntityId)> deathCallback;
 
+struct SoundInstance
+{
+	EntityId id;
+	ISound* sound;
+};
+
 class GameController
 {
 	public:
@@ -49,8 +55,21 @@ class GameController
 		GameConfig gameConfig;
 
 		std::unordered_map<EntityId, deathCallback> deathCallbacks;
+		std::list<SoundInstance> sounds;
+
 		void registerDeathCallback(EntityId id, deathCallback cb) { deathCallbacks[id] = cb; }
 		bool hasDeathCallback(EntityId id) { return (deathCallbacks.find(id) != deathCallbacks.end()); }
+
+		void registerSoundInstance(EntityId id, ISoundSource* snd) {
+			auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+			if (!irr) return;
+
+			ISound* sound = soundEngine->play3D(snd, irr->node->getAbsolutePosition(), false, true);
+			sounds.push_back({ id, sound });
+			sound->drop();
+			sound->setIsPaused(false);
+		}
+
 	private:
 		bool open;
 

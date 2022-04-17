@@ -13,7 +13,7 @@ void projectileCollider(EntityId projectile, EntityId impacted)
 		explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
 	}
 	if (proj->type == WEP_PHYS_IMPULSE) {
-		soundEngine->play3D(sceneManager->defaults.bonk, irr->node->getAbsolutePosition());
+		gameController->registerSoundInstance(impacted, sceneManager->defaults.bonk);
 		explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 80.f, proj->damage, 500.f);
 	}
 

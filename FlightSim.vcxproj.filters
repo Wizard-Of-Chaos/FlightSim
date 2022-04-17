@@ -127,6 +127,9 @@
     <ClCompile Include="src\utilities\ShipUtils.cpp">
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\SoundSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -323,6 +326,9 @@
     </ClInclude>
     <ClInclude Include="src\components\BulletGhostComponent.h">
       <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\SoundSystem.h">
+      <Filter>Headers\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

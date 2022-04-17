@@ -50,7 +50,7 @@ void damageSystem(f32 dt)
 				handleShieldedInstance(inst, hp, shld);
 				break;
 			case DAMAGE_TYPE::IMPACT:
-				if (inst.time >= dmg->lastDamageTime + 500 && !obst) soundEngine->play3D(sceneManager->defaults.crunch, irr->node->getAbsolutePosition());
+				if (inst.time >= dmg->lastDamageTime + 500 && !obst) gameController->registerSoundInstance(id, sceneManager->defaults.crunch);
 				handleInstance(inst, hp);
 				break;
 			case DAMAGE_TYPE::VELOCITY:

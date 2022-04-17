@@ -56,6 +56,8 @@ EntityId createProjectileEntity(vector3df spawnPos, vector3df direction, EntityI
 	f32 spread = (f32)(std::rand() % 10) -5.f;
 	spread /= 300.f;
 
+	rigidBodyInfo->rigidBody.setLinearVelocity(shipRBC->rigidBody.getLinearVelocity());
+
 	switch (projectileInfo->type) {
 	case WEP_PLASMA:
 		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
