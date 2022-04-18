@@ -98,11 +98,19 @@ void fireWeapon(EntityId playerId, InputComponent* input, EntityId wep)
 	//auto-aim for aiming at a contact
 	for (HUDElement* h : player->HUD) {
 		if (h->type == HUD_ELEM_TYPE::ACTIVE_SELECTION) {
+			if (!sceneManager->scene.entityInUse(sensors->targetContact)) continue;
+
 			HUDActiveSelection* act = (HUDActiveSelection*)h;
 			if (act->crosshair->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
 				auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(playerId);
 				auto targetRBC = sceneManager->scene.get<BulletRigidBodyComponent>(sensors->targetContact);
-				btVector3 forwardTarget = targetRBC->rigidBody.getCenterOfMassPosition() + (targetRBC->rigidBody.getLinearVelocity() * .35f);
+				auto targetGhost = sceneManager->scene.get<BulletGhostComponent>(sensors->targetContact);
+				auto targetIrr = sceneManager->scene.get<IrrlichtComponent>(sensors->targetContact);
+
+				btVector3 forwardTarget;
+				if (targetRBC) forwardTarget = targetRBC->rigidBody.getCenterOfMassPosition() + (targetRBC->rigidBody.getLinearVelocity() * .35f);
+				else if (targetGhost && targetIrr) forwardTarget = irrVecToBt(targetIrr->node->getAbsolutePosition());
+
 				forwardTarget += (rbc->rigidBody.getLinearVelocity() * -.35f);
 				target = btVecToIrr(forwardTarget);
 				continue;

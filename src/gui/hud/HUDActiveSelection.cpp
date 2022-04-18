@@ -13,9 +13,13 @@ HUDActiveSelection::HUDActiveSelection(IGUIElement* root) : HUDElement(root)
 	name->setOverrideFont(stateController->assets.getFontAsset("HUDFont"));
 	name->enableOverrideColor(true);
 	crosshair = guienv->addImage(stateController->assets.getHUDAsset("crosshair"), position2di(-200, -200), root);
+	selectHP = guienv->addImage(stateController->assets.getHUDAsset("selectHealth"), position2di(0, 0), root);
+	selectSP = guienv->addImage(stateController->assets.getHUDAsset("selectShields"), position2di(0, 0), root);
 	selectGUI->setVisible(false);
 	name->setVisible(false);
 	crosshair->setVisible(false);
+	selectHP->setVisible(false);
+	selectSP->setVisible(false);
 }
 
 HUDActiveSelection::~HUDActiveSelection()
@@ -23,6 +27,8 @@ HUDActiveSelection::~HUDActiveSelection()
 	selectGUI->remove();
 	name->remove();
 	crosshair->remove();
+	selectHP->remove();
+	selectSP->remove();
 }
 
 void HUDActiveSelection::updateElement(EntityId playerId)
@@ -73,12 +79,16 @@ void HUDActiveSelection::updateElement(EntityId playerId)
 				selectGUI->setVisible(true);
 				name->setVisible(true);
 				crosshair->setVisible(true);
+				selectHP->setVisible(true);
+				selectSP->setVisible(true);
 			}
 		}
 		else if (!selection) {
 			selectGUI->setVisible(false);
 			name->setVisible(false);
 			crosshair->setVisible(false);
+			selectHP->setVisible(false);
+			selectSP->setVisible(false);
 			sensors->targetContact = INVALID_ENTITY;
 		}
 	}
@@ -86,6 +96,8 @@ void HUDActiveSelection::updateElement(EntityId playerId)
 		selectGUI->setVisible(false);
 		name->setVisible(false);
 		crosshair->setVisible(false);
+		selectHP->setVisible(false);
+		selectSP->setVisible(false);
 		return;
 	}
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(sensors->targetContact);
@@ -100,6 +112,29 @@ void HUDActiveSelection::updateElement(EntityId playerId)
 	selectGUI->setRelativePosition(selectionPos);
 	selectionPos.Y -= 16;
 	name->setRelativePosition(selectionPos);
+	selectionPos.Y += 144;
+	position2di hpPos, spPos;
+	hpPos = selectionPos;
+	selectionPos.Y += 8;
+	spPos = selectionPos;
+
+	auto targetHP = sceneManager->scene.get<HealthComponent>(sensors->targetContact);
+	auto targetSP = sceneManager->scene.get<ShieldComponent>(sensors->targetContact);
+
+	if (targetSP) {
+		dimension2du spSize;
+		spSize.set((u32)targetSP->shields / targetSP->maxShields * 128, 8);
+		selectSP->setRelativePosition(rect<s32>(spPos, spSize));
+	} else {
+		selectSP->setVisible(false);
+	}
+	if (targetHP) {
+		dimension2du hpSize;
+		hpSize.set((u32)targetHP->health / targetHP->maxHealth * 128, 8);
+		selectHP->setRelativePosition(rect<s32>(hpPos, hpSize));
+	} else {
+		selectHP->setVisible(false);
+	}
 
 	auto targetRBC = sceneManager->scene.get<BulletRigidBodyComponent>(sensors->targetContact);
 	auto targetGhost = sceneManager->scene.get<BulletGhostComponent>(sensors->targetContact);

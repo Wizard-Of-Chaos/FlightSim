@@ -19,6 +19,8 @@ public:
 	IGUIStaticText* name;
 	IGUIImage* selectGUI;
 	IGUIImage* crosshair;
+	IGUIImage* selectHP;
+	IGUIImage* selectSP;
 };
 
 #endif 

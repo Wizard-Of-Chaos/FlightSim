@@ -41,3 +41,5 @@ impactSound=audio/impact_d.mp3
 shieldDown=audio/shield_down.ogg
 shieldHitMinor=audio/shieldhit_minor.ogg
 shieldHitMajor=audio/shieldhit_major.ogg
+selectHealth=hud/selectHealth.png
+selectShields=hud/selectShields.png
