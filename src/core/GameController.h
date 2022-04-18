@@ -66,7 +66,6 @@ class GameController
 
 			ISound* sound = soundEngine->play3D(snd, irr->node->getAbsolutePosition(), false, true);
 			sounds.push_back({ id, sound });
-			sound->drop();
 			sound->setIsPaused(false);
 		}
 

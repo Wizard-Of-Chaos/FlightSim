@@ -14,6 +14,7 @@ void soundSystem(f32 dt)
 			it = gameController->sounds.erase(it); //I want to re-work the std library so instead of "erase" it's "whip". Whip it! Whip it good!
 			continue;
 		} else if (it->sound->isFinished()) {
+			it->sound->drop();
 			it = gameController->sounds.erase(it);
 			continue;
 		}
