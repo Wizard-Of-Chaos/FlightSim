@@ -42,8 +42,8 @@ public:
 	}
 	void clearObjects()
 	{
-		getBroadphase()->~btBroadphaseInterface();
-		new(getBroadphase())btDbvtBroadphase();
+		//getBroadphase()->~btBroadphaseInterface();
+
 		m_collisionObjects.clear();
 		m_nonStaticRigidBodies.clear();
 		m_sortedConstraints.clear();

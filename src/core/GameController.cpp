@@ -74,8 +74,8 @@ void GameController::close()
 
 	clearPlayerHUD();
 	smgr->clear();
-	delete broadPhase;
 	bWorld->clearObjects();
+	delete broadPhase;
 	delete collisionConfig;
 	delete dispatcher;
 	delete solver;

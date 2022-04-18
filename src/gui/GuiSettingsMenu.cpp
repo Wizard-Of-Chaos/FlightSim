@@ -108,7 +108,7 @@ bool GuiSettingsMenu::onCheckShadows(const SEvent& event)
 bool GuiSettingsMenu::onReturn(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	vConfig->saveConfig("videoconfig.gdat");
+	vConfig->saveConfig("cfg/videoconfig.gdat");
 	guiController->setActiveDialog(GUI_MAIN_MENU);
 	return false;
 }
