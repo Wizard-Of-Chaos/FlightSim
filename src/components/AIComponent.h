@@ -9,7 +9,7 @@
 * The different states an AI might be in. Implemented using steering behaviors in
 * the AI_Systems folder.
 */
-const enum AI_STATE
+enum AI_STATE
 {
 	AI_STATE_IDLE,
 	AI_STATE_PURSUIT,
@@ -19,7 +19,7 @@ const enum AI_STATE
 	AI_STATE_FORM_ON_WING
 };
 
-const enum AI_TYPE //different ships would have different AI patterns
+enum AI_TYPE //different ships would have different AI patterns
 {
 	AI_TYPE_DEFAULT
 };
