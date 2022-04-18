@@ -80,19 +80,34 @@ void throttleToShip(ShipComponent* ship, btRigidBody* body, vector3df& thrust, v
 	setVelocity(ship, localRoll, desiredRoll, SHIP_ROLL_RIGHT, SHIP_ROLL_LEFT);
 }
 
-void fireWeapon(PlayerComponent* player, IrrlichtComponent* playerIrr, InputComponent* input, EntityId wep)
+void fireWeapon(EntityId playerId, InputComponent* input, EntityId wep)
 {
+	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
+	auto sensors = sceneManager->scene.get<SensorComponent>(playerId);
+	auto playerIrr = sceneManager->scene.get<IrrlichtComponent>(playerId);
 	auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
 	auto irrComp = sceneManager->scene.get<IrrlichtComponent>(wep);
+
 	wepInfo->isFiring = true;
 	wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
 	vector3df target = input->cameraRay.getMiddle();
 	ISceneNode* coll = smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
 
 	bool mouseOverHUD = false;
+	//auto aim for aiming at the current active selection
 	//auto-aim for aiming at a contact
 	for (HUDElement* h : player->HUD) {
-		if (h->type != HUD_ELEM_TYPE::CONTACT) continue;
+		if (h->type == HUD_ELEM_TYPE::ACTIVE_SELECTION) {
+			HUDActiveSelection* act = (HUDActiveSelection*)h;
+			if (act->crosshair->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
+				auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(playerId);
+				auto targetRBC = sceneManager->scene.get<BulletRigidBodyComponent>(sensors->targetContact);
+				btVector3 forwardTarget = targetRBC->rigidBody.getCenterOfMassPosition() + (targetRBC->rigidBody.getLinearVelocity() * .35f);
+				forwardTarget += (rbc->rigidBody.getLinearVelocity() * -.35f);
+				target = btVecToIrr(forwardTarget);
+				continue;
+			}
+		} else if (h->type != HUD_ELEM_TYPE::CONTACT) continue;
 
 		HUDContact* cont = (HUDContact*)h;
 		if (cont->contactView->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
@@ -106,10 +121,12 @@ void fireWeapon(PlayerComponent* player, IrrlichtComponent* playerIrr, InputComp
 		}
 		if (mouseOverHUD) break;
 	}
+	/*
 	//auto-aim for aiming at whatever your cursor is hovering over
 	if (!mouseOverHUD && coll && coll != playerIrr->node) {
 		target = coll->getPosition();
 	}
+	*/
 	vector3df dir = target - wepInfo->spawnPosition;
 	dir.normalize();
 	wepInfo->firingDirection = dir;
@@ -124,6 +141,7 @@ void shipControlSystem(f32 dt)
 		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
 		IrrlichtComponent* irr = scene.get<IrrlichtComponent>(entityId);
+		SensorComponent* sensors = scene.get<SensorComponent>(entityId);
 
 		//strafing
 		ship->safetyOverride = input->safetyOverride;
@@ -230,7 +248,7 @@ void shipControlSystem(f32 dt)
 			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 				EntityId wep = ship->weapons[i];
 				if (!scene.entityInUse(wep)) continue;
-				fireWeapon(player, irr, input, wep);
+				fireWeapon(entityId, input, wep);
 			}
 		}
 		else {
@@ -244,7 +262,7 @@ void shipControlSystem(f32 dt)
 		}
 
 		if (input->rightMouseDown) {
-			fireWeapon(player, irr, input, ship->physWeapon);
+			fireWeapon(entityId, input, ship->physWeapon);
 		}
 		else {
 			auto wepInfo = scene.get<WeaponInfoComponent>(ship->physWeapon);

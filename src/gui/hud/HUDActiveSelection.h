@@ -18,6 +18,7 @@ public:
 
 	IGUIStaticText* name;
 	IGUIImage* selectGUI;
+	IGUIImage* crosshair;
 };
 
 #endif 
