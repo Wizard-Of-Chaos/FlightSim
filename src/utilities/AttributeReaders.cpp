@@ -237,17 +237,18 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 	if (!wep || !irr || !parent) return false;
 	
 	parent->parentId = shipEntity;
-	
+
+	auto mesh = smgr->getMeshManipulator()->createMeshWithTangents(smgr->getMesh(data->weaponMesh.c_str()));
+	irr->node = smgr->addMeshSceneNode(mesh);
+	irr->node->setMaterialTexture(0, driver->getTexture(data->weaponTexture.c_str()));
+
 	ITexture* norm = driver->getTexture(data->weaponNorm.c_str());
 	if (norm) {
-		irr->node = smgr->addMeshSceneNode(smgr->getMeshManipulator()->createMeshWithTangents(smgr->getMesh(data->weaponMesh.c_str())));
+		driver->makeNormalMapTexture(norm, 7.f);
 		irr->node->setMaterialTexture(1, norm);
 		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
 	}
-	else {
-		irr->node = smgr->addMeshSceneNode(smgr->getMesh(data->weaponMesh.c_str()));
-	}
-	irr->node->setMaterialTexture(0, driver->getTexture(data->weaponTexture.c_str()));
+
 	irr->node->setName(idToStr(weaponEntity).c_str());
 	irr->node->setID(ID_IsNotSelectable);
 
