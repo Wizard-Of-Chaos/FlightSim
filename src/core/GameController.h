@@ -14,6 +14,7 @@
 #include "Scenario.h"
 #include "Config.h"
 #include <functional>
+#include <list>
 
 /*
 * The GameController class holds all the necessary information about what's actually going on in the game. It has pointers to the
