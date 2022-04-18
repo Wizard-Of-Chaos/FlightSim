@@ -1,6 +1,8 @@
 #include "HUDHealthBar.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include "GameStateController.h"
+
 #include <iostream>
 #include <string>
 
@@ -8,19 +10,20 @@ HUDHealthBar::HUDHealthBar(IGUIElement* root) : HUDElement(root)
 {
 	type = HUD_ELEM_TYPE::HEALTH_BAR;
 	rect<s32> screenrect = root->getRelativePosition();
-	health = guienv->addImage(sceneManager->defaults.defaultHealthBarTexture, position2di(0, screenrect.getHeight()-64), root);
+	health = guienv->addImage(stateController->assets.getHUDAsset("healthbar"), position2di(0, screenrect.getHeight() - 64), root);
 	healthNum = guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 96), dimension2du(300,24)),false, true, root);
-	fuel = guienv->addImage(sceneManager->defaults.defaultFuelBarTexture, position2di(0, screenrect.getHeight() - 160), root);
+	fuel = guienv->addImage(stateController->assets.getHUDAsset("fuelbar"), position2di(0, screenrect.getHeight() - 160), root);
 	fuelNum = guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 192), dimension2du(300, 24)), false, true, root);
-	shield = guienv->addImage(sceneManager->defaults.defaultVelocityBarTexture, position2di(300, screenrect.getHeight() - 64), root);
+	shield = guienv->addImage(stateController->assets.getHUDAsset("velocitybar"), position2di(300, screenrect.getHeight() - 64), root);
 	shieldNum = guienv->addStaticText(L"", rect<s32>(position2di(300, screenrect.getHeight() - 96), dimension2du(300, 24)), false, true, root);
 
 	fuelNum->setOverrideColor(SColor(255, 200, 200, 200));
 	healthNum->setOverrideColor(SColor(255, 200, 200, 200));
 	shieldNum->setOverrideColor(SColor(255, 200, 200, 200));
-	healthNum->setOverrideFont(sceneManager->defaults.defaultHUDFont);
-	fuelNum->setOverrideFont(sceneManager->defaults.defaultHUDFont);
-	shieldNum->setOverrideFont(sceneManager->defaults.defaultHUDFont);
+	IGUIFont* fnt = stateController->assets.getFontAsset("HUDFont");
+	healthNum->setOverrideFont(fnt);
+	fuelNum->setOverrideFont(fnt);
+	shieldNum->setOverrideFont(fnt);
 	health->setScaleImage(false);
 	fuel->setScaleImage(false);
 	shield->setScaleImage(false);

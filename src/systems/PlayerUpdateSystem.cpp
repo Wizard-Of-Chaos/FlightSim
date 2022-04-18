@@ -21,7 +21,7 @@ void playerUpdateSystem(Scene& scene, f32 frameDelta)
 		for (ContactInfo info : sensors->contacts) {
 			EntityId id = std::get<0>(info);
 			if (player->trackedContacts[id] == nullptr && scene.entityInUse(id)) {
-				HUDContact* ct = new HUDContact(player->rootHUD, id);
+				HUDContact* ct = new HUDContact(player->rootHUD, id, entityId);
 				player->HUD.push_back(ct);
 				player->trackedContacts[id] = ct;
 			}

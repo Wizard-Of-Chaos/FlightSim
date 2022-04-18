@@ -35,9 +35,10 @@ u32 loadShipData(std::string path, gvReader& in)
 	std::string meshpath = "models/" + in.values["model"];
 	std::string texpath = "models/" + in.values["texture"];
 	std::string normpath = "models/" + in.values["norm"];
-
-	data->shipMesh = smgr->getMesh(meshpath.c_str());
-	data->shipTexture = driver->getTexture(texpath.c_str());
+	data->shipMesh = meshpath;
+	data->shipTexture = texpath;
+	data->shipNorm = normpath;
+	/*
 	data->shipNorm = driver->getTexture(normpath.c_str());
 	if (data->shipNorm) {
 		driver->makeNormalMapTexture(data->shipNorm, 7.f);
@@ -45,13 +46,13 @@ u32 loadShipData(std::string path, gvReader& in)
 		smgr->getMeshCache()->removeMesh(data->shipMesh);
 		data->shipMesh = tmesh;
 	}
-	//data->collisionShape = createCollisionShapeFromMesh(data->shipMesh);
+	*/
 
 	std::string jetpath = "effects/" + in.values["jet"];
 	std::string enginepath = "effects/" + in.values["engine"];
 
-	data->engineTexture = driver->getTexture(enginepath.c_str());
-	data->jetTexture = driver->getTexture(jetpath.c_str());
+	data->engineTexture = enginepath;
+	data->jetTexture = enginepath;
 
 	data->shipComponent.forwardThrust = std::stof(in.values["forwardThrust"]);
 	data->shipComponent.brakeThrust = std::stof(in.values["brakeThrust"]);
@@ -136,28 +137,30 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	std::string texpath = "models/" + in.values["texture"];
 	std::string normpath = "models/" + in.values["norm"];
 
-	data->weaponMesh = smgr->getMesh(meshpath.c_str());
-	data->weaponTexture = driver->getTexture(meshpath.c_str());
-	data->weaponNorm = driver->getTexture(normpath.c_str());
+	data->weaponMesh = meshpath;
+	data->weaponTexture = texpath;
+	data->weaponNorm = normpath;
+
+	/*
 	if (data->weaponNorm) {
 		driver->makeNormalMapTexture(data->weaponNorm, 7.f);
 		IMesh* tmesh = smgr->getMeshManipulator()->createMeshWithTangents(data->weaponMesh); //drop this somewhere
 		smgr->getMeshCache()->removeMesh(data->weaponMesh);
 		data->weaponMesh = tmesh;
 	}
+	*/
 	std::string effectpath = "effects/" + in.values["particle"];
-	data->weaponEffect = driver->getTexture(effectpath.c_str());
+	data->weaponEffect = effectpath;
 	
 	if (type == WEP_MISSILE) {
 		std::string misspath = "models/" + in.values["missilemodel"];
 		std::string misstexpath = "models/" + in.values["missiletexture"];
 		MissileData* miss = (MissileData*)data;
-		miss->missileMesh = smgr->getMesh(misspath.c_str());
-		miss->missileTexture = driver->getTexture(misstexpath.c_str());
+		miss->missileMesh = misspath;
+		miss->missileTexture = misstexpath;
 		miss->missileComponent.maxMissileVelocity = std::stof(in.values["maxMissileVelocity"]);
 		miss->missileComponent.missileRotThrust = std::stof(in.values["missileRotThrust"]);
 		miss->missileComponent.timeToLock = std::stof(in.values["timeToLock"]);
-		miss->missileComponent.missileMesh = miss->missileMesh;
 	}
 	if (type == WEP_KINETIC) {
 		KineticData* kin = (KineticData*)data;
@@ -177,7 +180,6 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	data->weaponComponent.damage = std::stof(in.values["damage"]);
 	data->weaponComponent.range = std::stof(in.values["range"]);
 	data->weaponComponent.timeSinceLastShot = 0.f;
-	data->weaponComponent.particle = data->weaponEffect;
 
 	bool phys = std::stoi(in.values["phys"]);
 	if (id == 0) {
@@ -202,12 +204,19 @@ bool loadShip(u32 id, EntityId entity)
 	if (!irr || !ship) return false;
 	*ship = data->shipComponent;
 
-	irr->node = smgr->addMeshSceneNode(data->shipMesh);
-	irr->node->setMaterialTexture(0, data->shipTexture);
-	if (data->shipNorm) {
-		irr->node->setMaterialTexture(1, data->shipNorm);
+	ITexture* norm = driver->getTexture(data->shipNorm.c_str());
+
+	if (norm) {
+		irr->node = smgr->addMeshSceneNode(smgr->getMeshManipulator()->createMeshWithTangents(smgr->getMesh(data->shipMesh.c_str())));
+		driver->makeNormalMapTexture(norm, 7.f);
+		irr->node->setMaterialTexture(1, norm);
 		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
 	}
+	else {
+		irr->node = smgr->addMeshSceneNode(smgr->getMesh(data->shipMesh.c_str()));
+	}
+	irr->node->setMaterialTexture(0, driver->getTexture(data->shipTexture.c_str()));
+
 	irr->node->setName(idToStr(entity).c_str());
 	irr->node->setID(ID_IsSelectable | ID_IsAvoidable);
 
@@ -229,20 +238,26 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 	
 	parent->parentId = shipEntity;
 	
-	irr->node = smgr->addMeshSceneNode(data->weaponMesh);
-	irr->node->setMaterialTexture(0, data->weaponTexture);
-	irr->node->setName(idToStr(weaponEntity).c_str());
-	irr->node->setID(ID_IsNotSelectable);
-	if (data->weaponNorm) {
-		irr->node->setMaterialTexture(1, data->weaponNorm);
+	ITexture* norm = driver->getTexture(data->weaponNorm.c_str());
+	if (norm) {
+		irr->node = smgr->addMeshSceneNode(smgr->getMeshManipulator()->createMeshWithTangents(smgr->getMesh(data->weaponMesh.c_str())));
+		irr->node->setMaterialTexture(1, norm);
 		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
 	}
+	else {
+		irr->node = smgr->addMeshSceneNode(smgr->getMesh(data->weaponMesh.c_str()));
+	}
+	irr->node->setMaterialTexture(0, driver->getTexture(data->weaponTexture.c_str()));
+	irr->node->setName(idToStr(weaponEntity).c_str());
+	irr->node->setID(ID_IsNotSelectable);
 
 	*wep = data->weaponComponent;
 	if (data->weaponComponent.type == WEP_MISSILE) {
 		auto miss = sceneManager->scene.assign<MissileInfoComponent>(weaponEntity);
 		MissileData* mdata = (MissileData*)data;
 		*miss = mdata->missileComponent;
+		miss->missileMesh = smgr->getMesh(mdata->missileMesh.c_str());
+		miss->missileTexture = driver->getTexture(mdata->missileTexture.c_str());
 	}
 	if (data->weaponComponent.type == WEP_KINETIC) {
 		auto kin = sceneManager->scene.assign<KineticInfoComponent>(weaponEntity);
@@ -250,6 +265,7 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 		*kin = kdata->kineticComponent;
 		kin->clip = kin->maxClip;
 	}
+	wep->particle = driver->getTexture(data->weaponEffect.c_str());
 
 	return true; 
 }

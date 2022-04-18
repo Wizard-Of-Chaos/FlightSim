@@ -1,6 +1,7 @@
 #include "GameController.h"
 #include "GameStateController.h"
 #include "ObstacleUtils.h"
+
 #include <iostream>
 #include <random>
 
@@ -64,7 +65,6 @@ void GameController::init()
 	collCb = new broadCallback();
 	bWorld->getPairCache()->setOverlapFilterCallback(collCb);
 
-	setDefaults();
 	open = true;
 }
 
@@ -88,6 +88,7 @@ void GameController::close()
 	}
 	delete sceneManager;
 	sounds.clear();
+	stateController->assets.clearLoadedGameAssets();
 	open = false;
 }
 

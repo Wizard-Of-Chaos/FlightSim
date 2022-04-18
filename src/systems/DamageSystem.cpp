@@ -1,6 +1,8 @@
 #include "DamageSystem.h"
 #include "GameController.h"
 #include "SceneManager.h"
+#include "GameStateController.h"
+
 #include <iostream>
 
 void handleInstance(DamageInstance& inst, HealthComponent* hp)
@@ -16,13 +18,13 @@ void handleShieldedInstance(EntityId id, DamageInstance& inst, HealthComponent* 
 		if (shield->shields <= 0) shieldsDown = true;
 		shield->shields -= inst.amount;
 		if (shield->shields <= 0) {
-			if(!shieldsDown) gameController->registerSoundInstance(id, sceneManager->defaults.shieldDown);
+			if(!shieldsDown) gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("shieldDown"), 1.f, 50.f);
 			overflow += -shield->shields;
 			shield->shields = 0;
 		}
 		else {
-			if (inst.amount > 10.f) gameController->registerSoundInstance(id, sceneManager->defaults.shieldhitMajor);
-			else gameController->registerSoundInstance(id, sceneManager->defaults.shieldhitMinor);
+			if (inst.amount > 10.f) gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("shieldHitMajor"), 1.f, 25.f);
+			else gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("shieldHitMinor"), 1.f, 25.f);
 		}
 		shield->timeSinceLastHit = 0;
 	}
@@ -56,7 +58,7 @@ void damageSystem(f32 dt)
 				handleShieldedInstance(id, inst, hp, shld, dmg->lastDamageTime);
 				break;
 			case DAMAGE_TYPE::IMPACT:
-				if (inst.time >= dmg->lastDamageTime + 500 && !obst) gameController->registerSoundInstance(id, sceneManager->defaults.crunch);
+				if (inst.time >= dmg->lastDamageTime + 500 && !obst) gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("impactSound"), 1.f, 50.f);
 				handleInstance(inst, hp);
 				break;
 			case DAMAGE_TYPE::VELOCITY:

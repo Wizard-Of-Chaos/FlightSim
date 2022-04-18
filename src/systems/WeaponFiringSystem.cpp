@@ -1,7 +1,9 @@
 #include "WeaponFiringSystem.h"
 #include "GameController.h"
+#include "GameStateController.h"
 #include "SceneManager.h"
 #include "IrrlichtUtils.h"
+
 #include <iostream>
 
 void fireAndReload(EntityId id, WeaponInfoComponent* wep, f32 dt)
@@ -9,7 +11,7 @@ void fireAndReload(EntityId id, WeaponInfoComponent* wep, f32 dt)
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 	auto kinInfo = sceneManager->scene.get<KineticInfoComponent>(id);
 	if (kinInfo->clip > 0) {
-		gameController->registerSoundInstance(id, sceneManager->defaults.defaultGunSound);
+		gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f);
 		createProjectileEntity(wep->spawnPosition, wep->firingDirection, id);
 		kinInfo->clip -= 1;
 		kinInfo->timeReloading = 0;
@@ -43,7 +45,7 @@ void weaponFiringSystem(f32 dt)
 				fireAndReload(entityId, wepInfo, dt);
 			}
 			else {
-				gameController->registerSoundInstance(entityId, sceneManager->defaults.defaultLaserSound);
+				gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);
 				createProjectileEntity(wepInfo->spawnPosition, wepInfo->firingDirection, entityId);
 			}
 			wepInfo->timeSinceLastShot = 0.f;

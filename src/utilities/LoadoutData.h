@@ -18,11 +18,12 @@ struct ShipData
 	std::string description;
 	ShipComponent shipComponent;
 	btConvexHullShape collisionShape;
-	IMesh* shipMesh;
-	ITexture* shipTexture;
-	ITexture* engineTexture;
-	ITexture* jetTexture;
-	ITexture* shipNorm;
+
+	std::string shipMesh;
+	std::string shipTexture;
+	std::string engineTexture;
+	std::string jetTexture;
+	std::string shipNorm;
 };
 
 /*
@@ -35,10 +36,11 @@ struct WeaponData
 	std::string name;
 	std::string description;
 	WeaponInfoComponent weaponComponent;
-	IMesh* weaponMesh;
-	ITexture* weaponTexture;
-	ITexture* weaponEffect;
-	ITexture* weaponNorm;
+
+	std::string weaponMesh;
+	std::string weaponTexture;
+	std::string weaponEffect;
+	std::string weaponNorm;
 };
 
 /*
@@ -48,8 +50,8 @@ struct WeaponData
 struct MissileData : public WeaponData
 {
 	MissileInfoComponent missileComponent;
-	IMesh* missileMesh;
-	ITexture* missileTexture;
+	std::string missileMesh;
+	std::string missileTexture;
 };
 
 struct KineticData : public WeaponData
@@ -60,8 +62,9 @@ struct KineticData : public WeaponData
 struct ObstacleData
 {
 	u32 id;
-	IMesh* obstacleMesh;
-	ITexture* obstacleTexture;
+	std::string obstacleMesh;
+	std::string obstacleTexture;
+
 	OBSTACLE type;
 	f32 health;
 };

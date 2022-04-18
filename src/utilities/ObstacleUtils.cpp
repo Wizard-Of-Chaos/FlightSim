@@ -2,6 +2,8 @@
 #include "SceneManager.h"
 #include "GameController.h"
 #include "BulletGhostComponent.h"
+#include "GameStateController.h"
+
 
 EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
@@ -13,8 +15,8 @@ EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale,
 	obst->type = OBSTACLE::ASTEROID;
 
 	auto irrComp = scene->assign<IrrlichtComponent>(roidEntity);
-	irrComp->node = smgr->addMeshSceneNode(sceneManager->defaults.defaultObstacleMesh);
-	irrComp->node->setMaterialTexture(0, sceneManager->defaults.defaultObstacleTexture);
+	irrComp->node = smgr->addMeshSceneNode(stateController->assets.getMeshAsset("asteroidMesh"));
+	irrComp->node->setMaterialTexture(0, stateController->assets.getTextureAsset("asteroidTexture"));
 	irrComp->node->setID(ID_IsSelectable | ID_IsAvoidable);
 	irrComp->node->setPosition(position);
 	irrComp->node->setName(idToStr(roidEntity).c_str());
@@ -28,7 +30,7 @@ EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale,
 	//manager->controller->driver->addOcclusionQuery(irrComp->node, n->getMesh());
 
 	btVector3 btscale(irrVecToBt(scale));
-	initializeBtRigidBody(roidEntity, sceneManager->defaults.defaultObstacleHull, btscale, mass);
+	initializeBtRigidBody(roidEntity, stateController->assets.getHullAsset("asteroidHull"), btscale, mass);
 	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(roidEntity);
 	rbc->rigidBody.setActivationState(0);
 
@@ -62,7 +64,7 @@ EntityId createGasCloud(vector3df position, vector3df scale)
 	paf->drop();
 	ps->setMaterialFlag(EMF_LIGHTING, false);
 	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	ps->setMaterialTexture(0, sceneManager->defaults.defaultCloudTexture);
+	ps->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultCloud"));
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	auto ghost = scene->assign<BulletGhostComponent>(cloud);

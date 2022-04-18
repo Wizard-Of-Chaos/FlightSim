@@ -61,11 +61,13 @@ class GameController
 		void registerDeathCallback(EntityId id, deathCallback cb) { deathCallbacks[id] = cb; }
 		bool hasDeathCallback(EntityId id) { return (deathCallbacks.find(id) != deathCallbacks.end()); }
 
-		void registerSoundInstance(EntityId id, ISoundSource* snd) {
+		void registerSoundInstance(EntityId id, ISoundSource* snd, f32 volume, f32 radius) {
 			auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 			if (!irr) return;
 
 			ISound* sound = soundEngine->play3D(snd, irr->node->getAbsolutePosition(), false, true);
+			sound->setVolume(volume);
+			sound->setMinDistance(radius);
 			sounds.push_back({ id, sound });
 			sound->setIsPaused(false);
 		}

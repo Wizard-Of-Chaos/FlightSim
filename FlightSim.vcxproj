@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\components\PlayerComponent.cpp" />
+    <ClCompile Include="src\core\GameAssets.cpp" />
     <ClCompile Include="src\core\Networking.cpp" />
     <ClCompile Include="src\gui\GuiDeathMenu.cpp" />
     <ClCompile Include="src\gui\GuiDialog.cpp" />
@@ -255,7 +256,7 @@
     <ClInclude Include="src\utilities\btUtils.h" />
     <ClInclude Include="src\utilities\Config.h" />
     <ClInclude Include="src\utilities\GvReader.h" />
-    <ClInclude Include="src\utilities\GameDefaults.h" />
+    <ClInclude Include="src\utilities\GameAssets.h" />
     <ClInclude Include="src\utilities\GameFunctions.h" />
     <ClInclude Include="src\utilities\IrrlichtUtils.h" />
     <ClInclude Include="src\utilities\LoadoutData.h" />

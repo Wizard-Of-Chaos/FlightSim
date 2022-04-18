@@ -1,15 +1,16 @@
 #include "HUDActiveSelection.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include "GameStateController.h"
 #include <iostream>
 
 HUDActiveSelection::HUDActiveSelection(IGUIElement* root) : HUDElement(root)
 {
 	type = HUD_ELEM_TYPE::ACTIVE_SELECTION;
-	selectGUI = guienv->addImage(sceneManager->defaults.defaultSelectionTexture, position2di(0, 0), root);
+	selectGUI = guienv->addImage(stateController->assets.getHUDAsset("neutralSelection"), position2di(0, 0), root);
 	name = guienv->addStaticText(L"", rect<s32>(position2di(0, 0), dimension2du(128, 128)), false, false, root);
 	name->setOverrideColor(SColor(255, 100, 255, 100));
-	name->setOverrideFont(sceneManager->defaults.defaultHUDFont);
+	name->setOverrideFont(stateController->assets.getFontAsset("HUDFont"));
 	name->enableOverrideColor(true);
 	//activeSelection = INVALID_ENTITY;
 	selectGUI->setVisible(false);

@@ -2,10 +2,12 @@
 #include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
+
 #include "IrrlichtUtils.h"
 #include <iostream>
 
 //Sets the defaults in the scene manager for ship meshes.
+/*
 void setDefaults()
 {
 	sceneManager->defaults.defaultShipMesh = smgr->getMesh("models/tux/Tuxedo.obj");
@@ -64,7 +66,7 @@ void setDefaults()
 
 	sceneManager->defaults.defaultHUDFont = guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");
 }
-
+*/
 
 //Convenience functions to swap back and forth between irrlicht and bullet vectors.
 vector3df btVecToIrr(btVector3 vec)
@@ -215,7 +217,7 @@ EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 da
 	paf->drop();
 	exp->explosion->setMaterialFlag(EMF_LIGHTING, false);
 	exp->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	exp->explosion->setMaterialTexture(0, sceneManager->defaults.defaultExplosion);
+	exp->explosion->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultExplosion"));
 	exp->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	exp->light = smgr->addLightSceneNode(0, position, SColorf(1.f, .9f, .1f));

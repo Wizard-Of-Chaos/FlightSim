@@ -130,6 +130,9 @@
     <ClCompile Include="src\systems\SoundSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\GameAssets.cpp">
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -153,7 +156,7 @@
     <ClInclude Include="src\core\GameController.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\GameDefaults.h">
+    <ClInclude Include="src\utilities\GameAssets.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\core\GameStateController.h">

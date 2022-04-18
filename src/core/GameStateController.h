@@ -7,6 +7,7 @@
 #include "GuiController.h"
 #include "Config.h"
 #include "LoadoutData.h"
+#include "GameAssets.h"
 #include <filesystem>
 
 /*
@@ -56,6 +57,7 @@ class GameStateController : public IEventReceiver
 		std::unordered_map<u32, ShipData*> shipData;
 		std::unordered_map<u32, WeaponData*> weaponData;
 		std::unordered_map<u32, WeaponData*> physWeaponData;
+		Assets assets;
 #if _DEBUG
 		void addDebugLine(line3df line) { debugLines.push_back(line); }
 #endif 

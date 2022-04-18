@@ -1,14 +1,29 @@
 #include "HUDContact.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include "GameStateController.h"
+
 #include <iostream>
 
-HUDContact::HUDContact(IGUIElement* root, EntityId contactId) : HUDElement(root) 
+HUDContact::HUDContact(IGUIElement* root, EntityId contactId, EntityId playerId) : HUDElement(root) 
 {
 	type = HUD_ELEM_TYPE::CONTACT;
-	offscreenMarker = guienv->addImage(sceneManager->defaults.defaultContactMarkerTexture, position2di(0, 0), root);
-	contactView = guienv->addImage(sceneManager->defaults.defaultContactTexture, position2di(0, 0), root);
+
 	contact = contactId;
+	auto ctctFac = sceneManager->scene.get<FactionComponent>(contactId);
+	auto playerFac = sceneManager->scene.get<FactionComponent>(playerId);
+	if (playerFac->isHostile(ctctFac)) {
+		offscreenMarker = guienv->addImage(stateController->assets.getHUDAsset("hostileMarker"), position2di(0, 0), root);
+		contactView = guienv->addImage(stateController->assets.getHUDAsset("hostileContact"), position2di(0, 0), root);
+	}
+	else if(playerFac->isFriendly(ctctFac)) {
+		offscreenMarker = guienv->addImage(stateController->assets.getHUDAsset("friendlyMarker"), position2di(0, 0), root);
+		contactView = guienv->addImage(stateController->assets.getHUDAsset("friendlyContact"), position2di(0, 0), root);
+	}
+	else {
+		offscreenMarker = guienv->addImage(stateController->assets.getHUDAsset("neutralMarker"), position2di(0, 0), root);
+		contactView = guienv->addImage(stateController->assets.getHUDAsset("neutralContact"), position2di(0, 0), root);
+	}
 }
 
 HUDContact::~HUDContact()

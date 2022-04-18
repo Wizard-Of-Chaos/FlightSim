@@ -1,6 +1,8 @@
 #include "ProjectileUtils.h"
 #include "GameController.h"
 #include "SceneManager.h"
+#include "GameStateController.h"
+
 #include <iostream>
 
 EntityId createProjectileEntity(vector3df spawnPos, vector3df direction, EntityId weaponId)
@@ -228,7 +230,7 @@ EntityId projectileImpact(vector3df position, f32 duration)
 	paf->drop();
 	explodeinfo->explosion->setMaterialFlag(EMF_LIGHTING, false);
 	explodeinfo->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	explodeinfo->explosion->setMaterialTexture(0, sceneManager->defaults.defaultProjectileTexture);
+	explodeinfo->explosion->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultProjectileTexture"));
 	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	explodeinfo->light = nullptr;

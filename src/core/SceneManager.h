@@ -17,7 +17,6 @@
 #include "HealthAndShieldSystems.h"
 #include "SoundSystem.h"
 #include "DamageSystem.h"
-#include "GameDefaults.h"
 /*
 * The poorly-named SceneManager (seriously, Irrlicht already took that name!) manages the ECS scene. It calls the various systems
 * to update all the components in the scene, as well as holds the default textures and such for the scene. Update is called from the main
@@ -30,7 +29,6 @@ class SceneManager {
 		void update(f32 dt, f32 frameDelta);
 		f32 dt = 0;
 		Scene scene;
-		GameDefaults defaults;
 };
 
 #endif

@@ -12,7 +12,7 @@
 class HUDContact : public HUDElement
 {
 public:
-	HUDContact(IGUIElement* root, EntityId contactId);
+	HUDContact(IGUIElement* root, EntityId contactId, EntityId playerId);
 	~HUDContact() override;
 	virtual void updateElement(EntityId playerId);
 	EntityId contact;

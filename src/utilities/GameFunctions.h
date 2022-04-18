@@ -15,11 +15,8 @@
 #include "HUDHeader.h"
 
 /*
-* A big file of convenience functions that are used with the game.
+* A file of convenience functions that are used with the game.
 */
-
-//Sets the default meshes for objects.
-void setDefaults();
 
 //Translates a bullet vector to an irrlicht vector.
 vector3df btVecToIrr(btVector3 vec);

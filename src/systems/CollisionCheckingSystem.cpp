@@ -1,6 +1,8 @@
 #include "CollisionCheckingSystem.h"
 #include "SceneManager.h"
 #include "GameController.h"
+#include "GameStateController.h"
+
 #include <iostream>
 
 void projectileCollider(EntityId projectile, EntityId impacted)
@@ -13,7 +15,7 @@ void projectileCollider(EntityId projectile, EntityId impacted)
 		explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
 	}
 	if (proj->type == WEP_PHYS_IMPULSE) {
-		gameController->registerSoundInstance(impacted, sceneManager->defaults.bonk);
+		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("physicsBlastSound"), 1.f, 200.f);
 		explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 80.f, proj->damage, 500.f);
 	}
 

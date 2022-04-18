@@ -1,4 +1,5 @@
 #include "GameStateController.h"
+
 #include <iostream>
 
 GameStateController::GameStateController(VideoConfig vconf)
@@ -27,9 +28,11 @@ void GameStateController::init()
 	playerPhysWeapon = 1;
 
 	loadShipAndWeaponData();
-
 	soundEngine = createIrrKlangDevice();
-	auto music = soundEngine->play2D("audio/music/space_boogaloo.ogg", true, true); //Todo: call this somewhere else
+
+	assets.setFilenames();
+
+	auto music = soundEngine->play2D(assets.getSoundAsset("menuMusic"), true, true); //Todo: call this somewhere else
 	music->setVolume(.3f);
 	music->setIsPaused(false);
 	gameController = new GameController;
@@ -37,11 +40,11 @@ void GameStateController::init()
 	guiController = new GuiController;
 	guiController->init();
 
-	IGUIFont* defaultFont = guienv->getFont("fonts/Courier16px/Courier16px.xml");
+	IGUIFont* defaultFont = assets.getFontAsset("defaultFont");
 	if (defaultFont) {
 		guienv->getSkin()->setFont(defaultFont);
 	}
-	IGUIFont* tooltipDefaultFont = guienv->getFont("fonts/Courier8px/Courier8px.xml");
+	IGUIFont* tooltipDefaultFont = assets.getFontAsset("defaultTooltipFont");
 	if (tooltipDefaultFont) {
 		guienv->getSkin()->setFont(tooltipDefaultFont, EGDF_TOOLTIP);
 	}
@@ -69,8 +72,10 @@ void GameStateController::loadShipAndWeaponData()
 			}
 			else {
 				std::cout << "Could not load hull for " << file.path().string() << ". Building hull... ";
-				shipData[id]->collisionShape = createCollisionShapeFromMesh(shipData[id]->shipMesh);
+				IMesh* mesh = smgr->getMesh(shipData[id]->shipMesh.c_str());
+				shipData[id]->collisionShape = createCollisionShapeFromMesh(mesh);
 				saveHull(fname, shipData[id]->collisionShape);
+				smgr->getMeshCache()->removeMesh(mesh);
 				std::cout << "Done. New hull saved to " << fname << ".\n";
 			}
 		}
@@ -207,7 +212,6 @@ void GameStateController::mainLoop()
 		}
 		*/
 		driver->endScene();
-
 		int fps = driver->getFPS();
 		stringw tmp(L"Flight [");
 		tmp += driver->getName();

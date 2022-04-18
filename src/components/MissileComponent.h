@@ -16,6 +16,7 @@ struct MissileInfoComponent
 	f32 missileRotThrust;
 	f32 maxMissileVelocity;
 	IMesh* missileMesh;
+	ITexture* missileTexture;
 };
 
 /*
