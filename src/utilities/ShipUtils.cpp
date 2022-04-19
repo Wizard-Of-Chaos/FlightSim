@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
+#include "SensorComponent.h"
 
 #include <iostream>
 
@@ -20,6 +21,7 @@ EntityId createShipFromId(u32 id, vector3df position, vector3df rotation)
 		ship->weapons[i] = INVALID_ENTITY;
 	}
 
+	initializeShipParticles(shipEntity);
 	return shipEntity;
 }
 
@@ -34,6 +36,27 @@ EntityId createDefaultShip(vector3df position, vector3df rotation)
 	return shipEntity;
 }
 
+EntityId createAIShipFromLoadout(LoadoutData loadout, vector3df position, vector3df rotation, AI_TYPE type, FACTION_TYPE fac, u32 hostilities, u32 friendlies)
+{
+	EntityId id = createShipFromId(loadout.shipId, position, rotation);
+	auto ship = sceneManager->scene.get<ShipComponent>(id);
+
+	for (u32 i = 0; i < ship->hardpointCount; ++i) {
+		initializeWeaponFromId(loadout.weaponIds[i], id, i);
+	}
+	initializeDefaultHealth(id);
+	initializeDefaultShields(id);
+	initializeShipCollisionBody(id, loadout.shipId);
+	initializeFaction(id, fac, hostilities, friendlies);
+	initializeDefaultSensors(id);
+
+	auto ai = sceneManager->scene.assign<AIComponent>(id);
+	ai->AIType = type;
+	ai->reactionSpeed = AI_DEFAULT_REACTION_TIME;
+	ai->damageTolerance = AI_DEFAULT_DAMAGE_TOLERANCE;
+	ai->timeSinceLastStateCheck = 0;
+	return id;
+}
 EntityId createDefaultAIShip(vector3df position, vector3df rotation)
 {
 	Scene* scene = &sceneManager->scene;
@@ -43,13 +66,15 @@ EntityId createDefaultAIShip(vector3df position, vector3df rotation)
 	irr->name = "AI Ship";
 	initializeDefaultHealth(id);
 	initializeDefaultShields(id);
-	initializeShipCollisionBody(id, 0);
+	initializeShipCollisionBody(id, 1);
+	initializeHostileFaction(id);
+	initializeDefaultSensors(id);
 
 	auto ai = scene->assign<AIComponent>(id);
 	ai->AIType = AI_TYPE_DEFAULT;
 	ai->reactionSpeed = AI_DEFAULT_REACTION_TIME;
 	ai->damageTolerance = AI_DEFAULT_DAMAGE_TOLERANCE;
-	ai->timeSinceLastStateCheck = 0;
+	ai->timeSinceLastStateCheck = 10.f / (f32)(std::rand() % 100);
 
 	return id;
 }
@@ -81,7 +106,6 @@ EntityId createPlayerShipFromLoadout(vector3df pos, vector3df rot)
 	initializeDefaultShields(shipEntity);
 	initializeDefaultSensors(shipEntity);
 	initializeDefaultHUD(shipEntity);
-	initializeShipParticles(shipEntity);
 
 	return shipEntity;
 }
@@ -164,7 +188,7 @@ bool initializeSensors(EntityId id, f32 range, f32 updateInterval)
 	sensors->timeSelected = 0;
 
 	sensors->updateInterval = updateInterval;
-	f32 start = 10 / (f32)(std::rand() % 100);
+	f32 start = 10.f / (f32)(std::rand() % 100);
 	sensors->timeSinceLastUpdate = start; //stagger sensor updates so it doesn't all happen at once
 
 	return true;

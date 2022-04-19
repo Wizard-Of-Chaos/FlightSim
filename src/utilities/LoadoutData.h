@@ -11,6 +11,12 @@
 * Contains all data necessary to be able to properly load a ship in the game.
 * The u32 id is NOT an entity id.
 */
+struct LoadoutData
+{
+	u32 shipId;
+	u32 weaponIds[MAX_HARDPOINTS];
+};
+
 struct ShipData
 {
 	u32 id;

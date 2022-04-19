@@ -39,5 +39,8 @@ struct Scenario
 	vector3df playerStartPos;
 	vector3df enemyStartPos;
 	bool complete;
+
+	std::string location;
+	std::string description;
 };
 #endif 

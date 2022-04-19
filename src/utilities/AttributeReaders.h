@@ -32,6 +32,8 @@ u32 loadShipData(std::string path, gvReader& in);
 //Pulls the weapon data from the given .gdat file and saves it in the game state controller. Returns the ID.
 u32 loadWeaponData(std::string path, gvReader& in);
 
+LoadoutData loadLoadoutData(std::string path);
+
 btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh);
 
 bool saveHull(std::string path, btConvexHullShape& shape);

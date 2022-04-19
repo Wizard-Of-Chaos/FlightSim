@@ -333,6 +333,9 @@
     <ClInclude Include="src\systems\SoundSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\Campaign.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

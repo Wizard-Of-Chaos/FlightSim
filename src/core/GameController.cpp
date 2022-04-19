@@ -223,9 +223,6 @@ void GameController::killHostilesScenario()
 	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(currentScenario.enemyStartPos, 25.f);
 		EntityId enemy = createDefaultAIShip(pos, vector3df(0,180,0)); //todo: create AI ship generator that pulls from loaded ships
-		initializeHostileFaction(enemy);
-		initializeDefaultSensors(enemy);
-		initializeShipParticles(enemy);
 		currentScenario.objectives[i] = enemy;
 	}
 

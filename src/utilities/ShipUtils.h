@@ -3,6 +3,8 @@
 #define SHIPUTILS_H
 #include "BaseHeader.h"
 #include "FactionComponent.h"
+#include "LoadoutData.h"
+#include "AIComponent.h"
 #include "ECS.h"
 
 //Creates a ship using the data at the given id in the GameStateController.
@@ -12,6 +14,7 @@ EntityId createShipFromId(u32 id, vector3df position, vector3df rotation);
 //Creates a default ship entity at the given position. Does not include hitbox, health, or other components.
 //Does include two default weapon entities and an irrlicht component / ship component. Returns the ID.
 EntityId createDefaultShip(vector3df position, vector3df rotation);
+EntityId createAIShipFromLoadout(LoadoutData loadout, vector3df position, vector3df rotation, AI_TYPE type, FACTION_TYPE fac, u32 hostilities, u32 friendlies);
 //Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, and health components. Returns the ID.
 EntityId createDefaultAIShip(vector3df position, vector3df rotation);
 //Creates all the necessary details and components to set up the player's current loadout at the given position. Returns the

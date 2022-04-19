@@ -293,6 +293,21 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 	return true; 
 }
 
+LoadoutData loadLoadoutData(std::string path)
+{
+	gvReader in;
+	in.read(path);
+	in.readLinesToValues();
+	LoadoutData ret;
+	ret.shipId = std::stoi(in.values["shipId"]);
+
+	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
+		std::string val = "weaponId" + std::to_string(i);
+		ret.weaponIds[i] = std::stoi(in.values[val]);
+	}
+	return ret;
+}
+
 btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh)
 {
 	IMeshBuffer* buf = mesh->getMeshBuffer((u32)0);

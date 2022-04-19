@@ -208,6 +208,7 @@
     <ClInclude Include="src\components\ObstacleComponent.h" />
     <ClInclude Include="src\components\SensorComponent.h" />
     <ClInclude Include="src\components\ShieldComponent.h" />
+    <ClInclude Include="src\core\Campaign.h" />
     <ClInclude Include="src\gui\GuiDeathMenu.h" />
     <ClInclude Include="src\gui\GuiLoadoutMenu.h" />
     <ClInclude Include="src\gui\GuiSettingsMenu.h" />
