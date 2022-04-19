@@ -27,4 +27,8 @@ EntityId projectileImpact(vector3df position, f32 duration);
 
 //Causes the missile to track its target and fly towards it.
 void missileGoTo(EntityId id, f32 dt);
+
+BulletRigidBodyComponent* addProjectileRBC(EntityId id, btVector3& initForce, btVector3& initVelocity, vector3df& spawn, btQuaternion& initRot);
+ParentComponent* addProjectileParent(EntityId id, EntityId parent);
+ProjectileInfoComponent* addProjectileInfo(EntityId id, WeaponInfoComponent* wepInfo, vector3df spawnPos);
 #endif 

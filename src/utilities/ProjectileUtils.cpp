@@ -5,6 +5,17 @@
 
 #include <iostream>
 
+vector3df adjustAccuracy(vector3df dir, f32 accuracy)
+{
+	f32 spread = (f32)(std::rand() % 10) - 5.f;
+	spread /= (accuracy * 100.f);
+	vector3df newDir = dir;
+	newDir.X += spread;
+	newDir.Y -= spread;
+	newDir.Z += spread;
+	return newDir;
+}
+
 EntityId createProjectileEntity(vector3df spawnPos, vector3df direction, EntityId weaponId)
 {
 	Scene* scene = &sceneManager->scene;
@@ -24,67 +35,48 @@ EntityId createProjectileEntity(vector3df spawnPos, vector3df direction, EntityI
 
 	auto projectileEntity = scene->newEntity();
 
-	auto parent = scene->assign<ParentComponent>(projectileEntity);
-	parent->parentId = weaponId;
+	auto projectileInfo = addProjectileInfo(projectileEntity, wepInfo, spawnPos);
+	addProjectileParent(projectileEntity, weaponId);
 
-	auto projectileInfo = scene->assign<ProjectileInfoComponent>(projectileEntity);
-	projectileInfo->type = wepInfo->type;
-	projectileInfo->dmgtype = wepInfo->dmgtype;
-	projectileInfo->speed = wepInfo->projectileSpeed;
-	projectileInfo->startPos = spawnPos;
-	projectileInfo->range = wepInfo->range;
-	projectileInfo->damage = wepInfo->damage;
+	btVector3 initialForce(0, 0, 0);
+	vector3df initialDir = direction;
+	btVector3 initVelocity = shipRBC->rigidBody.getLinearVelocity();
+	btQuaternion initRot = shipRBC->rigidBody.getOrientation();
 
-	f32 mass = .1f;
-
-	auto rigidBodyInfo = scene->assign<BulletRigidBodyComponent>(projectileEntity);
-	btTransform transform = btTransform();
-	transform.setIdentity();
-
-	transform.setRotation(shipRBC->rigidBody.getOrientation());
-	transform.setOrigin(irrVecToBt(spawnPos));
-
-	auto motionState = new btDefaultMotionState(transform);
-
-	auto shape = new btSphereShape(.5f);
-	btVector3 localInertia;
-
-	shape->calculateLocalInertia(mass, localInertia);
-	rigidBodyInfo->rigidBody = btRigidBody(mass, motionState, shape, localInertia);
-	rigidBodyInfo->rigidBody.setUserIndex(getEntityIndex(projectileEntity));
-	rigidBodyInfo->rigidBody.setUserIndex2(getEntityVersion(projectileEntity));
-	rigidBodyInfo->rigidBody.setUserIndex3(1);
-
-	f32 spread = (f32)(std::rand() % 10) -5.f;
-	spread /= 300.f;
-
-	rigidBodyInfo->rigidBody.setLinearVelocity(shipRBC->rigidBody.getLinearVelocity());
-
-	switch (projectileInfo->type) {
-	case WEP_PLASMA:
-		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
+	if (projectileInfo->type == WEP_PLASMA) {
+		initialForce += irrVecToBt(initialDir) * projectileInfo->speed;
 		createPlasmaProjectile(projectileEntity, direction, spawnPos);
-		break;
-	case WEP_KINETIC:
-		direction.X += spread;
-		direction.Y += spread;
-		direction.Z += spread;
-		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
-		createKineticProjectile(projectileEntity, direction, spawnPos);
-		break;
-	case WEP_MISSILE:
-		mass = .3f;
-		//auto missInfo = manager->scene.get<MissileInfoComponent>(weaponId);
-		createMissileProjectile(projectileEntity, sceneManager->scene.get<MissileInfoComponent>(weaponId), direction, spawnPos);
-		break;
-	case WEP_PHYS_IMPULSE:
-		rigidBodyInfo->rigidBody.applyCentralImpulse(irrVecToBt(direction) * projectileInfo->speed);
-		createPlasmaProjectile(projectileEntity, direction, spawnPos);
-		break;
+	}
+	else if (projectileInfo->type == WEP_KINETIC) {
+		auto kin = scene->get<KineticInfoComponent>(weaponId);
+		initialDir = adjustAccuracy(direction, kin->accuracy);
+		initialForce += irrVecToBt(initialDir) * projectileInfo->speed;
+		createKineticProjectile(projectileEntity, initialDir, wepInfo->spawnPosition);
+	}
+	else if (projectileInfo->type == WEP_MISSILE) {
+		createMissileProjectile(projectileEntity, sceneManager->scene.get<MissileInfoComponent>(weaponId), initialDir, spawnPos);
+	}
+	else if (projectileInfo->type == WEP_PHYS_IMPULSE) {
+		initialForce += irrVecToBt(initialDir) * projectileInfo->speed;
+		createPlasmaProjectile(projectileEntity, initialDir, spawnPos);
+	}
+	auto rbc = addProjectileRBC(projectileEntity, initialForce, initVelocity, spawnPos, initRot);
+
+	if (wepInfo->type == WEP_KINETIC) {
+		auto kin = scene->get<KineticInfoComponent>(weaponId);
+		for (u32 i = 1; i < kin->projectilesPerShot; ++i) {
+			vector3df dir = adjustAccuracy(direction, kin->accuracy);
+			btVector3 force = irrVecToBt(dir) * projectileInfo->speed;
+			EntityId newId = scene->newEntity();
+			addProjectileInfo(newId, wepInfo, spawnPos);
+			addProjectileParent(newId, weaponId);
+			auto newRBC = addProjectileRBC(newId, force, initVelocity, spawnPos, initRot);
+			createKineticProjectile(newId, dir, spawnPos);
+			bWorld->addRigidBody(&newRBC->rigidBody);
+		}
 	}
 
-	bWorld->addRigidBody(&rigidBodyInfo->rigidBody);
-
+	bWorld->addRigidBody(&rbc->rigidBody);
 	return projectileEntity;
 }
 
@@ -296,4 +288,48 @@ void missileGoTo(EntityId id, f32 dt)
 	}
 
 	body->applyTorqueImpulse(torque * dt);
+}
+
+BulletRigidBodyComponent* addProjectileRBC(EntityId id, btVector3& initForce, btVector3& initVelocity, vector3df& spawn, btQuaternion& initRot)
+{
+	f32 mass = .1f;
+	auto rbc = sceneManager->scene.assign<BulletRigidBodyComponent>(id);
+	btTransform transform = btTransform();
+	transform.setIdentity();
+
+	transform.setRotation(initRot);
+	transform.setOrigin(irrVecToBt(spawn));
+
+	auto motionState = new btDefaultMotionState(transform);
+
+	rbc->sphere = btSphereShape(.5f);
+	btVector3 localInertia;
+
+	rbc->sphere.calculateLocalInertia(mass, localInertia);
+	rbc->rigidBody = btRigidBody(mass, motionState, &rbc->sphere, localInertia);
+	rbc->rigidBody.setUserIndex(getEntityIndex(id));
+	rbc->rigidBody.setUserIndex2(getEntityVersion(id));
+	rbc->rigidBody.setUserIndex3(1);
+	rbc->rigidBody.setLinearVelocity(initVelocity);
+	rbc->rigidBody.applyCentralImpulse(initForce);
+	return rbc;
+}
+
+ParentComponent* addProjectileParent(EntityId id, EntityId parent)
+{
+	auto par = sceneManager->scene.assign<ParentComponent>(id);
+	par->parentId = parent;
+	return par;
+}
+
+ProjectileInfoComponent* addProjectileInfo(EntityId id, WeaponInfoComponent* wepInfo, vector3df spawnPos)
+{
+	auto projectileInfo = sceneManager->scene.assign<ProjectileInfoComponent>(id);
+	projectileInfo->type = wepInfo->type;
+	projectileInfo->dmgtype = wepInfo->dmgtype;
+	projectileInfo->speed = wepInfo->projectileSpeed;
+	projectileInfo->startPos = spawnPos;
+	projectileInfo->range = wepInfo->range;
+	projectileInfo->damage = wepInfo->damage;
+	return projectileInfo;
 }

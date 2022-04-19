@@ -16,3 +16,6 @@ damage=20
 maxMissileVelocity=100
 missileRotThrust=10
 timeToLock=3
+maxAmmunition=30
+reloadTime=.2
+clip=1

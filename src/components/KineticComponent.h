@@ -6,12 +6,8 @@
 
 struct KineticInfoComponent
 {
-	u32 maxAmmunition;
-	u32 ammunition;
-	u32 clip;
-	u32 maxClip;
-	f32 timeReloading;
-	f32 reloadTime;
+	u32 projectilesPerShot;
+	f32 accuracy;
 };
 
 #endif 

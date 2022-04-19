@@ -43,6 +43,14 @@ struct WeaponInfoComponent
 	vector3df firingDirection;
 	vector3df spawnPosition;
 	ITexture* particle;
+
+	bool usesAmmunition;
+	u32 maxAmmunition;
+	u32 ammunition;
+	u32 clip;
+	u32 maxClip;
+	f32 timeReloading;
+	f32 reloadTime;
 };
 
 //PROJECTILE ENTITIES:

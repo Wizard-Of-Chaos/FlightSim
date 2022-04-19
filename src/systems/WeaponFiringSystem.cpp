@@ -6,21 +6,20 @@
 
 #include <iostream>
 
-void fireAndReload(EntityId id, WeaponInfoComponent* wep, f32 dt)
+void ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
 {
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
-	auto kinInfo = sceneManager->scene.get<KineticInfoComponent>(id);
-	if (kinInfo->clip > 0) {
+	if (wep->clip > 0) {
 		gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f);
 		createProjectileEntity(wep->spawnPosition, wep->firingDirection, id);
-		kinInfo->clip -= 1;
-		kinInfo->timeReloading = 0;
+		wep->clip -= 1;
+		wep->timeReloading = 0;
 	}
 	else {
-		if (kinInfo->timeReloading >= kinInfo->reloadTime && kinInfo->ammunition > 0) {
-			kinInfo->timeReloading = 0;
-			kinInfo->clip = kinInfo->maxClip;
-			kinInfo->ammunition -= kinInfo->maxClip;
+		if (wep->timeReloading >= wep->reloadTime && wep->ammunition > 0) {
+			wep->timeReloading = 0;
+			wep->clip = wep->maxClip;
+			wep->ammunition -= wep->maxClip;
 		}
 	}
 }
@@ -34,15 +33,14 @@ void weaponFiringSystem(f32 dt)
 		if (wepInfo->type == WEP_NONE) continue;
 		auto irrComp = scene->get<IrrlichtComponent>(entityId);
 
-		if (wepInfo->type == WEP_KINETIC) {
-			auto kinInfo = sceneManager->scene.get<KineticInfoComponent>(entityId);
-			if (kinInfo->clip == 0) {
-				kinInfo->timeReloading += dt;
+		if (wepInfo->usesAmmunition) {
+			if (wepInfo->clip == 0) {
+				wepInfo->timeReloading += dt;
 			}
 		}
 		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
-			if (wepInfo->type == WEP_KINETIC) {
-				fireAndReload(entityId, wepInfo, dt);
+			if (wepInfo->usesAmmunition) {
+				ammoFire(entityId, wepInfo, dt);
 			}
 			else {
 				gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);

@@ -15,3 +15,5 @@ damage=2
 maxAmmunition=640
 clip=80
 reloadTime=1.5
+projectilesPerShot=1
+accuracy=3.f

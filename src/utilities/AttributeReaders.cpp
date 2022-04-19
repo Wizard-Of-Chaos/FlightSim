@@ -108,6 +108,16 @@ u32 loadShipData(std::string path, gvReader& in)
 	return id;
 }
 
+void loadAmmoData(WeaponData* data, gvReader& in)
+{
+	data->weaponComponent.maxAmmunition = std::stoi(in.values["maxAmmunition"]);
+	data->weaponComponent.ammunition = data->weaponComponent.maxAmmunition;
+	data->weaponComponent.maxClip = std::stoi(in.values["clip"]);
+	data->weaponComponent.reloadTime = std::stof(in.values["reloadTime"]);
+	data->weaponComponent.clip = data->weaponComponent.clip;
+
+}
+
 u32 loadWeaponData(std::string path, gvReader& in)
 {
 	std::cout << "Reading weapon in from: " << path << "... ";
@@ -151,25 +161,34 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	*/
 	std::string effectpath = "effects/" + in.values["particle"];
 	data->weaponEffect = effectpath;
-	
+	data->weaponComponent.usesAmmunition = false;
+	data->weaponComponent.maxAmmunition = 0;
+	data->weaponComponent.ammunition = 0;
+	data->weaponComponent.maxClip = 0;
+	data->weaponComponent.reloadTime = 0;
+	data->weaponComponent.clip = 0;
+	data->weaponComponent.timeReloading = 0;
+
 	if (type == WEP_MISSILE) {
+		data->weaponComponent.usesAmmunition = true;
 		std::string misspath = "models/" + in.values["missilemodel"];
 		std::string misstexpath = "models/" + in.values["missiletexture"];
 		MissileData* miss = (MissileData*)data;
+
 		miss->missileMesh = misspath;
 		miss->missileTexture = misstexpath;
 		miss->missileComponent.maxMissileVelocity = std::stof(in.values["maxMissileVelocity"]);
 		miss->missileComponent.missileRotThrust = std::stof(in.values["missileRotThrust"]);
 		miss->missileComponent.timeToLock = std::stof(in.values["timeToLock"]);
+		loadAmmoData(data, in);
 	}
 	if (type == WEP_KINETIC) {
+		data->weaponComponent.usesAmmunition = true;
 		KineticData* kin = (KineticData*)data;
-		kin->kineticComponent.maxAmmunition = std::stoi(in.values["maxAmmunition"]);
-		kin->kineticComponent.ammunition = kin->kineticComponent.maxAmmunition;
-		kin->kineticComponent.maxClip = std::stoi(in.values["clip"]);
-		kin->kineticComponent.reloadTime = std::stof(in.values["reloadTime"]);
-		kin->kineticComponent.clip = kin->kineticComponent.clip;
-		kin->kineticComponent.timeReloading = 0;
+
+		loadAmmoData(data, in);
+		kin->kineticComponent.accuracy = std::stof(in.values["accuracy"]);
+		kin->kineticComponent.projectilesPerShot = std::stoi(in.values["projectilesPerShot"]);
 	}
 
 	data->weaponComponent.isFiring = false;
@@ -251,6 +270,7 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 
 	irr->node->setName(idToStr(weaponEntity).c_str());
 	irr->node->setID(ID_IsNotSelectable);
+	wep->usesAmmunition = false;
 
 	*wep = data->weaponComponent;
 	if (data->weaponComponent.type == WEP_MISSILE) {
@@ -259,12 +279,14 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 		*miss = mdata->missileComponent;
 		miss->missileMesh = smgr->getMesh(mdata->missileMesh.c_str());
 		miss->missileTexture = driver->getTexture(mdata->missileTexture.c_str());
+		wep->usesAmmunition = true;
 	}
 	if (data->weaponComponent.type == WEP_KINETIC) {
 		auto kin = sceneManager->scene.assign<KineticInfoComponent>(weaponEntity);
 		KineticData* kdata = (KineticData*)data;
 		*kin = kdata->kineticComponent;
-		kin->clip = kin->maxClip;
+		wep->clip = wep->maxClip;
+		wep->usesAmmunition = true; 
 	}
 	wep->particle = driver->getTexture(data->weaponEffect.c_str());
 
