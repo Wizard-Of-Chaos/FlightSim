@@ -3,17 +3,18 @@
 #define HUDHEALTHBAR_H
 #include "BaseHeader.h"
 #include "HUDElement.h"
+#include "ShipComponent.h"
 
 /*
 * The health bar element holds the data for the health bar, as well as some text to show the actual
 * current health number. The health is adjusted in accordance with the % of the player's current health,
 * containing logic to show the appropriate percentage of the actual health bar itself.
 */
-class HUDHealthBar : public HUDElement
+class HUDResources : public HUDElement
 {
 public:
-	HUDHealthBar(IGUIElement* root);
-	~HUDHealthBar() override;
+	HUDResources(IGUIElement* root, EntityId id);
+	~HUDResources() override;
 	virtual void updateElement(EntityId playerId);
 	IGUIImage* health;
 	IGUIImage* shield;
@@ -21,6 +22,7 @@ public:
 	IGUIStaticText* fuelNum;
 	IGUIStaticText* healthNum;
 	IGUIStaticText* shieldNum;
+	IGUIStaticText* ammoNums[MAX_HARDPOINTS];
 };
 
 #endif

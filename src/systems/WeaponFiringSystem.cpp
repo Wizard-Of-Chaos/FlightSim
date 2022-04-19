@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-void ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
+bool ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
 {
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 	if (wep->clip > 0) {
@@ -14,14 +14,17 @@ void ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
 		createProjectileEntity(wep->spawnPosition, wep->firingDirection, id);
 		wep->clip -= 1;
 		wep->timeReloading = 0;
+		return true;
 	}
 	else {
 		if (wep->timeReloading >= wep->reloadTime && wep->ammunition > 0) {
 			wep->timeReloading = 0;
 			wep->clip = wep->maxClip;
 			wep->ammunition -= wep->maxClip;
+			return false;
 		}
 	}
+	return true;
 }
 
 void weaponFiringSystem(f32 dt)
@@ -40,7 +43,8 @@ void weaponFiringSystem(f32 dt)
 		}
 		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
 			if (wepInfo->usesAmmunition) {
-				ammoFire(entityId, wepInfo, dt);
+				bool firing = ammoFire(entityId, wepInfo, dt);
+				if(wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f);
 			}
 			else {
 				gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);

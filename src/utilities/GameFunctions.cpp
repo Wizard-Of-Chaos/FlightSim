@@ -6,68 +6,6 @@
 #include "IrrlichtUtils.h"
 #include <iostream>
 
-//Sets the defaults in the scene manager for ship meshes.
-/*
-void setDefaults()
-{
-	sceneManager->defaults.defaultShipMesh = smgr->getMesh("models/tux/Tuxedo.obj");
-	sceneManager->defaults.defaultShipTexture = driver->getTexture("models/tux/tuxedotex.png");
-	sceneManager->defaults.defaultWeaponMesh = smgr->getMesh("models/wazer/wazer.obj");
-	sceneManager->defaults.defaultObstacleMesh = smgr->getMesh("models/asteroid/Asteroid.obj");
-	sceneManager->defaults.defaultObstacleTexture = driver->getTexture("models/asteroid/Asteroid.jpg");
-	if (!loadHull("attributes/hulls/Asteroid.bullet", sceneManager->defaults.defaultObstacleHull)) {
-		sceneManager->defaults.defaultObstacleHull = createCollisionShapeFromMesh(sceneManager->defaults.defaultObstacleMesh);
-		saveHull("attributes/hulls/Asteroid.bullet", sceneManager->defaults.defaultObstacleHull);
-	}
-	sceneManager->defaults.defaultMissileMesh = smgr->getMesh("models/basicmissile/Missile.obj");
-
-	sceneManager->defaults.defaultProjectileTexture = driver->getTexture("effects/particlered.bmp");
-	sceneManager->defaults.defaultCrosshairTexture = driver->getTexture("hud/crosshair.png");
-	sceneManager->defaults.defaultSelectionTexture = driver->getTexture("hud/selection.png");
-	sceneManager->defaults.defaultContactTexture = driver->getTexture("hud/contact.png");
-	sceneManager->defaults.defaultContactMarkerTexture = driver->getTexture("hud/contactmarker.png");
-	sceneManager->defaults.defaultHealthBarTexture = driver->getTexture("hud/hp.png");
-	sceneManager->defaults.defaultVelocityBarTexture = driver->getTexture("hud/speed.png");
-	sceneManager->defaults.defaultFuelBarTexture = driver->getTexture("hud/fuel.png");
-
-	sceneManager->defaults.defaultJetTexture = driver->getTexture("effects/smokejet.png");
-	sceneManager->defaults.defaultEngineJetTexture = driver->getTexture("effects/tuxengine.png");
-	sceneManager->defaults.defaultExplosion = driver->getTexture("effects/kaboom.png");
-
-	sceneManager->defaults.defaultJetSoundLoop = soundEngine->getSoundSource("audio/jetthrust.ogg");
-	sceneManager->defaults.defaultMusic = soundEngine->getSoundSource("audio/music/space_boogaloo.ogg");
-	sceneManager->defaults.defaultEngineSoundLoop = soundEngine->getSoundSource("audio/engineloop.ogg");
-	sceneManager->defaults.defaultLaserSound = soundEngine->getSoundSource("audio/laser_shoot.ogg");
-	sceneManager->defaults.bonk = soundEngine->getSoundSource("audio/impulsecannon.ogg");
-	sceneManager->defaults.bonk->setDefaultVolume(10.f);
-	sceneManager->defaults.bonk->setDefaultMinDistance(200.f);
-	sceneManager->defaults.defaultLaserSound->setDefaultVolume(1.f);
-	sceneManager->defaults.defaultLaserSound->setDefaultMinDistance(2.f);
-
-	sceneManager->defaults.defaultGunSound = soundEngine->getSoundSource("audio/pew.ogg");
-	sceneManager->defaults.defaultGunSound->setDefaultVolume(1.f);
-	sceneManager->defaults.defaultGunSound->setDefaultMinDistance(3.f);
-
-	sceneManager->defaults.crunch = soundEngine->getSoundSource("audio/impact_d.mp3");
-	sceneManager->defaults.crunch->setDefaultMinDistance(100.f);
-	sceneManager->defaults.crunch->setDefaultVolume(5.f);
-
-	sceneManager->defaults.shieldDown = soundEngine->getSoundSource("audio/shield_down.ogg");
-	sceneManager->defaults.shieldDown->setDefaultMinDistance(50.f);
-	sceneManager->defaults.shieldDown->setDefaultVolume(40.f);
-	sceneManager->defaults.shieldhitMinor = soundEngine->getSoundSource("audio/shieldhit_minor.ogg");
-	sceneManager->defaults.shieldhitMinor->setDefaultMinDistance(30.f);
-	sceneManager->defaults.shieldhitMinor->setDefaultVolume(.5f);
-	sceneManager->defaults.shieldhitMajor = soundEngine->getSoundSource("audio/shieldhit_major.ogg");
-	sceneManager->defaults.shieldhitMajor->setDefaultMinDistance(30.f);
-	sceneManager->defaults.shieldhitMajor->setDefaultVolume(5.f);
-
-	sceneManager->defaults.defaultCloudTexture = driver->getTexture("effects/cloud.png");
-
-	sceneManager->defaults.defaultHUDFont = guienv->getFont("fonts/AgencyFB14px/AgencyFB14px.xml");
-}
-*/
-
 //Convenience functions to swap back and forth between irrlicht and bullet vectors.
 vector3df btVecToIrr(btVector3 vec)
 {
@@ -190,11 +128,11 @@ bool initializeDefaultHUD(EntityId playerId)
 
 	//HUDElement* crossHUD = new HUDCrosshair(player->rootHUD);
 	HUDElement* selectHUD = new HUDActiveSelection(player->rootHUD);
-	HUDElement* healthHUD = new HUDHealthBar(player->rootHUD);
+	HUDElement* resourceHUD = new HUDResources(player->rootHUD, playerId);
 	HUDElement* speedHUD = new HUDVelocityBar(player->rootHUD);
 	//player->HUD.push_back(crossHUD);
 	player->HUD.push_back(selectHUD);
-	player->HUD.push_back(healthHUD);
+	player->HUD.push_back(resourceHUD);
 	player->HUD.push_back(speedHUD);
 	return true;
 }

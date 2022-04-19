@@ -6,8 +6,10 @@
 #include <iostream>
 #include <string>
 
-HUDHealthBar::HUDHealthBar(IGUIElement* root) : HUDElement(root)
+HUDResources::HUDResources(IGUIElement* root, EntityId id) : HUDElement(root)
 {
+	IGUIFont* fnt = stateController->assets.getFontAsset("HUDFont");
+	SColor overrideClr(255, 200, 200, 200);
 	type = HUD_ELEM_TYPE::HEALTH_BAR;
 	rect<s32> screenrect = root->getRelativePosition();
 	health = guienv->addImage(stateController->assets.getHUDAsset("healthbar"), position2di(0, screenrect.getHeight() - 64), root);
@@ -17,10 +19,21 @@ HUDHealthBar::HUDHealthBar(IGUIElement* root) : HUDElement(root)
 	shield = guienv->addImage(stateController->assets.getHUDAsset("velocitybar"), position2di(300, screenrect.getHeight() - 64), root);
 	shieldNum = guienv->addStaticText(L"", rect<s32>(position2di(300, screenrect.getHeight() - 96), dimension2du(300, 24)), false, true, root);
 
-	fuelNum->setOverrideColor(SColor(255, 200, 200, 200));
-	healthNum->setOverrideColor(SColor(255, 200, 200, 200));
-	shieldNum->setOverrideColor(SColor(255, 200, 200, 200));
-	IGUIFont* fnt = stateController->assets.getFontAsset("HUDFont");
+	auto shipInfo = sceneManager->scene.get<ShipComponent>(id);
+
+	for (u32 i = 0; i < shipInfo->hardpointCount; ++i) {
+		auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(shipInfo->weapons[i]);
+		if (!wepInfo->usesAmmunition) continue;
+		ammoNums[i] = guienv->addStaticText(L"", rect<s32>(position2di(340, screenrect.getHeight() - 16 * (i + 1)), dimension2du(240, 20)), false, true, root);
+		ammoNums[i]->setOverrideColor(overrideClr);
+		ammoNums[i]->setOverrideFont(fnt);
+		ammoNums[i]->setVisible(true);
+
+	}
+
+	fuelNum->setOverrideColor(overrideClr);
+	healthNum->setOverrideColor(overrideClr);
+	shieldNum->setOverrideColor(overrideClr);
 	healthNum->setOverrideFont(fnt);
 	fuelNum->setOverrideFont(fnt);
 	shieldNum->setOverrideFont(fnt);
@@ -37,7 +50,7 @@ HUDHealthBar::HUDHealthBar(IGUIElement* root) : HUDElement(root)
 
 }
 
-HUDHealthBar::~HUDHealthBar()
+HUDResources::~HUDResources()
 {
 	health->remove();
 	healthNum->remove();
@@ -47,7 +60,7 @@ HUDHealthBar::~HUDHealthBar()
 	shieldNum->remove();
 }
 
-void HUDHealthBar::updateElement(EntityId playerId)
+void HUDResources::updateElement(EntityId playerId)
 {
 	auto hpcomp = sceneManager->scene.get<HealthComponent>(playerId);
 	auto shields = sceneManager->scene.get<ShieldComponent>(playerId);
@@ -76,4 +89,16 @@ void HUDHealthBar::updateElement(EntityId playerId)
 	fuelNum->setRelativePosition(rect<s32>(position2di(0, screenrect.getHeight() - 192), dimension2du(300, 24)));
 	shield->setRelativePosition(rect<s32>(position2di(300, screenrect.getHeight() - 64), ssize));
 	shieldNum->setRelativePosition(rect<s32>(position2di(300, screenrect.getHeight() - 96), dimension2du(300, 24)));
+
+	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
+		if (!ammoNums[i]) continue;
+		auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
+		if (!wepInfo) continue;
+		if (!wepInfo->usesAmmunition) continue;
+
+		std::string ammostr = "Ammunition: " + std::to_string(wepInfo->clip) + "/" + std::to_string(wepInfo->maxClip);
+		ammostr += " (" + std::to_string(wepInfo->ammunition) + "/" + std::to_string(wepInfo->maxAmmunition) + ")";
+		ammoNums[i]->setText(wstr(ammostr).c_str());
+		ammoNums[i]->setRelativePosition(rect<s32>(position2di(550, screenrect.getHeight() - 32 * (i + 1)), dimension2du(240, 20)));
+	}
 }
