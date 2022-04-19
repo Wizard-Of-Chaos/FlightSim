@@ -10,7 +10,6 @@ bool ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
 {
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 	if (wep->clip > 0) {
-		gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f);
 		createProjectileEntity(wep->spawnPosition, wep->firingDirection, id);
 		wep->clip -= 1;
 		wep->timeReloading = 0;
