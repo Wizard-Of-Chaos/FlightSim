@@ -7,12 +7,18 @@
 
 vector3df adjustAccuracy(vector3df dir, f32 accuracy)
 {
-	f32 spread = (f32)(std::rand() % 10) - 5.f;
-	spread /= (accuracy * 100.f);
+	f32 xspread, yspread, zspread;
+	xspread = (f32)(std::rand() % 10) - 5.f;
+	yspread = (f32)(std::rand() % 10) - 5.f;
+	zspread = (f32)(std::rand() % 10) - 5.f;
+
+	xspread /= (accuracy * 100.f);
+	yspread /= (accuracy * 100.f);
+	zspread /= (accuracy * 100.f);
 	vector3df newDir = dir;
-	newDir.X += spread;
-	newDir.Y -= spread;
-	newDir.Z -= spread;
+	newDir.X += xspread;
+	newDir.Y += yspread;
+	newDir.Z += zspread;
 	return newDir;
 }
 
