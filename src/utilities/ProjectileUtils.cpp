@@ -12,7 +12,7 @@ vector3df adjustAccuracy(vector3df dir, f32 accuracy)
 	vector3df newDir = dir;
 	newDir.X += spread;
 	newDir.Y -= spread;
-	newDir.Z += spread;
+	newDir.Z -= spread;
 	return newDir;
 }
 
