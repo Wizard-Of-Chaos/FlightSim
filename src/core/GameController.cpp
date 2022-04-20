@@ -191,7 +191,7 @@ void GameController::initScenario()
 void GameController::killHostilesScenario()
 {
 	EntityId player = createPlayerShipFromLoadout(currentScenario.playerStartPos, vector3df(0,0,0));
-	initializeNeutralFaction(player);
+	initializePlayerFaction(player);
 
 	std::vector<vector3df> obstaclePositions;
 

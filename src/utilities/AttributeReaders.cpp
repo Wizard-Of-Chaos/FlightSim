@@ -38,15 +38,6 @@ u32 loadShipData(std::string path, gvReader& in)
 	data->shipMesh = meshpath;
 	data->shipTexture = texpath;
 	data->shipNorm = normpath;
-	/*
-	data->shipNorm = driver->getTexture(normpath.c_str());
-	if (data->shipNorm) {
-		driver->makeNormalMapTexture(data->shipNorm, 7.f);
-		IMesh* tmesh = smgr->getMeshManipulator()->createMeshWithTangents(data->shipMesh); //drop this somewhere
-		smgr->getMeshCache()->removeMesh(data->shipMesh);
-		data->shipMesh = tmesh;
-	}
-	*/
 
 	std::string jetpath = "effects/" + in.values["jet"];
 	std::string enginepath = "effects/" + in.values["engine"];
@@ -152,14 +143,6 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	data->weaponTexture = texpath;
 	data->weaponNorm = normpath;
 
-	/*
-	if (data->weaponNorm) {
-		driver->makeNormalMapTexture(data->weaponNorm, 7.f);
-		IMesh* tmesh = smgr->getMeshManipulator()->createMeshWithTangents(data->weaponMesh); //drop this somewhere
-		smgr->getMeshCache()->removeMesh(data->weaponMesh);
-		data->weaponMesh = tmesh;
-	}
-	*/
 	std::string effectpath = "effects/" + in.values["particle"];
 	data->weaponEffect = effectpath;
 	data->weaponComponent.usesAmmunition = false;
@@ -225,19 +208,32 @@ bool loadShip(u32 id, EntityId entity)
 	*ship = data->shipComponent;
 
 	ITexture* norm = driver->getTexture(data->shipNorm.c_str());
-
+	ITexture* tex = stateController->assets.getTextureAsset(data->name);
+	IMesh* mesh = stateController->assets.getMeshAsset(data->name);
 	if (norm) {
-		auto initmesh = smgr->getMesh(data->shipMesh.c_str());
-		irr->node = smgr->addMeshSceneNode(smgr->getMeshManipulator()->createMeshWithTangents(initmesh));
+		if (!mesh) {
+			auto initmesh = smgr->getMesh(data->shipMesh.c_str());
+			mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
+			smgr->getMeshCache()->removeMesh(initmesh);
+			stateController->assets.setMeshAsset(data->name, mesh);
+		}
+		irr->node = smgr->addMeshSceneNode(mesh);
 		driver->makeNormalMapTexture(norm, 7.f);
 		irr->node->setMaterialTexture(1, norm);
 		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
-		smgr->getMeshCache()->removeMesh(initmesh);
 	}
 	else {
-		irr->node = smgr->addMeshSceneNode(smgr->getMesh(data->shipMesh.c_str()));
+		if (!mesh) {
+			mesh = smgr->getMesh(data->shipMesh.c_str());
+			stateController->assets.setMeshAsset(data->name, mesh);
+		}
+		irr->node = smgr->addMeshSceneNode(mesh);
 	}
-	irr->node->setMaterialTexture(0, driver->getTexture(data->shipTexture.c_str()));
+	if (!tex) {
+		tex = driver->getTexture(data->shipTexture.c_str());
+		stateController->assets.setTextureAsset(data->name, tex);
+	}
+	irr->node->setMaterialTexture(0, tex);
 
 	irr->node->setName(idToStr(entity).c_str());
 	irr->node->setID(ID_IsSelectable | ID_IsAvoidable);
@@ -259,13 +255,25 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 	if (!wep || !irr || !parent) return false;
 	
 	parent->parentId = shipEntity;
-	auto initmesh = smgr->getMesh(data->weaponMesh.c_str());
-	auto mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
-	irr->node = smgr->addMeshSceneNode(mesh);
-	irr->node->setMaterialTexture(0, driver->getTexture(data->weaponTexture.c_str()));
-	smgr->getMeshCache()->removeMesh(initmesh);
 
-	ITexture* norm = driver->getTexture(data->weaponNorm.c_str());
+	IMesh* mesh = stateController->assets.getMeshAsset(data->name);
+	ITexture* tex = stateController->assets.getTextureAsset(data->name);
+	ITexture* norm = nullptr;
+	if (data->weaponNorm != "") norm = driver->getTexture(data->weaponNorm.c_str());
+
+	if (!mesh) {
+		auto initmesh = smgr->getMesh(data->weaponMesh.c_str());
+		mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
+		smgr->getMeshCache()->removeMesh(initmesh);
+		stateController->assets.setMeshAsset(data->name, mesh);
+	}
+	irr->node = smgr->addMeshSceneNode(mesh);
+	if (!tex) {
+		tex = driver->getTexture(data->weaponTexture.c_str());
+		stateController->assets.setTextureAsset(data->name, tex);
+	}
+	irr->node->setMaterialTexture(0, tex);
+
 	if (norm) {
 		driver->makeNormalMapTexture(norm, 7.f);
 		irr->node->setMaterialTexture(1, norm);
@@ -347,7 +355,7 @@ bool loadObstacle(u32 id, EntityId entity)
 	}
 	ITexture* tex = stateController->assets.getTextureAsset(data->name);
 	ITexture* norm = nullptr;
-	if(data->obstacleNorm != "") driver->getTexture(data->obstacleNorm.c_str());
+	if(data->obstacleNorm != "") norm = driver->getTexture(data->obstacleNorm.c_str());
 
 	if (!tex) {
 		tex = driver->getTexture(data->obstacleTexture.c_str());
