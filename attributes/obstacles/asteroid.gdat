@@ -1,0 +1,6 @@
+id=0
+type=0
+name=Asteroid
+mesh=models/asteroid/Asteroid.obj
+texture=models/asteroid/Asteroid.jpg
+health=100

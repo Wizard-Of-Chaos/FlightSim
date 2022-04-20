@@ -58,6 +58,7 @@ void GameStateController::loadShipAndWeaponData()
 	std::string weaponpath = basepath + "weapons/";
 	std::string shippath = basepath + "ships/";
 	std::string hullpath = basepath + "hulls/";
+	std::string obstpath = basepath + "obstacles/";
 
 	gvReader in;
 	std::cout << "Loading ships... \n";
@@ -81,13 +82,33 @@ void GameStateController::loadShipAndWeaponData()
 		}
 		in.clear();
 	}
-	std::cout << "Done loading ships. \n";
-	std::cout << "Loading weapons... \n";
+	std::cout << "Done loading ships. \nLoading weapons... \n";
 	for (const auto& file : std::filesystem::directory_iterator(weaponpath)) {
 		loadWeaponData(file.path().string(), in);
 		in.clear();
 	}
-	std::cout << "Done loading weapons. \n";
+	std::cout << "Done loading weapons. \nLoading obstacles... \n";
+	for (const auto& file : std::filesystem::directory_iterator(obstpath)) {
+		u32 id = loadObstacleData(file.path().string(), in);
+		in.clear();
+		if (id == -1) continue;
+		ObstacleData* data = obstacleData[id];
+		if (data->type != GAS_CLOUD) {
+			btConvexHullShape hull;
+			std::string fname = hullpath + data->name + ".bullet";
+			if (loadHull(fname, hull)) {
+				std::cout << "Loaded hull for " << file.path().string() << ".\n";
+				data->shape = hull;
+			} else {
+				std::cout << "Could not load hull for " << file.path().string() << ". Building hull... ";
+				IMesh* mesh = smgr->getMesh(data->obstacleMesh.c_str());
+				data->shape = createCollisionShapeFromMesh(mesh);
+				saveHull(fname, data->shape);
+				smgr->getMeshCache()->removeMesh(mesh);
+				std::cout << "Done. New hull saved to " << fname << ".\n";
+			}
+		}
+	}
 	std::cout << "Number of weapons: " << weaponData.size() << std::endl;
 	std::cout << "Number of physics weapons: " << physWeaponData.size() << std::endl;
 	std::cout << "Number of ships: " << shipData.size() << std::endl;

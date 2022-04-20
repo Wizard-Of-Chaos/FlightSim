@@ -19,6 +19,9 @@ class Assets
 		std::unordered_map<std::string, IGUIFont*> fontAssets;
 
 	public:
+		bool setMeshAsset(std::string name, IMesh* mesh);
+		bool setTextureAsset(std::string name, ITexture* texture);
+
 		IMesh* getMeshAsset(std::string name);
 		ITexture* getTextureAsset(std::string name);
 		ITexture* getHUDAsset(std::string name);

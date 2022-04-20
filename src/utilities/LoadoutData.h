@@ -70,7 +70,9 @@ struct ObstacleData
 	u32 id;
 	std::string obstacleMesh;
 	std::string obstacleTexture;
-
+	std::string obstacleNorm;
+	std::string name;
+	btConvexHullShape shape;
 	OBSTACLE type;
 	f32 health;
 };

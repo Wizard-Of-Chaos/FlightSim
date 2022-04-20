@@ -124,6 +124,7 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	in.read(path);
 	if (in.lines.empty()) {
 		std::cout << "Could not read " << path << "!\n";
+		return -1;
 	}
 	in.readLinesToValues();
 
@@ -226,10 +227,12 @@ bool loadShip(u32 id, EntityId entity)
 	ITexture* norm = driver->getTexture(data->shipNorm.c_str());
 
 	if (norm) {
-		irr->node = smgr->addMeshSceneNode(smgr->getMeshManipulator()->createMeshWithTangents(smgr->getMesh(data->shipMesh.c_str())));
+		auto initmesh = smgr->getMesh(data->shipMesh.c_str());
+		irr->node = smgr->addMeshSceneNode(smgr->getMeshManipulator()->createMeshWithTangents(initmesh));
 		driver->makeNormalMapTexture(norm, 7.f);
 		irr->node->setMaterialTexture(1, norm);
 		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
+		smgr->getMeshCache()->removeMesh(initmesh);
 	}
 	else {
 		irr->node = smgr->addMeshSceneNode(smgr->getMesh(data->shipMesh.c_str()));
@@ -256,10 +259,11 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 	if (!wep || !irr || !parent) return false;
 	
 	parent->parentId = shipEntity;
-
-	auto mesh = smgr->getMeshManipulator()->createMeshWithTangents(smgr->getMesh(data->weaponMesh.c_str()));
+	auto initmesh = smgr->getMesh(data->weaponMesh.c_str());
+	auto mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
 	irr->node = smgr->addMeshSceneNode(mesh);
 	irr->node->setMaterialTexture(0, driver->getTexture(data->weaponTexture.c_str()));
+	smgr->getMeshCache()->removeMesh(initmesh);
 
 	ITexture* norm = driver->getTexture(data->weaponNorm.c_str());
 	if (norm) {
@@ -292,6 +296,89 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 
 	return true; 
 }
+u32 loadObstacleData(std::string path, gvReader& in)
+{
+	std::cout << "Reading obstacle in from " << path << "... ";
+	in.read(path);
+	if (in.lines.empty()) {
+		std::cout << "Could not read from " << path << ".\n";
+		return -1;
+	}
+	in.readLinesToValues();
+	u32 id = std::stoi(in.values["id"]);
+	std::string name = in.values["name"];
+	ObstacleData* data = new ObstacleData;
+
+	data->id = id;
+	data->name = name;
+
+	data->health = std::stof(in.values["health"]);
+	data->obstacleMesh = in.values["mesh"];
+	data->obstacleTexture = in.values["texture"];
+	data->obstacleNorm = in.values["norm"];
+	data->type = (OBSTACLE)std::stoi(in.values["type"]);
+
+	stateController->obstacleData[id] = data;
+	std::cout << "Done.\n";
+	return id;
+}
+
+bool loadObstacle(u32 id, EntityId entity)
+{
+	ObstacleData* data = stateController->obstacleData[id];
+	if (!data) return false;
+
+	auto obst = sceneManager->scene.assign<ObstacleComponent>(entity);
+	obst->type = data->type;
+
+	auto irr = sceneManager->scene.assign<IrrlichtComponent>(entity);
+	irr->name = data->name;
+
+	IMesh* mesh = nullptr;
+
+	if (data->obstacleMesh != "") {
+		mesh = stateController->assets.getMeshAsset(data->name);
+		if (!mesh) {
+			auto initmesh = smgr->getMesh(data->obstacleMesh.c_str());
+			mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
+			smgr->getMeshCache()->removeMesh(initmesh);
+			stateController->assets.setMeshAsset(data->name, mesh);
+		}
+	}
+	ITexture* tex = stateController->assets.getTextureAsset(data->name);
+	ITexture* norm = nullptr;
+	if(data->obstacleNorm != "") driver->getTexture(data->obstacleNorm.c_str());
+
+	if (!tex) {
+		tex = driver->getTexture(data->obstacleTexture.c_str());
+		stateController->assets.setTextureAsset(data->name, tex);
+	}
+
+	if (obst->type == GAS_CLOUD) {
+		auto ps = smgr->addParticleSystemSceneNode();
+		irr->node = ps;
+		IParticleAffector* paf = ps->createFadeOutParticleAffector();
+		ps->addAffector(paf);
+		paf->drop();
+		ps->setMaterialFlag(EMF_LIGHTING, false);
+		ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+		ps->setMaterialTexture(0, tex);
+		ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+	}
+	else {
+		irr->node = smgr->addMeshSceneNode(mesh);
+		irr->node->setMaterialTexture(0, tex);
+		if (norm) {
+			driver->makeNormalMapTexture(norm, 5.f);
+			irr->node->setMaterialTexture(1, norm);
+			irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
+		}
+	}
+	irr->node->setName(idToStr(entity).c_str());
+	initializeHealth(entity, data->health);
+	return true;
+}
+
 
 LoadoutData loadLoadoutData(std::string path)
 {

@@ -2,6 +2,18 @@
 #include "AttributeReaders.h"
 #include <iostream>
 
+bool Assets::setMeshAsset(std::string name, IMesh* mesh)
+{
+	meshAssets[name] = mesh;
+	return true;
+}
+
+bool Assets::setTextureAsset(std::string name, ITexture* texture)
+{
+	textureAssets[name] = texture;
+	return true;
+}
+
 IMesh* Assets::getMeshAsset(std::string name) 
 {
 	if (meshAssets[name]) {

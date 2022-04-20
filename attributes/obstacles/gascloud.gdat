@@ -1,0 +1,5 @@
+id=1
+name=Gas Cloud
+type=1
+health=10
+texture=effects/cloud.png

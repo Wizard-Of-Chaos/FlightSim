@@ -3,7 +3,7 @@
 #define OBSTACLE_COMPONENT_H
 #include "BaseHeader.h"
 
-enum class OBSTACLE
+enum OBSTACLE
 {
 	ASTEROID,
 	GAS_CLOUD,

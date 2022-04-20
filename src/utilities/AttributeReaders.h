@@ -27,10 +27,14 @@ bool loadShip(u32 id, EntityId entity);
 //Includes a WeaponInfoComponent, an Irrlicht component, a ParentComponent, and whatever other components are necessary (e.g., a MissileInfoComponent).
 bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys);
 
+bool loadObstacle(u32 id, EntityId entity);
+
 //Pulls the ship data from the given .gdat file and saves it in the game state controller. Returns the ID.
 u32 loadShipData(std::string path, gvReader& in);
 //Pulls the weapon data from the given .gdat file and saves it in the game state controller. Returns the ID.
 u32 loadWeaponData(std::string path, gvReader& in);
+
+u32 loadObstacleData(std::string path, gvReader& in);
 
 LoadoutData loadLoadoutData(std::string path);
 

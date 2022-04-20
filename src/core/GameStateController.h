@@ -57,6 +57,7 @@ class GameStateController : public IEventReceiver
 		std::unordered_map<u32, ShipData*> shipData;
 		std::unordered_map<u32, WeaponData*> weaponData;
 		std::unordered_map<u32, WeaponData*> physWeaponData;
+		std::unordered_map<u32, ObstacleData*> obstacleData;
 		Assets assets;
 #if _DEBUG
 		void addDebugLine(line3df line) { debugLines.push_back(line); }
