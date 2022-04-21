@@ -133,6 +133,9 @@
     <ClCompile Include="src\core\GameAssets.cpp">
       <Filter>Sources\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\GuiCampaignMenu.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -336,7 +339,7 @@
     <ClInclude Include="src\core\Campaign.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
-    <ClInclude Include="CampaignMenu.h">
+    <ClInclude Include="src\gui\GuiCampaignMenu.h">
       <Filter>Headers\Gui</Filter>
     </ClInclude>
   </ItemGroup>

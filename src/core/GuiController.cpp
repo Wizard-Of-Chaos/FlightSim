@@ -43,6 +43,8 @@ void GuiController::init()
 	menus.menuDialogs[GUI_SETTINGS_MENU]->init();
 	menus.menuDialogs[GUI_LOADOUT_MENU] = new GuiLoadoutMenu;
 	menus.menuDialogs[GUI_LOADOUT_MENU]->init();
+	menus.menuDialogs[GUI_CAMPAIGN_MENU] = new GuiCampaignMenu;
+	menus.menuDialogs[GUI_CAMPAIGN_MENU]->init();
 	//set up death menu
 
 	activeDialog = menus.menuDialogs[GUI_MAIN_MENU];
