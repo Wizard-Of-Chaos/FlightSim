@@ -199,6 +199,7 @@
     <ClCompile Include="src\utilities\ShipUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CampaignMenu.h" />
     <ClInclude Include="src\components\BulletGhostComponent.h" />
     <ClInclude Include="src\components\DamageTrackingComponent.h" />
     <ClInclude Include="src\components\ExplosionComponent.h" />

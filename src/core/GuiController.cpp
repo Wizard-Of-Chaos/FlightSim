@@ -11,6 +11,22 @@ GuiController::GuiController()
 	for (std::string line : tauntReader.lines) {
 		taunts.push_back(std::wstring(line.begin(), line.end()));
 	}
+	dimension2du baseSize(960, 540);
+	u32 horizpos = (baseSize.Width - 512) / 2;
+	u32 vertpos = (baseSize.Height - 512) / 2;
+	popup.bg = guienv->addImage(rect<s32>(position2di(horizpos, vertpos), dimension2du(512, 512)));
+	popup.bg->setImage(driver->getTexture("ui/popup.png"));
+	popup.button = guienv->addButton(rect<s32>(position2di(192, 448), dimension2du(128, 64)), popup.bg, 2500, L"Got it");
+	popup.title = guienv->addStaticText(L"Heads up", rect<s32>(position2di(64, 24), dimension2du(384, 24)), false, true, popup.bg);
+	popup.body = guienv->addStaticText(L"", rect<s32>(position2di(64, 16), dimension2du(384, 400)), false, true, popup.bg);
+	scaleAlign(popup.bg);
+	popup.bg->setScaleImage(true);
+
+	popup.bg->setVisible(false);
+	setButtonImg(popup.button);
+	setUIText(popup.title);
+	setUIText(popup.body);
+	setCallback(popup.button, std::bind(&GuiController::hidePopup, this, std::placeholders::_1));
 }
 
 void GuiController::init()
@@ -34,6 +50,31 @@ void GuiController::init()
 	//default main menu
 }
 
+void GuiController::setPopup(std::string title, std::string body, std::string button)
+{
+	popup.title->setText(wstr(title).c_str());
+	popup.body->setText(wstr(body).c_str());
+	popup.button->setText(wstr(button).c_str());
+}
+void GuiController::showPopup()
+{
+	dimension2du screenSize = driver->getScreenSize();
+	u32 horizpos = (screenSize.Width - 512) / 2;
+	u32 vertpos = (screenSize.Height - 512) / 2;
+	std::cout << horizpos << std::endl;
+	popup.bg->setRelativePosition(position2di(horizpos, vertpos));
+	popup.bg->setVisible(true);
+	guienv->getRootGUIElement()->bringToFront(popup.bg);
+	popupActive = true;
+}
+bool GuiController::hidePopup(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED || event.GUIEvent.Caller != popup.button) return true;
+	popup.bg->setVisible(false);
+	popupActive = false;
+	return false;
+}
+
 std::wstring GuiController::getTaunt()
 {
 	return taunts[std::rand() % taunts.size()]; //Pulls out a random taunt to mess with the player
@@ -51,7 +92,9 @@ bool GuiController::OnEvent(const SEvent& event)
 {
 	//Hurls the event to the active dialog.
 	if (activeDialog && event.EventType == EET_GUI_EVENT && callbacks.find(event.GUIEvent.Caller) != callbacks.end()) {
-		return callbacks[event.GUIEvent.Caller](event);
+		if(!popupActive) return callbacks[event.GUIEvent.Caller](event);
+
+		return hidePopup(event);
 	}
 	return true;
 }
@@ -59,6 +102,11 @@ bool GuiController::OnEvent(const SEvent& event)
 void GuiController::setCallback(IGUIElement* elem, GuiCallback callback)
 {
 	callbacks[elem] = callback;
+}
+
+void GuiController::removeCallback(IGUIElement* elem)
+{
+	callbacks.erase(elem);
 }
 
 void GuiController::update()

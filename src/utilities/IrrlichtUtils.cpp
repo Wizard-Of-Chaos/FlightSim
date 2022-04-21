@@ -46,6 +46,23 @@ void scaleAlign(IGUIElement* elem)
 	elem->setAlignment(EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE);
 }
 
+void setUIText(IGUIStaticText* text)
+{
+	scaleAlign(text);
+	text->setOverrideColor(SColor(255, 200, 200, 200));
+	text->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps14px/KomikaDisplayKaps14px.xml"));
+	text->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+}
+
+void setButtonImg(IGUIButton* elem)
+{
+	scaleAlign(elem);
+	elem->setImage(driver->getTexture("ui/button1.png"));
+	elem->setPressedImage(driver->getTexture("ui/button2.png"));
+	elem->setScaleImage(true);
+	elem->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps14px/KomikaDisplayKaps14px.xml"));
+}
+
 std::string fprecis(f32 num, s32 round)
 {
 	std::string ret = std::to_string(num);

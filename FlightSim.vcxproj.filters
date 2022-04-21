@@ -336,6 +336,9 @@
     <ClInclude Include="src\core\Campaign.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
+    <ClInclude Include="CampaignMenu.h">
+      <Filter>Headers\Gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
