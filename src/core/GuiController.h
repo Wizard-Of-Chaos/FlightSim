@@ -8,6 +8,16 @@
 #include <functional>
 
 typedef std::function<bool(const SEvent&)> GuiCallback;
+typedef std::function<void()> GuiCloseAnimationCallback;
+typedef std::function<void()> GuiOpenAnimationCallback;
+
+struct Popup
+{
+	IGUIImage* bg;
+	IGUIButton* button;
+	IGUIStaticText* title;
+	IGUIStaticText* body;
+};
 
 /*
 * The GUI controller handles updates for all the menus in the game (start menu, settings menu, death menu, etc).
@@ -29,14 +39,21 @@ class GuiController
 		GuiDialog* getActiveDialog() { return activeDialog; }
 		void setActiveDialog(MENU_TYPE menu);
 		std::wstring getTaunt();
-
+		void setPopup(std::string title, std::string body, std::string button);
+		void showPopup();
+		bool hidePopup(const SEvent& event);
 		void setCallback(IGUIElement* elem, GuiCallback callback);
+		void removeCallback(IGUIElement* elem);
 
 	private:
+		bool popupActive = false;
+		Popup popup;
 		GuiDialog* activeDialog;
 		MenuData menus;
 		std::vector<std::wstring> taunts;
 		std::unordered_map<IGUIElement*, GuiCallback> callbacks;
+		std::unordered_map<GuiDialog*, GuiCloseAnimationCallback> closeAnimationCallbacks;
+		std::unordered_map<GuiDialog*, GuiOpenAnimationCallback> openAnimationCallbacks;
 };
 
 #endif

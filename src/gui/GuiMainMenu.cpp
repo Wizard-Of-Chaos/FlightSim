@@ -52,7 +52,11 @@ bool GuiMainMenu::onSettings(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true; 
 
+	guiController->setPopup("Heads up", 
+		"This game isn't done yet. Please be patient. The devs are kind of stupid.\n \n You may encounter bugs, glitches, horribly broken weapons or ships and bad environment design. It'll all be fixed at some point. \n \n Your feedback is of course welcome.", 
+		"Got it");
 	guiController->setActiveDialog(GUI_SETTINGS_MENU);
+	guiController->showPopup();
 	return false;
 }
 bool GuiMainMenu::onQuit(const SEvent& event)
