@@ -16,14 +16,11 @@ void GuiMainMenu::init()
 	loadout = guienv->addButton(rect<s32>(position2di(horizontalPos, 32*2 + verticalSlice), buttonSize), root, MAINMENU_LOADOUT, L"Set Loadout", L"What guns do you like?");
 	settings = guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 3 + verticalSlice * 2), buttonSize), root, MAINMENU_SETTINGS, L"Settings", L"Like we have any worthwhile settings.");
 	quitGame = guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 4 + (verticalSlice * 3)), buttonSize), root, MAINMENU_QUIT, L"Quit Game", L"You'll be back.");
-	scaleAlign(startGame);
-	scaleAlign(settings);
-	scaleAlign(quitGame);
-	scaleAlign(loadout);
-	loadout->setScaleImage();
-	startGame->setScaleImage(true);
-	settings->setScaleImage(true);
-	quitGame->setScaleImage(true);
+
+	setButtonImg(startGame);
+	setButtonImg(loadout);
+	setButtonImg(settings);
+	setButtonImg(quitGame);
 
 	guiController->setCallback(startGame, std::bind(&GuiMainMenu::onStart, this, std::placeholders::_1));
 	guiController->setCallback(loadout, std::bind(&GuiMainMenu::onLoadout, this, std::placeholders::_1));

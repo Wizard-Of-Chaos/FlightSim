@@ -33,13 +33,9 @@ ButtonPair GuiLoadoutMenu::createButtonPair(u32 num, position2di pos, u32 left, 
 		pair.name->setName(std::to_string(num).c_str());
 		pair.buttonR->setName(std::to_string(num).c_str());
 	}
-	scaleAlign(pair.buttonL);
-	scaleAlign(pair.buttonR);
-	scaleAlign(pair.name);
-	pair.buttonL->setScaleImage();
-	pair.buttonR->setScaleImage();
-	pair.name->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-	pair.name->setOverrideColor(SColor(255, 200, 200, 200));
+	setButtonImg(pair.buttonL);
+	setButtonImg(pair.buttonR);
+	setUIText(pair.name);
 
 	return pair;
 }
@@ -81,17 +77,11 @@ void GuiLoadoutMenu::init()
 	guiController->setCallback(physWeaponButtons.buttonR, std::bind(&GuiLoadoutMenu::onPhysWeaponChangeRight, this, std::placeholders::_1));
 	guiController->setCallback(physWeaponButtons.name, std::bind(&GuiLoadoutMenu::onPhysWeaponHover, this, std::placeholders::_1));
 
-	scaleAlign(shipDescription);
-	scaleAlign(wepDescription);
+	setUIText(shipDescription);
+	setUIText(wepDescription);
+	setButtonImg(returnToMain);
 
-	scaleAlign(returnToMain);
-	returnToMain->setScaleImage();
 	guiController->setCallback(returnToMain, std::bind(&GuiLoadoutMenu::onReturn, this, std::placeholders::_1));
-
-	shipDescription->setOverrideColor(SColor(255, 200, 200, 200));
-	shipDescription->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-	wepDescription->setOverrideColor(SColor(255, 200, 200, 200));
-	wepDescription->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 	hide();
 }
 

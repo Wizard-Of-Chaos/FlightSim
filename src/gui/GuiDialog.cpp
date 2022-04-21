@@ -4,7 +4,12 @@
 GuiDialog::GuiDialog() 
 { 
 	baseSize = dimension2du(960, 540);
-	root = guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
+	root = guienv->addImage(rect<s32>(position2di(0, 0), baseSize));
+	IGUIImage* img = (IGUIImage*)root;
+	img->setImage(driver->getTexture("ui/starbg.png"));
+	img->setScaleImage(true);
+	scaleAlign(img);
+
 }
 
 void GuiDialog::show() 

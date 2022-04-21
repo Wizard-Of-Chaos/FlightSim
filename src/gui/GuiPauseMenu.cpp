@@ -4,6 +4,9 @@
 
 void GuiPauseMenu::init()
 {
+	if (root) root->remove();
+	root = guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
+
 	dimension2du screenSize = driver->getScreenSize();
 	u32 verticalSlice = baseSize.Height / 6;
 	u32 horizontalPos = baseSize.Width / 3;
@@ -12,13 +15,9 @@ void GuiPauseMenu::init()
 	resumeGame = guienv->addButton(rect<s32>(position2di(horizontalPos, 32), buttonSize), root, PAUSEMENU_RESUME, L"Resume Game", L"Get back in there!");
 	pauseSettings = guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 2 + verticalSlice), buttonSize), root, PAUSEMENU_SETTINGS, L"Settings", L"What, is your sensitivity too low?");
 	exitToMenus = guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 3 + verticalSlice * 2), buttonSize), root, PAUSEMENU_EXIT, L"Exit to Main Menu", L"Run, coward!");
-	scaleAlign(resumeGame);
-	scaleAlign(pauseSettings);
-	scaleAlign(exitToMenus);
-
-	resumeGame->setScaleImage(true);
-	pauseSettings->setScaleImage(true);
-	exitToMenus->setScaleImage(true);
+	setButtonImg(resumeGame);
+	setButtonImg(pauseSettings);
+	setButtonImg(exitToMenus);
 
 	guiController->setCallback(resumeGame, std::bind(&GuiPauseMenu::onResume, this, std::placeholders::_1));
 	guiController->setCallback(pauseSettings, std::bind(&GuiPauseMenu::onSettings, this, std::placeholders::_1));
