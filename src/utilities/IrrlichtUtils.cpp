@@ -75,3 +75,19 @@ std::wstring wstr(std::string& str)
 	return std::wstring(str.begin(), str.end());
 }
 
+bool smoothGuiMove(IGUIElement* elem, f32 animTime, f32& curTime, position2di desiredPos, position2di startPos, f32 dt)
+{
+	curTime += dt;
+	if (curTime > animTime) curTime = animTime;
+	s32 xDiff = startPos.X - desiredPos.X;
+	s32 yDiff = startPos.Y - desiredPos.Y;
+	s32 xMove = (dt / animTime) * xDiff;
+	s32 yMove = (dt / animTime) * yDiff;
+	elem->move(vector2di(xMove, yMove));
+	if (animTime == curTime) {
+		curTime = 0;
+		return false;
+	}
+	return true;
+}
+

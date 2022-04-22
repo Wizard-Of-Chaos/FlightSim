@@ -32,12 +32,15 @@ void GuiMainMenu::init()
 bool GuiMainMenu::onStart(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	guiController->setPopup("Heads up",
-		"This game isn't done yet. Please be patient; the devs are kind of stupid. \n \n You might encounter bugs, glitches, horribly broken weapons or ships, and bad environmental design. We're working on it. \n \n Your feedback is of course very welcome.",
-		"Got it"
-		);
 	guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
-	guiController->showPopup();
+	if (!initPopupUsed) {
+		guiController->setPopup("Heads up",
+			"This game isn't done yet. Please be patient; the devs are kind of stupid. \n \n You might encounter bugs, glitches, horribly broken weapons or ships, and bad environmental design. We're working on it. \n \n Your feedback is of course very welcome.",
+			"Got it"
+		);
+		guiController->showPopup();
+		initPopupUsed = true;
+	}
 	//stateController->setState(GAME_RUNNING);
 	return false;
 

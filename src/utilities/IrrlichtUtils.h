@@ -41,6 +41,7 @@ void scaleAlign(IGUIElement* elem);
 
 void setUIText(IGUIStaticText* text);
 void setButtonImg(IGUIButton* elem);
+bool smoothGuiMove(IGUIElement* elem, f32 animTime, f32& curTime, position2di desiredPos, position2di startPos, f32 dt);
 
 //Convenience funtion to return a string that is a rounded float. Thank you, GUI work.
 //Chops off the last so-many digits, specified by "round".

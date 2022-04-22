@@ -86,19 +86,15 @@ bool GuiCampaignMenu::moveLoadout(f32 dt)
 
 	s32 openHeight = screen.getHeight() - relpos.getHeight();
 	s32 closeHeight = screen.getHeight() - relpos.getHeight() / 5;
-	s32 diff = openHeight - closeHeight;
-	loadout.timer += dt;
 
+	vector2di open(pos.X, openHeight);
+	vector2di close(pos.X, closeHeight);
 	f32 animTime = .1f;
-	if (loadout.timer > animTime) loadout.timer = animTime;
 
-	s32 move = (dt / animTime) * diff;
-	if (loadout.isOpen) { //currently opening
-		loadout.img->move(vector2di(0, move));
+	if (loadout.isOpen) {
+		return smoothGuiMove(loadout.img, animTime, loadout.timer, close, open, dt);
 	}
 	else {
-		loadout.img->move(vector2di(0, -move));
+		return smoothGuiMove(loadout.img, animTime, loadout.timer, open, close, dt);
 	}
-	if (loadout.timer == animTime) return false;
-	else return true;
 }

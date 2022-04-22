@@ -34,6 +34,7 @@ class GuiMainMenu : public GuiDialog
 		IGUIButton* loadout;
 		IGUIButton* settings;
 		IGUIButton* quitGame;
+		bool initPopupUsed = false;
 };
 
 
