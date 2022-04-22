@@ -63,7 +63,7 @@ void GuiController::showPopup()
 	dimension2du screenSize = driver->getScreenSize();
 	u32 horizpos = (screenSize.Width - 512) / 2;
 	u32 vertpos = (screenSize.Height - 512) / 2;
-	std::cout << horizpos << std::endl;
+
 	popup.bg->setRelativePosition(position2di(horizpos, vertpos));
 	popup.bg->setVisible(true);
 	guienv->getRootGUIElement()->bringToFront(popup.bg);
@@ -75,6 +75,41 @@ bool GuiController::hidePopup(const SEvent& event)
 	popup.bg->setVisible(false);
 	popupActive = false;
 	return false;
+}
+
+void GuiController::setAnimationCallback(IGUIElement* elem, AnimationCallback cb)
+{
+	animationCallbacks[elem] = cb;
+}
+void GuiController::setOpenAnimationCallback(GuiDialog* dialog, AnimationCallback cb)
+{
+	openAnimationCallbacks[dialog] = cb;
+}
+void GuiController::setCloseAnimationCallback(GuiDialog* dialog, AnimationCallback cb)
+{
+	closeAnimationCallbacks[dialog] = cb;
+}
+
+void GuiController::callCloseAnimation(GuiDialog* dialog)
+{
+	if (closeAnimationCallbacks.find(dialog) != closeAnimationCallbacks.end()) {
+		currentAnimation = closeAnimationCallbacks[dialog];
+		playingAnimation = true;
+	}
+}
+void GuiController::callOpenAnimation(GuiDialog* dialog)
+{
+	if (openAnimationCallbacks.find(dialog) != openAnimationCallbacks.end()) {
+		currentAnimation = openAnimationCallbacks[dialog];
+		playingAnimation = true;
+	}
+}
+void GuiController::callAnimation(IGUIElement* elem)
+{
+	if (animationCallbacks.find(elem) != animationCallbacks.end()) {
+		currentAnimation = animationCallbacks[elem];
+		playingAnimation = true;
+	}
 }
 
 std::wstring GuiController::getTaunt()
@@ -113,7 +148,20 @@ void GuiController::removeCallback(IGUIElement* elem)
 
 void GuiController::update()
 {
-	//...I'm not actually sure anything needs to be done, but if it does, it gets done here.
+	u32 now = device->getTimer()->getTime();
+	f32 delta = (f32)(now - then) / 1000.f;
+	if (delta > .25) { //If the delta is too big, it's .25.
+		delta = .25;
+	}
+	then = now;
+	accumulator += delta;
+	while (accumulator >= dt) {
+		if (playingAnimation) {
+			playingAnimation = currentAnimation(dt);
+		}
+		t += dt;
+		accumulator -= dt;
+	}
 }
 
 //If you've just added a new menu, go make sure that you added it as a menu type in MenuData.h

@@ -20,8 +20,8 @@ class GuiDialog
 		virtual void init() = 0;
 
 		//These functions show or hide the root node (and thus show or hide all the children).
-		void show();
-		void hide();
+		virtual void show();
+		virtual void hide();
 		bool isDialogVisible() { if (root) { return root->isVisible(); } return false; }
 		IGUIElement* getRoot() { return root; }
 	protected:

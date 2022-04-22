@@ -8,8 +8,7 @@
 #include <functional>
 
 typedef std::function<bool(const SEvent&)> GuiCallback;
-typedef std::function<void()> GuiCloseAnimationCallback;
-typedef std::function<void()> GuiOpenAnimationCallback;
+typedef std::function<bool(f32)> AnimationCallback; //should return FALSE when done and TRUE when not done
 
 struct Popup
 {
@@ -42,18 +41,33 @@ class GuiController
 		void setPopup(std::string title, std::string body, std::string button);
 		void showPopup();
 		bool hidePopup(const SEvent& event);
+
 		void setCallback(IGUIElement* elem, GuiCallback callback);
 		void removeCallback(IGUIElement* elem);
 
+		void setAnimationCallback(IGUIElement* elem, AnimationCallback cb);
+		void setOpenAnimationCallback(GuiDialog* dialog, AnimationCallback cb);
+		void setCloseAnimationCallback(GuiDialog* dialog, AnimationCallback cb);
+		void callCloseAnimation(GuiDialog* dialog);
+		void callOpenAnimation(GuiDialog* dialog);
+		void callAnimation(IGUIElement* elem);
 	private:
+		u32 then;
+		f32 accumulator = 0.0f;
+		f32 dt = 0.005f;
+		f32 t = 0.0f;
+
+		bool playingAnimation = false;
+		AnimationCallback currentAnimation;
 		bool popupActive = false;
 		Popup popup;
 		GuiDialog* activeDialog;
 		MenuData menus;
 		std::vector<std::wstring> taunts;
 		std::unordered_map<IGUIElement*, GuiCallback> callbacks;
-		std::unordered_map<GuiDialog*, GuiCloseAnimationCallback> closeAnimationCallbacks;
-		std::unordered_map<GuiDialog*, GuiOpenAnimationCallback> openAnimationCallbacks;
+		std::unordered_map<IGUIElement*, AnimationCallback> animationCallbacks;
+		std::unordered_map<GuiDialog*, AnimationCallback> closeAnimationCallbacks;
+		std::unordered_map<GuiDialog*, AnimationCallback> openAnimationCallbacks;
 };
 
 #endif
