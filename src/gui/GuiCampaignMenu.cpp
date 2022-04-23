@@ -22,18 +22,18 @@ void GuiCampaignMenu::init()
 	hud.HUDimg->setScaleImage(true);
 	scaleAlign(img);
 	hud.toMenu = guienv->addButton(rect<s32>(position2di(0, 0), dimension2du(100, 60)), hud.HUDimg, CAMPAIGN_TO_MENU, L"Menu", L"Back out for now.");
-	setButtonImg(hud.toMenu);
+	setHoloButton(hud.toMenu);
 	guiController->setCallback(hud.toMenu, std::bind(&GuiCampaignMenu::onMenu, this, std::placeholders::_1));
 
 	start = guienv->addButton(rect<s32>(position2di(horizontalPos * 2, 256), buttonSize), root, CAMPAIGN_START_BUTTON, L"Start Scenario!", L"Fear not the enemy. Fear your teammates.");
-	setButtonImg(start);
+	setMetalButton(start);
 	guiController->setCallback(start, std::bind(&GuiCampaignMenu::onStart, this, std::placeholders::_1));
 
 	loadout.img = guienv->addImage(rect<s32>(position2di(286, 620), dimension2du(388,359)), root);
 	loadout.img->setImage(driver->getTexture("ui/loadout.png"));
 	loadout.img->setScaleImage(true);
 	loadout.button = guienv->addButton(rect<s32>(position2di(67, 25), dimension2du(260, 40)), loadout.img, CAMPAIGN_LOADOUT, L"Loadouts", L"View loadouts.");
-	setButtonImg(loadout.button);
+	setHoloButton(loadout.button);
 	scaleAlign(img);
 	guiController->setCallback(loadout.button, std::bind(&GuiCampaignMenu::onLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));

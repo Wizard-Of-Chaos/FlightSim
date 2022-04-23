@@ -16,7 +16,7 @@ void GuiDeathMenu::init()
 	taunt = guienv->addStaticText(guiController->getTaunt().c_str(), rect<s32>(position2di(horizontalPos, 32), buttonSize), false, true, root);
 
 	setUIText(taunt);
-	setButtonImg(returnToMenu);
+	setMetalButton(returnToMenu);
 
 	guiController->setCallback(returnToMenu, std::bind(&GuiDeathMenu::onReturn, this, std::placeholders::_1));
 	hide();

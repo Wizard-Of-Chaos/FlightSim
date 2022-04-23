@@ -54,13 +54,24 @@ void setUIText(IGUIStaticText* text)
 	text->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 }
 
-void setButtonImg(IGUIButton* elem)
+void setMetalButton(IGUIButton* elem)
 {
 	scaleAlign(elem);
 	elem->setImage(driver->getTexture("ui/button1.png"));
 	elem->setPressedImage(driver->getTexture("ui/button2.png"));
 	elem->setScaleImage(true);
-	elem->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps14px/KomikaDisplayKaps14px.xml"));
+	elem->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps22px/KomikaDisplayKaps22px.xml"));
+}
+
+void setHoloButton(IGUIButton* elem)
+{
+	scaleAlign(elem);
+	elem->setUseAlphaChannel(true);
+	elem->setImage(driver->getTexture("ui/holobutton1.png"));
+	elem->setPressedImage(driver->getTexture("ui/holobuttonbg2.png"));
+	elem->setScaleImage(true);
+	elem->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps22px/KomikaDisplayKaps22px.xml"));
+	elem->setDrawBorder(false);
 }
 
 std::string fprecis(f32 num, s32 round)
@@ -81,8 +92,8 @@ bool smoothGuiMove(IGUIElement* elem, f32 animTime, f32& curTime, position2di de
 	if (curTime > animTime) curTime = animTime;
 	s32 xDiff = startPos.X - desiredPos.X;
 	s32 yDiff = startPos.Y - desiredPos.Y;
-	s32 xMove = (dt / animTime) * xDiff;
-	s32 yMove = (dt / animTime) * yDiff;
+	s32 xMove = (s32)((dt / animTime) * xDiff);
+	s32 yMove = (s32)((dt / animTime) * yDiff);
 	elem->move(vector2di(xMove, yMove));
 	if (animTime == curTime) {
 		curTime = 0;

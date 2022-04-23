@@ -58,8 +58,11 @@ class GuiController
 		f32 t = 0.0f;
 
 		bool playingAnimation = false;
+		bool switchMenusCalled = false;
+		MENU_TYPE menuToSwitch;
 		AnimationCallback currentAnimation;
 		bool popupActive = false;
+		bool initPopupUsed = false;
 		Popup popup;
 		GuiDialog* activeDialog;
 		MenuData menus;

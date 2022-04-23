@@ -40,7 +40,12 @@ std::string idToStr(EntityId id);
 void scaleAlign(IGUIElement* elem);
 
 void setUIText(IGUIStaticText* text);
-void setButtonImg(IGUIButton* elem);
+void setMetalButton(IGUIButton* elem);
+void setHoloButton(IGUIButton* elem);
+/*
+* Smoothly moves the GUI element from one position to the next.
+* curTime is assumed to be a timer stored somewhere by whatever is calling this function. 
+*/
 bool smoothGuiMove(IGUIElement* elem, f32 animTime, f32& curTime, position2di desiredPos, position2di startPos, f32 dt);
 
 //Convenience funtion to return a string that is a rounded float. Thank you, GUI work.

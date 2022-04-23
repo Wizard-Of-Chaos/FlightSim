@@ -48,6 +48,7 @@ void GameStateController::init()
 	if (tooltipDefaultFont) {
 		guienv->getSkin()->setFont(tooltipDefaultFont, EGDF_TOOLTIP);
 	}
+	guienv->getSkin()->setColor(EGDC_BUTTON_TEXT, SColor(255, 140, 250, 255));
 	std::cout << "Game initialized!\n";
 	gameInitialized = true;
 }

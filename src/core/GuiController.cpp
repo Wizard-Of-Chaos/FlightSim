@@ -23,7 +23,7 @@ GuiController::GuiController()
 	popup.bg->setScaleImage(true);
 
 	popup.bg->setVisible(false);
-	setButtonImg(popup.button);
+	setMetalButton(popup.button);
 	setUIText(popup.title);
 	setUIText(popup.body);
 	setCallback(popup.button, std::bind(&GuiController::hidePopup, this, std::placeholders::_1));
@@ -46,9 +46,9 @@ void GuiController::init()
 	menus.menuDialogs[GUI_CAMPAIGN_MENU] = new GuiCampaignMenu;
 	menus.menuDialogs[GUI_CAMPAIGN_MENU]->init();
 	//set up death menu
-
-	activeDialog = menus.menuDialogs[GUI_MAIN_MENU];
-	activeDialog->show();
+	setActiveDialog(GUI_MAIN_MENU);
+	//activeDialog = menus.menuDialogs[GUI_MAIN_MENU];
+	//activeDialog->show();
 	//default main menu
 }
 
@@ -159,6 +159,17 @@ void GuiController::update()
 		if (playingAnimation) {
 			playingAnimation = currentAnimation(dt);
 		}
+
+		if (!playingAnimation && switchMenusCalled) {
+			if (activeDialog) activeDialog->hide();
+
+			activeDialog = menus.menuDialogs[menuToSwitch];
+			activeDialog->show();
+			callOpenAnimation(activeDialog);
+			guienv->getRootGUIElement()->bringToFront(activeDialog->getRoot());
+			switchMenusCalled = false;
+		}
+
 		t += dt;
 		accumulator -= dt;
 	}
@@ -167,10 +178,7 @@ void GuiController::update()
 //If you've just added a new menu, go make sure that you added it as a menu type in MenuData.h
 void GuiController::setActiveDialog(MENU_TYPE menu)
 {
-	if (activeDialog) {
-		activeDialog->hide();
-	}
-	activeDialog = menus.menuDialogs[menu];
-	activeDialog->show();
-	guienv->getRootGUIElement()->bringToFront(activeDialog->getRoot());
+	if(activeDialog) callCloseAnimation(activeDialog);
+	menuToSwitch = menu;
+	switchMenusCalled = true;
 }

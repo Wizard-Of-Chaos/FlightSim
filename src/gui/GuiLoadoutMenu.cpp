@@ -33,8 +33,8 @@ ButtonPair GuiLoadoutMenu::createButtonPair(u32 num, position2di pos, u32 left, 
 		pair.name->setName(std::to_string(num).c_str());
 		pair.buttonR->setName(std::to_string(num).c_str());
 	}
-	setButtonImg(pair.buttonL);
-	setButtonImg(pair.buttonR);
+	setMetalButton(pair.buttonL);
+	setMetalButton(pair.buttonR);
 	setUIText(pair.name);
 
 	return pair;
@@ -79,7 +79,7 @@ void GuiLoadoutMenu::init()
 
 	setUIText(shipDescription);
 	setUIText(wepDescription);
-	setButtonImg(returnToMain);
+	setMetalButton(returnToMain);
 
 	guiController->setCallback(returnToMain, std::bind(&GuiLoadoutMenu::onReturn, this, std::placeholders::_1));
 	hide();

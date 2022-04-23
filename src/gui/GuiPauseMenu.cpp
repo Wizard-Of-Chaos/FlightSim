@@ -15,9 +15,9 @@ void GuiPauseMenu::init()
 	resumeGame = guienv->addButton(rect<s32>(position2di(horizontalPos, 32), buttonSize), root, PAUSEMENU_RESUME, L"Resume Game", L"Get back in there!");
 	pauseSettings = guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 2 + verticalSlice), buttonSize), root, PAUSEMENU_SETTINGS, L"Settings", L"What, is your sensitivity too low?");
 	exitToMenus = guienv->addButton(rect<s32>(position2di(horizontalPos, 32 * 3 + verticalSlice * 2), buttonSize), root, PAUSEMENU_EXIT, L"Exit to Main Menu", L"Run, coward!");
-	setButtonImg(resumeGame);
-	setButtonImg(pauseSettings);
-	setButtonImg(exitToMenus);
+	setMetalButton(resumeGame);
+	setMetalButton(pauseSettings);
+	setMetalButton(exitToMenus);
 
 	guiController->setCallback(resumeGame, std::bind(&GuiPauseMenu::onResume, this, std::placeholders::_1));
 	guiController->setCallback(pauseSettings, std::bind(&GuiPauseMenu::onSettings, this, std::placeholders::_1));
