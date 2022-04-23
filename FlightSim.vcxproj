@@ -198,6 +198,7 @@
     <ClCompile Include="src\utilities\ProjectileUtils.cpp" />
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp" />
     <ClCompile Include="src\utilities\ShipUtils.cpp" />
+    <ClCompile Include="src\utilities\ScenarioUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\BulletGhostComponent.h" />
@@ -266,6 +267,7 @@
     <ClInclude Include="src\utilities\ObstacleUtils.h" />
     <ClInclude Include="src\utilities\ProjectileUtils.h" />
     <ClInclude Include="src\utilities\Scenario.h" />
+    <ClInclude Include="src\utilities\ScenarioUtils.h" />
     <ClInclude Include="src\utilities\ShipMovementUtils.h" />
     <ClInclude Include="src\utilities\ShipUtils.h" />
   </ItemGroup>

@@ -10,31 +10,36 @@ void GuiCampaignMenu::init()
 	root = guienv->addImage(rect<s32>(position2di(0, 0), baseSize));
 	IGUIImage* img = (IGUIImage*)root;
 	img->setImage(driver->getTexture("ui/starbg.png"));
-	img->setScaleImage(true);
 	scaleAlign(img);
 
-	u32 verticalSlice = baseSize.Height / 8;
-	u32 horizontalPos = baseSize.Width / 5;
-	dimension2du buttonSize(horizontalPos, verticalSlice);
+	hud.orbiting = guienv->addImage(rect<s32>(position2di(150, 250), dimension2du(96, 96)), root);
+	hud.orbiting->setImage(driver->getTexture("ui/planet.png"));
+	scaleAlign(hud.orbiting);
+
+	hud.shipSprite = guienv->addImage(rect<s32>(position2di(300, 280), dimension2du(46, 17)), root);
+	hud.shipSprite->setImage(driver->getTexture("ui/shipsprite.png"));
+	scaleAlign(hud.shipSprite);
 
 	hud.HUDimg = guienv->addImage(rect<s32>(position2di(0, 0), baseSize), root);
 	hud.HUDimg->setImage(driver->getTexture("ui/campaignbase.png"));
-	hud.HUDimg->setScaleImage(true);
-	scaleAlign(img);
-	hud.toMenu = guienv->addButton(rect<s32>(position2di(0, 0), dimension2du(100, 60)), hud.HUDimg, CAMPAIGN_TO_MENU, L"Menu", L"Back out for now.");
+	scaleAlign(hud.HUDimg);
+
+	hud.toMenu = guienv->addButton(rect<s32>(position2di(0, 0), dimension2du(90, 55)), hud.HUDimg, CAMPAIGN_TO_MENU, L"Menu", L"Back out for now.");
 	setHoloButton(hud.toMenu);
 	guiController->setCallback(hud.toMenu, std::bind(&GuiCampaignMenu::onMenu, this, std::placeholders::_1));
 
-	start = guienv->addButton(rect<s32>(position2di(horizontalPos * 2, 256), buttonSize), root, CAMPAIGN_START_BUTTON, L"Start Scenario!", L"Fear not the enemy. Fear your teammates.");
+
+	start = guienv->addButton(rect<s32>(position2di(480, 150), dimension2du(90, 55)), root, CAMPAIGN_START_BUTTON, L"Start Scenario!", L"Fear not the enemy. Fear your teammates.");
 	setMetalButton(start);
 	guiController->setCallback(start, std::bind(&GuiCampaignMenu::onStart, this, std::placeholders::_1));
 
-	loadout.img = guienv->addImage(rect<s32>(position2di(286, 620), dimension2du(388,359)), root);
+
+	loadout.img = guienv->addImage(rect<s32>(position2di(286, 470), dimension2du(388,359)), root);
 	loadout.img->setImage(driver->getTexture("ui/loadout.png"));
-	loadout.img->setScaleImage(true);
+	
 	loadout.button = guienv->addButton(rect<s32>(position2di(67, 25), dimension2du(260, 40)), loadout.img, CAMPAIGN_LOADOUT, L"Loadouts", L"View loadouts.");
 	setHoloButton(loadout.button);
-	scaleAlign(img);
+	scaleAlign(loadout.img);
 	guiController->setCallback(loadout.button, std::bind(&GuiCampaignMenu::onLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));
 	hide();
@@ -44,13 +49,6 @@ void GuiCampaignMenu::show()
 {
 	root->setRelativePosition(rect<s32>(position2di(0, 0), driver->getScreenSize()));
 	root->setVisible(true);
-	rect<s32> pos = root->getAbsolutePosition();
-	f32 horprop = 388.f / 960.f;
-	f32 vertprop = 359.f / 540.f;
-	dimension2du size((u32)(pos.getWidth() * horprop), (u32)(pos.getHeight() * vertprop));
-	rect<s32> loadoutpos(position2di((pos.getWidth() - size.Width) / 2, (pos.getHeight() - (u32)(size.Height*.2f))), size);
-	hud.HUDimg->setRelativePosition(pos);
-	loadout.img->setRelativePosition(loadoutpos);
 }
 
 bool GuiCampaignMenu::onStart(const SEvent& event)

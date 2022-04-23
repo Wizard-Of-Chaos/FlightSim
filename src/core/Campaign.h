@@ -19,6 +19,7 @@ struct Wingman
 
 struct Campaign
 {
+	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(500), totalRepairCapacity(1000) {}
 	u32 currentDifficulty;
 	u32 currentEncounter;
 	Scenario possibleScenarios[4];

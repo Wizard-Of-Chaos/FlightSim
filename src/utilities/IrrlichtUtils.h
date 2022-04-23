@@ -38,10 +38,10 @@ EntityId strToId(std::string id);
 std::string idToStr(EntityId id);
 //Convenience function to call on a GUI element to force it to scale with its root node.
 void scaleAlign(IGUIElement* elem);
-
+void scaleAlign(IGUIImage* img);
 void setUIText(IGUIStaticText* text);
 void setMetalButton(IGUIButton* elem);
-void setHoloButton(IGUIButton* elem);
+void setHoloButton(IGUIButton* elem, bool bg = false);
 /*
 * Smoothly moves the GUI element from one position to the next.
 * curTime is assumed to be a timer stored somewhere by whatever is calling this function. 

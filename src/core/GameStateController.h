@@ -8,6 +8,7 @@
 #include "Config.h"
 #include "LoadoutData.h"
 #include "GameAssets.h"
+#include "Campaign.h"
 #include <filesystem>
 
 /*
@@ -59,6 +60,8 @@ class GameStateController : public IEventReceiver
 		std::unordered_map<u32, WeaponData*> physWeaponData;
 		std::unordered_map<u32, ObstacleData*> obstacleData;
 		Assets assets;
+
+		Campaign campaign;
 #if _DEBUG
 		void addDebugLine(line3df line) { debugLines.push_back(line); }
 #endif 

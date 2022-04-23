@@ -43,7 +43,7 @@ void GameController::init()
 	guienv = device->getGUIEnvironment();
 	then = device->getTimer()->getTime();
 
-	currentScenario = Scenario(SCENARIO_KILL_HOSTILES, 1, vector3df(0, 0, -50), vector3df(10, 20, 80));
+	currentScenario = Scenario(SCENARIO_KILL_HOSTILES, SCENENV_ASTEROID_FIELD, 1, vector3df(0, 0, -50), vector3df(10, 20, 80));
 
 	//bullet init
 	broadPhase = new bt32BitAxisSweep3(btVector3(-100000, -100000, -100000), btVector3(100000, 100000, 100000));
@@ -167,67 +167,8 @@ void GameController::initScenario()
 {
 	std::cout << "Loading scenario...\n";
 
-	ISceneNode* n = smgr->addLightSceneNode(0, vector3df(0, 10000, 0),
-		SColor(200, 255, 180, 180), 50000.f);
-	n->setID(ID_IsNotSelectable);
-
-	switch (currentScenario.type) {
-	case SCENARIO_KILL_HOSTILES:
-		killHostilesScenario();
-		break;
-	default:
-		break;
-	}
+	buildScenario(currentScenario);
 
 	device->getCursorControl()->setActiveIcon(ECI_CROSS);
-
-	ITexture* sky = driver->getTexture("effects/starskybox.png");
-	n = smgr->addSkyBoxSceneNode(sky, sky, sky, sky, sky, sky);
-	n->setID(ID_IsNotSelectable);
-
 	std::cout << "Scenario loaded. \n";
-}
-
-void GameController::killHostilesScenario()
-{
-	EntityId player = createPlayerShipFromLoadout(currentScenario.playerStartPos, vector3df(0,0,0));
-	initializePlayerFaction(player);
-
-	std::vector<vector3df> obstaclePositions;
-
-	for (u32 i = 0; i < 1000; ++i) {
-		vector3df pos = getPointInSphere(vector3df(0, 0, 0), 5000.f);
-		obstaclePositions.push_back(pos);
-	}
-	std::cout << "\n Done. Culling obstacles... ";
-	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
-		vector3df pos = obstaclePositions[i];
-		f32 radius = 75.f;
-		if (isPointInSphere(pos, currentScenario.playerStartPos, radius)) {
-			obstaclePositions.erase(obstaclePositions.begin() + i);
-			continue;
-		}
-		if (isPointInSphere(pos, currentScenario.enemyStartPos, radius)) {
-			obstaclePositions.erase(obstaclePositions.begin() + i);
-		}
-	}
-	std::cout << "Done. Obstacles remaining: " << obstaclePositions.size() << "\n Building obstacles... \n ";
-	for (u32 i = 0; i < obstaclePositions.size(); ++i) {
-		u32 scale = std::rand() % 100;
-		f32 mass = (f32)scale / 5.f;
-		//EntityId gas = createGasCloud(obstaclePositions[i], vector3df(scale, scale, scale));
-		EntityId rock = createAsteroid(obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
-	}
-
-	std::cout << "\nDone. Building hostiles... ";
-	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
-		vector3df pos = getPointInSphere(currentScenario.enemyStartPos, 25.f);
-		EntityId enemy = createDefaultAIShip(pos, vector3df(0,180,0)); //todo: create AI ship generator that pulls from loaded ships
-		currentScenario.objectives[i] = enemy;
-	}
-
-	auto cloud = createGasCloud(vector3df(100,0,0), vector3df(10, 10, 10));
-
-	std::cout << "Done. \n";
-	//let's get us some rocks to bump around
 }

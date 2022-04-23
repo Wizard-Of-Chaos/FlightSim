@@ -11,6 +11,7 @@
 #include "GameFunctions.h"
 #include "ShipUtils.h"
 #include "ObstacleUtils.h"
+#include "ScenarioUtils.h"
 #include "Scenario.h"
 #include "Config.h"
 #include <functional>
@@ -87,9 +88,6 @@ class GameController
 		btSequentialImpulseConstraintSolver* solver;
 		broadCallback* collCb;
 		btGhostPairCallback* gPairCb;
-
-		//scenario init and generation
-		void killHostilesScenario();
 };
 
 

@@ -1,0 +1,9 @@
+Asteroid Field=An asteroid field has been identified at this location.
+Gas Field=A field of unstable gas has been identified at this location. Use caution while aiming.
+Empty Space=Nothing of significance ahead.
+Debris Field=A ship debris field has been identified at this location.
+Space Station=A space station's radio signals have been detected ahead.
+
+killHostiles=A squadron of hostiles has been identified up ahead and will need to be taken out.
+destroyObject=A significant asset to the enemy will need to be destroyed to proceed.
+salvage=Valuable resources have been spotted by scouts in this area and will need to be salvaged.

@@ -46,6 +46,12 @@ void scaleAlign(IGUIElement* elem)
 	elem->setAlignment(EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE);
 }
 
+void scaleAlign(IGUIImage* img)
+{
+	img->setAlignment(EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE, EGUIA_SCALE);
+	img->setScaleImage(true);
+}
+
 void setUIText(IGUIStaticText* text)
 {
 	scaleAlign(text);
@@ -63,11 +69,13 @@ void setMetalButton(IGUIButton* elem)
 	elem->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps22px/KomikaDisplayKaps22px.xml"));
 }
 
-void setHoloButton(IGUIButton* elem)
+void setHoloButton(IGUIButton* elem, bool bg)
 {
 	scaleAlign(elem);
 	elem->setUseAlphaChannel(true);
-	elem->setImage(driver->getTexture("ui/holobutton1.png"));
+	if (bg) elem->setImage(driver->getTexture("ui/holobuttonbg1.png"));
+	else elem->setImage(driver->getTexture("ui/holobutton1.png"));
+
 	elem->setPressedImage(driver->getTexture("ui/holobuttonbg2.png"));
 	elem->setScaleImage(true);
 	elem->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps22px/KomikaDisplayKaps22px.xml"));
