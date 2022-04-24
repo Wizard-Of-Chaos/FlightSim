@@ -21,6 +21,7 @@ struct CampaignHUD
 	IGUIImage* HUDimg;
 	IGUIImage* orbiting;
 	IGUIImage* shipSprite;
+	IGUIImage* sectorHeader;
 	IGUIButton* toMenu;
 	IGUIStaticText* sector;
 	IGUIStaticText* info;
@@ -42,6 +43,9 @@ struct ScenarioHUD
 	IGUIImage* areadesc;
 	IGUIStaticText* name;
 	IGUIStaticText* desc;
+
+	f32 timer1 = 0;
+	f32 timer2 = 0;
 };
 
 class GuiCampaignMenu : public GuiDialog
@@ -53,8 +57,10 @@ class GuiCampaignMenu : public GuiDialog
 		bool onMenu(const SEvent& event);
 		bool onLoadout(const SEvent& event);
 		bool moveLoadout(f32 dt);
+		bool moveSectorInfo(f32 dt);
 		virtual void show();
 	private:
+		bool sectorInfoShowing;
 		CampaignHUD hud;
 		LoadoutHUD loadout;
 		ScenarioHUD scenariohud;

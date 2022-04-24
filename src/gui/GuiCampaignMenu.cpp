@@ -28,20 +28,33 @@ void GuiCampaignMenu::init()
 	setHoloButton(hud.toMenu);
 	guiController->setCallback(hud.toMenu, std::bind(&GuiCampaignMenu::onMenu, this, std::placeholders::_1));
 
+	scenariohud.areadesc = guienv->addImage(rect<s32>(position2di(960, 114), dimension2du(305, 311)), root);
+	scenariohud.areadesc->setImage(driver->getTexture("ui/areadesc.png"));
+	scaleAlign(scenariohud.areadesc);
+	scenariohud.launch = guienv->addImage(rect<s32>(position2di(362, 4), dimension2du(236, 51)), root);
+	scenariohud.launch->setImage(driver->getTexture("ui/launch.png"));
+	scaleAlign(scenariohud.launch);
+
+	hud.sectorHeader = guienv->addImage(rect<s32>(position2di(290, 0), dimension2du(380, 55)), root);
+	hud.sectorHeader->setImage(driver->getTexture("ui/header.png"));
+	scaleAlign(hud.sectorHeader);
 
 	start = guienv->addButton(rect<s32>(position2di(480, 150), dimension2du(90, 55)), root, CAMPAIGN_START_BUTTON, L"Start Scenario!", L"Fear not the enemy. Fear your teammates.");
 	setMetalButton(start);
 	guiController->setCallback(start, std::bind(&GuiCampaignMenu::onStart, this, std::placeholders::_1));
 
-
 	loadout.img = guienv->addImage(rect<s32>(position2di(286, 470), dimension2du(388,359)), root);
 	loadout.img->setImage(driver->getTexture("ui/loadout.png"));
+	scaleAlign(loadout.img);
 	
 	loadout.button = guienv->addButton(rect<s32>(position2di(67, 25), dimension2du(260, 40)), loadout.img, CAMPAIGN_LOADOUT, L"Loadouts", L"View loadouts.");
 	setHoloButton(loadout.button);
-	scaleAlign(loadout.img);
+
+
+
 	guiController->setCallback(loadout.button, std::bind(&GuiCampaignMenu::onLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));
+	//guiController->setAnimationCallback(start, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
 	hide();
 }
 
@@ -53,8 +66,10 @@ void GuiCampaignMenu::show()
 
 bool GuiCampaignMenu::onStart(const SEvent& event)
 {
+
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	stateController->setState(GAME_RUNNING);
+	guiController->callAnimation(start);
 	return false;
 }
 
@@ -95,4 +110,9 @@ bool GuiCampaignMenu::moveLoadout(f32 dt)
 	else {
 		return smoothGuiMove(loadout.img, animTime, loadout.timer, open, close, dt);
 	}
+}
+
+bool GuiCampaignMenu::moveSectorInfo(f32 dt)
+{
+	return false;
 }
