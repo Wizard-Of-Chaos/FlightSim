@@ -34,14 +34,17 @@ void GuiCampaignMenu::init()
 	scenariohud.launch = guienv->addImage(rect<s32>(position2di(362, 4), dimension2du(236, 51)), root);
 	scenariohud.launch->setImage(driver->getTexture("ui/launch.png"));
 	scaleAlign(scenariohud.launch);
+	scenariohud.launchButton = guienv->addButton(rect<s32>(position2di(54, 6), dimension2du(135, 20)), scenariohud.launch, -1, L"Start", L"Shoot mans!");
+	setHoloButton(scenariohud.launchButton);
+	guiController->setCallback(scenariohud.launchButton, std::bind(&GuiCampaignMenu::onStart, this, std::placeholders::_1));
 
 	hud.sectorHeader = guienv->addImage(rect<s32>(position2di(290, 0), dimension2du(380, 55)), root);
 	hud.sectorHeader->setImage(driver->getTexture("ui/header.png"));
 	scaleAlign(hud.sectorHeader);
 
-	start = guienv->addButton(rect<s32>(position2di(480, 150), dimension2du(90, 55)), root, CAMPAIGN_START_BUTTON, L"Start Scenario!", L"Fear not the enemy. Fear your teammates.");
+	start = guienv->addButton(rect<s32>(position2di(480, 150), dimension2du(90, 55)), root, CAMPAIGN_START_BUTTON, L"schmoove", L"Move the GUI.");
 	setMetalButton(start);
-	guiController->setCallback(start, std::bind(&GuiCampaignMenu::onStart, this, std::placeholders::_1));
+	guiController->setCallback(start, std::bind(&GuiCampaignMenu::onMoveGui, this, std::placeholders::_1));
 
 	loadout.img = guienv->addImage(rect<s32>(position2di(286, 470), dimension2du(388,359)), root);
 	loadout.img->setImage(driver->getTexture("ui/loadout.png"));
@@ -50,11 +53,9 @@ void GuiCampaignMenu::init()
 	loadout.button = guienv->addButton(rect<s32>(position2di(67, 25), dimension2du(260, 40)), loadout.img, CAMPAIGN_LOADOUT, L"Loadouts", L"View loadouts.");
 	setHoloButton(loadout.button);
 
-
-
 	guiController->setCallback(loadout.button, std::bind(&GuiCampaignMenu::onLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));
-	//guiController->setAnimationCallback(start, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
+	guiController->setAnimationCallback(start, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
 	hide();
 }
 
@@ -64,12 +65,19 @@ void GuiCampaignMenu::show()
 	root->setVisible(true);
 }
 
+bool GuiCampaignMenu::onMoveGui(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	guiController->callAnimation(start);
+	return false;
+}
+
 bool GuiCampaignMenu::onStart(const SEvent& event)
 {
 
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	stateController->setState(GAME_RUNNING);
 	guiController->callAnimation(start);
+	stateController->setState(GAME_RUNNING);
 	return false;
 }
 
@@ -114,5 +122,33 @@ bool GuiCampaignMenu::moveLoadout(f32 dt)
 
 bool GuiCampaignMenu::moveSectorInfo(f32 dt)
 {
-	return false;
+	f32 launchRatioOpen = 4.f / 540.f;
+	f32 launchRatioClosed = 55.f / 540.f;
+	f32 areaRatioOpen = 305.f / 960.f;
+
+	rect<s32> launch = scenariohud.launch->getRelativePosition();
+	rect<s32> area = scenariohud.areadesc->getRelativePosition();
+	rect<s32> screen = root->getAbsolutePosition();
+	position2di launchPos(launch.UpperLeftCorner);
+	position2di areaPos(area.UpperLeftCorner);
+
+	vector2di launchOpen(launchPos.X, (s32)(screen.getHeight() * launchRatioOpen));
+	vector2di launchClosed(launchPos.X, (s32)(screen.getHeight() * launchRatioClosed));
+	vector2di areaOpen(screen.getWidth() - (s32)(screen.getWidth() * areaRatioOpen), areaPos.Y);
+	vector2di areaClosed(screen.getWidth(), areaPos.Y);
+
+	bool move;
+	if (sectorInfoShowing) {
+		smoothGuiMove(scenariohud.areadesc, .1f, scenariohud.timer1, areaOpen, areaClosed, dt);
+		move = smoothGuiMove(scenariohud.launch, .1f, scenariohud.timer2, launchClosed, launchOpen, dt);
+	}
+	else {
+		smoothGuiMove(scenariohud.areadesc, .1f, scenariohud.timer1, areaClosed, areaOpen, dt);
+		move = smoothGuiMove(scenariohud.launch, .1f, scenariohud.timer2, launchOpen, launchClosed, dt);
+	}
+	if (!move) {
+		sectorInfoShowing = !sectorInfoShowing;
+	}
+	return move;
+	//return false;
 }

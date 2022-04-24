@@ -56,6 +56,7 @@ class GuiCampaignMenu : public GuiDialog
 		bool onStart(const SEvent& event);
 		bool onMenu(const SEvent& event);
 		bool onLoadout(const SEvent& event);
+		bool onMoveGui(const SEvent& event);
 		bool moveLoadout(f32 dt);
 		bool moveSectorInfo(f32 dt);
 		virtual void show();
