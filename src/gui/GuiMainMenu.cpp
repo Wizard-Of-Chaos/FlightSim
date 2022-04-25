@@ -85,9 +85,10 @@ bool GuiMainMenu::onStart(const SEvent& event)
 		initPopupUsed = true;
 	}
 	else {
-		for (u32 i = 0; i < 4; ++i) {
-			stateController->campaign = Campaign();
+		stateController->campaign = Campaign();
+		for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
 			stateController->campaign.possibleScenarios[i] = randomScenario();
+			//std::cout << "location: " << i << " " << stateController->campaign.possibleScenarios[i].location << std::endl;
 		}
 		guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
 	}

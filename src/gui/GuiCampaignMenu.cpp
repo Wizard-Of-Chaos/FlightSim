@@ -12,6 +12,10 @@ void GuiCampaignMenu::init()
 	img->setImage(driver->getTexture("ui/starbg.png"));
 	scaleAlign(img);
 
+	hud.HUDimg = guienv->addImage(rect<s32>(position2di(0, 0), baseSize), root);
+	hud.HUDimg->setImage(driver->getTexture("ui/campaignbase.png"));
+	scaleAlign(hud.HUDimg);
+
 	hud.orbiting = guienv->addImage(rect<s32>(position2di(150, 250), dimension2du(96, 96)), root);
 	hud.orbiting->setImage(driver->getTexture("ui/planet.png"));
 	scaleAlign(hud.orbiting);
@@ -20,9 +24,16 @@ void GuiCampaignMenu::init()
 	hud.shipSprite->setImage(driver->getTexture("ui/shipsprite.png"));
 	scaleAlign(hud.shipSprite);
 
-	hud.HUDimg = guienv->addImage(rect<s32>(position2di(0, 0), baseSize), root);
-	hud.HUDimg->setImage(driver->getTexture("ui/campaignbase.png"));
-	scaleAlign(hud.HUDimg);
+	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
+		s32 startX=400;
+		s32 startY=230;
+		s32 buf = 4;
+		dimension2du size(110, 30);
+		IGUIButton* button = guienv->addButton(rect<s32>(position2di(startX, startY + (size.Height * i) + (buf * i)), size), root, (s32)i, L"", L"Possible scenario");
+		setHoloButton(button, true);
+		hud.scenarioSelects[i] = button;
+		guiController->setCallback(button, std::bind(&GuiCampaignMenu::onShowSectorInfo, this, std::placeholders::_1));
+	}
 
 	hud.toMenu = guienv->addButton(rect<s32>(position2di(0, 0), dimension2du(90, 55)), hud.HUDimg, CAMPAIGN_TO_MENU, L"Menu", L"Back out for now.");
 	setHoloButton(hud.toMenu);
@@ -31,6 +42,10 @@ void GuiCampaignMenu::init()
 	scenariohud.areadesc = guienv->addImage(rect<s32>(position2di(960, 114), dimension2du(305, 311)), root);
 	scenariohud.areadesc->setImage(driver->getTexture("ui/areadesc.png"));
 	scaleAlign(scenariohud.areadesc);
+	scenariohud.name = guienv->addStaticText(L"", rect<s32>(position2di(15, 20), dimension2du(280, 20)), false, true, scenariohud.areadesc);
+	scenariohud.desc = guienv->addStaticText(L"", rect<s32>(position2di(35, 45), dimension2du(250, 250)), false, true, scenariohud.areadesc);
+	setUIText(scenariohud.name);
+	setUIText(scenariohud.desc);
 	scenariohud.launch = guienv->addImage(rect<s32>(position2di(362, 4), dimension2du(236, 51)), root);
 	scenariohud.launch->setImage(driver->getTexture("ui/launch.png"));
 	scaleAlign(scenariohud.launch);
@@ -42,10 +57,6 @@ void GuiCampaignMenu::init()
 	hud.sectorHeader->setImage(driver->getTexture("ui/header.png"));
 	scaleAlign(hud.sectorHeader);
 
-	start = guienv->addButton(rect<s32>(position2di(480, 150), dimension2du(90, 55)), root, CAMPAIGN_START_BUTTON, L"schmoove", L"Move the GUI.");
-	setMetalButton(start);
-	guiController->setCallback(start, std::bind(&GuiCampaignMenu::onMoveGui, this, std::placeholders::_1));
-
 	loadout.img = guienv->addImage(rect<s32>(position2di(286, 470), dimension2du(388,359)), root);
 	loadout.img->setImage(driver->getTexture("ui/loadout.png"));
 	scaleAlign(loadout.img);
@@ -55,7 +66,7 @@ void GuiCampaignMenu::init()
 
 	guiController->setCallback(loadout.button, std::bind(&GuiCampaignMenu::onLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));
-	guiController->setAnimationCallback(start, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
+	guiController->setAnimationCallback(scenariohud.launch, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
 	hide();
 }
 
@@ -63,20 +74,18 @@ void GuiCampaignMenu::show()
 {
 	root->setRelativePosition(rect<s32>(position2di(0, 0), driver->getScreenSize()));
 	root->setVisible(true);
-}
-
-bool GuiCampaignMenu::onMoveGui(const SEvent& event)
-{
-	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	guiController->callAnimation(start);
-	return false;
+	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
+		Scenario scen = stateController->campaign.possibleScenarios[i];
+		std::wstring title = wstr(stateController->campaign.possibleScenarios[i].location);
+		hud.scenarioSelects[i]->setText(title.c_str());
+	}
 }
 
 bool GuiCampaignMenu::onStart(const SEvent& event)
 {
 
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	guiController->callAnimation(start);
+	guiController->callAnimation(scenariohud.launch);
 	stateController->setState(GAME_RUNNING);
 	return false;
 }
@@ -118,6 +127,21 @@ bool GuiCampaignMenu::moveLoadout(f32 dt)
 	else {
 		return smoothGuiMove(loadout.img, animTime, loadout.timer, open, close, dt);
 	}
+}
+
+bool GuiCampaignMenu::onShowSectorInfo(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	s32 id = event.GUIEvent.Caller->getID();
+	if (!sectorInfoShowing || scenariohud.showing == id) {
+		guiController->callAnimation(scenariohud.launch);
+	}
+	std::wstring name = wstr(stateController->campaign.possibleScenarios[id].location);
+	std::wstring desc = wstr(stateController->campaign.possibleScenarios[id].description);
+	scenariohud.name->setText(name.c_str());
+	scenariohud.desc->setText(desc.c_str());
+	scenariohud.showing = id;
+	return false;
 }
 
 bool GuiCampaignMenu::moveSectorInfo(f32 dt)

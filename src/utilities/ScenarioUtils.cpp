@@ -10,25 +10,25 @@ Scenario randomScenario()
 	in.readLinesToValues();
 	SCENARIO_TYPE type = (SCENARIO_TYPE)(std::rand() % SCENARIO_MAX_TYPES);
 	if (type == SCENARIO_MAX_TYPES) type = SCENARIO_KILL_HOSTILES;
-	std::cout << type << std::endl;
 	SCENARIO_ENVIRONMENT env = (SCENARIO_ENVIRONMENT)(std::rand() % SCENENV_MAX_ENVIRONMENTS);
 	if (env == SCENENV_MAX_ENVIRONMENTS) env = SCENENV_ASTEROID_FIELD;
-	std::cout << env << std::endl;
 
 	std::string location = scenarioEnvStrings.at(env);
-	std::cout << location << std::endl; 
 	std::string description = in.values[location];
 	description += "\n";
 	description += in.values[scenarioStrings.at(type)];
-	std::cout << description << std::endl;
-	u32 objCount = std::rand() % (stateController->campaign.currentDifficulty * 3);
-
-	std::cout << objCount << std::endl;
+	u32 objCount = std::rand() % (stateController->campaign.currentDifficulty * 3) + 1;
 
 	vector3df player(0, 0, -50);
 	vector3df enemy(10, 20, 80);
 
 	Scenario scen(type, env, objCount, player, enemy);
+
+	/*
+	std::cout << location << std::endl;
+	std::cout << description << std::endl;
+	std::cout << "type: " << type << ", env: " << env << ", objective count: " << objCount << std::endl;
+	*/
 	scen.location = location;
 	scen.description = description;
 

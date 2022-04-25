@@ -34,7 +34,7 @@ class GuiMainMenu : public GuiDialog
 		bool onShow(f32 dt);
 		bool onHide(f32 dt);
 	private:
-		bool initPopupUsed = false;
+		bool initPopupUsed = true;
 		f32 showAnimTimer;
 		IGUIImage* screen;
 		IGUIButton* startGame;

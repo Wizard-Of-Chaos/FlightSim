@@ -3,8 +3,9 @@
 #define CAMPAIGNMENU_H
 #include "BaseHeader.h"
 #include "GuiDialog.h"
+#include "Campaign.h"
 
-enum CAMPAIGN_MENU_ELEMENT
+enum CAMPAIGN_MENU_ELEM
 {
 	CAMPAIGN_START_BUTTON,
 	CAMPAIGN_TO_MENU,
@@ -16,12 +17,21 @@ enum CAMPAIGN_MENU_ELEMENT
 	CAMPAIGN_SCENARIO_OPT4,
 };
 
+enum CAMPAIGN_MENU_ELEM_SCEN_SELECT
+{
+	OPT1,
+	OPT2,
+	OPT3,
+	OPT4
+};
+
 struct CampaignHUD
 {
 	IGUIImage* HUDimg;
 	IGUIImage* orbiting;
 	IGUIImage* shipSprite;
 	IGUIImage* sectorHeader;
+	IGUIButton* scenarioSelects[NUM_SCENARIO_OPTIONS];
 	IGUIButton* toMenu;
 	IGUIStaticText* sector;
 	IGUIStaticText* info;
@@ -38,6 +48,7 @@ struct LoadoutHUD
 
 struct ScenarioHUD
 {
+	u32 showing;
 	IGUIImage* launch;
 	IGUIButton* launchButton;
 	IGUIImage* areadesc;
@@ -56,16 +67,14 @@ class GuiCampaignMenu : public GuiDialog
 		bool onStart(const SEvent& event);
 		bool onMenu(const SEvent& event);
 		bool onLoadout(const SEvent& event);
-		bool onMoveGui(const SEvent& event);
 		bool moveLoadout(f32 dt);
 		bool moveSectorInfo(f32 dt);
+		bool onShowSectorInfo(const SEvent& event);
 		virtual void show();
 	private:
 		bool sectorInfoShowing;
 		CampaignHUD hud;
 		LoadoutHUD loadout;
 		ScenarioHUD scenariohud;
-
-		IGUIButton* start;
 };
 #endif 

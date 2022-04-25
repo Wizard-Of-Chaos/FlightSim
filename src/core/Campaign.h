@@ -17,12 +17,14 @@ struct Wingman
 	LoadoutData loadout;
 };
 
+const u32 NUM_SCENARIO_OPTIONS = 4;
+
 struct Campaign
 {
 	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(500), totalRepairCapacity(1000) {}
 	u32 currentDifficulty;
 	u32 currentEncounter;
-	Scenario possibleScenarios[4];
+	Scenario possibleScenarios[NUM_SCENARIO_OPTIONS];
 	Scenario currentScenario;
 	u32 totalAmmunition;
 	f32 totalRepairCapacity;
