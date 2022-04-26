@@ -78,6 +78,7 @@ void GuiCampaignMenu::show()
 		Scenario scen = stateController->campaign.possibleScenarios[i];
 		std::wstring title = wstr(stateController->campaign.possibleScenarios[i].location);
 		hud.scenarioSelects[i]->setText(title.c_str());
+		stateController->campaign.currentScenario = scen;
 	}
 }
 

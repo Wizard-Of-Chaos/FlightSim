@@ -13,6 +13,8 @@ Scenario randomScenario()
 	SCENARIO_ENVIRONMENT env = (SCENARIO_ENVIRONMENT)(std::rand() % SCENENV_MAX_ENVIRONMENTS);
 	if (env == SCENENV_MAX_ENVIRONMENTS) env = SCENENV_ASTEROID_FIELD;
 
+	env = SCENENV_ASTEROID_FIELD; //remove later when other environments are implemented
+
 	std::string location = scenarioEnvStrings.at(env);
 	std::string description = in.values[location];
 	description += "\n";
@@ -21,8 +23,9 @@ Scenario randomScenario()
 
 	vector3df player(0, 0, -50);
 	vector3df enemy(10, 20, 80);
-
 	Scenario scen(type, env, objCount, player, enemy);
+
+	if(env != SCENENV_EMPTY) setObstaclePositions(scen);
 
 	/*
 	std::cout << location << std::endl;
@@ -31,7 +34,6 @@ Scenario randomScenario()
 	*/
 	scen.location = location;
 	scen.description = description;
-
 	return scen;
 }
 
@@ -41,7 +43,6 @@ void buildScenario(Scenario& scenario)
 		SColor(200, 255, 180, 180), 50000.f);
 	n->setID(ID_IsNotSelectable);
 
-	setObstaclePositions(scenario);
 	setScenarioType(scenario);
 	setEnvironment(scenario);
 
@@ -53,22 +54,27 @@ void buildScenario(Scenario& scenario)
 
 void setEnvironment(Scenario& scenario)
 {
+	std::cout << "Setting environment... \n";
 	switch (scenario.environment) {
 	case SCENENV_ASTEROID_FIELD:
 		buildAsteroidField(scenario);
 		break;
 	default:
+		std::cout << "No valid environment! \n";
 		break;
 	}
 }
 
 void setScenarioType(Scenario& scenario)
 {
+	std::cout << "Setting up scenario type... \n";
 	switch (scenario.type) {
 	case SCENARIO_KILL_HOSTILES:
 		setKillHostilesScenario(scenario);
 		break;
 	default:
+		std::cout << "No valid type! Defaulting to kill hostiles. \n";
+		setKillHostilesScenario(scenario);
 		break;
 	}
 }

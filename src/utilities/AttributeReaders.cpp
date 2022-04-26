@@ -121,8 +121,8 @@ u32 loadWeaponData(std::string path, gvReader& in)
 
 	u32 id = std::stoi(in.values["id"]);
 	std::string name = in.values["name"];
-	WEAPON_TYPE type = (WEAPON_TYPE)std::stoi(in.values["type"]);
-	DAMAGE_TYPE dmgtype = (DAMAGE_TYPE)std::stoi(in.values["dmgtype"]);
+	WEAPON_TYPE type = weaponStrings.at(in.values["type"]);
+	DAMAGE_TYPE dmgtype = damageStrings.at(in.values["dmgtype"]);
 	WeaponData* data = new WeaponData;
 	if (type == WEP_KINETIC) {
 		delete data;

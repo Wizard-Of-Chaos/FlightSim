@@ -5,6 +5,7 @@
 #include "ECS.h"
 #include <vector>
 #include <iostream>
+#include <map>
 
 enum DAMAGE_TYPE {
 	NONE,
@@ -14,6 +15,16 @@ enum DAMAGE_TYPE {
 	IMPACT, //smacking into something
 	VELOCITY, // moving too fast
 	EMP
+};
+
+const std::map<std::string, DAMAGE_TYPE> damageStrings = {
+	{"none", DAMAGE_TYPE::NONE},
+	{"plasma", PLASMA},
+	{"explosive", EXPLOSIVE},
+	{"kinetic", KINETIC},
+	{"impact", IMPACT},
+	{"velocity", VELOCITY},
+	{"emp", EMP}
 };
 
 struct DamageInstance

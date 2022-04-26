@@ -5,6 +5,7 @@
 #include "BaseHeader.h"
 #include "DamageTrackingComponent.h"
 #include "ECS.h"
+#include <map>
 
 /*
 * This enum holds the different types of weapons that a thing can be.
@@ -18,6 +19,15 @@ enum WEAPON_TYPE {
 	WEP_GRAPPLE = 2,
 	WEP_KINETIC = 3,
 	WEP_PHYS_IMPULSE = 4
+};
+
+const std::map<std::string, WEAPON_TYPE> weaponStrings{
+	{"none", WEP_NONE},
+	{"plasma", WEP_PLASMA},
+	{"missile", WEP_MISSILE},
+	{"grapple", WEP_GRAPPLE},
+	{"kinetic", WEP_KINETIC},
+	{"phys_impulse", WEP_PHYS_IMPULSE}
 };
 
 //WEAPON ENTITIES:

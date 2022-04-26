@@ -43,7 +43,8 @@ void GameController::init()
 	guienv = device->getGUIEnvironment();
 	then = device->getTimer()->getTime();
 
-	currentScenario = Scenario(SCENARIO_KILL_HOSTILES, SCENENV_ASTEROID_FIELD, 1, vector3df(0, 0, -50), vector3df(10, 20, 80));
+	//Scenario defScenario(SCENARIO_KILL_HOSTILES, SCENENV_ASTEROID_FIELD, 1, vector3df(0, 0, -50), vector3df(10, 20, 80));
+	currentScenario = stateController->campaign.currentScenario;
 
 	//bullet init
 	broadPhase = new bt32BitAxisSweep3(btVector3(-100000, -100000, -100000), btVector3(100000, 100000, 100000));
@@ -167,6 +168,10 @@ void GameController::initScenario()
 {
 	std::cout << "Loading scenario...\n";
 
+	std::cout << "scenario type: " << currentScenario.type << ", scenario environment: " << currentScenario.environment << ", objective count: " << currentScenario.objectiveCount;
+	std::cout << "\n player start: " << currentScenario.playerStartPos.X << " " << currentScenario.playerStartPos.Y << " " << currentScenario.playerStartPos.Z;
+	std::cout << "\n enemy start: " << currentScenario.enemyStartPos.X << " " << currentScenario.enemyStartPos.Y << " " << currentScenario.enemyStartPos.Z;
+	std::cout << "\n num obstacles: " << currentScenario.obstaclePositions.size() << std::endl;
 	buildScenario(currentScenario);
 
 	device->getCursorControl()->setActiveIcon(ECI_CROSS);
