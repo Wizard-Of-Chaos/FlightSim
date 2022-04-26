@@ -7,6 +7,7 @@
 #include <iostream>
 #include <map>
 
+// Different types of damage.
 enum DAMAGE_TYPE {
 	NONE,
 	PLASMA,
@@ -17,6 +18,7 @@ enum DAMAGE_TYPE {
 	EMP
 };
 
+//Convenience map for strings to types used for loading weapon data.
 const std::map<std::string, DAMAGE_TYPE> damageStrings = {
 	{"none", DAMAGE_TYPE::NONE},
 	{"plasma", PLASMA},
@@ -27,6 +29,10 @@ const std::map<std::string, DAMAGE_TYPE> damageStrings = {
 	{"emp", EMP}
 };
 
+/*
+* A damage instance incldues the time of being struck, who its from, and who it's to, along with the type and amount.
+* They are handled properly in the DamageSystem.cpp file.
+*/
 struct DamageInstance
 {
 	DamageInstance(EntityId fr, EntityId to, DAMAGE_TYPE type, f32 amt, u32 time) : from(fr), to(to), type(type), amount(amt), time(time){}
@@ -37,6 +43,11 @@ struct DamageInstance
 	f32 amount;
 };
 
+/*
+* The damage tracking component does what it says on the tin - tracks damage to anything with a health bar.
+* When a thing takes damage, the attacker registers a damage instance on the victim's damage tracking component, which then gets applied to the health
+* bar in the appropriate system.
+*/
 struct DamageTrackingComponent
 {
 	std::vector<DamageInstance> instances;

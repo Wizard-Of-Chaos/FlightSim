@@ -5,26 +5,17 @@
 #include "GuiDialog.h"
 #include "Campaign.h"
 
+//Enum for campaign elements
 enum CAMPAIGN_MENU_ELEM
 {
 	CAMPAIGN_START_BUTTON,
 	CAMPAIGN_TO_MENU,
 	CAMPAIGN_TO_CONSTRUCTION,
 	CAMPAIGN_LOADOUT,
-	CAMPAIGN_SCENARIO_OPT1,
-	CAMPAIGN_SCENARIO_OPT2,
-	CAMPAIGN_SCENARIO_OPT3,
-	CAMPAIGN_SCENARIO_OPT4,
+
 };
 
-enum CAMPAIGN_MENU_ELEM_SCEN_SELECT
-{
-	OPT1,
-	OPT2,
-	OPT3,
-	OPT4
-};
-
+//Holds the data for the basic HUD; showing all the scenario buttons, the little ship sprites and the left half of the HUD.
 struct CampaignHUD
 {
 	IGUIImage* HUDimg;
@@ -38,6 +29,7 @@ struct CampaignHUD
 	IGUIButton* constructionButton;
 };
 
+//Holds the data for the loadout menu drop-down (drop-up?).
 struct LoadoutHUD
 {
 	IGUIImage* img;
@@ -46,6 +38,7 @@ struct LoadoutHUD
 	f32 timer = 0;
 };
 
+//Holds the data for showing and launching the currently selected scenario.
 struct ScenarioHUD
 {
 	u32 showing;
@@ -59,6 +52,11 @@ struct ScenarioHUD
 	f32 timer2 = 0;
 };
 
+/*
+* The GuiCampaignMenu has the data and the functions to handle the campaign interface. It allows you to select a scenario from a list,
+* shows you some basic info about the scenario, and it will allow you to mess with your current "inventory" as well as loadouts for yourself
+* and your wingmen.
+*/
 class GuiCampaignMenu : public GuiDialog
 {
 	public:

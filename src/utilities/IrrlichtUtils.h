@@ -38,9 +38,13 @@ EntityId strToId(std::string id);
 std::string idToStr(EntityId id);
 //Convenience function to call on a GUI element to force it to scale with its root node.
 void scaleAlign(IGUIElement* elem);
+//Convenience function to call on a GUI image to force it to scale with its root node.
 void scaleAlign(IGUIImage* img);
+//Sets the text element to the current UI font and color.
 void setUIText(IGUIStaticText* text);
+//Sets the button to a metallic button.
 void setMetalButton(IGUIButton* elem);
+//Sets the button to a holo-button, without a background if bg is false and with a background otherwise.
 void setHoloButton(IGUIButton* elem, bool bg = false);
 /*
 * Smoothly moves the GUI element from one position to the next.
@@ -52,5 +56,6 @@ bool smoothGuiMove(IGUIElement* elem, f32 animTime, f32& curTime, position2di de
 //Chops off the last so-many digits, specified by "round".
 std::string fprecis(f32 num, s32 round);
 
+//Converts a string to a std::wstring (irrlicht text only accepts wide characters).
 std::wstring wstr(std::string& str);
 #endif

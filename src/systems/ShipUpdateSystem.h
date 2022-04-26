@@ -21,7 +21,9 @@ void setPairDir(IParticleEmitter* jet1, IParticleEmitter* jet2, vector3df dir);
 
 void afterburnerJetOn(IParticleEmitter* engine, ILightSceneNode* light);
 void afterburnerJetOff(IParticleEmitter* engine, ILightSceneNode* light);
+//Checks the current linear velocity and refuses to thrust if it's at max speed.
 bool velocitySafetyCheck(f32 linVelocity, ShipComponent* ship, btVector3 velDir, btVector3 thrustDir);
+//Checks the current angular velocity and refuses to thrust if it's at max speed.
 bool angularSafetyCheck(f32 angVelocity, ShipComponent* ship, btVector3 velDir, btVector3 thrustDir);
 
 /*

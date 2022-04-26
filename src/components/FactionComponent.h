@@ -26,9 +26,11 @@ struct FactionComponent
 	FACTION_TYPE type;
 	unsigned int hostileTo;
 	unsigned int friendlyTo;
+	//Checks whether or not the other faction component would be hostile to this one.
 	bool isHostile(FactionComponent* other) {
 		return !!(hostileTo & other->type);
 	}
+	//Checks whether or not the other faction component would be friendly to this one.
 	bool isFriendly(FactionComponent* other) {
 		return !!(friendlyTo & other->type);
 	}

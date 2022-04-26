@@ -11,6 +11,7 @@ class GameStateController;
 //This header is a doozy.
 
 //Enum containing all the buttons available on the loadout menu (probably unnecessary, but just in case).
+//Todo: I don't actually think this massive enum is necessary. Maybe go back through the code again and see if it can be generalized.
 enum LOADOUT_MENU_BUTTON
 {
 	LOADOUTMENU_WEAPON_0,

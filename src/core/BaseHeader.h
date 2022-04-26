@@ -48,6 +48,10 @@ class GuiController;
 class SceneManager;
 class BulletPhysicsWorld;
 
+/*
+* These are global variables used from throughout the program to track what exactly is going on.
+*/
+
 extern GameStateController* stateController;
 extern GameController* gameController;
 extern GuiController* guiController;

@@ -5,14 +5,8 @@
 
 #include "BaseHeader.h"
 
-/*
-* The input component takes in player input as part of the OnEvent call. Anything with an InputComponent
-* attached gets updated in the ShipControlSystem. It tracks which keys are down, whether or not mouse control is on,
-* the position (in pixels) of the mouse, the normalized position of the mouse, and whether or not right/left mouse are down.
-* 
-* TODO: Later, this should be abstracted out so that input gets translated to player-mapped keybinds for ship movement.
-*/
-
+//UNUSED AT THE MOMENT
+//This enum will be used to track actual keybinds later.
 enum INPUT {
 	IN_THRUST_FORWARDS,
 	IN_STRAFE_BACKWARDS,
@@ -33,6 +27,13 @@ enum INPUT {
 	IN_TOGGLE_HUD,
 	IN_TOGGLE_THROTTLE
 };
+/*
+* The input component takes in player input as part of the OnEvent call. Anything with an InputComponent
+* attached gets updated in the ShipControlSystem. It tracks which keys are down, whether or not mouse control is on,
+* the position (in pixels) of the mouse, the normalized position of the mouse, and whether or not right/left mouse are down.
+*
+* TODO: Later, this should be abstracted out so that input gets translated to player-mapped keybinds for ship movement.
+*/
 
 struct InputComponent {
 	bool keysDown[KEY_KEY_CODES_COUNT];

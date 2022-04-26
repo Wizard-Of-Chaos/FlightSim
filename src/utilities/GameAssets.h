@@ -4,8 +4,9 @@
 
 #include "BaseHeader.h"
 #include <unordered_map>
-//Holds all the default textures and sounds and meshes for the game that can be used as placeholders if you can't load your custom mesh.
 
+//Holds all the default textures and sounds and meshes for the game that can be used as placeholders if you can't load your custom mesh.
+//When you're loading something, you should set it up in here so it can get cleared when the game ends.
 class Assets
 {
 	private:

@@ -4,6 +4,7 @@
 #include "BaseHeader.h"
 #include "GameFunctions.h"
 
+//Different types of scenario available.
 enum SCENARIO_TYPE
 {
 	SCENARIO_KILL_HOSTILES,
@@ -13,12 +14,14 @@ enum SCENARIO_TYPE
 	SCENARIO_NOT_LOADED
 };
 
+//Strings for loading a scenario from file.
 const std::unordered_map<SCENARIO_TYPE, std::string> scenarioStrings = {
 	{SCENARIO_KILL_HOSTILES, "killHostiles"},
 	{SCENARIO_SALVAGE, "salvage"},
 	{SCENARIO_DESTROY_OBJECT, "destroyObject"}
 };
 
+//Different types of scenario environment available.
 enum SCENARIO_ENVIRONMENT
 {
 	SCENENV_ASTEROID_FIELD,
@@ -29,6 +32,7 @@ enum SCENARIO_ENVIRONMENT
 	SCENENV_MAX_ENVIRONMENTS
 };
 
+//Strings for loading and displaying a scenario environment.
 const std::unordered_map<SCENARIO_ENVIRONMENT, std::string> scenarioEnvStrings = {
 	{SCENENV_ASTEROID_FIELD, "Asteroid Field"},
 	{SCENENV_GAS_FIELD, "Gas Field"},
@@ -37,8 +41,15 @@ const std::unordered_map<SCENARIO_ENVIRONMENT, std::string> scenarioEnvStrings =
 	{SCENENV_SPACE_STATION, "Space Station"}
 };
 
+//Max amount of objectives possible (enemies to kill, things to blow up, etc).
 const u32 SCENARIO_MAX_OBJECTIVES = 10;
 
+/*
+* Scenarios hold the information for... well, a scenario. They get randomly generated and include the objectives, player start,
+* enemy start, environment, type, objective count, and others. When initialized (i.e. run by the actual game when the player hits start)
+* the entities for the game get created at the positions listed here. The scenario will get constantly checked to see whether the objectives
+* have been completed, and if so, the bool "complete" will be set to true and the scenario will end (either that or the player dies like a dog).
+*/
 struct Scenario
 {
 	Scenario() : complete(false)
