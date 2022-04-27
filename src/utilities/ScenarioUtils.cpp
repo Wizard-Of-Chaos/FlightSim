@@ -8,12 +8,12 @@ Scenario randomScenario()
 	gvReader in;
 	in.read("attributes/scenariodesc.gdat");
 	in.readLinesToValues();
-	SCENARIO_TYPE type = (SCENARIO_TYPE)(std::rand() % SCENARIO_MAX_TYPES);
+	SCENARIO_TYPE type = static_cast<SCENARIO_TYPE>(std::rand() % SCENARIO_MAX_TYPES);
 	if (type == SCENARIO_MAX_TYPES) type = SCENARIO_KILL_HOSTILES;
-	SCENARIO_ENVIRONMENT env = (SCENARIO_ENVIRONMENT)(std::rand() % SCENENV_MAX_ENVIRONMENTS);
+	SCENARIO_ENVIRONMENT env = static_cast<SCENARIO_ENVIRONMENT>(std::rand() % SCENENV_MAX_ENVIRONMENTS);
 	if (env == SCENENV_MAX_ENVIRONMENTS) env = SCENENV_ASTEROID_FIELD;
 
-	env = SCENENV_ASTEROID_FIELD; //remove later when other environments are implemented
+	//env = SCENENV_GAS_FIELD; //remove later when other environments are implemented
 
 	std::string location = scenarioEnvStrings.at(env);
 	std::string description = in.values[location];
@@ -59,6 +59,9 @@ void setEnvironment(Scenario& scenario)
 	case SCENENV_ASTEROID_FIELD:
 		buildAsteroidField(scenario);
 		break;
+	case SCENENV_GAS_FIELD:
+		buildGasField(scenario);
+		break;
 	default:
 		std::cout << "No valid environment! \n";
 		break;
@@ -89,7 +92,8 @@ void setObstaclePositions(Scenario& scenario)
 	std::cout << "Done.\n";
 }
 
-void buildAsteroidField(Scenario& scenario) {
+void buildAsteroidField(Scenario& scenario) 
+{
 	std::cout << "Building asteroid field... ";
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 100;
@@ -99,7 +103,17 @@ void buildAsteroidField(Scenario& scenario) {
 	}
 	std::cout << "Done.\n";
 
-	auto cloud = createGasCloud(vector3df(100, 0, 0), vector3df(10, 10, 10));
+	//auto cloud = createGasCloud(vector3df(100, 0, 0), vector3df(10, 10, 10));
+}
+
+void buildGasField(Scenario& scenario) 
+{
+	std::cout << "Building gas field... ";
+	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
+		u32 scale = std::rand() % 30;
+		EntityId gas = createGasCloud(scenario.obstaclePositions[i], vector3df(scale, scale, scale));
+	}
+	std::cout << "Done. \n";
 }
 
 void setKillHostilesScenario(Scenario& scenario)

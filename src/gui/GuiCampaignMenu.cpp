@@ -78,7 +78,6 @@ void GuiCampaignMenu::show()
 		Scenario scen = stateController->campaign.possibleScenarios[i];
 		std::wstring title = wstr(stateController->campaign.possibleScenarios[i].location);
 		hud.scenarioSelects[i]->setText(title.c_str());
-		stateController->campaign.currentScenario = scen;
 	}
 }
 
@@ -142,6 +141,8 @@ bool GuiCampaignMenu::onShowSectorInfo(const SEvent& event)
 	scenariohud.name->setText(name.c_str());
 	scenariohud.desc->setText(desc.c_str());
 	scenariohud.showing = id;
+	stateController->campaign.currentScenario = stateController->campaign.possibleScenarios[id];
+
 	return false;
 }
 
