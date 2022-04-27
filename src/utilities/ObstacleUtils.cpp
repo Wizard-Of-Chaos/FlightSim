@@ -26,9 +26,30 @@ EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale,
 	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(roidEntity);
 	rbc->rigidBody.setActivationState(0);
 
-	initializeDefaultHealth(roidEntity);
+	initializeHealth(roidEntity, stateController->obstacleData[0]->health);
 
 	return roidEntity;
+}
+
+EntityId createDebris(vector3df position, vector3df rotation, vector3df scale, f32 mass)
+{
+	auto debris = sceneManager->scene.newEntity();
+
+	loadObstacle(2, debris);
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(debris);
+	irr->node->setPosition(position);
+	irr->node->setScale(scale);
+	irr->node->setMaterialFlag(EMF_NORMALIZE_NORMALS, true);
+	irr->node->setRotation(rotation);
+	IMeshSceneNode* n = (IMeshSceneNode*)irr->node;
+	n->getMesh()->setHardwareMappingHint(EHM_STATIC);
+	btVector3 btscale(irrVecToBt(scale));
+	initializeBtRigidBody(debris, stateController->assets.getHullAsset("debrisHull"), btscale, mass);
+	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(debris);
+	rbc->rigidBody.setActivationState(0);
+
+	initializeHealth(debris, stateController->obstacleData[2]->health);
+	return debris;
 }
 
 EntityId createGasCloud(vector3df position, vector3df scale)

@@ -21,6 +21,8 @@ void setObstaclePositions(Scenario& scenario);
 void buildAsteroidField(Scenario& scenario);
 //Builds a gas field.
 void buildGasField(Scenario& scenario);
+//Builds a debris field.
+void buildDebrisField(Scenario& scenario);
 
 //Sets up a kill all hostiles scenario and places the enemies.
 void setKillHostilesScenario(Scenario& scenario);

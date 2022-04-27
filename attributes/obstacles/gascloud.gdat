@@ -1,5 +1,5 @@
 id=1
 name=Gas Cloud
-type=1
+type=gascloud
 health=10
 texture=effects/cloud.png

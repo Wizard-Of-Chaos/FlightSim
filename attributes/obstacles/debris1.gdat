@@ -1,0 +1,7 @@
+id=2
+type=debris
+name=Ship Debris
+mesh=models/debris1/debris1.obj
+texture=models/debris1/debris1tex.png
+norm=models/debris1/debris1norm.png
+health=60

@@ -43,3 +43,4 @@ shieldHitMinor=audio/shieldhit_minor.ogg
 shieldHitMajor=audio/shieldhit_major.ogg
 selectHealth=hud/selectHealth.png
 selectShields=hud/selectShields.png
+debrisHull=attributes/hulls/Ship Debris.bullet

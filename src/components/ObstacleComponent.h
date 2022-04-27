@@ -12,6 +12,13 @@ enum OBSTACLE
 	DEBRIS
 };
 
+const std::map<std::string, OBSTACLE> obstacleStrings = {
+	{"asteroid", ASTEROID},
+	{"gascloud", GAS_CLOUD},
+	{"spacestation", SPACE_STATION},
+	{"debris", DEBRIS}
+};
+
 /*
 * The obstacle component keeps track of what obstacle type a given obstacle would be. Might do other things later, but for now it's just the one part.
 */

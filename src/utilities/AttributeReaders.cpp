@@ -324,7 +324,11 @@ u32 loadObstacleData(std::string path, gvReader& in)
 	data->obstacleMesh = in.values["mesh"];
 	data->obstacleTexture = in.values["texture"];
 	data->obstacleNorm = in.values["norm"];
-	data->type = (OBSTACLE)std::stoi(in.values["type"]);
+	if (data->obstacleNorm != "") {
+		auto norm = driver->getTexture(data->obstacleNorm.c_str());
+		driver->makeNormalMapTexture(norm, 5.f);
+	}
+	data->type = obstacleStrings.at(in.values["type"]);
 
 	stateController->obstacleData[id] = data;
 	std::cout << "Done.\n";
@@ -355,7 +359,9 @@ bool loadObstacle(u32 id, EntityId entity)
 	}
 	ITexture* tex = stateController->assets.getTextureAsset(data->name);
 	ITexture* norm = nullptr;
-	if(data->obstacleNorm != "") norm = driver->getTexture(data->obstacleNorm.c_str());
+	if (data->obstacleNorm != "") {
+		norm = driver->getTexture(data->obstacleNorm.c_str());
+	}
 
 	if (!tex) {
 		tex = driver->getTexture(data->obstacleTexture.c_str());
@@ -377,7 +383,6 @@ bool loadObstacle(u32 id, EntityId entity)
 		irr->node = smgr->addMeshSceneNode(mesh);
 		irr->node->setMaterialTexture(0, tex);
 		if (norm) {
-			driver->makeNormalMapTexture(norm, 5.f);
 			irr->node->setMaterialTexture(1, norm);
 			irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
 		}

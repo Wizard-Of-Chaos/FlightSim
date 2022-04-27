@@ -62,6 +62,9 @@ void setEnvironment(Scenario& scenario)
 	case SCENENV_GAS_FIELD:
 		buildGasField(scenario);
 		break;
+	case SCENENV_DEBRIS_FIELD:
+		buildDebrisField(scenario);
+		break;
 	default:
 		std::cout << "No valid environment! \n";
 		break;
@@ -114,6 +117,17 @@ void buildGasField(Scenario& scenario)
 		EntityId gas = createGasCloud(scenario.obstaclePositions[i], vector3df(scale, scale, scale));
 	}
 	std::cout << "Done. \n";
+}
+
+void buildDebrisField(Scenario& scenario)
+{
+	std::cout << "Building debris field... ";
+	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
+		u32 scale = std::rand() % 70;
+		f32 mass = (f32)scale / 5.f;
+		EntityId debris = createDebris(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
+	}
+	std::cout << "Done.\n";
 }
 
 void setKillHostilesScenario(Scenario& scenario)
