@@ -16,7 +16,6 @@ class Assets
 		std::unordered_map<std::string, ITexture*> textureAssets;
 		std::unordered_map<std::string, ISoundSource*> soundAssets;
 		std::unordered_map<std::string, btConvexHullShape> hullAssets;
-		std::unordered_map<std::string, IMesh*> hullMeshes;
 		std::unordered_map<std::string, IGUIFont*> fontAssets;
 
 	public:

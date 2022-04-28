@@ -57,9 +57,21 @@ btConvexHullShape Assets::getHullAsset(std::string name)
 	}
 
 	btConvexHullShape hull;
-	if (!loadHull(fileLocations[name], hull)) {
-		hull = createCollisionShapeFromMesh(hullMeshes[name]);
-		saveHull(fileLocations[name], hull);
+	std::string shapeLoc = "attributes/hulls/" + name + ".bullet";
+	if (!loadHull(shapeLoc, hull)) {
+		std::cout << "Hull not found for " << name << ". Attempting to load from mesh... \n";
+		if (meshAssets[name]) {
+			hull = createCollisionShapeFromMesh(meshAssets[name]);
+			saveHull(shapeLoc, hull);
+			std::cout << "Hull created and saved to " << shapeLoc << ". \n";
+			fileLocations[name] = shapeLoc;
+		}
+		else {
+			std::cout << "No mesh found for " << name << "!\n";
+		}
+	}
+	else {
+		fileLocations[name] = shapeLoc;
 	}
 	hullAssets[name] = hull;
 	return hull;

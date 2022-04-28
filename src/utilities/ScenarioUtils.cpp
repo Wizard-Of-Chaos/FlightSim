@@ -27,11 +27,6 @@ Scenario randomScenario()
 
 	if(env != SCENENV_EMPTY) setObstaclePositions(scen);
 
-	/*
-	std::cout << location << std::endl;
-	std::cout << description << std::endl;
-	std::cout << "type: " << type << ", env: " << env << ", objective count: " << objCount << std::endl;
-	*/
 	scen.location = location;
 	scen.description = description;
 	return scen;
@@ -134,6 +129,11 @@ void setKillHostilesScenario(Scenario& scenario)
 {
 	EntityId player = createPlayerShipFromLoadout(scenario.playerStartPos, vector3df(0, 0, 0));
 	initializePlayerFaction(player);
+	vector3df carrierpos = scenario.playerStartPos;
+	carrierpos.X += 100;
+	carrierpos.Z -= 600;
+	createStaticObstacle(3, carrierpos, vector3df(0, 0, 0), vector3df(25, 25, 25));
+
 	std::cout << "Culling obstacle positions... ";
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
 		vector3df pos = scenario.obstaclePositions[i];
@@ -144,6 +144,11 @@ void setKillHostilesScenario(Scenario& scenario)
 		}
 		if (isPointInSphere(pos, scenario.enemyStartPos, radius)) {
 			scenario.obstaclePositions.erase(scenario.obstaclePositions.begin() + i);
+			continue;
+		}
+		if (isPointInSphere(pos, carrierpos, radius * 4)) {
+			scenario.obstaclePositions.erase(scenario.obstaclePositions.begin() + i);
+			continue;
 		}
 	}
 	std::cout << "Done. Obstacles remaining: " << scenario.obstaclePositions.size() << std::endl;

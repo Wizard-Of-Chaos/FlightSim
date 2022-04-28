@@ -4,52 +4,40 @@
 #include "BulletGhostComponent.h"
 #include "GameStateController.h"
 
-
-EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass)
+EntityId createDynamicObstacle(u32 id, vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
-	Scene* scene = &sceneManager->scene;
+	auto obstacle = sceneManager->scene.newEntity();
 
-	auto roidEntity = scene->newEntity();
-
-	loadObstacle(0, roidEntity);
-	auto irr = scene->get<IrrlichtComponent>(roidEntity);
+	loadObstacle(id, obstacle);
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(obstacle);
+	irr->node->setID(ID_IsSelectable);
 	irr->node->setPosition(position);
 	irr->node->setScale(scale);
 	irr->node->setMaterialFlag(EMF_NORMALIZE_NORMALS, true);
 	irr->node->setRotation(rotation);
 	IMeshSceneNode* n = (IMeshSceneNode*)irr->node;
 	n->getMesh()->setHardwareMappingHint(EHM_STATIC);
-	//manager->controller->driver->addOcclusionQuery(irrComp->node, n->getMesh());
-
 	btVector3 btscale(irrVecToBt(scale));
-	initializeBtRigidBody(roidEntity, stateController->assets.getHullAsset("asteroidHull"), btscale, mass);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(roidEntity);
+	initializeBtRigidBody(obstacle, stateController->assets.getHullAsset(stateController->obstacleData[id]->name), btscale, mass);
+	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(obstacle);
 	rbc->rigidBody.setActivationState(0);
+	initializeHealth(obstacle, stateController->obstacleData[id]->health);
+	return obstacle;
 
-	initializeHealth(roidEntity, stateController->obstacleData[0]->health);
+}
+EntityId createStaticObstacle(u32 id, vector3df position, vector3df rotation, vector3df scale)
+{
+	return createDynamicObstacle(id, position, rotation, scale, 0);
+}
 
-	return roidEntity;
+EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass)
+{
+	return createDynamicObstacle(0, position, rotation, scale, mass);
 }
 
 EntityId createDebris(vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
-	auto debris = sceneManager->scene.newEntity();
-
-	loadObstacle(2, debris);
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(debris);
-	irr->node->setPosition(position);
-	irr->node->setScale(scale);
-	irr->node->setMaterialFlag(EMF_NORMALIZE_NORMALS, true);
-	irr->node->setRotation(rotation);
-	IMeshSceneNode* n = (IMeshSceneNode*)irr->node;
-	n->getMesh()->setHardwareMappingHint(EHM_STATIC);
-	btVector3 btscale(irrVecToBt(scale));
-	initializeBtRigidBody(debris, stateController->assets.getHullAsset("debrisHull"), btscale, mass);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(debris);
-	rbc->rigidBody.setActivationState(0);
-
-	initializeHealth(debris, stateController->obstacleData[2]->health);
-	return debris;
+	return createDynamicObstacle(2, position, rotation, scale, mass);
 }
 
 EntityId createGasCloud(vector3df position, vector3df scale)
