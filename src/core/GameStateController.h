@@ -12,7 +12,7 @@
 #include <filesystem>
 
 /*
-* The states the game can be in - you're in menus, the game is going, the game is paused, or you're dead and waiting to
+* The states the game can be in - you're in menus, the game is going, the game is paused, or the scenario is over and you're waiting to
 * return to menus.
 */
 enum GAME_STATE
@@ -20,7 +20,7 @@ enum GAME_STATE
 	GAME_MENUS = 0,
 	GAME_RUNNING = 1,
 	GAME_PAUSED = 2,
-	GAME_DEAD = 3
+	GAME_FINISHED = 3
 };
 
 /*
@@ -62,6 +62,8 @@ class GameStateController : public IEventReceiver
 		Assets assets;
 
 		Campaign campaign;
+		bool inCampaign;
+		void backToCampaign();
 #if _DEBUG
 		void addDebugLine(line3df line) { debugLines.push_back(line); }
 #endif 
@@ -72,6 +74,7 @@ class GameStateController : public IEventReceiver
 		GAME_STATE oldState;
 		bool stateChangeCalled = false;
 		bool gameInitialized = false;
+		bool returningToCampaign = false;
 #if _DEBUG
 		std::vector<line3df> debugLines;
 #endif 

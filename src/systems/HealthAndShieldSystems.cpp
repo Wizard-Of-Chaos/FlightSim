@@ -9,11 +9,10 @@ void updateHealthSystem()
 	for (auto id : SceneView<HealthComponent>(sceneManager->scene)) {
 		auto hpComp = sceneManager->scene.get<HealthComponent>(id);
 		if (hpComp->health <= 0) {
-			bool playerDead = false;
 			auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 			auto player = sceneManager->scene.get<PlayerComponent>(id);
 			if (player) {
-				playerDead = true;
+				gameController->isPlayerAlive = false;
 				gameController->clearPlayerHUD();
 			}
 			if (gameController->hasDeathCallback(id)) {
@@ -27,8 +26,8 @@ void updateHealthSystem()
 				explode(pos, 3.f, avgscale, rad, 50.f, 800.f);
 			}
 			destroyObject(id); //get rid of the object first, THEN change state
-			if (playerDead) {
-				stateController->setState(GAME_DEAD);
+			if (!gameController->isPlayerAlive) {
+				stateController->setState(GAME_FINISHED);
 			}
 		}
 	}

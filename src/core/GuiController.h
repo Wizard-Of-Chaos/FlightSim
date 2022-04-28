@@ -37,7 +37,10 @@ class GuiController
 		void update();
 		GuiDialog* getActiveDialog() { return activeDialog; }
 		void setActiveDialog(MENU_TYPE menu);
+
 		std::wstring getTaunt();
+		std::wstring getCongrats();
+
 		void setPopup(std::string title, std::string body, std::string button);
 		void showPopup();
 		bool hidePopup(const SEvent& event);
@@ -67,6 +70,7 @@ class GuiController
 		GuiDialog* activeDialog;
 		MenuData menus;
 		std::vector<std::wstring> taunts;
+		std::vector<std::wstring> congrats;
 		std::unordered_map<IGUIElement*, GuiCallback> callbacks;
 		std::unordered_map<IGUIElement*, AnimationCallback> animationCallbacks;
 		std::unordered_map<GuiDialog*, AnimationCallback> closeAnimationCallbacks;

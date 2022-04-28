@@ -91,6 +91,7 @@ void GuiCampaignMenu::show()
 	info += "Total Ammo: \n" + std::to_string(stateController->campaign.totalAmmunition);
 	info += "\n Repair Capacity: \n" + std::to_string(stateController->campaign.totalRepairCapacity);
 	hud.info->setText(wstr(info).c_str());
+	stateController->inCampaign = true;
 }
 
 bool GuiCampaignMenu::onStart(const SEvent& event)
@@ -106,6 +107,7 @@ bool GuiCampaignMenu::onMenu(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	guiController->setActiveDialog(GUI_MAIN_MENU);
+	stateController->inCampaign = false;
 	return false;
 }
 

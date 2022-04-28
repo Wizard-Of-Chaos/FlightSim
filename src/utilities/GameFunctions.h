@@ -46,4 +46,13 @@ bool initializeDefaultHUD(EntityId playerId);
 
 //Creates an explosion at the point that lasts for the duration.
 EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force);
+
+struct EndScenarioData
+{
+	f32 healthLost;
+	f32 ammoLost;
+};
+
+EndScenarioData getEndScenarioData();
+
 #endif

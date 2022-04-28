@@ -166,3 +166,22 @@ EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 da
 
 	return id;
 }
+
+EndScenarioData getEndScenarioData()
+{
+	EndScenarioData data = { 0, 0 };
+	for (auto id : SceneView<PlayerComponent, ShipComponent, HealthComponent>(sceneManager->scene)) {
+		auto hp = sceneManager->scene.get<HealthComponent>(id);
+		data.healthLost += hp->maxHealth - hp->health;
+
+		auto ship = sceneManager->scene.get<ShipComponent>(id);
+		for (u32 i = 0; i < ship->hardpointCount; ++i) {
+			auto wep = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
+			if (!wep->usesAmmunition) continue;
+
+			data.ammoLost += wep->maxAmmunition - (wep->ammunition + wep->clip); //todo: come up with a ratio for weapon IDs to ammo
+		}
+	}
+	//todo: make it so that it would also grab the health / ammo of wingmen
+	return data;
+}

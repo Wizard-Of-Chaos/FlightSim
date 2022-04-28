@@ -139,7 +139,7 @@ bool GameStateController::OnEvent(const SEvent& event)
 	case GAME_PAUSED:
 		guiController->OnEvent(event);
 		break;
-	case GAME_DEAD:
+	case GAME_FINISHED:
 		guiController->OnEvent(event);
 		break;
 	}
@@ -151,6 +151,12 @@ void GameStateController::setState(GAME_STATE newState)
 	oldState = state;
 	state = newState;
 	stateChangeCalled = true; //Lets the stateController know it needs to update the state. Can be called anywhere
+}
+
+void GameStateController::backToCampaign()
+{
+	returningToCampaign = true;
+	setState(GAME_MENUS);
 }
 
 void GameStateController::stateChange() //Messy handler for the different states; since there aren't many it's just an if chain
@@ -171,15 +177,22 @@ void GameStateController::stateChange() //Messy handler for the different states
 	else if (oldState == GAME_PAUSED && state == GAME_RUNNING) {
 		guiController->close();
 	}
-	else if (oldState == GAME_RUNNING && state == GAME_DEAD) { //BUG: HUD doesn't get deleted
+	else if (oldState == GAME_RUNNING && state == GAME_FINISHED) { 
 		guiController->setActiveDialog(GUI_DEATH_MENU);
 		//set up death menu
 	}
-	else if (oldState == GAME_DEAD && state == GAME_MENUS) {
+	else if (oldState == GAME_FINISHED && state == GAME_MENUS) {
+		EndScenarioData data = getEndScenarioData();
+		if (returningToCampaign) {
+			campaign.totalAmmunition -= data.ammoLost;
+			campaign.totalRepairCapacity -= data.healthLost;
+			guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
+			returningToCampaign = false;
+		} else {
+			guiController->setActiveDialog(GUI_MAIN_MENU);
+		}
 		gameController->close();
-		guiController->setActiveDialog(GUI_MAIN_MENU);
 	}
-
 	stateChangeCalled = false;
 }
 
@@ -205,7 +218,7 @@ void GameStateController::mainLoop()
 			case GAME_PAUSED:
 				guiController->update();
 				break;
-			case GAME_DEAD:
+			case GAME_FINISHED:
 				guiController->update();
 				break;
 		}

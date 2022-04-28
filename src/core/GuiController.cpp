@@ -11,6 +11,11 @@ GuiController::GuiController()
 	for (std::string line : tauntReader.lines) {
 		taunts.push_back(std::wstring(line.begin(), line.end()));
 	}
+	tauntReader.clear();
+	tauntReader.read("attributes/congrats.txt");
+	for (std::string line : tauntReader.lines) {
+		congrats.push_back(wstr(line));
+	}
 	dimension2du baseSize(960, 540);
 	u32 horizpos = (baseSize.Width - 512) / 2;
 	u32 vertpos = (baseSize.Height - 512) / 2;
@@ -115,6 +120,11 @@ void GuiController::callAnimation(IGUIElement* elem)
 std::wstring GuiController::getTaunt()
 {
 	return taunts[std::rand() % taunts.size()]; //Pulls out a random taunt to mess with the player
+}
+
+std::wstring GuiController::getCongrats()
+{
+	return congrats[std::rand() % congrats.size()];
 }
 
 void GuiController::close()

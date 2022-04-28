@@ -21,8 +21,11 @@ class GuiDeathMenu : public GuiDialog
 	public:
 		GuiDeathMenu() : GuiDialog(), returnToMenu(0), taunt(0) {}
 		virtual void init();
-		bool onReturn(const SEvent& event);
+		virtual void show();
+		bool onReturnMenu(const SEvent& event);
+		bool onReturnCampaign(const SEvent& event);
 	private:
+		IGUIButton* returnToCampaign;
 		IGUIButton* returnToMenu;
 		IGUIStaticText* taunt;
 };

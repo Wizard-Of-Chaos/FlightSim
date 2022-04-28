@@ -73,6 +73,8 @@ class GameController
 			sound->setIsPaused(false);
 		}
 
+		bool isPlayerAlive;
+
 	private:
 		bool open;
 

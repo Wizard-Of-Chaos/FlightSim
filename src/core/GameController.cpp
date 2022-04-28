@@ -27,7 +27,7 @@ void GameController::update()
 		accumulator -= dt;
 	}
 	if (checkRunningScenario()) {
-		stateController->setState(GAME_DEAD);
+		stateController->setState(GAME_FINISHED);
 	}
 
 	//interpolate leftover time?
@@ -160,14 +160,16 @@ bool GameController::checkRunningScenario()
 			--currentScenario.activeObjectiveCount;
 		}
 	}
-	if (currentScenario.activeObjectiveCount == 0) return true;
+	if (currentScenario.activeObjectiveCount == 0) {
+		return true;
+	}
 	return false;
 }
 
 void GameController::initScenario()
 {
 	std::cout << "Loading scenario...\n";
-
+	isPlayerAlive = true;
 	std::cout << "scenario type: " << currentScenario.type << ", scenario environment: " << currentScenario.environment << ", objective count: " << currentScenario.objectiveCount;
 	std::cout << "\n player start: " << currentScenario.playerStartPos.X << " " << currentScenario.playerStartPos.Y << " " << currentScenario.playerStartPos.Z;
 	std::cout << "\n enemy start: " << currentScenario.enemyStartPos.X << " " << currentScenario.enemyStartPos.Y << " " << currentScenario.enemyStartPos.Z;
