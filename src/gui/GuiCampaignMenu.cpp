@@ -38,6 +38,11 @@ void GuiCampaignMenu::init()
 	hud.toMenu = guienv->addButton(rect<s32>(position2di(0, 0), dimension2du(90, 55)), hud.HUDimg, CAMPAIGN_TO_MENU, L"Menu", L"Back out for now.");
 	setHoloButton(hud.toMenu);
 	guiController->setCallback(hud.toMenu, std::bind(&GuiCampaignMenu::onMenu, this, std::placeholders::_1));
+	hud.info = guienv->addStaticText(L"", rect<s32>(position2di(0, 160), dimension2du(90, 275)), false, true, hud.HUDimg);
+	setUIText(hud.info);
+
+	hud.constructionButton = guienv->addButton(rect<s32>(position2di(0, 512), dimension2du(185, 28)), hud.HUDimg, -1, L"Construction Bay", L"Build and repair your armory.");
+	setHoloButton(hud.constructionButton);
 
 	scenariohud.areadesc = guienv->addImage(rect<s32>(position2di(960, 114), dimension2du(305, 311)), root);
 	scenariohud.areadesc->setImage(driver->getTexture("ui/areadesc.png"));
@@ -63,8 +68,11 @@ void GuiCampaignMenu::init()
 	
 	loadout.button = guienv->addButton(rect<s32>(position2di(67, 25), dimension2du(260, 40)), loadout.img, CAMPAIGN_LOADOUT, L"Loadouts", L"View loadouts.");
 	setHoloButton(loadout.button);
+	loadout.toLoadoutMenu = guienv->addButton(rect<s32>(position2di(67, 70), dimension2du(260, 40)), loadout.img, -1, L"Set Loadout", L"Set your ship and loadout.");
+	setHoloButton(loadout.toLoadoutMenu);
 
 	guiController->setCallback(loadout.button, std::bind(&GuiCampaignMenu::onLoadout, this, std::placeholders::_1));
+	guiController->setCallback(loadout.toLoadoutMenu, std::bind(&GuiCampaignMenu::onLoadoutMenuSelect, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(scenariohud.launch, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
 	hide();
@@ -79,6 +87,10 @@ void GuiCampaignMenu::show()
 		std::wstring title = wstr(stateController->campaign.possibleScenarios[i].location);
 		hud.scenarioSelects[i]->setText(title.c_str());
 	}
+	std::string info = "Ship Information \n \n";
+	info += "Total Ammo: \n" + std::to_string(stateController->campaign.totalAmmunition);
+	info += "\n Repair Capacity: \n" + std::to_string(stateController->campaign.totalRepairCapacity);
+	hud.info->setText(wstr(info).c_str());
 }
 
 bool GuiCampaignMenu::onStart(const SEvent& event)
@@ -127,6 +139,13 @@ bool GuiCampaignMenu::moveLoadout(f32 dt)
 	else {
 		return smoothGuiMove(loadout.img, animTime, loadout.timer, open, close, dt);
 	}
+}
+
+bool GuiCampaignMenu::onLoadoutMenuSelect(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	guiController->setActiveDialog(GUI_LOADOUT_MENU);
+	return false;
 }
 
 bool GuiCampaignMenu::onShowSectorInfo(const SEvent& event)

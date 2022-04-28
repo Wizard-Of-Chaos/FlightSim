@@ -59,7 +59,7 @@ bool GuiMainMenu::onShow(f32 dt)
 	curpos.Y -= imgpos.getHeight() / 2;
 	f32 vertprop = 500.f / 540.f;
 	s32 dist = (s32)(pos.getHeight() * vertprop);
-	return smoothGuiMove(screen, .25f, showAnimTimer, position2di(curpos.X, -dist), position2di(curpos.X, 0), dt);
+	return smoothGuiMove(screen, .25f, showAnimTimer, position2di(curpos.X, -dist), position2di(curpos.X, -5), dt);
 }
 bool GuiMainMenu::onHide(f32 dt)
 {
@@ -70,7 +70,7 @@ bool GuiMainMenu::onHide(f32 dt)
 	curpos.Y -= imgpos.getHeight() / 2;
 	f32 vertprop = 500.f / 540.f;
 	s32 dist = (s32)(pos.getHeight() * vertprop);
-	return smoothGuiMove(screen, .25f, showAnimTimer, position2di(curpos.X, 0), position2di(curpos.X, -dist), dt);
+	return smoothGuiMove(screen, .25f, showAnimTimer, position2di(curpos.X, -5), position2di(curpos.X, -dist), dt);
 }
 
 bool GuiMainMenu::onStart(const SEvent& event)
