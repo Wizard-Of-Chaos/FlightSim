@@ -155,6 +155,12 @@ void GameStateController::setState(GAME_STATE newState)
 
 void GameStateController::backToCampaign()
 {
+	campaign.currentDifficulty += 1;
+	campaign.currentEncounter += 1;
+	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
+		campaign.possibleScenarios[i] = randomScenario();
+		//std::cout << "location: " << i << " " << stateController->campaign.possibleScenarios[i].location << std::endl;
+	}
 	returningToCampaign = true;
 	setState(GAME_MENUS);
 }
