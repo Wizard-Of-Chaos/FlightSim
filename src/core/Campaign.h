@@ -42,6 +42,8 @@ struct Campaign
 	std::unordered_map<u32, ShipData*> unlockedShips;
 	std::unordered_map<u32, WeaponData*> unlockedWeps;
 	std::unordered_map<u32, WeaponData*> unlockedPhysWeps;
+
+	bool moved = false;
 };
 
 #endif

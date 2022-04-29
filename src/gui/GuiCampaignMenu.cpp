@@ -23,13 +23,15 @@ void GuiCampaignMenu::init()
 	hud.shipSprite = guienv->addImage(rect<s32>(position2di(300, 280), dimension2du(46, 17)), root);
 	hud.shipSprite->setImage(driver->getTexture("ui/shipsprite.png"));
 	scaleAlign(hud.shipSprite);
+	hud.advance = guienv->addButton(rect<s32>(position2di(275, 300), dimension2du(100, 25)), root, -1, L"Advance", L"Move to the next scenario.");
+	setHoloButton(hud.advance, true);
 
 	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
-		s32 startX=400;
-		s32 startY=230;
+		s32 startX=250;
+		s32 startY=435;
 		s32 buf = 4;
 		dimension2du size(110, 30);
-		IGUIButton* button = guienv->addButton(rect<s32>(position2di(startX, startY + (size.Height * i) + (buf * i)), size), root, (s32)i, L"", L"Possible scenario");
+		IGUIButton* button = guienv->addButton(rect<s32>(position2di(startX + (size.Width * i) + (buf * i), startY), size), root, (s32)i, L"", L"Possible scenario");
 		setHoloButton(button, true);
 		hud.scenarioSelects[i] = button;
 		guiController->setCallback(button, std::bind(&GuiCampaignMenu::onShowSectorInfo, this, std::placeholders::_1));
@@ -73,6 +75,7 @@ void GuiCampaignMenu::init()
 
 	guiController->setCallback(loadout.button, std::bind(&GuiCampaignMenu::onLoadout, this, std::placeholders::_1));
 	guiController->setCallback(loadout.toLoadoutMenu, std::bind(&GuiCampaignMenu::onLoadoutMenuSelect, this, std::placeholders::_1));
+	guiController->setCallback(hud.advance, std::bind(&GuiCampaignMenu::onAdvance, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(scenariohud.launch, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
 	hide();
@@ -92,6 +95,19 @@ void GuiCampaignMenu::show()
 	info += "\n Repair Capacity: \n" + std::to_string(stateController->campaign.totalRepairCapacity);
 	hud.info->setText(wstr(info).c_str());
 	stateController->inCampaign = true;
+
+	if (stateController->campaign.moved) {
+		for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
+			hud.scenarioSelects[i]->setVisible(true);
+		}
+		hud.advance->setVisible(false);
+	}
+	else {
+		for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
+			hud.scenarioSelects[i]->setVisible(false);
+		}
+		hud.advance->setVisible(true);
+	}
 }
 
 bool GuiCampaignMenu::onStart(const SEvent& event)
@@ -198,4 +214,29 @@ bool GuiCampaignMenu::moveSectorInfo(f32 dt)
 	}
 	return move;
 	//return false;
+}
+
+bool GuiCampaignMenu::onAdvance(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	guiController->setYesNoPopup("Confirm Movement",
+		"Are you ready to move to the next scenario?",
+		std::bind(&GuiCampaignMenu::advanceConfirm, this, std::placeholders::_1));
+	guiController->showYesNoPopup();
+	return false;
+}
+bool GuiCampaignMenu::advanceConfirm(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	stateController->campaign.moved = true;
+	++stateController->campaign.currentEncounter;
+	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
+		hud.scenarioSelects[i]->setVisible(true);
+	}
+	hud.advance->setVisible(false);
+	return false;
+}
+bool GuiCampaignMenu::moveAdvance(f32 dt)
+{
+	return true;
 }

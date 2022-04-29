@@ -52,6 +52,8 @@ void setHoloButton(IGUIButton* elem, bool bg = false);
 */
 bool smoothGuiMove(IGUIElement* elem, f32 animTime, f32& curTime, position2di desiredPos, position2di startPos, f32 dt);
 
+bool smoothFade(IGUIElement* elem, f32 animTime, f32& curTime, f32 desiredAlpha, f32 startAlpha, f32 dt);
+
 //Convenience funtion to return a string that is a rounded float. Thank you, GUI work.
 //Chops off the last so-many digits, specified by "round".
 std::string fprecis(f32 num, s32 round);

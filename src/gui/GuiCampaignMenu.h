@@ -21,6 +21,7 @@ struct CampaignHUD
 	IGUIImage* HUDimg;
 	IGUIImage* orbiting;
 	IGUIImage* shipSprite;
+	IGUIButton* advance;
 	IGUIImage* sectorHeader;
 	IGUIButton* scenarioSelects[NUM_SCENARIO_OPTIONS];
 	IGUIButton* toMenu;
@@ -70,6 +71,11 @@ class GuiCampaignMenu : public GuiDialog
 		bool moveLoadout(f32 dt);
 		bool moveSectorInfo(f32 dt);
 		bool onShowSectorInfo(const SEvent& event);
+
+		bool onAdvance(const SEvent& event);
+		bool advanceConfirm(const SEvent& event);
+		bool moveAdvance(f32 dt);
+
 		virtual void show();
 	private:
 		bool sectorInfoShowing;

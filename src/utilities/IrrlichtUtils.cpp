@@ -110,3 +110,8 @@ bool smoothGuiMove(IGUIElement* elem, f32 animTime, f32& curTime, position2di de
 	return true;
 }
 
+bool smoothFade(IGUIElement* elem, f32 animTime, f32& curTime, f32 desiredAlpha, f32 startAlpha, f32 dt)
+{
+	return true;
+}
+
