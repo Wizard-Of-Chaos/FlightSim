@@ -76,13 +76,12 @@ bool GuiMainMenu::onHide(f32 dt)
 bool GuiMainMenu::onStart(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	if (!initPopupUsed) {
-		guiController->setPopup("Heads up",
-			"This game isn't done yet. Please be patient; the devs are kind of stupid. \n \n You might encounter bugs, glitches, horribly broken weapons or ships, and bad environmental design. We're working on it. \n \n Your feedback is of course very welcome.",
-			"Got it"
-		);
-		guiController->showPopup();
-		initPopupUsed = true;
+	if (!guiController->initPopupUsed) {
+		guiController->setYesNoPopup("Heads up",
+			"This game isn't done yet. Please be patient; the devs are kind of stupid. \n \n You might encounter bugs, glitches, horribly broken weapons or ships, and bad environmental design. We're working on it. \n \n Your feedback is of course very welcome. Ready to proceed?",
+			std::bind(&GuiMainMenu::onStart, this, std::placeholders::_1));
+		guiController->initPopupUsed = true;
+		guiController->showYesNoPopup();
 	}
 	else {
 		stateController->campaign = Campaign();

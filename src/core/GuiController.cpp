@@ -19,19 +19,33 @@ GuiController::GuiController()
 	dimension2du baseSize(960, 540);
 	u32 horizpos = (baseSize.Width - 512) / 2;
 	u32 vertpos = (baseSize.Height - 512) / 2;
-	popup.bg = guienv->addImage(rect<s32>(position2di(horizpos, vertpos), dimension2du(512, 512)));
-	popup.bg->setImage(driver->getTexture("ui/popup.png"));
-	popup.button = guienv->addButton(rect<s32>(position2di(192, 448), dimension2du(128, 64)), popup.bg, 2500, L"Got it");
-	popup.title = guienv->addStaticText(L"Heads up", rect<s32>(position2di(64, 24), dimension2du(384, 24)), false, true, popup.bg);
-	popup.body = guienv->addStaticText(L"", rect<s32>(position2di(64, 16), dimension2du(384, 400)), false, true, popup.bg);
-	scaleAlign(popup.bg);
-	popup.bg->setScaleImage(true);
 
-	popup.bg->setVisible(false);
-	setMetalButton(popup.button);
-	setUIText(popup.title);
-	setUIText(popup.body);
-	setCallback(popup.button, std::bind(&GuiController::hidePopup, this, std::placeholders::_1));
+	okPopup.bg = guienv->addImage(rect<s32>(position2di(horizpos, vertpos), dimension2du(512, 512)));
+	okPopup.bg->setImage(driver->getTexture("ui/popup.png"));
+	okPopup.button = guienv->addButton(rect<s32>(position2di(192, 448), dimension2du(128, 64)), okPopup.bg, 2500, L"Got it");
+	okPopup.title = guienv->addStaticText(L"Heads up", rect<s32>(position2di(64, 24), dimension2du(384, 24)), false, true, okPopup.bg);
+	okPopup.body = guienv->addStaticText(L"", rect<s32>(position2di(64, 16), dimension2du(384, 400)), false, true, okPopup.bg);
+	scaleAlign(okPopup.bg);
+	setMetalButton(okPopup.button);
+	setUIText(okPopup.title);
+	setUIText(okPopup.body);
+
+	yesNoPopup.bg = guienv->addImage(rect<s32>(position2di(horizpos, vertpos), dimension2du(512, 512)));
+	yesNoPopup.bg->setImage(driver->getTexture("ui/popup.png"));
+	yesNoPopup.title = guienv->addStaticText(L"Heads up", rect<s32>(position2di(64, 24), dimension2du(384, 24)), false, true, yesNoPopup.bg);
+	yesNoPopup.body = guienv->addStaticText(L"", rect<s32>(position2di(64, 16), dimension2du(384, 400)), false, true, yesNoPopup.bg);
+	yesNoPopup.yes = guienv->addButton(rect<s32>(position2di(126, 448), dimension2du(128, 64)), yesNoPopup.bg, 2501, L"Yes");
+	yesNoPopup.no = guienv->addButton(rect<s32>(position2di(256, 448), dimension2du(128, 64)), yesNoPopup.bg, 2502, L"No");
+	scaleAlign(yesNoPopup.bg);
+	setMetalButton(yesNoPopup.yes);
+	setMetalButton(yesNoPopup.no);
+	setUIText(yesNoPopup.title);
+	setUIText(yesNoPopup.body);
+
+	okPopup.bg->setVisible(false);
+	yesNoPopup.bg->setVisible(false);
+	setCallback(okPopup.button, std::bind(&GuiController::hidePopup, this, std::placeholders::_1));
+	setCallback(yesNoPopup.no, std::bind(&GuiController::hidePopup, this, std::placeholders::_1));
 }
 
 void GuiController::init()
@@ -57,27 +71,51 @@ void GuiController::init()
 	//default main menu
 }
 
-void GuiController::setPopup(std::string title, std::string body, std::string button)
+void GuiController::setOkPopup(std::string title, std::string body, std::string button)
 {
-	popup.title->setText(wstr(title).c_str());
-	popup.body->setText(wstr(body).c_str());
-	popup.button->setText(wstr(button).c_str());
+	okPopup.title->setText(wstr(title).c_str());
+	okPopup.body->setText(wstr(body).c_str());
+	okPopup.button->setText(wstr(button).c_str());
 }
-void GuiController::showPopup()
+
+void GuiController::setYesNoPopup(std::string title, std::string body, GuiCallback yesCb, std::string yes, std::string no)
+{
+	yesNoPopup.title->setText(wstr(title).c_str());
+	yesNoPopup.body->setText(wstr(body).c_str());
+	yesNoPopup.yes->setText(wstr(yes).c_str());
+	yesNoPopup.no->setText(wstr(no).c_str());
+
+	removeCallback(yesNoPopup.yes);
+	setCallback(yesNoPopup.yes, yesCb);
+}
+
+void GuiController::showOkPopup()
 {
 	dimension2du screenSize = driver->getScreenSize();
 	u32 horizpos = (screenSize.Width - 512) / 2;
 	u32 vertpos = (screenSize.Height - 512) / 2;
+	okPopup.bg->setRelativePosition(position2di(horizpos, vertpos));
+	okPopup.bg->setVisible(true);
+	guienv->getRootGUIElement()->bringToFront(okPopup.bg);
+	popupActive = true;
+}
 
-	popup.bg->setRelativePosition(position2di(horizpos, vertpos));
-	popup.bg->setVisible(true);
-	guienv->getRootGUIElement()->bringToFront(popup.bg);
+void GuiController::showYesNoPopup()
+{
+	dimension2du screenSize = driver->getScreenSize();
+	u32 horizpos = (screenSize.Width - 512) / 2;
+	u32 vertpos = (screenSize.Height - 512) / 2;
+	yesNoPopup.bg->setRelativePosition(position2di(horizpos, vertpos));
+	yesNoPopup.bg->setVisible(true);
+	guienv->getRootGUIElement()->bringToFront(yesNoPopup.bg);
 	popupActive = true;
 }
 bool GuiController::hidePopup(const SEvent& event)
 {
-	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED || event.GUIEvent.Caller != popup.button) return true;
-	popup.bg->setVisible(false);
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED || 
+		(event.GUIEvent.Caller != okPopup.button) && (event.GUIEvent.Caller != yesNoPopup.yes) && (event.GUIEvent.Caller != yesNoPopup.no)) return true;
+	okPopup.bg->setVisible(false);
+	yesNoPopup.bg->setVisible(false);
 	popupActive = false;
 	return false;
 }
@@ -141,6 +179,9 @@ bool GuiController::OnEvent(const SEvent& event)
 	if (activeDialog && event.EventType == EET_GUI_EVENT && callbacks.find(event.GUIEvent.Caller) != callbacks.end()) {
 		if(!popupActive) return callbacks[event.GUIEvent.Caller](event);
 
+		if (event.GUIEvent.Caller == yesNoPopup.yes) {
+			callbacks[yesNoPopup.yes](event);
+		}
 		return hidePopup(event);
 	}
 	return true;

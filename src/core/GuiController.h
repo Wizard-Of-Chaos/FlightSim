@@ -10,10 +10,19 @@
 typedef std::function<bool(const SEvent&)> GuiCallback;
 typedef std::function<bool(f32)> AnimationCallback; //should return FALSE when done and TRUE when not done
 
-struct Popup
+struct OkPopup
 {
 	IGUIImage* bg;
 	IGUIButton* button;
+	IGUIStaticText* title;
+	IGUIStaticText* body;
+};
+
+struct YesNoPopup
+{
+	IGUIImage* bg;
+	IGUIButton* yes;
+	IGUIButton* no;
 	IGUIStaticText* title;
 	IGUIStaticText* body;
 };
@@ -41,8 +50,10 @@ class GuiController
 		std::wstring getTaunt();
 		std::wstring getCongrats();
 
-		void setPopup(std::string title, std::string body, std::string button);
-		void showPopup();
+		void setOkPopup(std::string title, std::string body, std::string button = "Got it");
+		void showOkPopup();
+		void setYesNoPopup(std::string title, std::string body, GuiCallback yesCb, std::string yes = "Yes", std::string no = "No");
+		void showYesNoPopup();
 		bool hidePopup(const SEvent& event);
 
 		void setCallback(IGUIElement* elem, GuiCallback callback);
@@ -54,6 +65,8 @@ class GuiController
 		void callCloseAnimation(GuiDialog* dialog);
 		void callOpenAnimation(GuiDialog* dialog);
 		void callAnimation(IGUIElement* elem);
+
+		bool initPopupUsed = true;
 	private:
 		u32 then;
 		f32 accumulator = 0.0f;
@@ -64,9 +77,11 @@ class GuiController
 		bool switchMenusCalled = false;
 		MENU_TYPE menuToSwitch;
 		AnimationCallback currentAnimation;
+
 		bool popupActive = false;
-		bool initPopupUsed = false;
-		Popup popup;
+		OkPopup okPopup;
+		YesNoPopup yesNoPopup;
+
 		GuiDialog* activeDialog;
 		MenuData menus;
 		std::vector<std::wstring> taunts;
