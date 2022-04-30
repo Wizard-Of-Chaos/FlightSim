@@ -11,6 +11,7 @@ enum SCENARIO_TYPE
 	SCENARIO_DESTROY_OBJECT,
 	SCENARIO_SALVAGE,
 	SCENARIO_MAX_TYPES,
+	SCENARIO_SCRAMBLE, // this is outside because we don't want this to generate when creating random scenarios
 	SCENARIO_NOT_LOADED
 };
 
@@ -18,7 +19,8 @@ enum SCENARIO_TYPE
 const std::unordered_map<SCENARIO_TYPE, std::string> scenarioStrings = {
 	{SCENARIO_KILL_HOSTILES, "killHostiles"},
 	{SCENARIO_SALVAGE, "salvage"},
-	{SCENARIO_DESTROY_OBJECT, "destroyObject"}
+	{SCENARIO_DESTROY_OBJECT, "destroyObject"},
+	{SCENARIO_SCRAMBLE, "scramble"}
 };
 
 //Different types of scenario environment available.
@@ -30,6 +32,15 @@ enum SCENARIO_ENVIRONMENT
 	SCENENV_DEBRIS_FIELD,
 	SCENENV_SPACE_STATION,
 	SCENENV_MAX_ENVIRONMENTS
+};
+
+//Detection chance associated with each environment.
+const std::unordered_map<SCENARIO_ENVIRONMENT, u32> detectionChances = {
+	{SCENENV_ASTEROID_FIELD, 15},
+	{SCENENV_GAS_FIELD, 10},
+	{SCENENV_EMPTY, 30},
+	{SCENENV_DEBRIS_FIELD, 5},
+	{SCENENV_SPACE_STATION, 35}
 };
 
 //Strings for loading and displaying a scenario environment.
@@ -70,6 +81,7 @@ struct Scenario
 	}
 	SCENARIO_TYPE type;
 	SCENARIO_ENVIRONMENT environment;
+	u32 detectionChance;
 
 	std::vector<vector3df> obstaclePositions;
 	u32 objectiveCount;
@@ -78,6 +90,7 @@ struct Scenario
 	vector3df objectivePos[SCENARIO_MAX_OBJECTIVES];
 	vector3df playerStartPos;
 	vector3df enemyStartPos;
+
 	bool complete;
 
 	std::string location;

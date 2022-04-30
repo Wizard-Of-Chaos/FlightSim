@@ -174,9 +174,11 @@ bool GuiCampaignMenu::onShowSectorInfo(const SEvent& event)
 		guiController->callAnimation(scenariohud.launch);
 	}
 	std::wstring name = wstr(stateController->campaign.possibleScenarios[id].location);
-	std::wstring desc = wstr(stateController->campaign.possibleScenarios[id].description);
+	std::string desc = stateController->campaign.possibleScenarios[id].description;
+	desc += "\n \n";
+	desc += "Detection chance: " + std::to_string(stateController->campaign.possibleScenarios[id].detectionChance) + "%";
 	scenariohud.name->setText(name.c_str());
-	scenariohud.desc->setText(desc.c_str());
+	scenariohud.desc->setText(wstr(desc).c_str());
 	scenariohud.showing = id;
 	stateController->campaign.currentScenario = stateController->campaign.possibleScenarios[id];
 

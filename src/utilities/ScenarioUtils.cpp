@@ -25,8 +25,32 @@ Scenario randomScenario()
 	vector3df enemy(10, 20, 80);
 	Scenario scen(type, env, objCount, player, enemy);
 
+	scen.detectionChance = detectionChances.at(env) + (std::rand() % (2 * stateController->campaign.currentDifficulty));
+
 	if(env != SCENENV_EMPTY) setObstaclePositions(scen);
 
+	scen.location = location;
+	scen.description = description;
+	return scen;
+}
+
+Scenario scrambleScenario()
+{
+	gvReader in;
+	in.read("attributes/scenariodesc.gdat");
+	in.readLinesToValues();
+	SCENARIO_TYPE type = SCENARIO_SCRAMBLE;
+	SCENARIO_ENVIRONMENT env = static_cast<SCENARIO_ENVIRONMENT>(std::rand() % SCENENV_MAX_ENVIRONMENTS);
+	std::string location = scenarioEnvStrings.at(env);
+	std::string description = in.values[location];
+	description += "\n";
+	description += in.values[scenarioStrings.at(type)];
+	u32 objCount = 1; //where the singular objective is the thing you need to destroy; additional fighters will be spawned while you do so
+	vector3df player(0, 0, -50);
+	vector3df enemy(10, 20, 80);
+	Scenario scen(type, env, objCount, player, enemy);
+	scen.detectionChance = 0; //The man has already got you.
+	if (env != SCENENV_EMPTY) setObstaclePositions(scen);
 	scen.location = location;
 	scen.description = description;
 	return scen;

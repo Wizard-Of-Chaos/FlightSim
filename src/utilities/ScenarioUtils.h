@@ -7,6 +7,8 @@
 //Generates a random scenario.
 Scenario randomScenario();
 
+Scenario scrambleScenario();
+
 //Builds the given scenario.
 void buildScenario(Scenario& scenario);
 //Sets up the type of scenario (the objectives) and places them appropriately.
