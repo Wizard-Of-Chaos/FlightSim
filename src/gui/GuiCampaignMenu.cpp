@@ -78,6 +78,8 @@ void GuiCampaignMenu::init()
 	guiController->setCallback(hud.advance, std::bind(&GuiCampaignMenu::onAdvance, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(scenariohud.launch, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
+
+	guiController->setAnimationCallback(hud.advance, std::bind(&GuiCampaignMenu::moveAdvance, this, std::placeholders::_1));
 	hide();
 }
 
@@ -108,6 +110,13 @@ void GuiCampaignMenu::show()
 		}
 		hud.advance->setVisible(true);
 	}
+
+	s32 baseShipX = (300.f / 960.f) * root->getRelativePosition().getWidth();
+	s32 baseAdvanceX = (275.f / 960.f) * root->getRelativePosition().getWidth();
+	s32 move = (s32)((80.f / 960.f) * root->getRelativePosition().getWidth());
+
+	hud.advance->setRelativePosition(position2di(baseAdvanceX + stateController->campaign.currentEncounter * move, hud.advance->getRelativePosition().UpperLeftCorner.Y));
+	hud.shipSprite->setRelativePosition(position2di(baseShipX + stateController->campaign.currentEncounter * move, hud.shipSprite->getRelativePosition().UpperLeftCorner.Y));
 }
 
 bool GuiCampaignMenu::onStart(const SEvent& event)
@@ -235,10 +244,21 @@ bool GuiCampaignMenu::advanceConfirm(const SEvent& event)
 	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
 		hud.scenarioSelects[i]->setVisible(true);
 	}
+	guiController->callAnimation(hud.advance);
 	hud.advance->setVisible(false);
 	return false;
 }
 bool GuiCampaignMenu::moveAdvance(f32 dt)
 {
-	return true;
+	s32 baseShipX = (275.f / 960.f) * root->getRelativePosition().getWidth();
+	s32 baseAdvanceX = (300.f / 960.f) * root->getRelativePosition().getWidth();
+	s32 move = (s32)((80.f / 960.f) * root->getRelativePosition().getWidth());
+	position2di advanceMove = position2di(baseAdvanceX + stateController->campaign.currentEncounter * move, hud.advance->getRelativePosition().UpperLeftCorner.Y);
+	position2di shipMove = position2di(baseShipX + stateController->campaign.currentEncounter * move, hud.shipSprite->getRelativePosition().UpperLeftCorner.Y);
+	position2di advanceOld = advanceMove;
+	position2di shipOld = shipMove;
+	advanceOld.X -= move;
+	shipOld.X -= move;
+
+	return smoothGuiMove(hud.shipSprite, .2f, hud.timer1, shipOld, shipMove, dt);
 }

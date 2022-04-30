@@ -28,6 +28,9 @@ struct CampaignHUD
 	IGUIStaticText* sector;
 	IGUIStaticText* info;
 	IGUIButton* constructionButton;
+
+	f32 timer1 = 0;
+	f32 timer2 = 0;
 };
 
 //Holds the data for the loadout menu drop-down (drop-up?).
