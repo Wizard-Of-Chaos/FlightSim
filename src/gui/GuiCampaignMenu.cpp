@@ -111,8 +111,8 @@ void GuiCampaignMenu::show()
 		hud.advance->setVisible(true);
 	}
 
-	s32 baseShipX = (300.f / 960.f) * root->getRelativePosition().getWidth();
-	s32 baseAdvanceX = (275.f / 960.f) * root->getRelativePosition().getWidth();
+	s32 baseShipX = (s32)((300.f / 960.f) * root->getRelativePosition().getWidth());
+	s32 baseAdvanceX = (s32)((275.f / 960.f) * root->getRelativePosition().getWidth());
 	s32 move = (s32)((80.f / 960.f) * root->getRelativePosition().getWidth());
 
 	hud.advance->setRelativePosition(position2di(baseAdvanceX + stateController->campaign.currentEncounter * move, hud.advance->getRelativePosition().UpperLeftCorner.Y));
@@ -250,7 +250,7 @@ bool GuiCampaignMenu::advanceConfirm(const SEvent& event)
 }
 bool GuiCampaignMenu::moveAdvance(f32 dt)
 {
-	s32 baseShipX = (275.f / 960.f) * root->getRelativePosition().getWidth();
+	s32 baseShipX = (s32)((275.f / 960.f) * root->getRelativePosition().getWidth());
 	s32 move = (s32)((80.f / 960.f) * root->getRelativePosition().getWidth());
 	position2di shipMove = position2di(baseShipX + stateController->campaign.currentEncounter * move, hud.shipSprite->getRelativePosition().UpperLeftCorner.Y);
 	position2di shipOld = shipMove;
