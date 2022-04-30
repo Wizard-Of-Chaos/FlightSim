@@ -3,6 +3,7 @@
 #include "ECS.h"
 #include "ShipComponent.h"
 #include "WeaponInfoComponent.h"
+#include "HealthComponent.h"
 #include "MissileComponent.h"
 #include "ObstacleComponent.h"
 #include "KineticComponent.h"
@@ -30,6 +31,13 @@ struct ShipData
 	std::string engineTexture;
 	std::string jetTexture;
 	std::string shipNorm;
+};
+
+struct ShipInstance
+{
+	ShipComponent ship;
+	HealthComponent hp;
+	WeaponInfoComponent weps[MAX_HARDPOINTS]; //since weapon info components have their ids, we should be able to pull any necessary data back out when loading
 };
 
 /*

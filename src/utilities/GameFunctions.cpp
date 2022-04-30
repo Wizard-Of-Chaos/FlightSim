@@ -188,3 +188,17 @@ EndScenarioData getEndScenarioData()
 	//todo: make it so that it would also grab the health / ammo of wingmen
 	return data;
 }
+
+void initNewCampaign()
+{
+	stateController->campaign = Campaign();
+
+	ShipInstance defaultShip;
+	defaultShip.ship = stateController->shipData[0]->shipComponent;
+	defaultShip.hp.health = 100.f;
+	defaultShip.hp.maxHealth = 100.f;
+	defaultShip.weps[0] = stateController->weaponData[3]->weaponComponent;
+	defaultShip.weps[1] = stateController->weaponData[3]->weaponComponent;
+
+	stateController->campaign.availableShips.push_back(defaultShip);
+}

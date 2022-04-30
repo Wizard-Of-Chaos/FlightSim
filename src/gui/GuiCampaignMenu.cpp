@@ -171,7 +171,7 @@ bool GuiCampaignMenu::moveLoadout(f32 dt)
 bool GuiCampaignMenu::onLoadoutMenuSelect(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
-	guiController->setActiveDialog(GUI_LOADOUT_MENU);
+	guiController->setActiveDialog(GUI_CAMPAIGN_LOADOUT_MENU);
 	return false;
 }
 

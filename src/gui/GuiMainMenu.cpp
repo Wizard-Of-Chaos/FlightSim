@@ -84,7 +84,8 @@ bool GuiMainMenu::onStart(const SEvent& event)
 		guiController->showYesNoPopup();
 	}
 	else {
-		stateController->campaign = Campaign();
+		initNewCampaign();
+
 		for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
 			stateController->campaign.possibleScenarios[i] = randomScenario();
 			//std::cout << "location: " << i << " " << stateController->campaign.possibleScenarios[i].location << std::endl;

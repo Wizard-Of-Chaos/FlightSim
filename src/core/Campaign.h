@@ -31,7 +31,8 @@ const u32 NUM_SCENARIO_OPTIONS = 4;
 */
 struct Campaign
 {
-	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(100), totalRepairCapacity(1000) {}
+	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(100), totalRepairCapacity(1000) {
+	}
 	u32 currentDifficulty;
 	u32 currentEncounter;
 	Scenario possibleScenarios[NUM_SCENARIO_OPTIONS];
@@ -40,6 +41,9 @@ struct Campaign
 	f32 totalRepairCapacity;
 
 	bool moved = false;
+
+	std::vector<ShipInstance> availableShips;
+	std::vector<WeaponInfoComponent> availableWeapons;
 };
 
 #endif

@@ -55,4 +55,6 @@ struct EndScenarioData
 
 EndScenarioData getEndScenarioData();
 
+void initNewCampaign();
+
 #endif

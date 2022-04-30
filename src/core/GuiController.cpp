@@ -52,18 +52,20 @@ void GuiController::init()
 {
 	//All menus get initialized here. Don't delete them.
 	//If you've just added a new menu, initialize it here.
-	menus.menuDialogs[GUI_MAIN_MENU] = new GuiMainMenu;
-	menus.menuDialogs[GUI_MAIN_MENU]->init();
-	menus.menuDialogs[GUI_PAUSE_MENU] = new GuiPauseMenu;
-	menus.menuDialogs[GUI_PAUSE_MENU]->init();
-	menus.menuDialogs[GUI_DEATH_MENU] = new GuiDeathMenu;
-	menus.menuDialogs[GUI_DEATH_MENU]->init();
-	menus.menuDialogs[GUI_SETTINGS_MENU] = new GuiSettingsMenu;
-	menus.menuDialogs[GUI_SETTINGS_MENU]->init();
-	menus.menuDialogs[GUI_LOADOUT_MENU] = new GuiLoadoutMenu;
-	menus.menuDialogs[GUI_LOADOUT_MENU]->init();
-	menus.menuDialogs[GUI_CAMPAIGN_MENU] = new GuiCampaignMenu;
-	menus.menuDialogs[GUI_CAMPAIGN_MENU]->init();
+	menus[GUI_MAIN_MENU] = new GuiMainMenu;
+	menus[GUI_MAIN_MENU]->init();
+	menus[GUI_PAUSE_MENU] = new GuiPauseMenu;
+	menus[GUI_PAUSE_MENU]->init();
+	menus[GUI_DEATH_MENU] = new GuiDeathMenu;
+	menus[GUI_DEATH_MENU]->init();
+	menus[GUI_SETTINGS_MENU] = new GuiSettingsMenu;
+	menus[GUI_SETTINGS_MENU]->init();
+	menus[GUI_LOADOUT_MENU] = new GuiLoadoutMenu;
+	menus[GUI_LOADOUT_MENU]->init();
+	menus[GUI_CAMPAIGN_MENU] = new GuiCampaignMenu;
+	menus[GUI_CAMPAIGN_MENU]->init();
+	menus[GUI_CAMPAIGN_LOADOUT_MENU] = new GuiCampaignLoadoutMenu;
+	menus[GUI_CAMPAIGN_LOADOUT_MENU]->init();
 
 	setActiveDialog(GUI_MAIN_MENU);
 	//default main menu
@@ -212,7 +214,7 @@ void GuiController::update()
 		if (!playingAnimation && switchMenusCalled) {
 			if (activeDialog) activeDialog->hide();
 
-			activeDialog = menus.menuDialogs[menuToSwitch];
+			activeDialog = menus[menuToSwitch];
 			activeDialog->show();
 			callOpenAnimation(activeDialog);
 			guienv->getRootGUIElement()->bringToFront(activeDialog->getRoot());

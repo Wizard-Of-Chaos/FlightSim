@@ -83,7 +83,7 @@ class GuiController
 		YesNoPopup yesNoPopup;
 
 		GuiDialog* activeDialog;
-		MenuData menus;
+		std::map<MENU_TYPE, GuiDialog*> menus;
 		std::vector<std::wstring> taunts;
 		std::vector<std::wstring> congrats;
 		std::unordered_map<IGUIElement*, GuiCallback> callbacks;
