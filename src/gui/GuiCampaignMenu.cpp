@@ -251,13 +251,9 @@ bool GuiCampaignMenu::advanceConfirm(const SEvent& event)
 bool GuiCampaignMenu::moveAdvance(f32 dt)
 {
 	s32 baseShipX = (275.f / 960.f) * root->getRelativePosition().getWidth();
-	s32 baseAdvanceX = (300.f / 960.f) * root->getRelativePosition().getWidth();
 	s32 move = (s32)((80.f / 960.f) * root->getRelativePosition().getWidth());
-	position2di advanceMove = position2di(baseAdvanceX + stateController->campaign.currentEncounter * move, hud.advance->getRelativePosition().UpperLeftCorner.Y);
 	position2di shipMove = position2di(baseShipX + stateController->campaign.currentEncounter * move, hud.shipSprite->getRelativePosition().UpperLeftCorner.Y);
-	position2di advanceOld = advanceMove;
 	position2di shipOld = shipMove;
-	advanceOld.X -= move;
 	shipOld.X -= move;
 
 	return smoothGuiMove(hud.shipSprite, .2f, hud.timer1, shipOld, shipMove, dt);
