@@ -149,7 +149,7 @@ void GuiController::callOpenAnimation(GuiDialog* dialog)
 }
 void GuiController::callAnimation(IGUIElement* elem)
 {
-	if (animationCallbacks.find(elem) != animationCallbacks.end()) {
+	if (animationCallbacks.find(elem) != animationCallbacks.end() && !playingAnimation) {
 		currentAnimation = animationCallbacks[elem];
 		playingAnimation = true;
 	}
