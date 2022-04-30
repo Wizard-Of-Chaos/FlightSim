@@ -237,17 +237,18 @@ IParticleSystemSceneNode* createShipJet(ISceneNode* node, vector3df pos, vector3
 }
 void initializeShipParticles(EntityId id)
 {
+	auto particles = sceneManager->scene.assign<ShipParticleComponent>(id);
 	auto ship = sceneManager->scene.get<ShipComponent>(id);
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 
 	for (u32 i = 0; i < 2; ++i) {
-		ship->upJetEmit[i] = createShipJet(irr->node, ship->upJetPos[i], getNodeUp(irr->node));
-		ship->downJetEmit[i] = createShipJet(irr->node, ship->downJetPos[i], getNodeDown(irr->node));
-		ship->leftJetEmit[i] = createShipJet(irr->node, ship->leftJetPos[i], getNodeLeft(irr->node));
-		ship->rightJetEmit[i] = createShipJet(irr->node, ship->rightJetPos[i], getNodeRight(irr->node));
-		ship->reverseJetEmit[i] = createShipJet(irr->node, ship->reverseJetPos[i], getNodeForward(irr->node));
+		particles->upJetEmit[i] = createShipJet(irr->node, ship->upJetPos[i], getNodeUp(irr->node));
+		particles->downJetEmit[i] = createShipJet(irr->node, ship->downJetPos[i], getNodeDown(irr->node));
+		particles->leftJetEmit[i] = createShipJet(irr->node, ship->leftJetPos[i], getNodeLeft(irr->node));
+		particles->rightJetEmit[i] = createShipJet(irr->node, ship->rightJetPos[i], getNodeRight(irr->node));
+		particles->reverseJetEmit[i] = createShipJet(irr->node, ship->reverseJetPos[i], getNodeForward(irr->node));
 	}
-	ship->engineJetEmit = smgr->addVolumeLightSceneNode(irr->node,
+	particles->engineJetEmit = smgr->addVolumeLightSceneNode(irr->node,
 		ID_IsNotSelectable, 256, 256, SColor(255, 100, 250, 100), SColor(0, 0, 0, 0), ship->engineJetPos,
 		vector3df(-90, 0, 0), vector3df(2, 1, 2));
 
@@ -261,15 +262,15 @@ void initializeShipParticles(EntityId id)
 	}
 
 	ISceneNodeAnimator* glowie = smgr->createTextureAnimator(tex, 50);
-	ship->engineJetEmit->addAnimator(glowie);
+	particles->engineJetEmit->addAnimator(glowie);
 	glowie->drop(); //Terry would be proud
 
-	ship->engineJetEmit->setMaterialFlag(EMF_LIGHTING, false);
-	ship->engineJetEmit->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	ship->engineJetEmit->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+	particles->engineJetEmit->setMaterialFlag(EMF_LIGHTING, false);
+	particles->engineJetEmit->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	particles->engineJetEmit->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 
 	auto engine = smgr->addLightSceneNode(irr->node, ship->engineJetPos, SColorf(0.f, 1.f, 0.f), 1.3f);
-	ship->engineLight = engine;
+	particles->engineLight = engine;
 	engine->setID(ID_IsNotSelectable);
 }

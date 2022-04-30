@@ -4,11 +4,13 @@
 
 void jetOn(IParticleEmitter* jet)
 {
+	if (!jet) return;
 	jet->setMaxParticlesPerSecond(150);
 	jet->setMinParticlesPerSecond(50);
 }
 void jetOff(IParticleEmitter* jet)
 {
+	if (!jet) return;
 	jet->setMaxParticlesPerSecond(0);
 	jet->setMinParticlesPerSecond(0);
 }
@@ -26,12 +28,14 @@ void jetPairOff(IParticleEmitter* jet1, IParticleEmitter* jet2)
 
 void setPairDir(IParticleEmitter* jet1, IParticleEmitter* jet2, vector3df dir)
 {
+	if (!jet1 || !jet2) return;
 	jet1->setDirection(dir * .02f);
 	jet2->setDirection(dir * .02f);
 }
 
 void afterburnerJetOn(IParticleEmitter* engine, ILightSceneNode* light)
 {
+	if (!engine || !light) return;
 	engine->setMaxParticlesPerSecond(500);
 	engine->setMinParticlesPerSecond(450);
 	light->setRadius(3.f);
@@ -39,6 +43,7 @@ void afterburnerJetOn(IParticleEmitter* engine, ILightSceneNode* light)
 
 void afterburnerJetOff(IParticleEmitter* engine, ILightSceneNode* light)
 {
+	if (!engine || !light) return;
 	engine->setMaxParticlesPerSecond(300);
 	engine->setMinParticlesPerSecond(100);
 	light->setRadius(1.3f);
@@ -86,17 +91,18 @@ void shipUpdateSystem(f32 dt)
 		btVector3 force(0, 0, 0);
 
 		//Ugly looking, but all these emitters need adjusting every time the ship moves
-		IParticleEmitter* up1 = ship->upJetEmit[0]->getEmitter();
-		IParticleEmitter* up2 = ship->upJetEmit[1]->getEmitter();
-		IParticleEmitter* down1 = ship->downJetEmit[0]->getEmitter();
-		IParticleEmitter* down2 = ship->downJetEmit[1]->getEmitter();
-		IParticleEmitter* left1 = ship->leftJetEmit[0]->getEmitter();
-		IParticleEmitter* left2 = ship->leftJetEmit[1]->getEmitter();
-		IParticleEmitter* right1 = ship->rightJetEmit[0]->getEmitter();
-		IParticleEmitter* right2 = ship->rightJetEmit[1]->getEmitter();
-		IParticleEmitter* back1 = ship->reverseJetEmit[0]->getEmitter();
-		IParticleEmitter* back2 = ship->reverseJetEmit[1]->getEmitter();
-		IVolumeLightSceneNode* engine = ship->engineJetEmit;
+		auto particles = scene.get<ShipParticleComponent>(entityId); //need to check to make sure this exists
+		IParticleEmitter* up1 = particles->upJetEmit[0]->getEmitter();
+		IParticleEmitter* up2 = particles->upJetEmit[1]->getEmitter();
+		IParticleEmitter* down1 = particles->downJetEmit[0]->getEmitter();
+		IParticleEmitter* down2 = particles->downJetEmit[1]->getEmitter();
+		IParticleEmitter* left1 = particles->leftJetEmit[0]->getEmitter();
+		IParticleEmitter* left2 = particles->leftJetEmit[1]->getEmitter();
+		IParticleEmitter* right1 = particles->rightJetEmit[0]->getEmitter();
+		IParticleEmitter* right2 = particles->rightJetEmit[1]->getEmitter();
+		IParticleEmitter* back1 = particles->reverseJetEmit[0]->getEmitter();
+		IParticleEmitter* back2 = particles->reverseJetEmit[1]->getEmitter();
+		IVolumeLightSceneNode* engine = particles->engineJetEmit;
 
 		setPairDir(up1, up2, getNodeUp(irr->node));
 		setPairDir(down1, down2, getNodeDown(irr->node));

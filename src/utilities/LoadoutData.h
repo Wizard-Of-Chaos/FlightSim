@@ -64,7 +64,6 @@ struct KineticData : public WeaponData
 {
 	KineticInfoComponent kineticComponent;
 };
-
 /*
 * All the data necessary to load an obstacle, including type, id, mesh, texture, and shape.
 */

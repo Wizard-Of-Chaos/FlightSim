@@ -93,7 +93,7 @@ u32 loadShipData(std::string path, gvReader& in)
 
 	data->shipComponent.afterburnerOn = false;
 	data->shipComponent.safetyOverride = false;
-
+	data->shipComponent.shipDataId = id;
 	stateController->shipData[id] = data;
 	std::cout << "Done.\n";
 	return id;
@@ -185,6 +185,7 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	data->weaponComponent.timeSinceLastShot = 0.f;
 
 	bool phys = std::stoi(in.values["phys"]);
+	data->weaponComponent.wepDataId = id;
 	if (id == 0) {
 		stateController->weaponData[id] = data;
 		stateController->physWeaponData[id] = data;

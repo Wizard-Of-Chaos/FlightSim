@@ -5,6 +5,7 @@
 #include "ShipComponent.h"
 #include "IrrlichtComponent.h"
 #include "BulletRigidBodyComponent.h"
+#include "ShipParticleComponent.h"
 #include "IrrlichtUtils.h"
 #include "ShipMovementUtils.h"
 

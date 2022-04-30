@@ -5,6 +5,7 @@
 #include "FactionComponent.h"
 #include "LoadoutData.h"
 #include "AIComponent.h"
+#include "ShipParticleComponent.h"
 #include "ECS.h"
 
 //Creates a ship using the data at the given id in the GameStateController.

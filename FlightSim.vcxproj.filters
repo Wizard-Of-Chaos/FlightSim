@@ -348,6 +348,9 @@
     <ClInclude Include="src\utilities\ScenarioUtils.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\ShipParticleComponent.h">
+      <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

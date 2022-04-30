@@ -31,17 +31,13 @@ const u32 NUM_SCENARIO_OPTIONS = 4;
 */
 struct Campaign
 {
-	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(500), totalRepairCapacity(1000) {}
+	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(100), totalRepairCapacity(1000) {}
 	u32 currentDifficulty;
 	u32 currentEncounter;
 	Scenario possibleScenarios[NUM_SCENARIO_OPTIONS];
 	Scenario currentScenario;
 	u32 totalAmmunition;
 	f32 totalRepairCapacity;
-
-	std::unordered_map<u32, ShipData*> unlockedShips;
-	std::unordered_map<u32, WeaponData*> unlockedWeps;
-	std::unordered_map<u32, WeaponData*> unlockedPhysWeps;
 
 	bool moved = false;
 };

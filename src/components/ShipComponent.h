@@ -48,6 +48,7 @@ const u32 MAX_HARDPOINTS = 6;
 * Finally, the vectors and emitters hold the particle effects for the different thrusts a ship can do.
 */
 struct ShipComponent {
+	u32 shipDataId;
 	u32 hardpointCount;
 	//This and the weapons array are initialized to the maximum of 8.
 	vector3df hardpoints[MAX_HARDPOINTS];
@@ -70,27 +71,19 @@ struct ShipComponent {
 	//Holds the movements that the ship is currently trying to make (pitch, yaw, thrust, etc).
 	bool moves[SHIP_MAX_MOVEMENTS];
 
-	//Positions on the ship for where the thrust emissions come from.
-	vector3df upJetPos[2];
-	IParticleSystemSceneNode* upJetEmit[2];
-	vector3df downJetPos[2];
-	IParticleSystemSceneNode* downJetEmit[2];
-	vector3df leftJetPos[2];
-	IParticleSystemSceneNode* leftJetEmit[2];
-	vector3df rightJetPos[2];
-	IParticleSystemSceneNode* rightJetEmit[2];
-	vector3df reverseJetPos[2];
-	IParticleSystemSceneNode* reverseJetEmit[2];
-	vector3df engineJetPos;
-	IVolumeLightSceneNode* engineJetEmit;
-	ILightSceneNode* engineLight; //The engine light is on! Check your oil.
-
 	bool afterburnerOn;
 	bool safetyOverride;
 	f32 velocityTolerance; //how tolerant the ship is of going faster than its expected to; damage multiplied by this factor
 	f32 linearMaxVelocity; //the max velocity a ship can handle without taking damage
 	f32 angularMaxVelocity; //max rotational speed
 	f32 afterburnerThrust; //how much thrust the afterburner can supply
+
+	vector3df upJetPos[2];
+	vector3df downJetPos[2];
+	vector3df leftJetPos[2];
+	vector3df rightJetPos[2];
+	vector3df reverseJetPos[2];
+	vector3df engineJetPos;
 };
 
 #endif

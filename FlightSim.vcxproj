@@ -210,6 +210,7 @@
     <ClInclude Include="src\components\ObstacleComponent.h" />
     <ClInclude Include="src\components\SensorComponent.h" />
     <ClInclude Include="src\components\ShieldComponent.h" />
+    <ClInclude Include="src\components\ShipParticleComponent.h" />
     <ClInclude Include="src\core\Campaign.h" />
     <ClInclude Include="src\gui\GuiCampaignMenu.h" />
     <ClInclude Include="src\gui\GuiDeathMenu.h" />

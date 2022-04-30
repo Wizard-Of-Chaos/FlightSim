@@ -155,12 +155,15 @@ void GameStateController::setState(GAME_STATE newState)
 
 void GameStateController::backToCampaign()
 {
+	EndScenarioData data = getEndScenarioData();
 	++campaign.currentDifficulty;
 	campaign.moved = false;
 	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
 		campaign.possibleScenarios[i] = randomScenario();
 		//std::cout << "location: " << i << " " << stateController->campaign.possibleScenarios[i].location << std::endl;
 	}
+	campaign.totalAmmunition -= data.ammoLost;
+	campaign.totalRepairCapacity -= data.healthLost;
 	returningToCampaign = true;
 	setState(GAME_MENUS);
 }
@@ -188,10 +191,7 @@ void GameStateController::stateChange() //Messy handler for the different states
 		//set up death menu
 	}
 	else if (oldState == GAME_FINISHED && state == GAME_MENUS) {
-		EndScenarioData data = getEndScenarioData();
 		if (returningToCampaign) {
-			campaign.totalAmmunition -= data.ammoLost;
-			campaign.totalRepairCapacity -= data.healthLost;
 			guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
 			returningToCampaign = false;
 		} else {

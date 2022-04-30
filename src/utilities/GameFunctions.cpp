@@ -178,8 +178,11 @@ EndScenarioData getEndScenarioData()
 		for (u32 i = 0; i < ship->hardpointCount; ++i) {
 			auto wep = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
 			if (!wep->usesAmmunition) continue;
-
-			data.ammoLost += wep->maxAmmunition - (wep->ammunition + wep->clip); //todo: come up with a ratio for weapon IDs to ammo
+			u32 clips = wep->maxAmmunition / wep->maxClip;
+			u32 clipsRemaining = wep->ammunition / wep->maxClip;
+			u32 lostAmmo = clips - clipsRemaining;
+			if (wep->clip < wep->maxClip) lostAmmo -= 1;
+			data.ammoLost += lostAmmo; //todo: come up with a ratio for weapon IDs to ammo
 		}
 	}
 	//todo: make it so that it would also grab the health / ammo of wingmen

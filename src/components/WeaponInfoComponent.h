@@ -48,6 +48,7 @@ const std::map<std::string, WEAPON_TYPE> weaponStrings{
 */
 struct WeaponInfoComponent
 {
+	u32 wepDataId;
 	WEAPON_TYPE type;
 	DAMAGE_TYPE dmgtype;
 	f32 firingSpeed; //how long it should take in seconds between shots
