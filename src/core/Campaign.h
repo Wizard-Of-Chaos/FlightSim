@@ -7,6 +7,7 @@
 #include "AIComponent.h"
 #include "WeaponInfoComponent.h"
 #include <unordered_map>
+#include <list>
 
 /*
 * This is designed to be able to hold a given AI wingman's data. Currently unused, but oh man will it be.
@@ -43,8 +44,9 @@ struct Campaign
 	bool moved = false;
 
 	ShipInstance playerShip;
-	std::vector<ShipInstance> availableShips;
-	std::vector<WeaponInfoComponent> availableWeapons;
+	std::list<ShipInstance> availableShips;
+	std::list<WeaponInfoComponent> availableWeapons;
+	std::list<WeaponInfoComponent> availablePhysWeapons;
 };
 
 #endif

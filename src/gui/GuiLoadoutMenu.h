@@ -30,16 +30,16 @@ class GuiLoadoutMenu : public GuiDialog
 	public:
 		GuiLoadoutMenu() : GuiDialog() {}
 		virtual void init();
+		bool onShipChange(const SEvent& event, bool right);
 		bool onShipChangeRight(const SEvent& event);
 		bool onShipChangeLeft(const SEvent& event);
+
+		bool onWeaponChange(const SEvent& event, bool right);
 		bool onWeaponChangeRight(const SEvent& event);
 		bool onWeaponChangeLeft(const SEvent& event);
 		bool onWeaponHover(const SEvent& event);
-		bool onReturn(const SEvent& event);
 
-		bool onPhysWeaponChangeRight(const SEvent& event);
-		bool onPhysWeaponChangeLeft(const SEvent& event);
-		bool onPhysWeaponHover(const SEvent& event);
+		bool onReturn(const SEvent& event);
 
 		virtual void show();
 
