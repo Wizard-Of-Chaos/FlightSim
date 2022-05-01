@@ -15,17 +15,17 @@ void GuiLoadoutMenu::loadoutToWString()
 	}
 }
 
-ButtonPair GuiLoadoutMenu::createButtonPair(u32 num, position2di pos, u32 left, u32 right, u32 cent)
+ButtonPair GuiLoadoutMenu::createButtonPair(u32 num, position2di pos)
 {
 	ButtonPair pair;
 	auto newPos = pos;
-	pair.buttonL = guienv->addButton(rect<s32>(pos, buttonSize), root, left, L"<");
+	pair.buttonL = guienv->addButton(rect<s32>(pos, buttonSize), root, -1, L"<");
 	newPos.X = pos.X + buf + buttonHoriz;
 
-	pair.name = guienv->addStaticText(L"", rect<s32>(newPos, textSize), false, true, root, cent);
+	pair.name = guienv->addStaticText(L"", rect<s32>(newPos, textSize), false, true, root, -1);
 	newPos.X = pos.X + buf * 2 + buttonHoriz + textHoriz;
 
-	pair.buttonR = guienv->addButton(rect<s32>(newPos, buttonSize), root, right, L">");
+	pair.buttonR = guienv->addButton(rect<s32>(newPos, buttonSize), root, -1, L">");
 
 	if (num != -1) {
 		pair.name->setText(weps[num].c_str());
@@ -51,27 +51,27 @@ void GuiLoadoutMenu::init()
 	buf = 8;
 
 	loadoutToWString();
-	shipDescription = guienv->addStaticText(desc.c_str(), rect<s32>(position2di(buf, baseSize.Height / 2 + buf + buttonVert), dimension2du(textHoriz + buttonHoriz*2, textVert*3)), false, true, root, LOADOUTMENU_SHIP_DESC);
-	wepDescription = guienv->addStaticText(L"", rect<s32>(position2di(buf, buf * 2 + textVert), dimension2du(buttonHoriz * 2 + textHoriz + buf * 2, baseSize.Height / 3 - buf)), false, true, root, LOADOUTMENU_WEP_DESC);
-	returnToMain = guienv->addButton(rect<s32>(position2di(buf, buf), textSize), root, LOADOUTMENU_RETURN_TO_MAIN, L"Return to Main", L"Return to the main menu.");
+	shipDescription = guienv->addStaticText(desc.c_str(), rect<s32>(position2di(buf, baseSize.Height / 2 + buf + buttonVert), dimension2du(textHoriz + buttonHoriz*2, textVert*3)), false, true, root, -1);
+	wepDescription = guienv->addStaticText(L"", rect<s32>(position2di(buf, buf * 2 + textVert), dimension2du(buttonHoriz * 2 + textHoriz + buf * 2, baseSize.Height / 3 - buf)), false, true, root, -1);
+	returnToMain = guienv->addButton(rect<s32>(position2di(buf, buf), textSize), root, -1, L"Return to Main", L"Return to the main menu.");
 
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
 		u32 yval = (buf + buf * i) + (buttonVert * i);
 		u32 left = 3 + (3 * i) - 2;
 		u32 center = 3 + (3 * i) - 3;
 		u32 right = 3 + (3 * i) - 1;
-		weaponButtons[i] = createButtonPair(i, position2di(baseSize.Width / 2, yval), left, right, center);
+		weaponButtons[i] = createButtonPair(i, position2di(baseSize.Width / 2, yval));
 		guiController->setCallback(weaponButtons[i].buttonL, std::bind(&GuiLoadoutMenu::onWeaponChangeLeft, this, std::placeholders::_1));
 		guiController->setCallback(weaponButtons[i].buttonR, std::bind(&GuiLoadoutMenu::onWeaponChangeRight, this, std::placeholders::_1));
 		guiController->setCallback(weaponButtons[i].name, std::bind(&GuiLoadoutMenu::onWeaponHover, this, std::placeholders::_1));
 	}
 
-	shipButtons = createButtonPair(-1, position2di(buf, baseSize.Height / 2), LOADOUTMENU_SHIP_SELECT_L, LOADOUTMENU_SHIP_SELECT_R, LOADOUTMENU_SHIP_SELECT);
+	shipButtons = createButtonPair(-1, position2di(buf, baseSize.Height / 2));
 	shipButtons.name->setText(name.c_str());
 	guiController->setCallback(shipButtons.buttonL, std::bind(&GuiLoadoutMenu::onShipChangeLeft, this, std::placeholders::_1));
 	guiController->setCallback(shipButtons.buttonR, std::bind(&GuiLoadoutMenu::onShipChangeRight, this, std::placeholders::_1));
 
-	physWeaponButtons = createButtonPair(-1, position2di(baseSize.Width / 2, (buf + buf * 7) + (buttonVert * 7)), LOADOUTMENU_PHYSWEP_L, LOADOUTMENU_PHYSWEP_R, LOADOUTMENU_PHYSWEP);
+	physWeaponButtons = createButtonPair(-1, position2di(baseSize.Width / 2, (buf + buf * 7) + (buttonVert * 7)));
 	physWeaponButtons.name->setText(wstr(stateController->physWeaponData[stateController->playerPhysWeapon]->name).c_str());
 	guiController->setCallback(physWeaponButtons.buttonL, std::bind(&GuiLoadoutMenu::onPhysWeaponChangeLeft, this, std::placeholders::_1));
 	guiController->setCallback(physWeaponButtons.buttonR, std::bind(&GuiLoadoutMenu::onPhysWeaponChangeRight, this, std::placeholders::_1));

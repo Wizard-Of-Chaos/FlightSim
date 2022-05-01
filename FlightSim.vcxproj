@@ -169,7 +169,6 @@
     <ClCompile Include="src\gui\hud\HUDContact.cpp" />
     <ClCompile Include="src\gui\hud\HUDHealthBar.cpp" />
     <ClCompile Include="src\gui\hud\HUDVelocityBar.cpp" />
-    <ClCompile Include="src\gui\GuiCampaignLoadoutMenu.cpp" />
     <ClCompile Include="src\systems\AIUpdateSystem.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp" />
@@ -213,7 +212,6 @@
     <ClInclude Include="src\components\ShieldComponent.h" />
     <ClInclude Include="src\components\ShipParticleComponent.h" />
     <ClInclude Include="src\core\Campaign.h" />
-    <ClInclude Include="src\gui\GuiCampaignLoadoutMenu.h" />
     <ClInclude Include="src\gui\GuiCampaignMenu.h" />
     <ClInclude Include="src\gui\GuiDeathMenu.h" />
     <ClInclude Include="src\gui\GuiLoadoutMenu.h" />

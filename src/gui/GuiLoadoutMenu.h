@@ -9,49 +9,6 @@ class GuiController;
 class GameStateController;
 
 //This header is a doozy.
-
-//Enum containing all the buttons available on the loadout menu (probably unnecessary, but just in case).
-//Todo: I don't actually think this massive enum is necessary. Maybe go back through the code again and see if it can be generalized.
-enum LOADOUT_MENU_BUTTON
-{
-	LOADOUTMENU_WEAPON_0,
-	LOADOUTMENU_WEAPON_0_L,
-	LOADOUTMENU_WEAPON_0_R,
-	LOADOUTMENU_WEAPON_1,
-	LOADOUTMENU_WEAPON_1_L,
-	LOADOUTMENU_WEAPON_1_R,
-	LOADOUTMENU_WEAPON_2,
-	LOADOUTMENU_WEAPON_2_L,
-	LOADOUTMENU_WEAPON_2_R,
-	LOADOUTMENU_WEAPON_3,
-	LOADOUTMENU_WEAPON_3_L,
-	LOADOUTMENU_WEAPON_3_R,
-	LOADOUTMENU_WEAPON_4,
-	LOADOUTMENU_WEAPON_4_L,
-	LOADOUTMENU_WEAPON_4_R,
-	LOADOUTMENU_WEAPON_5,
-	LOADOUTMENU_WEAPON_5_L,
-	LOADOUTMENU_WEAPON_5_R,
-	LOADOUTMENU_WEAPON_6,
-	LOADOUTMENU_WEAPON_6_L,
-	LOADOUTMENU_WEAPON_6_R,
-	LOADOUTMENU_WEAPON_7,
-	LOADOUTMENU_WEAPON_7_L,
-	LOADOUTMENU_WEAPON_7_R,
-
-	LOADOUTMENU_SHIP_SELECT,
-	LOADOUTMENU_SHIP_SELECT_L,
-	LOADOUTMENU_SHIP_SELECT_R,
-
-	LOADOUTMENU_PHYSWEP,
-	LOADOUTMENU_PHYSWEP_L,
-	LOADOUTMENU_PHYSWEP_R,
-
-	LOADOUTMENU_RETURN_TO_MAIN,
-	LOADOUTMENU_SHIP_DESC,
-	LOADOUTMENU_WEP_DESC
-};
-
 /*
 * ButtonPairs are used on the loadout menu in order to be able to display several things : the name of the weapon
 * on the hardpoint associated with them and a button switching left and right to enable the player to flip cleanly
@@ -91,13 +48,10 @@ class GuiLoadoutMenu : public GuiDialog
 		* num - The number slot the button pair corresponds to. If it's -1, this will be ignored. If you want to create
 		* a button pair corresponding to hardpoint 4 on the ship, you would pass in 3.
 		* pos - The position on the screen. This is calculated during the setup as to where the buttons get placed.
-		* left - a u32 value corresponding to the enum for the ID. LOADOUTMENU_WEAPON_4_L is 13.
-		* right - a u32 value corresponding to the enum for the ID. LOADOUTMENU_WEAPON_4_R is 14.
-		* cent - a u32 value corresponding to the enum for the ID. LOADOUTMENU_WEAPON_4 is 12.
 		* 
 		* Note that this will NOT set the callbacks for the buttons; you can apply callbacks on the button pair returned.
 		*/
-		ButtonPair createButtonPair(u32 num, position2di pos, u32 left, u32 right, u32 cent);
+		ButtonPair createButtonPair(u32 num, position2di pos);
 		void loadoutToWString();
 		void setShipNameAndDesc(u32 shipId);
 
