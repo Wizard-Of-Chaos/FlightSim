@@ -42,6 +42,7 @@ struct Campaign
 
 	bool moved = false;
 
+	ShipInstance playerShip;
 	std::vector<ShipInstance> availableShips;
 	std::vector<WeaponInfoComponent> availableWeapons;
 };

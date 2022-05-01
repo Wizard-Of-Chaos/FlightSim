@@ -16,6 +16,7 @@ struct LoadoutData
 {
 	u32 shipId;
 	u32 weaponIds[MAX_HARDPOINTS];
+	u32 physWeaponId;
 };
 
 struct ShipData
@@ -38,6 +39,7 @@ struct ShipInstance
 	ShipComponent ship;
 	HealthComponent hp;
 	WeaponInfoComponent weps[MAX_HARDPOINTS]; //since weapon info components have their ids, we should be able to pull any necessary data back out when loading
+	WeaponInfoComponent physWep;
 };
 
 /*

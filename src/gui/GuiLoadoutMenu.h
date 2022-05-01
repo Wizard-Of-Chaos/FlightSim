@@ -17,8 +17,8 @@ class GameStateController;
 struct ButtonPair
 {
 	IGUIStaticText* name;
-	IGUIButton* buttonL;
-	IGUIButton* buttonR;
+	IGUIButton* left;
+	IGUIButton* right;
 };
 
 /*
@@ -41,6 +41,8 @@ class GuiLoadoutMenu : public GuiDialog
 		bool onPhysWeaponChangeLeft(const SEvent& event);
 		bool onPhysWeaponHover(const SEvent& event);
 
+		virtual void show();
+
 	private:
 		/*
 		* This function requires a bit of explaining. It will set up a button pair at the given position.
@@ -52,7 +54,6 @@ class GuiLoadoutMenu : public GuiDialog
 		* Note that this will NOT set the callbacks for the buttons; you can apply callbacks on the button pair returned.
 		*/
 		ButtonPair createButtonPair(u32 num, position2di pos);
-		void loadoutToWString();
 		void setShipNameAndDesc(u32 shipId);
 
 		ButtonPair weaponButtons[MAX_HARDPOINTS];
@@ -70,9 +71,5 @@ class GuiLoadoutMenu : public GuiDialog
 		dimension2du buttonSize;
 		dimension2du textSize;
 		u32 buf;
-
-		std::wstring name;
-		std::wstring desc;
-		std::wstring weps[MAX_HARDPOINTS];
 };
 #endif 

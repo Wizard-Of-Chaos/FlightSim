@@ -199,6 +199,8 @@ void initNewCampaign()
 	defaultShip.hp.maxHealth = 100.f;
 	defaultShip.weps[0] = stateController->weaponData[3]->weaponComponent;
 	defaultShip.weps[1] = stateController->weaponData[3]->weaponComponent;
+	defaultShip.physWep = stateController->physWeaponData[1]->weaponComponent;
 
-	stateController->campaign.availableShips.push_back(defaultShip);
+	stateController->campaign.playerShip = defaultShip;
+	//stateController->campaign.availableShips.push_back(defaultShip);
 }

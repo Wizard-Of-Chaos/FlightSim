@@ -85,14 +85,11 @@ bool GuiMainMenu::onStart(const SEvent& event)
 	}
 	else {
 		initNewCampaign();
-
 		for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
 			stateController->campaign.possibleScenarios[i] = randomScenario();
-			//std::cout << "location: " << i << " " << stateController->campaign.possibleScenarios[i].location << std::endl;
 		}
 		guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
 	}
-	//stateController->setState(GAME_RUNNING);
 	return false;
 
 }
