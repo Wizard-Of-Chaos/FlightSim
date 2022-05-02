@@ -64,6 +64,8 @@ void GuiController::init()
 	menus[GUI_LOADOUT_MENU]->init();
 	menus[GUI_CAMPAIGN_MENU] = new GuiCampaignMenu;
 	menus[GUI_CAMPAIGN_MENU]->init();
+	menus[GUI_CAMPAIGN_LOADOUT_MENU] = new GuiCampaignLoadoutMenu;
+	menus[GUI_CAMPAIGN_LOADOUT_MENU]->init();
 
 	setActiveDialog(GUI_MAIN_MENU);
 	//default main menu

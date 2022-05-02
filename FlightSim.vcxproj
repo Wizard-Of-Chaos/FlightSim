@@ -156,6 +156,7 @@
     <ClCompile Include="src\components\PlayerComponent.cpp" />
     <ClCompile Include="src\core\GameAssets.cpp" />
     <ClCompile Include="src\core\Networking.cpp" />
+    <ClCompile Include="src\gui\GuiCampaignLoadoutMenu.cpp" />
     <ClCompile Include="src\gui\GuiCampaignMenu.cpp" />
     <ClCompile Include="src\gui\GuiDeathMenu.cpp" />
     <ClCompile Include="src\gui\GuiDialog.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="src\components\ShieldComponent.h" />
     <ClInclude Include="src\components\ShipParticleComponent.h" />
     <ClInclude Include="src\core\Campaign.h" />
+    <ClInclude Include="src\gui\GuiCampaignLoadoutMenu.h" />
     <ClInclude Include="src\gui\GuiCampaignMenu.h" />
     <ClInclude Include="src\gui\GuiDeathMenu.h" />
     <ClInclude Include="src\gui\GuiLoadoutMenu.h" />

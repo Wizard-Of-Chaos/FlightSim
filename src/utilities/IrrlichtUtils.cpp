@@ -82,6 +82,19 @@ void setHoloButton(IGUIButton* elem, bool bg)
 	elem->setDrawBorder(false);
 }
 
+void setHybridButton(IGUIButton* elem, bool bg)
+{
+	scaleAlign(elem);
+	elem->setUseAlphaChannel(true);
+	if (bg) elem->setImage(driver->getTexture("ui/hybridbuttonbg1.png"));
+	else elem->setImage(driver->getTexture("ui/hybridbutton1.png"));
+
+	elem->setPressedImage(driver->getTexture("ui/hybridbutton2.png"));
+	elem->setScaleImage(true);
+	elem->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps22px/KomikaDisplayKaps22px.xml"));
+	elem->setDrawBorder(false);
+}
+
 std::string fprecis(f32 num, s32 round)
 {
 	std::string ret = std::to_string(num);
