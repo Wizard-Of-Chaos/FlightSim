@@ -19,6 +19,13 @@ enum SELECTIONS
 	ID_IsAvoidable = 1 << 1
 };
 
+enum TEXT_SIZE
+{
+	TXT_SMALL,
+	TXT_MED,
+	TXT_LARGE
+};
+
 //Normalized forward vector for a given node.
 vector3df getNodeForward(ISceneNode* node);
 //Normalized backward vector for a given node.

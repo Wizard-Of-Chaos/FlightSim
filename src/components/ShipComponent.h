@@ -34,6 +34,7 @@ enum SHIP_MOVEMENT {
 
 //The maximum amount of weapons any ship can have.
 const u32 MAX_HARDPOINTS = 6;
+#define PHYS_HARDPOINT MAX_HARDPOINTS +1
 
 /*
 * The ship component holds a lot of information about what a ship is.

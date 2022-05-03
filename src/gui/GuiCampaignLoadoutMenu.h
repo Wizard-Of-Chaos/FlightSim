@@ -7,10 +7,20 @@
 #include "ShipComponent.h"
 #include "ECS.h"
 
+struct ShipInstance;
+
 struct ShipSelector
 {
 	IGUIButton* left;
 	IGUIButton* right;
+	IGUIStaticText* name;
+	s32 curPos = 0;
+};
+
+struct WepSelect
+{
+	IGUIStaticText* bg;
+	IGUIButton* select;
 	IGUIStaticText* name;
 };
 
@@ -21,8 +31,16 @@ class GuiCampaignLoadoutMenu : public GuiDialog
 		virtual void init();
 		virtual void show();
 		bool onBack(const SEvent& event);
-
+		bool onShipChange(const SEvent& event, bool right);
+		bool onShipChangeLeft(const SEvent& event);
+		bool onShipChangeRight(const SEvent& event);
+		bool onHardpointSelect(const SEvent& event);
+		bool onWepSelect(const SEvent& event);
 	private:
+		void displayShip(ShipInstance& inst);
+		u32 currentHardpoint;
+
+		ShipSelector shipSelector;
 		IGUIButton* back;
 		IGUIImage* wepMenu;
 		IGUIImage* physWepMenu;

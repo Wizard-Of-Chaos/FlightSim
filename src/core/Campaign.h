@@ -44,9 +44,9 @@ struct Campaign
 	bool moved = false;
 
 	ShipInstance playerShip;
-	std::list<ShipInstance> availableShips;
-	std::list<WeaponInfoComponent> availableWeapons;
-	std::list<WeaponInfoComponent> availablePhysWeapons;
+	std::vector<ShipInstance> availableShips;
+	std::vector<WeaponInfoComponent> availableWeapons;
+	std::vector<WeaponInfoComponent> availablePhysWeapons;
 };
 
 #endif
