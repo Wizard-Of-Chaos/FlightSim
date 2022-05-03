@@ -3,7 +3,6 @@
 #include "GameController.h"
 #include "GameStateController.h"
 #include "SensorComponent.h"
-
 #include <iostream>
 
 EntityId createShipFromId(u32 id, vector3df position, vector3df rotation)
@@ -100,8 +99,9 @@ EntityId createPlayerShipFromLoadout(vector3df pos, vector3df rot)
 	initializeWeaponFromId(stateController->playerPhysWeapon, shipEntity, 0, true);
 
 	initializeDefaultPlayer(shipEntity);
+	initializePlayerFaction(shipEntity);
+
 	initializeShipCollisionBody(shipEntity, stateController->playerShip);
-	initializeNeutralFaction(shipEntity);
 	initializeDefaultHealth(shipEntity);
 	initializeDefaultShields(shipEntity);
 	initializeDefaultSensors(shipEntity);
@@ -273,4 +273,44 @@ void initializeShipParticles(EntityId id)
 	auto engine = smgr->addLightSceneNode(irr->node, ship->engineJetPos, SColorf(0.f, 1.f, 0.f), 1.3f);
 	particles->engineLight = engine;
 	engine->setID(ID_IsNotSelectable);
+}
+
+EntityId createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot)
+{
+	auto id = createShipFromId(inst.ship.shipDataId, pos, rot);
+	ShipComponent* ship = sceneManager->scene.get<ShipComponent>(id);
+	*ship = inst.ship;
+	for (u32 i = 0; i < ship->hardpointCount; ++i) {
+		WeaponInfoComponent wepReplace = inst.weps[i];
+		initializeWeaponFromId(wepReplace.wepDataId, id, i);
+		WeaponInfoComponent* wep = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
+		if (wep) {
+			wep->ammunition = wepReplace.ammunition;
+		}
+	}
+	initializeWeaponFromId(inst.physWep.wepDataId, id, 0, true);
+
+	return id;
+}
+
+EntityId createPlayerShipFromInstance(vector3df pos, vector3df rot)
+{
+	ShipInstance inst = stateController->campaign.playerShip;
+	u32 shipId = inst.ship.shipDataId;
+
+	auto id = createShipFromInstance(inst, pos, rot);
+	initializeDefaultPlayer(id);
+	initializePlayerFaction(id);
+
+	initializeShipCollisionBody(id, shipId);
+	initializeDefaultShields(id);
+	initializeDefaultSensors(id);
+
+	initializeHealth(id, stateController->campaign.playerShip.hp.maxHealth);
+	auto hp = sceneManager->scene.get<HealthComponent>(id);
+	*hp = stateController->campaign.playerShip.hp;
+
+	initializeDefaultHUD(id);
+
+	return id;
 }

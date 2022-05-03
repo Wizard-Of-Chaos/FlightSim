@@ -60,4 +60,7 @@ void initializeDefaultShields(EntityId objectId);
 IParticleSystemSceneNode* createShipJet(ISceneNode* node, vector3df pos, vector3df dir);
 //Adds the particle system to a given ship.
 void initializeShipParticles(EntityId id);
+
+EntityId createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
+EntityId createPlayerShipFromInstance(vector3df pos, vector3df rot);
 #endif 

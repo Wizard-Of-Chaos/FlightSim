@@ -6,6 +6,7 @@
 #include "Scenario.h"
 #include "AIComponent.h"
 #include "WeaponInfoComponent.h"
+#include "LoadoutData.h"
 #include <unordered_map>
 #include <list>
 

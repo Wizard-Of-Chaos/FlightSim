@@ -1,7 +1,9 @@
 #include "ScenarioUtils.h"
 #include "GameStateController.h"
 #include "GameController.h"
+#include "LoadoutData.h"
 #include "SceneManager.h"
+#include "ShipUtils.h"
 
 Scenario randomScenario()
 {
@@ -151,8 +153,8 @@ void buildDebrisField(Scenario& scenario)
 
 void setKillHostilesScenario(Scenario& scenario)
 {
-	EntityId player = createPlayerShipFromLoadout(scenario.playerStartPos, vector3df(0, 0, 0));
-	initializePlayerFaction(player);
+	//EntityId player = createPlayerShipFromLoadout(scenario.playerStartPos, vector3df(0, 0, 0));
+	EntityId player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
 	vector3df carrierpos = scenario.playerStartPos;
 	carrierpos.X += 100;
 	carrierpos.Z -= 600;

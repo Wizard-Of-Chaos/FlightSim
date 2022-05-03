@@ -55,6 +55,7 @@ struct EndScenarioData
 
 EndScenarioData getEndScenarioData();
 
+ShipInstance newShipInstance();
 void initNewCampaign();
 
 #endif

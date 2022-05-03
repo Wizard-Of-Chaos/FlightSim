@@ -17,9 +17,10 @@ void GuiCampaignLoadoutMenu::init()
 	setHybridButton(back, true);
 
 	position2di pos(280, 140);
+	position2di newpos;
 	s32 buf = 8;
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
-		position2di newpos = pos;
+		newpos = pos;
 		newpos.Y += (buf * i) + (buttonSize.Height * i);
 		hardpoints[i] = guienv->addButton(rect<s32>(newpos, buttonSize), root, -1, L"Hardpoint", L"Hardpoint attachment for a weapon.");
 		setHybridButton(hardpoints[i]);
@@ -41,7 +42,13 @@ void GuiCampaignLoadoutMenu::init()
 	setMetalButton(shipSelector.left);
 	setMetalButton(shipSelector.right);
 
+	newpos.Y += buttonSize.Height + buf;
+	shipInfo = guienv->addStaticText(L"Ship Information", rect<s32>(newpos, dimension2du(400, 70)), true, true, root);
+	setUIText(shipInfo);
+
 	guiController->setCallback(back, std::bind(&GuiCampaignLoadoutMenu::onBack, this, std::placeholders::_1));
+	guiController->setCallback(shipSelector.left, std::bind(&GuiCampaignLoadoutMenu::onShipChangeLeft, this, std::placeholders::_1));
+	guiController->setCallback(shipSelector.right, std::bind(&GuiCampaignLoadoutMenu::onShipChangeRight, this, std::placeholders::_1));
 	hide();
 }
 
@@ -59,16 +66,23 @@ void GuiCampaignLoadoutMenu::show()
 
 	//initialize first loadout visible as player ship'
 	shipSelector.curPos = -1;
-	ShipInstance& inst = stateController->campaign.playerShip;
+	displayShip(stateController->campaign.playerShip);
+}
+
+void GuiCampaignLoadoutMenu::displayShip(ShipInstance& inst)
+{
 	u32 shipId = inst.ship.shipDataId;
 	ShipData* data = stateController->shipData[shipId];
-
-	std::string name = data->name + " - Player";
+	std::string name = data->name;
+	if (shipSelector.curPos == -1) {
+		name += " - Player";
+	}
 	shipSelector.name->setText(wstr(name).c_str());
 
 	for (u32 i = 0; i < inst.ship.hardpointCount; ++i) {
 		std::string wep = stateController->weaponData[inst.weps[i].wepDataId]->name;
 		hardpoints[i]->setText(wstr(wep).c_str());
+		hardpoints[i]->setVisible(true);
 	}
 	for (u32 i = inst.ship.hardpointCount; i < MAX_HARDPOINTS; ++i) {
 		hardpoints[i]->setVisible(false);
@@ -76,17 +90,29 @@ void GuiCampaignLoadoutMenu::show()
 	std::string phys = stateController->physWeaponData[inst.physWep.wepDataId]->name;
 	physWepHardpoint->setText(wstr(phys).c_str());
 
-	//show health too
-}
-
-void GuiCampaignLoadoutMenu::displayShip(ShipInstance& inst)
-{
-
+	std::string desc = name + "\n" + data->description + "\n HP: " + fprecis(inst.hp.health, 5) + "/" + fprecis(inst.hp.maxHealth, 5);
+	shipInfo->setText(wstr(desc).c_str());
 }
 
 bool GuiCampaignLoadoutMenu::onShipChange(const SEvent& event, bool right)
 {
-	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED || stateController->campaign.availableShips.size() == 0) return true;
+	Campaign& camp = stateController->campaign;
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED || camp.availableShips.size() == 0) return true;
+	if (right) {
+		++shipSelector.curPos;
+		if (shipSelector.curPos == camp.availableShips.size()) shipSelector.curPos = -1;
+	}
+	else {
+		--shipSelector.curPos;
+		if (shipSelector.curPos < -1) shipSelector.curPos = camp.availableShips.size()-1;
+	}
+
+	if (shipSelector.curPos <= -1) {
+		displayShip(camp.playerShip);
+	}
+	else {
+		displayShip(camp.availableShips[shipSelector.curPos]);
+	}
 	return false;
 }
 bool GuiCampaignLoadoutMenu::onShipChangeLeft(const SEvent& event)

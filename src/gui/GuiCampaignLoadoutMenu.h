@@ -6,8 +6,7 @@
 #include "GuiDialog.h"
 #include "ShipComponent.h"
 #include "ECS.h"
-
-struct ShipInstance;
+#include "LoadoutData.h"
 
 struct ShipSelector
 {

@@ -189,11 +189,27 @@ EndScenarioData getEndScenarioData()
 	return data;
 }
 
+ShipInstance newShipInstance()
+{
+	ShipInstance ship;
+	ship.ship = stateController->shipData[0]->shipComponent;
+	ship.hp.health = 100.f;
+	ship.hp.health = 100.f;
+
+	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
+		ship.weps[i] = stateController->weaponData[0]->weaponComponent;
+	}
+	ship.physWep = stateController->physWeaponData[0]->weaponComponent;
+
+	return ship;
+}
+
 void initNewCampaign()
 {
 	stateController->campaign = Campaign();
 
-	ShipInstance defaultShip;
+	ShipInstance defaultShip = newShipInstance();
+
 	defaultShip.ship = stateController->shipData[0]->shipComponent;
 	defaultShip.hp.health = 100.f;
 	defaultShip.hp.maxHealth = 100.f;
@@ -202,5 +218,9 @@ void initNewCampaign()
 	defaultShip.physWep = stateController->physWeaponData[1]->weaponComponent;
 
 	stateController->campaign.playerShip = defaultShip;
-	//stateController->campaign.availableShips.push_back(defaultShip);
+
+	defaultShip.ship = stateController->shipData[1]->shipComponent;
+	defaultShip.weps[2] = stateController->weaponData[0]->weaponComponent;
+	defaultShip.weps[3] = stateController->weaponData[0]->weaponComponent;
+	stateController->campaign.availableShips.push_back(defaultShip);
 }
