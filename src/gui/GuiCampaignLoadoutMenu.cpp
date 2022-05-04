@@ -25,6 +25,7 @@ void GuiCampaignLoadoutMenu::init()
 		hardpoints[i] = guienv->addButton(rect<s32>(newpos, buttonSize), root, -1, L"Hardpoint", L"Hardpoint attachment for a weapon.");
 		setHybridButton(hardpoints[i]);
 		hardpoints[i]->setID((s32)i);
+		guiController->setCallback(hardpoints[i], std::bind(&GuiCampaignLoadoutMenu::onHardpointSelect, this, std::placeholders::_1));
 	}
 	position2di rpos(520, 140);
 	physWepHardpoint = guienv->addButton(rect<s32>(rpos, buttonSize), root, -1, L"Phys Wep", L"Hardpoint for the physics weapon.");
@@ -45,6 +46,9 @@ void GuiCampaignLoadoutMenu::init()
 	newpos.Y += buttonSize.Height + buf;
 	shipInfo = guienv->addStaticText(L"Ship Information", rect<s32>(newpos, dimension2du(400, 70)), true, true, root);
 	setUIText(shipInfo);
+
+	wepMenuBg = guienv->addStaticText(L"", rect<s32>(position2di(20, 20), dimension2du(187, 267)), false, true, wepMenu);
+	setUIText(wepMenuBg); //not really necessary; the bg just provides something to tape wep loadout stuff into
 
 	guiController->setCallback(back, std::bind(&GuiCampaignLoadoutMenu::onBack, this, std::placeholders::_1));
 	guiController->setCallback(shipSelector.left, std::bind(&GuiCampaignLoadoutMenu::onShipChangeLeft, this, std::placeholders::_1));
@@ -123,13 +127,71 @@ bool GuiCampaignLoadoutMenu::onShipChangeRight(const SEvent& event)
 {
 	return onShipChange(event, true);
 }
+
+WepSelect GuiCampaignLoadoutMenu::buildWepSelect(WeaponInfoComponent& wep, position2di pos)
+{
+	f32 screenRatioHoriz = 187.f / 960.f;
+	f32 screenRatioVert = 40.f / 540.f;
+	s32 width = (s32)(screenRatioHoriz * root->getAbsolutePosition().getWidth());
+	s32 height = (s32)(screenRatioVert * root->getAbsolutePosition().getHeight());
+
+	WepSelect sel;
+	WeaponData* data = stateController->weaponData[wep.wepDataId];
+	rect<s32> bgRect(pos, dimension2du(width, height));
+	sel.bg = guienv->addStaticText(L"", bgRect, false, true, wepMenuBg);
+	std::string txt = data->name;
+	if (data->weaponComponent.usesAmmunition) {
+		txt += "\n Ammo: " + std::to_string(data->weaponComponent.ammunition) + "/" + std::to_string(data->weaponComponent.maxAmmunition);
+	}
+	sel.name = guienv->addStaticText(wstr(txt).c_str(), rect<s32>(position2di(0, 0), dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), false, true, sel.bg);
+	sel.select = guienv->addButton(rect<s32>(position2di(bgRect.getWidth() / 2, 0), dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), sel.bg, -1, L"Select", L"Select this weapon.");
+	setUIText(sel.bg);
+	setUIText(sel.name);
+	setHoloButton(sel.select);
+
+	return sel;
+}
+
+void GuiCampaignLoadoutMenu::displayWeaponList()
+{
+	rect<s32> screen = root->getAbsolutePosition();
+	f32 screenRatioVert = 40 / 540.f;
+	for (u32 i = 0; i < stateController->campaign.availableWeapons.size(); ++i) {
+		WeaponInfoComponent cmp = stateController->campaign.availableWeapons[i];
+		WepSelect selector = buildWepSelect(cmp, position2di(0, i * screenRatioVert * screen.getHeight()));
+		selector.select->setID((s32)i);
+		guiController->setCallback(selector.select, std::bind(&GuiCampaignLoadoutMenu::onWepSelect, this, std::placeholders::_1));
+		weaponList.push_back(selector);
+	}
+}
+
+void GuiCampaignLoadoutMenu::clearWeaponList()
+{
+	for (WepSelect sel : weaponList) {
+		sel.name->remove();
+		guiController->removeCallback(sel.select);
+		sel.select->remove();
+		sel.bg->remove();
+	}
+	weaponList.clear();
+}
+
 bool GuiCampaignLoadoutMenu::onHardpointSelect(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+
+	IGUIButton* button = (IGUIButton*)event.GUIEvent.Caller;
+	if (button->isPressed()) return true;
+	clearWeaponList();
+	displayWeaponList();
+	button->setPressed(true);
 	return false;
 }
 bool GuiCampaignLoadoutMenu::onWepSelect(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	u32 pos = (u32)event.GUIEvent.Caller->getID();
+
+	clearWeaponList();
 	return false;
 }

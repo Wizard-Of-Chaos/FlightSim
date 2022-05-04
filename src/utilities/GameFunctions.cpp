@@ -223,4 +223,7 @@ void initNewCampaign()
 	defaultShip.weps[2] = stateController->weaponData[0]->weaponComponent;
 	defaultShip.weps[3] = stateController->weaponData[0]->weaponComponent;
 	stateController->campaign.availableShips.push_back(defaultShip);
+
+	stateController->campaign.availableWeapons.push_back(stateController->weaponData[3]->weaponComponent);
+	stateController->campaign.availableWeapons.push_back(stateController->weaponData[2]->weaponComponent);
 }

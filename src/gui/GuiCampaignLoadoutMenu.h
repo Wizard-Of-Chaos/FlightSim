@@ -37,11 +37,17 @@ class GuiCampaignLoadoutMenu : public GuiDialog
 		bool onWepSelect(const SEvent& event);
 	private:
 		void displayShip(ShipInstance& inst);
+
+		WepSelect buildWepSelect(WeaponInfoComponent& wep, position2di pos);
+		std::vector<WepSelect> weaponList;
+		void displayWeaponList();
+		void clearWeaponList();
 		u32 currentHardpoint;
 
 		ShipSelector shipSelector;
 		IGUIButton* back;
 		IGUIImage* wepMenu;
+		IGUIStaticText* wepMenuBg;
 		IGUIImage* physWepMenu;
 		IGUIButton* hardpoints[MAX_HARDPOINTS];
 		IGUIButton* physWepHardpoint;
