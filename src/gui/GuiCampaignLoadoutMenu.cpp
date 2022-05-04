@@ -31,6 +31,7 @@ void GuiCampaignLoadoutMenu::init()
 	physWepHardpoint = guienv->addButton(rect<s32>(rpos, buttonSize), root, -1, L"Phys Wep", L"Hardpoint for the physics weapon.");
 	physWepHardpoint->setID(PHYS_HARDPOINT);
 	setHybridButton(physWepHardpoint);
+	guiController->setCallback(physWepHardpoint, std::bind(&GuiCampaignLoadoutMenu::onHardpointSelect, this, std::placeholders::_1));
 	pos.Y -= 60;
 	rpos.Y -= 60;
 	rpos.X += 100;
@@ -53,6 +54,8 @@ void GuiCampaignLoadoutMenu::init()
 
 	wepMenuBg = guienv->addStaticText(L"", rect<s32>(position2di(20, 20), dimension2du(187, 267)), false, true, wepMenu);
 	setUIText(wepMenuBg); //not really necessary; the bg just provides something to tape wep loadout stuff into
+	physWepMenuBg = guienv->addStaticText(L"", rect<s32>(position2di(20, 20), dimension2du(187, 267)), false, true, physWepMenu);
+	setUIText(physWepMenuBg);
 
 	guiController->setCallback(back, std::bind(&GuiCampaignLoadoutMenu::onBack, this, std::placeholders::_1));
 	guiController->setCallback(shipSelector.left, std::bind(&GuiCampaignLoadoutMenu::onShipChangeLeft, this, std::placeholders::_1));
@@ -132,23 +135,33 @@ bool GuiCampaignLoadoutMenu::onShipChangeRight(const SEvent& event)
 	return onShipChange(event, true);
 }
 
-WepSelect GuiCampaignLoadoutMenu::buildWepSelect(WeaponInfoComponent& wep, position2di pos)
+WepSelect GuiCampaignLoadoutMenu::buildWepSelect(WeaponInfoComponent& wep, position2di pos, bool phys)
 {
 	f32 screenRatioHoriz = 187.f / 960.f;
 	f32 screenRatioVert = 40.f / 540.f;
 	s32 width = (s32)(screenRatioHoriz * root->getAbsolutePosition().getWidth());
 	s32 height = (s32)(screenRatioVert * root->getAbsolutePosition().getHeight());
 
+	rect<s32> bgRect(pos, dimension2du(width, height));
 	WepSelect sel;
 	WeaponData* data = stateController->weaponData[wep.wepDataId];
-	rect<s32> bgRect(pos, dimension2du(width, height));
-	sel.bg = guienv->addStaticText(L"", bgRect, false, true, wepMenuBg);
+	position2di npos(0, 0);
+	position2di bpos(bgRect.getWidth() / 2, 0);
+	IGUIStaticText* bg = wepMenuBg;
+
+	if (phys) {
+		bg = physWepMenuBg;
+		npos = bpos;
+		bpos = position2di(0, 0);
+		data = stateController->physWeaponData[wep.wepDataId];
+	}
+	sel.bg = guienv->addStaticText(L"", bgRect, false, true, bg);
 	std::string txt = data->name;
 	if (data->weaponComponent.usesAmmunition) {
 		txt += "\n Ammo: " + std::to_string(wep.ammunition + wep.clip) + "/" + std::to_string(data->weaponComponent.maxAmmunition + data->weaponComponent.maxClip);
 	}
-	sel.name = guienv->addStaticText(wstr(txt).c_str(), rect<s32>(position2di(0, 0), dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), false, true, sel.bg);
-	sel.select = guienv->addButton(rect<s32>(position2di(bgRect.getWidth() / 2, 0), dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), sel.bg, -1, L"Select", L"Select this weapon.");
+	sel.name = guienv->addStaticText(wstr(txt).c_str(), rect<s32>(npos, dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), false, true, sel.bg);
+	sel.select = guienv->addButton(rect<s32>(bpos, dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), sel.bg, -1, L"Select", L"Select this weapon.");
 	setUIText(sel.bg);
 	setUIText(sel.name);
 	setHoloButton(sel.select);
@@ -162,7 +175,7 @@ void GuiCampaignLoadoutMenu::displayWeaponList()
 	f32 screenRatioVert = 40 / 540.f;
 	for (u32 i = 0; i < stateController->campaign.availableWeapons.size(); ++i) {
 		WeaponInfoComponent cmp = stateController->campaign.availableWeapons[i];
-		WepSelect selector = buildWepSelect(cmp, position2di(0, i * screenRatioVert * screen.getHeight()));
+		WepSelect selector = buildWepSelect(cmp, position2di(0, i * screenRatioVert * screen.getHeight()), false);
 		selector.select->setID((s32)i);
 		guiController->setCallback(selector.select, std::bind(&GuiCampaignLoadoutMenu::onWepSelect, this, std::placeholders::_1));
 		weaponList.push_back(selector);
@@ -171,6 +184,13 @@ void GuiCampaignLoadoutMenu::displayWeaponList()
 
 void GuiCampaignLoadoutMenu::clearWeaponList()
 {
+	for (WepSelect sel : physWeaponList) {
+		sel.name->remove();
+		guiController->removeCallback(sel.select);
+		sel.select->remove();
+		sel.bg->remove();
+	}
+	physWeaponList.clear();
 	for (WepSelect sel : weaponList) {
 		sel.name->remove();
 		guiController->removeCallback(sel.select);
@@ -180,6 +200,19 @@ void GuiCampaignLoadoutMenu::clearWeaponList()
 	weaponList.clear();
 }
 
+void GuiCampaignLoadoutMenu::displayPhysWeaponList()
+{
+	rect<s32> screen = root->getAbsolutePosition();
+	f32 screenRatioVert = 40 / 540.f;
+	for (u32 i = 0; i < stateController->campaign.availablePhysWeapons.size(); ++i) {
+		WeaponInfoComponent cmp = stateController->campaign.availablePhysWeapons[i];
+		WepSelect selector = buildWepSelect(cmp, position2di(0, i * screenRatioVert * screen.getHeight()), true);
+		selector.select->setID((s32)i);
+		guiController->setCallback(selector.select, std::bind(&GuiCampaignLoadoutMenu::onPhysWepSelect, this, std::placeholders::_1));
+		weaponList.push_back(selector);
+	}
+}
+
 bool GuiCampaignLoadoutMenu::wepHover(const SEvent& event)
 {
 	u32 hardpoint = (u32)event.GUIEvent.Caller->getID();
@@ -187,12 +220,21 @@ bool GuiCampaignLoadoutMenu::wepHover(const SEvent& event)
 	if (event.GUIEvent.EventType == EGET_ELEMENT_HOVERED) {
 		if (shipSelector.curPos <= -1) {
 			wep = stateController->campaign.playerShip.weps[hardpoint];
+			if (event.GUIEvent.Caller->getID() == PHYS_HARDPOINT) {
+				wep = stateController->campaign.playerShip.physWep;
+			}
 		}
 		else {
 			wep = stateController->campaign.availableShips[shipSelector.curPos].weps[hardpoint];
+			if (event.GUIEvent.Caller->getID() == PHYS_HARDPOINT) {
+				wep = stateController->campaign.availableShips[shipSelector.curPos].physWep;
+			}
 		}
 		u32 wepId = wep.wepDataId;
 		WeaponData* data = stateController->weaponData[wepId];
+		if (event.GUIEvent.Caller->getID() == PHYS_HARDPOINT) {
+			data = stateController->physWeaponData[wepId];
+		}
 		std::string txt = data->name + "\n" + data->description;
 		if (data->weaponComponent.usesAmmunition) {
 			txt += "\n Ammo: " + std::to_string(wep.ammunition + wep.maxClip) + "/" + std::to_string(wep.maxAmmunition + wep.maxClip);
@@ -220,21 +262,25 @@ bool GuiCampaignLoadoutMenu::onHardpointSelect(const SEvent& event)
 		return false;
 	}
 	clearWeaponList();
-	displayWeaponList();
+	if (button->getID() == PHYS_HARDPOINT) {
+		displayPhysWeaponList();
+	} else {
+		displayWeaponList();
+	}
 	button->setPressed(true);
 	currentHardpoint = (u32)(button->getID());
 	return false;
 }
 
-bool GuiCampaignLoadoutMenu::wepSelect(const SEvent& event, ShipInstance& inst)
+bool GuiCampaignLoadoutMenu::wepSelect(const SEvent& event, ShipInstance& inst, std::vector<WeaponInfoComponent>& list)
 {
 	u32 pos = (u32)event.GUIEvent.Caller->getID();
-	WeaponInfoComponent wep = stateController->campaign.availableWeapons[pos];
+	WeaponInfoComponent wep = list[pos];
 	if (wep.type != WEP_NONE) {
-		stateController->campaign.availableWeapons.erase(stateController->campaign.availableWeapons.begin() + pos);
+		list.erase(list.begin() + pos);
 	}
 	if (inst.weps[currentHardpoint].type != WEP_NONE) {
-		stateController->campaign.availableWeapons.push_back(inst.weps[currentHardpoint]);
+		list.push_back(inst.weps[currentHardpoint]);
 	}
 	inst.weps[currentHardpoint] = wep;
 
@@ -245,14 +291,45 @@ bool GuiCampaignLoadoutMenu::wepSelect(const SEvent& event, ShipInstance& inst)
 	return false;
 }
 
+bool GuiCampaignLoadoutMenu::physWepSelect(const SEvent& event, ShipInstance& inst, std::vector<WeaponInfoComponent>& list)
+{
+	u32 pos = (u32)event.GUIEvent.Caller->getID();
+	WeaponInfoComponent wep = list[pos];
+	if (wep.wepDataId == WEP_NONE) {
+		list.erase(list.begin() + pos);
+	}
+	if (inst.physWep.type != WEP_NONE) {
+		list.push_back(inst.physWep);
+	}
+	inst.physWep = wep;
+
+	std::string txt = stateController->physWeaponData[wep.wepDataId]->name;
+
+	physWepHardpoint->setText(wstr(txt).c_str());
+	clearWeaponList();
+	return false;
+}
+
 bool GuiCampaignLoadoutMenu::onWepSelect(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	if (shipSelector.curPos <= -1) {
-		return wepSelect(event, stateController->campaign.playerShip);
+		return wepSelect(event, stateController->campaign.playerShip, stateController->campaign.availableWeapons);
 	}
 	else {
-		return wepSelect(event, stateController->campaign.availableShips[shipSelector.curPos]);
+		return wepSelect(event, stateController->campaign.availableShips[shipSelector.curPos], stateController->campaign.availableWeapons);
 	}
 	return true;
+}
+
+bool GuiCampaignLoadoutMenu::onPhysWepSelect(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	if (shipSelector.curPos <= -1) {
+		return physWepSelect(event, stateController->campaign.playerShip, stateController->campaign.availablePhysWeapons);
+	}
+	else {
+		return physWepSelect(event, stateController->campaign.availableShips[shipSelector.curPos], stateController->campaign.availablePhysWeapons);
+	}
+	return true; 
 }

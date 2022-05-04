@@ -82,11 +82,15 @@ void throttleToShip(ShipComponent* ship, btRigidBody* body, vector3df& thrust, v
 
 void fireWeapon(EntityId playerId, InputComponent* input, EntityId wep)
 {
+	if (!sceneManager->scene.entityInUse(wep) || !sceneManager->scene.entityInUse(playerId)) return;
+
 	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
 	auto sensors = sceneManager->scene.get<SensorComponent>(playerId);
 	auto playerIrr = sceneManager->scene.get<IrrlichtComponent>(playerId);
 	auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
 	auto irrComp = sceneManager->scene.get<IrrlichtComponent>(wep);
+
+	if (!wepInfo || !player || !sensors || !playerIrr || !irrComp) return;
 
 	wepInfo->isFiring = true;
 	wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
@@ -273,8 +277,10 @@ void shipControlSystem(f32 dt)
 			fireWeapon(entityId, input, ship->physWeapon);
 		}
 		else {
-			auto wepInfo = scene.get<WeaponInfoComponent>(ship->physWeapon);
-			wepInfo->isFiring = false;
+			if (sceneManager->scene.entityInUse(ship->physWeapon)) {
+				auto wepInfo = scene.get<WeaponInfoComponent>(ship->physWeapon);
+				if(wepInfo) wepInfo->isFiring = false;
+			}
 		}
 	}
 }
