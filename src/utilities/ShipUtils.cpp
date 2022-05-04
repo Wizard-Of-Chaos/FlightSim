@@ -283,9 +283,11 @@ EntityId createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot
 	for (u32 i = 0; i < ship->hardpointCount; ++i) {
 		WeaponInfoComponent wepReplace = inst.weps[i];
 		initializeWeaponFromId(wepReplace.wepDataId, id, i);
-		WeaponInfoComponent* wep = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
-		if (wep) {
-			wep->ammunition = wepReplace.ammunition;
+		if (wepReplace.type != WEP_NONE) {
+			WeaponInfoComponent* wep = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
+			if (wep) {
+				wep->ammunition = wepReplace.ammunition;
+			}
 		}
 	}
 	initializeWeaponFromId(inst.physWep.wepDataId, id, 0, true);

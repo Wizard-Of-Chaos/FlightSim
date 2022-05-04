@@ -167,26 +167,45 @@ EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 da
 	return id;
 }
 
-EndScenarioData getEndScenarioData()
+ShipInstance getEndScenarioData()
 {
-	EndScenarioData data = { 0, 0 };
+	ShipInstance inst;
 	for (auto id : SceneView<PlayerComponent, ShipComponent, HealthComponent>(sceneManager->scene)) {
 		auto hp = sceneManager->scene.get<HealthComponent>(id);
-		data.healthLost += hp->maxHealth - hp->health;
+		inst.hp = *hp;
 
 		auto ship = sceneManager->scene.get<ShipComponent>(id);
+		inst.ship = *ship;
 		for (u32 i = 0; i < ship->hardpointCount; ++i) {
+			if (!sceneManager->scene.entityInUse(ship->weapons[i])) { //there's no weapon here
+				inst.weps[i] = stateController->weaponData[0]->weaponComponent; //add the no-weapon component
+				continue;
+			}
+
 			auto wep = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
 			if (!wep->usesAmmunition) continue;
-			u32 clips = wep->maxAmmunition / wep->maxClip;
-			u32 clipsRemaining = wep->ammunition / wep->maxClip;
-			u32 lostAmmo = clips - clipsRemaining;
-			if (wep->clip < wep->maxClip) lostAmmo -= 1;
-			data.ammoLost += lostAmmo; //todo: come up with a ratio for weapon IDs to ammo
+
+			if (wep->clip < wep->maxClip) { //if the clip is partially spent just reload the damn thing
+				wep->clip = wep->maxClip;
+				if (wep->ammunition >= wep->maxClip) {
+					wep->ammunition -= wep->maxClip;
+				}
+				else {
+					wep->ammunition = 0; 
+				}
+			}
+			inst.weps[i] = *wep;
+		}
+		if (!sceneManager->scene.entityInUse(ship->physWeapon)) {
+			inst.physWep = stateController->physWeaponData[0]->weaponComponent;
+		}
+		else {
+			auto phys = sceneManager->scene.get<WeaponInfoComponent>(ship->physWeapon);
+			inst.physWep = *phys;
 		}
 	}
 	//todo: make it so that it would also grab the health / ammo of wingmen
-	return data;
+	return inst;
 }
 
 ShipInstance newShipInstance()
@@ -224,6 +243,7 @@ void initNewCampaign()
 	defaultShip.weps[3] = stateController->weaponData[0]->weaponComponent;
 	stateController->campaign.availableShips.push_back(defaultShip);
 
+	stateController->campaign.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[3]->weaponComponent);
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[2]->weaponComponent);
 }

@@ -141,7 +141,7 @@ WepSelect GuiCampaignLoadoutMenu::buildWepSelect(WeaponInfoComponent& wep, posit
 	sel.bg = guienv->addStaticText(L"", bgRect, false, true, wepMenuBg);
 	std::string txt = data->name;
 	if (data->weaponComponent.usesAmmunition) {
-		txt += "\n Ammo: " + std::to_string(data->weaponComponent.ammunition) + "/" + std::to_string(data->weaponComponent.maxAmmunition);
+		txt += "\n Ammo: " + std::to_string(data->weaponComponent.ammunition + data->weaponComponent.clip) + "/" + std::to_string(data->weaponComponent.maxAmmunition + data->weaponComponent.maxClip);
 	}
 	sel.name = guienv->addStaticText(wstr(txt).c_str(), rect<s32>(position2di(0, 0), dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), false, true, sel.bg);
 	sel.select = guienv->addButton(rect<s32>(position2di(bgRect.getWidth() / 2, 0), dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), sel.bg, -1, L"Select", L"Select this weapon.");
@@ -181,17 +181,33 @@ bool GuiCampaignLoadoutMenu::onHardpointSelect(const SEvent& event)
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 
 	IGUIButton* button = (IGUIButton*)event.GUIEvent.Caller;
-	if (button->isPressed()) return true;
+	if (button->isPressed()) {
+		button->setPressed(false);
+		clearWeaponList();
+		return false;
+	}
 	clearWeaponList();
 	displayWeaponList();
 	button->setPressed(true);
+	currentHardpoint = (u32)(button->getID());
 	return false;
 }
 bool GuiCampaignLoadoutMenu::onWepSelect(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	u32 pos = (u32)event.GUIEvent.Caller->getID();
+	WeaponInfoComponent wep = stateController->campaign.availableWeapons[pos];
+	if (wep.type != WEP_NONE) {
+		stateController->campaign.availableWeapons.erase(stateController->campaign.availableWeapons.begin() + pos);
+	}
+	if (stateController->campaign.playerShip.weps[currentHardpoint].type != WEP_NONE) {
+		stateController->campaign.availableWeapons.push_back(stateController->campaign.playerShip.weps[currentHardpoint]);
+	}
+	stateController->campaign.playerShip.weps[currentHardpoint] = wep;
 
+	std::string txt = stateController->weaponData[wep.wepDataId]->name;
+
+	hardpoints[currentHardpoint]->setText(wstr(txt).c_str());
 	clearWeaponList();
 	return false;
 }

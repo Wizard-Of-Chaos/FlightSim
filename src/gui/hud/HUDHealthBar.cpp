@@ -22,6 +22,8 @@ HUDResources::HUDResources(IGUIElement* root, EntityId id) : HUDElement(root)
 	auto shipInfo = sceneManager->scene.get<ShipComponent>(id);
 
 	for (u32 i = 0; i < shipInfo->hardpointCount; ++i) {
+		if (!sceneManager->scene.entityInUse(shipInfo->weapons[i])) continue;
+
 		auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(shipInfo->weapons[i]);
 		if (!wepInfo->usesAmmunition) continue;
 		ammoNums[i] = guienv->addStaticText(L"", rect<s32>(position2di(340, screenrect.getHeight() - 16 * (i + 1)), dimension2du(240, 20)), false, true, root);
