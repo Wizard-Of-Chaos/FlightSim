@@ -39,6 +39,9 @@ class GuiCampaignLoadoutMenu : public GuiDialog
 		void displayShip(ShipInstance& inst);
 
 		WepSelect buildWepSelect(WeaponInfoComponent& wep, position2di pos);
+		bool wepSelect(const SEvent& event, ShipInstance& inst);
+		bool wepHover(const SEvent& event);
+
 		std::vector<WepSelect> weaponList;
 		void displayWeaponList();
 		void clearWeaponList();
