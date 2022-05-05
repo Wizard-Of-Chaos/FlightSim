@@ -54,6 +54,8 @@ void setMetalButton(IGUIButton* elem);
 //Sets the button to a holo-button, without a background if bg is false and with a background otherwise.
 void setHoloButton(IGUIButton* elem, bool bg = false);
 void setHybridButton(IGUIButton* elem, bool bg = false);
+void setRepairButton(IGUIButton* elem);
+void setReloadButton(IGUIButton* elem);
 /*
 * Smoothly moves the GUI element from one position to the next.
 * curTime is assumed to be a timer stored somewhere by whatever is calling this function. 

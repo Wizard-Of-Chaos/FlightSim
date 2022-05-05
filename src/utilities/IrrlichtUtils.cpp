@@ -94,6 +94,26 @@ void setHybridButton(IGUIButton* elem, bool bg)
 	elem->setOverrideFont(guienv->getFont("fonts/KomikaDisplayKaps22px/KomikaDisplayKaps22px.xml"));
 	elem->setDrawBorder(false);
 }
+void setRepairButton(IGUIButton* elem)
+{
+	scaleAlign(elem);
+	elem->setUseAlphaChannel(true);
+	elem->setDrawBorder(false);
+	elem->setScaleImage(true);
+
+	elem->setImage(driver->getTexture("ui/repair1.png"));
+	elem->setPressedImage(driver->getTexture("ui/repair2.png"));
+}
+void setReloadButton(IGUIButton* elem)
+{
+	scaleAlign(elem);
+	elem->setUseAlphaChannel(true);
+	elem->setDrawBorder(false);
+	elem->setScaleImage(true);
+
+	elem->setImage(driver->getTexture("ui/reload1.png"));
+	elem->setPressedImage(driver->getTexture("ui/reload2.png"));
+}
 
 std::string fprecis(f32 num, s32 round)
 {

@@ -37,6 +37,7 @@ class GuiCampaignLoadoutMenu : public GuiDialog
 		bool onWepSelect(const SEvent& event);
 		bool onPhysWepSelect(const SEvent& event);
 	private:
+		ShipInstance& getCurShip();
 		void displayShip(ShipInstance& inst);
 
 		WepSelect buildWepSelect(WeaponInfoComponent& wep, position2di pos, bool phys);
@@ -44,11 +45,16 @@ class GuiCampaignLoadoutMenu : public GuiDialog
 		bool physWepSelect(const SEvent& event, ShipInstance& inst, std::vector<WeaponInfoComponent>& list);
 		bool wepHover(const SEvent& event);
 
+		bool onReload(const SEvent& event);
+		bool onRepair(const SEvent& event);
+
 		std::vector<WepSelect> weaponList;
 		std::vector<WepSelect> physWeaponList;
 		void displayWeaponList();
 		void displayPhysWeaponList();
 		void clearWeaponList();
+		void displayCarrierInfo();
+
 		u32 currentHardpoint;
 
 		ShipSelector shipSelector;
@@ -58,11 +64,15 @@ class GuiCampaignLoadoutMenu : public GuiDialog
 		IGUIImage* physWepMenu;
 		IGUIStaticText* physWepMenuBg;
 		IGUIButton* hardpoints[MAX_HARDPOINTS];
+		IGUIButton* reloadHardpoints[MAX_HARDPOINTS];
+		IGUIButton* repair;
 		IGUIButton* physWepHardpoint;
 		IGUIImage* curHealth;
 		IGUIStaticText* shipInfo;
-		IGUIStaticText* shipDesc;
 		IGUIStaticText* wepDesc;
+
+		IGUIImage* carrierInfoPanel;
+		IGUIStaticText* carrierInfo;
 };
 
 #endif 
