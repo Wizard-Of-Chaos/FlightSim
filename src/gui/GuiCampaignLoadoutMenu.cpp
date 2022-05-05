@@ -188,7 +188,7 @@ WepSelect GuiCampaignLoadoutMenu::buildWepSelect(WeaponInfoComponent& wep, posit
 	sel.bg = guienv->addStaticText(L"", bgRect, false, true, bg);
 	std::string txt = data->name;
 	if (data->weaponComponent.usesAmmunition) {
-		txt += "\n Ammo: " + std::to_string(wep.ammunition + wep.clip) + "/" + std::to_string(data->weaponComponent.maxAmmunition + data->weaponComponent.maxClip);
+		txt += "\n Ammo: " + std::to_string(wep.ammunition + wep.maxClip) + "/" + std::to_string(data->weaponComponent.maxAmmunition + data->weaponComponent.maxClip);
 	}
 	sel.name = guienv->addStaticText(wstr(txt).c_str(), rect<s32>(npos, dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), false, true, sel.bg);
 	sel.select = guienv->addButton(rect<s32>(bpos, dimension2du(bgRect.getWidth() / 2, bgRect.getHeight())), sel.bg, -1, L"Select", L"Select this weapon.");
@@ -319,6 +319,12 @@ bool GuiCampaignLoadoutMenu::wepSelect(const SEvent& event, ShipInstance& inst, 
 	std::string txt = stateController->weaponData[wep.wepDataId]->name;
 
 	hardpoints[currentHardpoint]->setText(wstr(txt).c_str());
+	if (wep.usesAmmunition) {
+		reloadHardpoints[currentHardpoint]->setVisible(true);
+	}
+	else {
+		reloadHardpoints[currentHardpoint]->setVisible(false);
+	}
 	clearWeaponList();
 	return false;
 }
