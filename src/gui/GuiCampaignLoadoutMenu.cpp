@@ -64,6 +64,11 @@ void GuiCampaignLoadoutMenu::init()
 	wepDesc = guienv->addStaticText(L"", rect<s32>(newpos, dimension2du(400, 70)), false, true, root);
 	setUIText(wepDesc);
 	setUIText(shipInfo);
+	pos.X -= 100;
+	pos.Y += 40;
+	shipSelector.useShip = guienv->addButton(rect<s32>(pos, dimension2du(100, 25)), root, -1, L"Use this ship", L"Use this ship as your own.");
+	setMetalButton(shipSelector.useShip);
+	guiController->setCallback(shipSelector.useShip, std::bind(&GuiCampaignLoadoutMenu::onUseShip, this, std::placeholders::_1));
 
 	wepMenuBg = guienv->addStaticText(L"", rect<s32>(position2di(20, 20), dimension2du(187, 267)), false, true, wepMenu);
 	setUIText(wepMenuBg); //not really necessary; the bg just provides something to tape wep loadout stuff into
@@ -132,6 +137,13 @@ void GuiCampaignLoadoutMenu::displayShip(ShipInstance& inst)
 
 	std::string desc = name + "\n" + data->description + "\n HP: " + fprecis(inst.hp.health, 5) + "/" + fprecis(inst.hp.maxHealth, 5);
 	shipInfo->setText(wstr(desc).c_str());
+
+	if (shipSelector.curPos <= -1) {
+		shipSelector.useShip->setVisible(false);
+	}
+	else {
+		shipSelector.useShip->setVisible(true);
+	}
 }
 void GuiCampaignLoadoutMenu::displayCarrierInfo()
 {
@@ -360,6 +372,19 @@ bool GuiCampaignLoadoutMenu::onPhysWepSelect(const SEvent& event)
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 
 	return physWepSelect(event, getCurShip(), stateController->campaign.availablePhysWeapons);
+}
+
+bool GuiCampaignLoadoutMenu::onUseShip(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	ShipInstance inst = getCurShip();
+	ShipInstance player = stateController->campaign.playerShip;
+	ShipInstance& pos = getCurShip();
+	stateController->campaign.playerShip = inst;
+	pos = player;
+	shipSelector.curPos = -1;
+	displayShip(getCurShip());
+	return false;
 }
 
 bool GuiCampaignLoadoutMenu::onReload(const SEvent& event)

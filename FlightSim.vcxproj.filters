@@ -142,6 +142,9 @@
     <ClCompile Include="src\gui\GuiCampaignLoadoutMenu.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\GuiLootMenu.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -355,6 +358,9 @@
       <Filter>Headers\Components\Ship Components</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\GuiCampaignLoadoutMenu.h">
+      <Filter>Headers\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GuiLootMenu.h">
       <Filter>Headers\Gui</Filter>
     </ClInclude>
   </ItemGroup>

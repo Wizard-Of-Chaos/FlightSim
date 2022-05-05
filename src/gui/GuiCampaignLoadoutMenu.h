@@ -13,6 +13,7 @@ struct ShipSelector
 	IGUIButton* left;
 	IGUIButton* right;
 	IGUIStaticText* name;
+	IGUIButton* useShip;
 	s32 curPos = 0;
 };
 
@@ -36,6 +37,7 @@ class GuiCampaignLoadoutMenu : public GuiDialog
 		bool onHardpointSelect(const SEvent& event);
 		bool onWepSelect(const SEvent& event);
 		bool onPhysWepSelect(const SEvent& event);
+		bool onUseShip(const SEvent& event);
 	private:
 		ShipInstance& getCurShip();
 		void displayShip(ShipInstance& inst);
