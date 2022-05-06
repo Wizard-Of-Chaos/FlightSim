@@ -173,7 +173,10 @@ void GameController::initScenario()
 	std::cout << "scenario type: " << currentScenario.type << ", scenario environment: " << currentScenario.environment << ", objective count: " << currentScenario.objectiveCount;
 	std::cout << "\n player start: " << currentScenario.playerStartPos.X << " " << currentScenario.playerStartPos.Y << " " << currentScenario.playerStartPos.Z;
 	std::cout << "\n enemy start: " << currentScenario.enemyStartPos.X << " " << currentScenario.enemyStartPos.Y << " " << currentScenario.enemyStartPos.Z;
-	std::cout << "\n num obstacles: " << currentScenario.obstaclePositions.size() << std::endl;
+	std::cout << "\n num obstacles: " << currentScenario.obstaclePositions.size();
+	std::cout << "\n ammo to be recovered: " << currentScenario.ammoRecovered << " resources: " << currentScenario.resourcesRecovered;
+	std::cout << "\n max ships recovered: " << currentScenario.maxShipsRecovered << " max weps: " << currentScenario.maxWepsRecovered << std::endl;
+
 	buildScenario(currentScenario);
 
 	device->getCursorControl()->setActiveIcon(ECI_CROSS);

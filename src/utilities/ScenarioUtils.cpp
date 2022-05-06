@@ -8,26 +8,42 @@
 Scenario randomScenario()
 {
 	gvReader in;
-	in.read("attributes/scenariodesc.gdat");
+	in.read("attributes/scenarios/scenariodesc.gdat");
 	in.readLinesToValues();
 	SCENARIO_TYPE type = static_cast<SCENARIO_TYPE>(std::rand() % SCENARIO_MAX_TYPES);
 	if (type == SCENARIO_MAX_TYPES) type = SCENARIO_KILL_HOSTILES;
 	SCENARIO_ENVIRONMENT env = static_cast<SCENARIO_ENVIRONMENT>(std::rand() % SCENENV_MAX_ENVIRONMENTS);
 	if (env == SCENENV_MAX_ENVIRONMENTS) env = SCENENV_ASTEROID_FIELD;
 
-	//env = SCENENV_GAS_FIELD; //remove later when other environments are implemented
-
 	std::string location = scenarioEnvStrings.at(env);
 	std::string description = in.values[location];
 	description += "\n";
 	description += in.values[scenarioStrings.at(type)];
 	u32 objCount = std::rand() % (stateController->campaign.currentDifficulty * 3) + 1;
+	if (objCount > SCENARIO_MAX_OBJECTIVES) objCount == SCENARIO_MAX_OBJECTIVES;
 
 	vector3df player(0, 0, -50);
 	vector3df enemy(10, 20, 80);
 	Scenario scen(type, env, objCount, player, enemy);
 
-	scen.detectionChance = detectionChances.at(env) + (std::rand() % (2 * stateController->campaign.currentDifficulty));
+	in.clear();
+	std::string path = "attributes/scenarios/environments/" + location + ".gdat";
+	in.read(path);
+	in.readLinesToValues();
+	scen.detectionChance = in.getInt("detectionChance") + (1*std::rand() % stateController->campaign.currentDifficulty);
+	scen.ammoRecovered = in.getInt("ammoRecovered") * (1 * std::rand() % stateController->campaign.currentDifficulty);
+	scen.resourcesRecovered = in.getFloat("resourcesRecovered");
+	scen.maxWepsRecovered = in.getInt("maxWeaponsRecovered");
+	scen.maxShipsRecovered = in.getInt("maxShipsRecovered");
+
+	in.clear();
+	path = "attributes/scenarios/objectives/" + scenarioStrings.at(type) + ".gdat";
+	in.read(path);
+	in.readLinesToValues();
+	scen.ammoRecovered += in.getUint("ammoRecovered") * (1 + std::rand() % stateController->campaign.currentDifficulty);
+	scen.resourcesRecovered += in.getFloat("resourcesRecovered") * static_cast<f32>(std::rand() % stateController->campaign.currentDifficulty);
+	scen.maxWepsRecovered += in.getInt("maxWeaponsRecovered");
+	scen.maxShipsRecovered += in.getInt("maxShipsRecovered");
 
 	if(env != SCENENV_EMPTY) setObstaclePositions(scen);
 
@@ -39,7 +55,7 @@ Scenario randomScenario()
 Scenario scrambleScenario()
 {
 	gvReader in;
-	in.read("attributes/scenariodesc.gdat");
+	in.read("attributes/scenarios/scenariodesc.gdat");
 	in.readLinesToValues();
 	SCENARIO_TYPE type = SCENARIO_SCRAMBLE;
 	SCENARIO_ENVIRONMENT env = static_cast<SCENARIO_ENVIRONMENT>(std::rand() % SCENENV_MAX_ENVIRONMENTS);

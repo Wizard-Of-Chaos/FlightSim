@@ -213,7 +213,7 @@ ShipInstance newShipInstance()
 	ShipInstance ship;
 	ship.ship = stateController->shipData[0]->shipComponent;
 	ship.hp.health = 100.f;
-	ship.hp.health = 100.f;
+	ship.hp.maxHealth = 100.f;
 
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
 		ship.weps[i] = stateController->weaponData[0]->weaponComponent;
@@ -230,8 +230,6 @@ void initNewCampaign()
 	ShipInstance defaultShip = newShipInstance();
 
 	defaultShip.ship = stateController->shipData[0]->shipComponent;
-	defaultShip.hp.health = 100.f;
-	defaultShip.hp.maxHealth = 100.f;
 	defaultShip.weps[0] = stateController->weaponData[3]->weaponComponent;
 	defaultShip.weps[1] = stateController->weaponData[3]->weaponComponent;
 	defaultShip.physWep = stateController->physWeaponData[1]->weaponComponent;
@@ -248,4 +246,26 @@ void initNewCampaign()
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[3]->weaponComponent);
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[2]->weaponComponent);
+}
+
+ShipInstance randomShipInstance()
+{
+	ShipInstance inst = newShipInstance();
+	u32 id = std::rand() % stateController->shipData.size();
+	inst.ship = stateController->shipData[id]->shipComponent;
+
+	inst.hp.health = (f32)(std::rand() % (u32)(inst.hp.maxHealth));
+
+	return inst;
+}
+WeaponInfoComponent randomWeapon()
+{
+	u32 id = std::rand() % stateController->weaponData.size();
+	if (id == 0) id += 1;
+	WeaponInfoComponent wep = stateController->weaponData[id]->weaponComponent;
+	if (wep.usesAmmunition) {
+		u32 clips = wep.maxAmmunition / wep.maxClip;
+		wep.ammunition = wep.maxClip * (std::rand() % clips);
+	}
+	return wep;
 }

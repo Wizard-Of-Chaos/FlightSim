@@ -15,14 +15,6 @@ enum SCENARIO_TYPE
 	SCENARIO_NOT_LOADED
 };
 
-//Strings for loading a scenario from file.
-const std::unordered_map<SCENARIO_TYPE, std::string> scenarioStrings = {
-	{SCENARIO_KILL_HOSTILES, "killHostiles"},
-	{SCENARIO_SALVAGE, "salvage"},
-	{SCENARIO_DESTROY_OBJECT, "destroyObject"},
-	{SCENARIO_SCRAMBLE, "scramble"}
-};
-
 //Different types of scenario environment available.
 enum SCENARIO_ENVIRONMENT
 {
@@ -34,13 +26,12 @@ enum SCENARIO_ENVIRONMENT
 	SCENENV_MAX_ENVIRONMENTS
 };
 
-//Detection chance associated with each environment.
-const std::unordered_map<SCENARIO_ENVIRONMENT, u32> detectionChances = {
-	{SCENENV_ASTEROID_FIELD, 15},
-	{SCENENV_GAS_FIELD, 10},
-	{SCENENV_EMPTY, 30},
-	{SCENENV_DEBRIS_FIELD, 5},
-	{SCENENV_SPACE_STATION, 35}
+//Strings for loading a scenario from file.
+const std::unordered_map<SCENARIO_TYPE, std::string> scenarioStrings = {
+	{SCENARIO_KILL_HOSTILES, "killHostiles"},
+	{SCENARIO_SALVAGE, "salvage"},
+	{SCENARIO_DESTROY_OBJECT, "destroyObject"},
+	{SCENARIO_SCRAMBLE, "scramble"}
 };
 
 //Strings for loading and displaying a scenario environment.
@@ -83,6 +74,9 @@ struct Scenario
 	SCENARIO_ENVIRONMENT environment;
 	u32 detectionChance;
 
+	std::string location;
+	std::string description;
+
 	std::vector<vector3df> obstaclePositions;
 	u32 objectiveCount;
 	u32 activeObjectiveCount;
@@ -93,7 +87,10 @@ struct Scenario
 
 	bool complete;
 
-	std::string location;
-	std::string description;
+	u32 ammoRecovered;
+	f32 resourcesRecovered;
+	u32 maxWepsRecovered;
+	u32 maxShipsRecovered;
+
 };
 #endif 

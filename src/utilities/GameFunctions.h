@@ -47,9 +47,14 @@ bool initializeDefaultHUD(EntityId playerId);
 //Creates an explosion at the point that lasts for the duration.
 EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force);
 
+//Gets the data from the player ship at the end of a scenario.
 ShipInstance getEndScenarioData();
-
+//Constructs a new ship instance.
 ShipInstance newShipInstance();
+//Initializes a new campaign with default values.
 void initNewCampaign();
+
+ShipInstance randomShipInstance();
+WeaponInfoComponent randomWeapon();
 
 #endif

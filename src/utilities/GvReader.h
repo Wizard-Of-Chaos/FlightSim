@@ -30,6 +30,15 @@ struct gvReader
 	//Writes lines to a file.
 	void write(std::string filename);
 
+	//Casts the appropriate value to an int and returns it.
+	int getInt(std::string key);
+	//Casts the value to an unsigned int and returns it.
+	u32 getUint(std::string key);
+	//Casts the appropriate value to a float and returns it.
+	f32 getFloat(std::string key);
+	//Returns the appropriate value.
+	std::string getString(std::string key);
+
 	void clear();
 };
 

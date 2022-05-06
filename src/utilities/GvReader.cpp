@@ -48,3 +48,21 @@ void gvReader::clear()
 	lines.clear();
 	values.clear();
 }
+
+int gvReader::getInt(std::string key)
+{
+	return std::stoi(values[key]);
+}
+u32 gvReader::getUint(std::string key)
+{
+	return (u32)std::stoi(values[key]);
+}
+f32 gvReader::getFloat(std::string key)
+{
+	return std::stof(values[key]);
+}
+
+std::string gvReader::getString(std::string key)
+{
+	return values[key];
+}

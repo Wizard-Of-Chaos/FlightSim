@@ -3,6 +3,8 @@
 #define GUILOOTMENU_H
 #include "BaseHeader.h"
 #include "GuiDialog.h"
+#include "LoadoutData.h"
+#include "WeaponInfoComponent.h"
 
 class GuiLootMenu : public GuiDialog
 {
@@ -18,6 +20,8 @@ class GuiLootMenu : public GuiDialog
 		IGUIStaticText* loot;
 		IGUIImage* screen;
 		IGUIButton* returnToCampaign;
+		std::vector<ShipInstance> ships;
+		std::vector<WeaponInfoComponent> weps;
 };
 
 #endif 
