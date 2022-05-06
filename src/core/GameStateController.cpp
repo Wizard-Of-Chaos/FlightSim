@@ -189,7 +189,7 @@ void GameStateController::stateChange() //Messy handler for the different states
 	}
 	else if (oldState == GAME_FINISHED && state == GAME_MENUS) {
 		if (returningToCampaign) {
-			guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
+			guiController->setActiveDialog(GUI_LOOT_MENU);
 			returningToCampaign = false;
 		} else {
 			guiController->setActiveDialog(GUI_MAIN_MENU);
