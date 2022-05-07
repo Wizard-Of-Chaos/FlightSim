@@ -167,15 +167,8 @@ void buildDebrisField(Scenario& scenario)
 	std::cout << "Done.\n";
 }
 
-void setKillHostilesScenario(Scenario& scenario)
+void cullObstacleLocations(Scenario& scenario, vector3df carrierpos)
 {
-	//EntityId player = createPlayerShipFromLoadout(scenario.playerStartPos, vector3df(0, 0, 0));
-	EntityId player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
-	vector3df carrierpos = scenario.playerStartPos;
-	carrierpos.X += 100;
-	carrierpos.Z -= 600;
-	createStaticObstacle(3, carrierpos, vector3df(0, 0, 0), vector3df(25, 25, 25));
-
 	std::cout << "Culling obstacle positions... ";
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
 		vector3df pos = scenario.obstaclePositions[i];
@@ -188,13 +181,25 @@ void setKillHostilesScenario(Scenario& scenario)
 			scenario.obstaclePositions.erase(scenario.obstaclePositions.begin() + i);
 			continue;
 		}
+		if (carrierpos == vector3df(0, 0, 0)) continue;
+
 		if (isPointInSphere(pos, carrierpos, radius * 4)) {
 			scenario.obstaclePositions.erase(scenario.obstaclePositions.begin() + i);
 			continue;
 		}
 	}
 	std::cout << "Done. Obstacles remaining: " << scenario.obstaclePositions.size() << std::endl;
+}
 
+void setKillHostilesScenario(Scenario& scenario)
+{
+	//EntityId player = createPlayerShipFromLoadout(scenario.playerStartPos, vector3df(0, 0, 0));
+	EntityId player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
+	vector3df carrierpos = scenario.playerStartPos;
+	carrierpos.X += 100;
+	carrierpos.Z -= 600;
+	cullObstacleLocations(scenario, carrierpos);
+	createStaticObstacle(3, carrierpos, vector3df(0, 0, 0), vector3df(25, 25, 25));
 	std::cout << "Setting up hostiles... ";
 	for (u32 i = 0; i < scenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(scenario.enemyStartPos, 25.f);

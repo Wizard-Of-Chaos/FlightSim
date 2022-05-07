@@ -94,7 +94,7 @@ void GuiCampaignMenu::show()
 	}
 	std::string info = "Ship Information \n \n";
 	info += "Total Ammo: \n" + std::to_string(stateController->campaign.totalAmmunition);
-	info += "\n Repair Capacity: \n" + std::to_string(stateController->campaign.totalRepairCapacity);
+	info += "\n Repair Capacity: \n" + fprecis(stateController->campaign.totalRepairCapacity, 5);
 	hud.info->setText(wstr(info).c_str());
 	stateController->inCampaign = true;
 

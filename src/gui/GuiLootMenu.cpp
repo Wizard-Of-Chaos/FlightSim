@@ -40,7 +40,7 @@ void GuiLootMenu::show()
 	std::string txt = "Objective Completed \n \n";
 	txt += "\n Ammo recovered: " + std::to_string(scen.ammoRecovered);
 	stateController->campaign.totalAmmunition += scen.ammoRecovered;
-	txt += "\n Resources recovered: " + std::to_string(scen.resourcesRecovered);
+	txt += "\n Resources recovered: " + fprecis(scen.resourcesRecovered, 5);
 	stateController->campaign.totalRepairCapacity += scen.resourcesRecovered;
 
 	if (wepsRecovered > 0) {

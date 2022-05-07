@@ -9,6 +9,8 @@ Scenario randomScenario();
 
 Scenario scrambleScenario();
 
+void cullObstacleLocations(Scenario& scenario, vector3df carrierpos);
+
 //Builds the given scenario.
 void buildScenario(Scenario& scenario);
 //Sets up the type of scenario (the objectives) and places them appropriately.

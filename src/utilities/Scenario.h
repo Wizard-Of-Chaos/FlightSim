@@ -12,6 +12,7 @@ enum SCENARIO_TYPE
 	SCENARIO_SALVAGE,
 	SCENARIO_MAX_TYPES,
 	SCENARIO_SCRAMBLE, // this is outside because we don't want this to generate when creating random scenarios
+	SCENARIO_CARRIER_BATTLE,
 	SCENARIO_NOT_LOADED
 };
 
@@ -31,7 +32,8 @@ const std::unordered_map<SCENARIO_TYPE, std::string> scenarioStrings = {
 	{SCENARIO_KILL_HOSTILES, "killHostiles"},
 	{SCENARIO_SALVAGE, "salvage"},
 	{SCENARIO_DESTROY_OBJECT, "destroyObject"},
-	{SCENARIO_SCRAMBLE, "scramble"}
+	{SCENARIO_SCRAMBLE, "scramble"},
+	{SCENARIO_CARRIER_BATTLE, "carrierBattle"}
 };
 
 //Strings for loading and displaying a scenario environment.
@@ -73,6 +75,11 @@ struct Scenario
 	SCENARIO_TYPE type;
 	SCENARIO_ENVIRONMENT environment;
 	u32 detectionChance;
+	bool detected() {
+		u32 roll = std::rand() % 100;
+		if (roll < detectionChance) return true;
+		return false;
+	}
 
 	std::string location;
 	std::string description;

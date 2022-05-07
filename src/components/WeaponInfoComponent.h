@@ -18,7 +18,9 @@ enum WEAPON_TYPE {
 	WEP_MISSILE = 1,
 	WEP_GRAPPLE = 2,
 	WEP_KINETIC = 3,
-	WEP_PHYS_IMPULSE = 4
+	WEP_PHYS_IMPULSE = 4,
+	WEP_PHYS_CONSTRAINT = 5,
+	WEP_LASER = 6
 };
 
 //A map for convenience when pulling values out of files.
@@ -28,7 +30,9 @@ const std::map<std::string, WEAPON_TYPE> weaponStrings{
 	{"missile", WEP_MISSILE},
 	{"grapple", WEP_GRAPPLE},
 	{"kinetic", WEP_KINETIC},
-	{"phys_impulse", WEP_PHYS_IMPULSE}
+	{"laser", WEP_LASER},
+	{"phys_impulse", WEP_PHYS_IMPULSE},
+	{"phys_constraint", WEP_PHYS_CONSTRAINT}
 };
 
 //WEAPON ENTITIES:

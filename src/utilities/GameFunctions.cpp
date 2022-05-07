@@ -236,6 +236,9 @@ void initNewCampaign()
 
 	stateController->campaign.playerShip = defaultShip;
 
+	stateController->campaign.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
+	stateController->campaign.availablePhysWeapons.push_back(stateController->physWeaponData[0]->weaponComponent);
+	/*
 	defaultShip.ship = stateController->shipData[1]->shipComponent;
 	defaultShip.weps[2] = stateController->weaponData[0]->weaponComponent;
 	defaultShip.weps[3] = stateController->weaponData[0]->weaponComponent;
@@ -246,6 +249,7 @@ void initNewCampaign()
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[3]->weaponComponent);
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[2]->weaponComponent);
+	*/
 }
 
 ShipInstance randomShipInstance()
