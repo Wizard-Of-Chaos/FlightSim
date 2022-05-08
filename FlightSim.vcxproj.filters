@@ -363,6 +363,9 @@
     <ClInclude Include="src\gui\GuiLootMenu.h">
       <Filter>Headers\Gui</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\CarrierComponent.h">
+      <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

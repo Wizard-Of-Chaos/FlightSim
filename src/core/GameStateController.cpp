@@ -31,10 +31,14 @@ void GameStateController::init()
 	soundEngine = createIrrKlangDevice();
 
 	assets.setFilenames();
-
-	auto music = soundEngine->play2D(assets.getSoundAsset("menuMusic"), true, true); //Todo: call this somewhere else
+	/*
+	auto music = soundEngine->play2D(assets.getSoundAsset("menuMusic"), true, true, true); //Todo: call this somewhere else
 	music->setVolume(.3f);
 	music->setIsPaused(false);
+	*/
+	nextMusic = assets.getSoundAsset("menuMusic");
+	musicFadeIn(.0005f);
+
 	gameController = new GameController;
 
 	guiController = new GuiController;
@@ -165,6 +169,55 @@ void GameStateController::backToCampaign()
 	setState(GAME_MENUS);
 }
 
+void GameStateController::changeMusic(ISoundSource* newSource)
+{
+	nextMusic = newSource;
+	musicChangeCalled = true;
+}
+
+bool GameStateController::musicFadeOut(f32 dt)
+{
+	musicTimer += dt;
+	if (musicTimer < 2.f) {
+		f32 vol = musicVolume - (musicVolume * (musicTimer / 2.f));
+		currentMusic->setVolume(vol);
+		return true;
+	}
+	else {
+		currentMusic->stop();
+		currentMusic->drop(); //And roll!
+		currentMusic = nullptr;
+		musicTimer = 0;
+	}
+	return false;
+}
+
+bool GameStateController::musicFadeIn(f32 dt)
+{
+	musicTimer += dt;
+	if (!isMusicFadingIn) {
+		isMusicFadingIn = true;
+		if (currentMusic) {
+			currentMusic->stop();
+			currentMusic->drop();
+			currentMusic = nullptr;
+		}
+		auto music = soundEngine->play2D(nextMusic, true, true, true);
+		currentMusic = music;
+		currentMusic->setVolume(0.f);
+		currentMusic->setIsPaused(false);
+		nextMusic = nullptr;
+	}
+	if (musicTimer < 2.f) {
+		currentMusic->setVolume(musicVolume * (musicTimer / 2.f));
+		return true;
+	}
+	else {
+		currentMusic->setVolume(musicVolume);
+	}
+	return false;
+}
+
 void GameStateController::stateChange() //Messy handler for the different states; since there aren't many it's just an if chain
 {
 	if (oldState == GAME_MENUS && state == GAME_RUNNING) {
@@ -249,6 +302,15 @@ void GameStateController::mainLoop()
 			driver->updateAllOcclusionQueries();
 		}
 		*/
+		if (musicChangeCalled) {
+			musicChangeCalled = musicFadeOut(.0005f);
+			if (!musicChangeCalled) {
+				isMusicFadingIn = musicFadeIn(.0005f);
+			}
+		}
+		if (isMusicFadingIn) {
+			isMusicFadingIn = musicFadeIn(.0005f);
+		}
 		driver->endScene();
 		int fps = driver->getFPS();
 		stringw tmp(L"Flight [");

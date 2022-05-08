@@ -102,6 +102,7 @@ void Assets::clearLoadedGameAssets()
 	HUDAssets.clear();
 	textureAssets.clear();
 	hullAssets.clear();
+	soundAssets.clear();
 }
 
 void Assets::setFilenames() 
