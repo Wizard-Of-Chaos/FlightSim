@@ -214,6 +214,7 @@
     <ClInclude Include="src\components\SensorComponent.h" />
     <ClInclude Include="src\components\ShieldComponent.h" />
     <ClInclude Include="src\components\ShipParticleComponent.h" />
+    <ClInclude Include="src\components\TurretComponent.h" />
     <ClInclude Include="src\core\Campaign.h" />
     <ClInclude Include="src\gui\GuiCampaignLoadoutMenu.h" />
     <ClInclude Include="src\gui\GuiCampaignMenu.h" />

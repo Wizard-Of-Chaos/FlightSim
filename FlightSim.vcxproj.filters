@@ -366,6 +366,9 @@
     <ClInclude Include="src\components\CarrierComponent.h">
       <Filter>Headers\Components\Ship Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\TurretComponent.h">
+      <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
