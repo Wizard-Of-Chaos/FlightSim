@@ -4,6 +4,7 @@
 #define SHIPCOMPONENT_H
 #include "BaseHeader.h"
 #include "ECS.h"
+#include "Shaders.h"
 #include <vector>
 
 /*
@@ -85,6 +86,9 @@ struct ShipComponent {
 	vector3df rightJetPos[2];
 	vector3df reverseJetPos[2];
 	vector3df engineJetPos;
+
+	ShieldShaderCb shieldshader;
+	s32 shadermat;
 };
 
 #endif

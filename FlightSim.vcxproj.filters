@@ -145,6 +145,9 @@
     <ClCompile Include="src\gui\GuiLootMenu.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\fx\Shaders.cpp">
+      <Filter>Sources\fx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -369,6 +372,9 @@
     <ClInclude Include="src\components\TurretComponent.h">
       <Filter>Headers\Components\Ship Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\fx\Shaders.h">
+      <Filter>Headers\fx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
@@ -430,6 +436,15 @@
     </Filter>
     <Filter Include="Headers\Components\Ship Components">
       <UniqueIdentifier>{51853e36-36ad-4933-91a1-dba052db2787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{46e2d65b-30b4-481a-a073-b7d335666c92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\fx">
+      <UniqueIdentifier>{1e67876d-ecd2-40ad-be7c-747797faa766}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\fx">
+      <UniqueIdentifier>{ae21f61c-bd53-441a-861f-8221bffae4ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

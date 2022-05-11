@@ -37,7 +37,7 @@ void GameStateController::init()
 	music->setIsPaused(false);
 	*/
 	nextMusic = assets.getSoundAsset("menuMusic");
-	musicFadeIn(.0005f);
+	changeMusic(nextMusic);
 
 	gameController = new GameController;
 
@@ -171,8 +171,17 @@ void GameStateController::backToCampaign()
 
 void GameStateController::changeMusic(ISoundSource* newSource)
 {
+	if (currentMusic) {
+		currentMusic->stop();
+		currentMusic->drop();
+	}
+	currentMusic = soundEngine->play2D(newSource, true, true, true);
+	currentMusic->setVolume(musicVolume);
+	currentMusic->setIsPaused(false);
+	/*
 	nextMusic = newSource;
 	musicChangeCalled = true;
+	*/
 }
 
 bool GameStateController::musicFadeOut(f32 dt)
@@ -303,13 +312,13 @@ void GameStateController::mainLoop()
 		}
 		*/
 		if (musicChangeCalled) {
-			musicChangeCalled = musicFadeOut(.0005f);
+			musicChangeCalled = musicFadeOut(.0001f);
 			if (!musicChangeCalled) {
-				isMusicFadingIn = musicFadeIn(.0005f);
+				isMusicFadingIn = musicFadeIn(.0001f);
 			}
 		}
 		if (isMusicFadingIn) {
-			isMusicFadingIn = musicFadeIn(.0005f);
+			isMusicFadingIn = musicFadeIn(.0001f);
 		}
 		driver->endScene();
 		int fps = driver->getFPS();
