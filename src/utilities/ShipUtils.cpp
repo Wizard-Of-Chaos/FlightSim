@@ -318,22 +318,26 @@ EntityId createPlayerShipFromInstance(vector3df pos, vector3df rot)
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 	auto meshnode = (IMeshSceneNode*)irr->node;
 	ShipData* data = stateController->shipData[ship->shipDataId];
+	/*
 	IMesh* m = stateController->assets.getMeshAsset(data->name);
 	IMeshSceneNode* mesh = smgr->addMeshSceneNode(m, irr->node);
 	mesh->setScale(vector3df(1.2f));
 	mesh->setPosition(vector3df(0.f, 0.f, .5f));
+	*/
 	IGPUProgrammingServices* gpu = driver->getGPUProgrammingServices();
 	if (!gpu) return id;
-	ship->shieldshader.setShip(mesh);
+	//ship->shieldshader.setShip(mesh);
 
-	std::string fname = "effects/shaders/shield.hlsl";
+	ambientShaderCb* amb = new ambientShaderCb();
+	std::string fname = "effects/shaders/ambient.hlsl";
 	ship->shadermat = gpu->addHighLevelShaderMaterialFromFiles(
-		fname.c_str(), "vertexMain", EVST_VS_1_1,
-		fname.c_str(), "pixelMain", EPST_PS_1_1,
-		&ship->shieldshader, EMT_TRANSPARENT_ADD_COLOR, 0, EGSL_DEFAULT);
-	mesh->setMaterialFlag(EMF_LIGHTING, false);
-	mesh->setMaterialFlag(EMF_BLEND_OPERATION, true);
-	mesh->setMaterialTexture(0, driver->getTexture(stateController->shipData[ship->shipDataId]->shipTexture.c_str()));
-	mesh->setMaterialType((E_MATERIAL_TYPE)ship->shadermat);
+		fname.c_str(), "vertexMain", EVST_VS_2_0,
+		fname.c_str(), "pixelMain", EPST_PS_2_0,
+		amb, EMT_SOLID, 0, EGSL_DEFAULT);
+
+	meshnode->setMaterialFlag(EMF_LIGHTING, false);
+	meshnode->setMaterialFlag(EMF_BLEND_OPERATION, true);
+	meshnode->setMaterialTexture(0, driver->getTexture(stateController->shipData[ship->shipDataId]->shipTexture.c_str()));
+	meshnode->setMaterialType((E_MATERIAL_TYPE)ship->shadermat);
 	return id;
 }

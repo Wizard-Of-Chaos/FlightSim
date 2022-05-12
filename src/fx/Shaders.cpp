@@ -1,17 +1,23 @@
 #include "Shaders.h"
 #include "GameController.h"
+
 #include "GameStateController.h"
+matrix4 getWorldViewProj()
+{
+	matrix4 out;
+	out = driver->getTransform(ETS_PROJECTION);
+	out *= driver->getTransform(ETS_VIEW);
+	out *= driver->getTransform(ETS_WORLD);
+	return out;
+}
 
 void ShieldShaderCb::OnSetConstants(IMaterialRendererServices* services, s32 userData)
 {
-	matrix4 invWorld = driver->getTransform(ETS_WORLD);
+	invWorld = driver->getTransform(ETS_WORLD);
 	invWorld.makeInverse();
 
 	services->setVertexShaderConstant("mInvWorld", invWorld.pointer(), 16);
-	matrix4 worldViewProj;
-	worldViewProj = driver->getTransform(ETS_PROJECTION);
-	worldViewProj *= driver->getTransform(ETS_VIEW);
-	worldViewProj *= driver->getTransform(ETS_WORLD);
+	worldViewProj = getWorldViewProj();
 
 	services->setVertexShaderConstant("mWorldViewProj", worldViewProj.pointer(), 16);
 	vector3df pos = ship->getAbsolutePosition();
@@ -19,7 +25,18 @@ void ShieldShaderCb::OnSetConstants(IMaterialRendererServices* services, s32 use
 
 	SColorf col(0.f, .5f, 1.f, 0.f);
 	services->setVertexShaderConstant("mLightColor", reinterpret_cast<f32*>(&col), 4);
-	matrix4 world = driver->getTransform(ETS_WORLD);
-	world = world.getTransposed();
-	services->setVertexShaderConstant("mTransWorld", world.pointer(), 16);
+	transposeWorld = driver->getTransform(ETS_WORLD);
+	transposeWorld = transposeWorld.getTransposed();
+	services->setVertexShaderConstant("mTransWorld", transposeWorld.pointer(), 16);
+}
+
+void ambientShaderCb::OnSetConstants(IMaterialRendererServices* services, s32 userData)
+{
+	worldViewProj = getWorldViewProj();
+	services->setVertexShaderConstant("worldViewProj", worldViewProj.pointer(), 16);
+
+	worldInvTranspose = driver->getTransform(ETS_WORLD);
+	worldInvTranspose.makeInverse();
+	worldInvTranspose = worldInvTranspose.getTransposed();
+	services->setVertexShaderConstant("worldInvTranspose", worldInvTranspose.pointer(), 16);
 }
