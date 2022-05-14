@@ -2,10 +2,11 @@
 #ifndef CARRIERCOMPONENT_H
 #define CARRIERCOMPONENT_H
 #include "BaseHeader.h"
-#include "LoadoutData.h"
+#include "ShipInstance.h"
 
 const u32 CARRIER_MAX_SHIP_TYPES = 4;
 const u32 CARRIER_MAX_TURRETS = 8;
+
 struct CarrierComponent
 {
 	f32 spawnRate;

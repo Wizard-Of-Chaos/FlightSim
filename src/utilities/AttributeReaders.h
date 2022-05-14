@@ -18,8 +18,6 @@ class GameStateController;
 * from .gdat files.
 */
 
-//Reads a vector from a string in the manner of: 40,50,-20
-vector3df strToVec(std::string str);
 //Loads the ship data from the game state controller onto the given entity.
 //Includes an Irrlicht component andg6 a ShipComponent.
 bool loadShip(u32 id, EntityId entity);

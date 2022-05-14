@@ -178,10 +178,6 @@ void GameStateController::changeMusic(ISoundSource* newSource)
 	currentMusic = soundEngine->play2D(newSource, true, true, true);
 	currentMusic->setVolume(musicVolume);
 	currentMusic->setIsPaused(false);
-	/*
-	nextMusic = newSource;
-	musicChangeCalled = true;
-	*/
 }
 
 bool GameStateController::musicFadeOut(f32 dt)

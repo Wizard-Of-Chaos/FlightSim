@@ -4,17 +4,6 @@
 #include "GameStateController.h"
 #include <iostream>
 
-vector3df strToVec(std::string str) //Turns a string to a vector, splitting on a , character
-{
-	std::string xstr, ystr, zstr;
-
-	std::stringstream split(str);
-	std::getline(split, xstr, ',');
-	std::getline(split, ystr, ',');
-	std::getline(split, zstr, ',');
-	return vector3df(std::stof(xstr), std::stof(ystr), std::stof(zstr));
-}
-
 u32 loadShipData(std::string path, gvReader& in)
 {
 	std::cout << "Reading ship in from: " << path << "... ";

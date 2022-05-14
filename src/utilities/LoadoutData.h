@@ -7,10 +7,12 @@
 #include "MissileComponent.h"
 #include "ObstacleComponent.h"
 #include "KineticComponent.h"
+#include "CarrierComponent.h"
 
 /*
 * Contains all data necessary to be able to properly load a ship in the game.
 * The u32 id is NOT an entity id.
+* TODO: Remove this struct entirely and switch to ship instances.
 */
 struct LoadoutData
 {
@@ -34,12 +36,12 @@ struct ShipData
 	std::string shipNorm;
 };
 
-struct ShipInstance
+struct CarrierData : public ShipData
 {
-	ShipComponent ship;
-	HealthComponent hp;
-	WeaponInfoComponent weps[MAX_HARDPOINTS]; //since weapon info components have their ids, we should be able to pull any necessary data back out when loading
-	WeaponInfoComponent physWep;
+	CarrierComponent carrierComponent;
+	u32 mass;
+	vector3df scale;
+	f32 health;
 };
 
 /*

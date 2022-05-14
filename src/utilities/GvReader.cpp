@@ -1,5 +1,16 @@
 #include "GvReader.h"
 
+vector3df strToVec(std::string str) //Turns a string to a vector, splitting on a , character
+{
+	std::string xstr, ystr, zstr;
+
+	std::stringstream split(str);
+	std::getline(split, xstr, ',');
+	std::getline(split, ystr, ',');
+	std::getline(split, zstr, ',');
+	return vector3df(std::stof(xstr), std::stof(ystr), std::stof(zstr));
+}
+
 void gvReader::read(std::string filename)
 {
 	std::ifstream in;
@@ -65,4 +76,9 @@ f32 gvReader::getFloat(std::string key)
 std::string gvReader::getString(std::string key)
 {
 	return values[key];
+}
+
+vector3df gvReader::getVec(std::string key)
+{
+	return strToVec(values[key]);
 }
