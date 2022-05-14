@@ -85,9 +85,6 @@ bool GuiMainMenu::onStart(const SEvent& event)
 	}
 	else {
 		initNewCampaign();
-		for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
-			stateController->campaign.possibleScenarios[i] = randomScenario();
-		}
 		guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
 		stateController->changeMusic(stateController->assets.getSoundAsset("campaignMusic"));
 	}

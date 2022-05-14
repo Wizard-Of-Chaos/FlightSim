@@ -82,6 +82,7 @@ class GuiCampaignMenu : public GuiDialog
 		virtual void show();
 	private:
 		bool sectorInfoShowing;
+
 		CampaignHUD hud;
 		LoadoutHUD loadout;
 		ScenarioHUD scenariohud;

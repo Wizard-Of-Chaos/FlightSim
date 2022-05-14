@@ -148,6 +148,9 @@
     <ClCompile Include="src\fx\Shaders.cpp">
       <Filter>Sources\fx</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\CarrierUtils.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -374,6 +377,9 @@
     </ClInclude>
     <ClInclude Include="src\fx\Shaders.h">
       <Filter>Headers\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\CarrierUtils.h">
+      <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

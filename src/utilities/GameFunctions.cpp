@@ -227,6 +227,12 @@ void initNewCampaign()
 {
 	stateController->campaign = Campaign();
 
+	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
+		stateController->campaign.possibleScenarios[i] = randomScenario();
+	}
+	stateController->campaign.currentScenario = randomScenario();
+	stateController->campaign.currentScenario.detectionChance = 0;
+
 	ShipInstance defaultShip = newShipInstance();
 
 	defaultShip.ship = stateController->shipData[0]->shipComponent;

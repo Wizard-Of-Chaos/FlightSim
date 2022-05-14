@@ -106,6 +106,7 @@ void GameController::clearPlayerHUD()
 
 bool GameController::OnEvent(const SEvent& event)
 {
+	if (!open) return true;
 	if (event.EventType == EET_KEY_INPUT_EVENT) {
 		for(auto entityId : SceneView<InputComponent>(sceneManager->scene)) { //Passes key input to the input components
 			InputComponent* input = sceneManager->scene.get<InputComponent>(entityId);

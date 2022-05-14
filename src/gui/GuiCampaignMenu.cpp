@@ -241,6 +241,20 @@ bool GuiCampaignMenu::onAdvance(const SEvent& event)
 bool GuiCampaignMenu::advanceConfirm(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	if (stateController->campaign.currentScenario.detected()) {
+
+		Scenario scramble = scrambleScenario();
+		for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
+			stateController->campaign.possibleScenarios[i] = scramble;
+			std::wstring title = wstr(stateController->campaign.possibleScenarios[i].location);
+			hud.scenarioSelects[i]->setText(title.c_str());
+		}
+		hud.scenarioSelects[1]->setVisible(true);
+		hud.advance->setVisible(false);
+		soundEngine->play2D("audio/shieldhit_major.ogg");
+		return false; 
+	}
+
 	stateController->campaign.moved = true;
 	++stateController->campaign.currentEncounter;
 	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {

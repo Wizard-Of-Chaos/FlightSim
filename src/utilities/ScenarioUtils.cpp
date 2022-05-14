@@ -5,7 +5,7 @@
 #include "SceneManager.h"
 #include "ShipUtils.h"
 
-Scenario randomScenario()
+Scenario randomScenario(bool scramble)
 {
 	gvReader in;
 	in.read("attributes/scenarios/scenariodesc.gdat");
@@ -15,12 +15,16 @@ Scenario randomScenario()
 	SCENARIO_ENVIRONMENT env = static_cast<SCENARIO_ENVIRONMENT>(std::rand() % SCENENV_MAX_ENVIRONMENTS);
 	if (env == SCENENV_MAX_ENVIRONMENTS) env = SCENENV_ASTEROID_FIELD;
 
+	if (scramble) type = SCENARIO_SCRAMBLE;
+
 	std::string location = scenarioEnvStrings.at(env);
 	std::string description = in.values[location];
 	description += "\n";
 	description += in.values[scenarioStrings.at(type)];
 	u32 objCount = std::rand() % (stateController->campaign.currentDifficulty * 3) + 1;
 	if (objCount > SCENARIO_MAX_OBJECTIVES) objCount == SCENARIO_MAX_OBJECTIVES;
+
+	if (scramble) objCount = 1; //being the single carrier needed to be taken out
 
 	vector3df player(0, 0, -50);
 	vector3df enemy(10, 20, 80);
@@ -31,6 +35,7 @@ Scenario randomScenario()
 	in.read(path);
 	in.readLinesToValues();
 	scen.detectionChance = in.getInt("detectionChance") + (1*std::rand() % stateController->campaign.currentDifficulty);
+	if (scramble) scen.detectionChance = 0; //The man has already got you.
 	scen.ammoRecovered = in.getInt("ammoRecovered") * (1 * std::rand() % stateController->campaign.currentDifficulty);
 	scen.resourcesRecovered = in.getFloat("resourcesRecovered");
 	scen.maxWepsRecovered = in.getInt("maxWeaponsRecovered");
@@ -52,26 +57,9 @@ Scenario randomScenario()
 	return scen;
 }
 
-Scenario scrambleScenario()
+Scenario scrambleScenario() //for convenience
 {
-	gvReader in;
-	in.read("attributes/scenarios/scenariodesc.gdat");
-	in.readLinesToValues();
-	SCENARIO_TYPE type = SCENARIO_SCRAMBLE;
-	SCENARIO_ENVIRONMENT env = static_cast<SCENARIO_ENVIRONMENT>(std::rand() % SCENENV_MAX_ENVIRONMENTS);
-	std::string location = scenarioEnvStrings.at(env);
-	std::string description = in.values[location];
-	description += "\n";
-	description += in.values[scenarioStrings.at(type)];
-	u32 objCount = 1; //where the singular objective is the thing you need to destroy; additional fighters will be spawned while you do so
-	vector3df player(0, 0, -50);
-	vector3df enemy(10, 20, 80);
-	Scenario scen(type, env, objCount, player, enemy);
-	scen.detectionChance = 0; //The man has already got you.
-	if (env != SCENENV_EMPTY) setObstaclePositions(scen);
-	scen.location = location;
-	scen.description = description;
-	return scen;
+	return randomScenario(true);
 }
 
 void buildScenario(Scenario& scenario)

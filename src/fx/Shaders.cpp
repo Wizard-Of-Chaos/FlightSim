@@ -35,6 +35,8 @@ void ambientShaderCb::OnSetConstants(IMaterialRendererServices* services, s32 us
 	worldViewProj = getWorldViewProj();
 	services->setVertexShaderConstant("worldViewProj", worldViewProj.pointer(), 16);
 
+	matrix4 world = driver->getTransform(ETS_WORLD);
+	services->setVertexShaderConstant("world", world.pointer(), 16);
 	worldInvTranspose = driver->getTransform(ETS_WORLD);
 	worldInvTranspose.makeInverse();
 	worldInvTranspose = worldInvTranspose.getTransposed();

@@ -5,7 +5,7 @@
 #include "Scenario.h"
 
 //Generates a random scenario.
-Scenario randomScenario();
+Scenario randomScenario(bool scramble = false);
 
 Scenario scrambleScenario();
 
