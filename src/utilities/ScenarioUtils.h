@@ -3,6 +3,7 @@
 #define SCENARIOUTILS_H
 #include "BaseHeader.h"
 #include "Scenario.h"
+#include "CarrierUtils.h"
 
 //Generates a random scenario.
 Scenario randomScenario(bool scramble = false);

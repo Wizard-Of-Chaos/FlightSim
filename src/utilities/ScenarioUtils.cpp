@@ -187,7 +187,8 @@ void setKillHostilesScenario(Scenario& scenario)
 	carrierpos.X += 100;
 	carrierpos.Z -= 600;
 	cullObstacleLocations(scenario, carrierpos);
-	createStaticObstacle(3, carrierpos, vector3df(0, 0, 0), vector3df(25, 25, 25));
+	createCarrier(true, carrierpos, vector3df(0, 0, 0), vector3df(25, 25, 25));
+
 	std::cout << "Setting up hostiles... ";
 	for (u32 i = 0; i < scenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(scenario.enemyStartPos, 25.f);
