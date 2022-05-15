@@ -19,8 +19,8 @@ class GameStateController;
 */
 
 //Loads the ship data from the game state controller onto the given entity.
-//Includes an Irrlicht component andg6 a ShipComponent.
-bool loadShip(u32 id, EntityId entity);
+//Includes an Irrlicht component and a ShipComponent. Can also load carriers, and if the ship IS a carrier it'll tack on the carrier component.
+bool loadShip(u32 id, EntityId entity, bool carrier=false);
 //Loads the weapon data from the game state controller onto the given entity.
 //Includes a WeaponInfoComponent, an Irrlicht component, a ParentComponent, and whatever other components are necessary (e.g., a MissileInfoComponent).
 bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys);

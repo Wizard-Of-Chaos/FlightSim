@@ -18,11 +18,9 @@ EntityId createDefaultShip(vector3df position, vector3df rotation);
 
 //Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, faction, and health components. Returns the ID.
 EntityId createDefaultAIShip(vector3df position, vector3df rotation);
-//Creates all the necessary details and components to set up the player's current loadout at the given position. Returns the
-//EntityId of the player.
-EntityId createPlayerShipFromLoadout(vector3df pos, vector3df rot);
+
 //Adds on the ship's collision body (i.e., the rigid body component) to the entity.
-bool initializeShipCollisionBody(EntityId entityId, u32 shipId);
+bool initializeShipCollisionBody(EntityId entityId, u32 shipId, bool carrier=false);
 
 //Initializes a weapon component on the given ship at the given hardpoint from the ID given.
 //Example: The "Plasma Blaster" has the weapon id 1. Pass in 1 to this function to load a Plasma Blaster onto the hardpoint.

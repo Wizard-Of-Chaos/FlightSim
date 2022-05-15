@@ -96,6 +96,7 @@ u32 loadShipData(std::string path, gvReader& in, bool carrier)
 		carr->scale = in.getVec("scale");
 		carr->carrierComponent.reserveShips = in.getUint("reserveShips");
 		carr->carrierComponent.spawnRate = in.getFloat("spawnRate");
+		carr->carrierComponent.scale = carr->scale;
 		carr->mass = in.getFloat("mass");
 		stateController->carrierData[id] = carr;
 	}
@@ -205,9 +206,10 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	return id;
 }
 
-bool loadShip(u32 id, EntityId entity)
+bool loadShip(u32 id, EntityId entity, bool carrier)
 {
 	ShipData* data = stateController->shipData[id];
+	if (carrier) data = stateController->carrierData[id];
 	if (!data) return false;
 
 	auto ship = sceneManager->scene.assign<ShipComponent>(entity);
@@ -246,6 +248,12 @@ bool loadShip(u32 id, EntityId entity)
 	irr->node->setName(idToStr(entity).c_str());
 	irr->node->setID(ID_IsSelectable | ID_IsAvoidable);
 
+	if (carrier) {
+		CarrierData* cdata = (CarrierData*)data;
+		CarrierComponent* carr = sceneManager->scene.assign<CarrierComponent>(id);
+		*carr = cdata->carrierComponent;
+		irr->node->setScale(carr->scale);
+	}
 	return true;
 }
 

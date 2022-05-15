@@ -70,12 +70,7 @@ class GameStateController : public IEventReceiver
 		void addDebugLine(line3df line) { debugLines.push_back(line); }
 #endif 
 	private:
-		ISoundSource* nextMusic;
 		ISound* currentMusic;
-		bool musicFadeOut(f32 dt);
-		bool musicFadeIn(f32 dt);
-		bool musicChangeCalled = false;
-		bool isMusicFadingIn = false;
 		f32 musicVolume = .3f; //change this later to be adjustable
 		f32 musicTimer;
 		void stateChange();

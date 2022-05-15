@@ -183,11 +183,12 @@ void setKillHostilesScenario(Scenario& scenario)
 {
 	//EntityId player = createPlayerShipFromLoadout(scenario.playerStartPos, vector3df(0, 0, 0));
 	EntityId player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
-	vector3df carrierpos = scenario.playerStartPos;
-	carrierpos.X += 100;
-	carrierpos.Z -= 600;
-	cullObstacleLocations(scenario, carrierpos);
-	createCarrier(true, carrierpos, vector3df(0, 0, 0), vector3df(25, 25, 25));
+	vector3df carrierPos = scenario.playerStartPos;
+	carrierPos.X += 100;
+	carrierPos.Z -= 600;
+	cullObstacleLocations(scenario, carrierPos);
+	createDefaultHumanCarrier(carrierPos, vector3df(0, 0, 0));
+	//createCarrier(true, carrierpos, vector3df(0, 0, 0), vector3df(25, 25, 25));
 
 	std::cout << "Setting up hostiles... ";
 	for (u32 i = 0; i < scenario.objectiveCount; ++i) {

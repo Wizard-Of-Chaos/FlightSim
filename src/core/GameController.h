@@ -67,10 +67,12 @@ class GameController
 			if (!irr) return;
 
 			ISound* sound = soundEngine->play3D(snd, irr->node->getAbsolutePosition(), false, true);
-			sound->setVolume(volume);
-			sound->setMinDistance(radius);
-			sounds.push_back({ id, sound });
-			sound->setIsPaused(false);
+			if (sound) {
+				sound->setVolume(volume);
+				sound->setMinDistance(radius);
+				sounds.push_back({ id, sound });
+				sound->setIsPaused(false);
+			}
 		}
 
 		bool isPlayerAlive;

@@ -56,7 +56,8 @@ EntityId createDefaultAIShip(vector3df position, vector3df rotation)
 
 	return id;
 }
-bool initializeShipCollisionBody(EntityId entityId, u32 shipId)
+
+bool initializeShipCollisionBody(EntityId entityId, u32 shipId, bool carrier)
 {
 	Scene* scene = &sceneManager->scene;
 
@@ -64,29 +65,16 @@ bool initializeShipCollisionBody(EntityId entityId, u32 shipId)
 
 	if (!shipComp) return false;
 	btVector3 scale(1.f, 1.f, 1.f);
-	return initializeBtRigidBody(entityId, stateController->shipData[shipId]->collisionShape, scale, 1.f);
-}
-
-EntityId createPlayerShipFromLoadout(vector3df pos, vector3df rot)
-{
-	EntityId shipEntity = createShipFromId(stateController->playerShip, pos, rot);
-	auto ship = sceneManager->scene.get<ShipComponent>(shipEntity);
-
-	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-		initializeWeaponFromId(stateController->playerWeapons[i], shipEntity, i);
+	btScalar mass = 1.f;
+	btConvexHullShape hull = stateController->shipData[shipId]->collisionShape;
+	if (carrier) {
+		hull = stateController->carrierData[shipId]->collisionShape;
+		CarrierData* data = stateController->carrierData[shipId];
+		scale = irrVecToBt(data->carrierComponent.scale);
+		mass = data->mass;
+		std::cout << "\n\n scale: " << scale.x() << "," << scale.y() << "," << scale.z() << " mass: " << mass << "\n";
 	}
-	initializeWeaponFromId(stateController->playerPhysWeapon, shipEntity, 0, true);
-
-	initializeDefaultPlayer(shipEntity);
-	initializePlayerFaction(shipEntity);
-
-	initializeShipCollisionBody(shipEntity, stateController->playerShip);
-	initializeDefaultHealth(shipEntity);
-	initializeDefaultShields(shipEntity);
-	initializeDefaultSensors(shipEntity);
-	initializeDefaultHUD(shipEntity);
-
-	return shipEntity;
+	return initializeBtRigidBody(entityId, hull, scale, mass);
 }
 
 bool initializeWeaponFromId(u32 id, EntityId shipId, int hardpoint, bool phys)
@@ -281,7 +269,7 @@ EntityId createPlayerShipFromInstance(vector3df pos, vector3df rot)
 
 	auto id = createShipFromInstance(inst, pos, rot);
 	initializeDefaultPlayer(id);
-	initializePlayerFaction(id);
+	initializeNeutralFaction(id);
 
 	initializeShipCollisionBody(id, shipId);
 	initializeDefaultShields(id);
