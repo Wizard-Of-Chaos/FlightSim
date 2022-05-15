@@ -56,6 +56,7 @@ class GameStateController : public IEventReceiver
 
 		void loadShipAndWeaponData();
 		std::unordered_map<u32, ShipData*> shipData;
+		std::unordered_map<u32, CarrierData*> carrierData;
 		std::unordered_map<u32, WeaponData*> weaponData;
 		std::unordered_map<u32, WeaponData*> physWeaponData;
 		std::unordered_map<u32, ObstacleData*> obstacleData;

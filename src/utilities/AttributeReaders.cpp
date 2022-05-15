@@ -17,6 +17,11 @@ u32 loadShipData(std::string path, gvReader& in, bool carrier)
 	std::string name = in.values["name"];
 	ShipData* data = new ShipData;
 
+	if (carrier) {
+		delete data;
+		data = new CarrierData;
+	}
+
 	data->id = id;
 	data->name = name;
 	data->description = in.values["description"];
@@ -83,7 +88,20 @@ u32 loadShipData(std::string path, gvReader& in, bool carrier)
 	data->shipComponent.afterburnerOn = false;
 	data->shipComponent.safetyOverride = false;
 	data->shipComponent.shipDataId = id;
-	stateController->shipData[id] = data;
+
+	if (carrier) {
+		std::cout << "reading additional carrier data... ";
+		CarrierData* carr = (CarrierData*)data;
+		carr->health = in.getFloat("health");
+		carr->scale = in.getVec("scale");
+		carr->carrierComponent.reserveShips = in.getUint("reserveShips");
+		carr->carrierComponent.spawnRate = in.getFloat("spawnRate");
+		carr->mass = in.getFloat("mass");
+		stateController->carrierData[id] = carr;
+	}
+	else {
+		stateController->shipData[id] = data;
+	}
 	std::cout << "Done.\n";
 	return id;
 }

@@ -64,6 +64,7 @@ void GameStateController::loadShipAndWeaponData()
 	std::string shippath = basepath + "ships/";
 	std::string hullpath = basepath + "hulls/";
 	std::string obstpath = basepath + "obstacles/";
+	std::string carrierpath = basepath + "carriers/";
 
 	gvReader in;
 	std::cout << "Loading ships... \n";
@@ -87,7 +88,27 @@ void GameStateController::loadShipAndWeaponData()
 		}
 		in.clear();
 	}
-	std::cout << "Done loading ships. \nLoading weapons... \n";
+	std::cout << "Done loading ships. \nLoading carriers... \n";
+	for (const auto& file : std::filesystem::directory_iterator(carrierpath)) {
+		u32 id = loadShipData(file.path().string(), in, true);
+		if (id != -1) {
+			btConvexHullShape hull;
+			std::string fname = hullpath + carrierData[id]->name + ".bullet";
+			if (loadHull(fname, hull)) {
+				std::cout << "Hull loaded for " << file.path().string() << ".\n";
+				carrierData[id]->collisionShape = hull;
+			}
+			else {
+				std::cout << "Could not load hull for " << file.path().string() << ". Building hull... ";
+				IMesh* mesh = smgr->getMesh(carrierData[id]->shipMesh.c_str());
+				carrierData[id]->collisionShape = createCollisionShapeFromMesh(mesh);
+				saveHull(fname, carrierData[id]->collisionShape);
+				smgr->getMeshCache()->removeMesh(mesh);
+				std::cout << "Done. New hull saved to " << fname << ".\n";
+			}
+		}
+	}
+	std::cout << "Done loading carriers. \nLoading weapons... \n";
 	for (const auto& file : std::filesystem::directory_iterator(weaponpath)) {
 		loadWeaponData(file.path().string(), in);
 		in.clear();
