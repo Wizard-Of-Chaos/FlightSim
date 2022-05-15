@@ -14,13 +14,6 @@
 * The u32 id is NOT an entity id.
 * TODO: Remove this struct entirely and switch to ship instances.
 */
-struct LoadoutData
-{
-	u32 shipId;
-	u32 weaponIds[MAX_HARDPOINTS];
-	u32 physWeaponId;
-};
-
 struct ShipData
 {
 	u32 id;

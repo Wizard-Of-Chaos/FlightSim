@@ -4,7 +4,7 @@
 #include "GameStateController.h"
 #include <iostream>
 
-u32 loadShipData(std::string path, gvReader& in)
+u32 loadShipData(std::string path, gvReader& in, bool carrier)
 {
 	std::cout << "Reading ship in from: " << path << "... ";
 	in.read(path);
@@ -380,22 +380,6 @@ bool loadObstacle(u32 id, EntityId entity)
 	irr->node->setName(idToStr(entity).c_str());
 	initializeHealth(entity, data->health);
 	return true;
-}
-
-
-LoadoutData loadLoadoutData(std::string path)
-{
-	gvReader in;
-	in.read(path);
-	in.readLinesToValues();
-	LoadoutData ret;
-	ret.shipId = std::stoi(in.values["shipId"]);
-
-	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
-		std::string val = "weaponId" + std::to_string(i);
-		ret.weaponIds[i] = std::stoi(in.values[val]);
-	}
-	return ret;
 }
 
 btConvexHullShape createCollisionShapeFromMesh(IMesh* mesh)

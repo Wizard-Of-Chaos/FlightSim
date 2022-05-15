@@ -29,14 +29,11 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys);
 bool loadObstacle(u32 id, EntityId entity);
 
 //Pulls the ship data from the given .gdat file and saves it in the game state controller. Returns the ID.
-u32 loadShipData(std::string path, gvReader& in);
+u32 loadShipData(std::string path, gvReader& in, bool carrier=false);
 //Pulls the weapon data from the given .gdat file and saves it in the game state controller. Returns the ID.
 u32 loadWeaponData(std::string path, gvReader& in);
 //Pulls out obstacle data from a given .gdat file and saves it in the game state controller. Returns the ID.
 u32 loadObstacleData(std::string path, gvReader& in);
-
-//Pulls out loadout data from the given .gdat file and saves it in the game state controller. Returns the ID.
-LoadoutData loadLoadoutData(std::string path);
 
 //Creates a convex hull shape from an Irrlicht mesh and simplifies it down to something usable.
 //This should only be used if there isn't a hitbox mesh available.

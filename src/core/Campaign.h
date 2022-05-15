@@ -10,18 +10,6 @@
 #include <unordered_map>
 #include <list>
 
-/*
-* This is designed to be able to hold a given AI wingman's data. Currently unused, but oh man will it be.
-*/
-struct Wingman
-{
-	u32 id;
-	std::string name;
-	std::string desc;
-	AI_TYPE aiType;
-	LoadoutData loadout;
-};
-
 const u32 NUM_SCENARIO_OPTIONS = 4;
 
 /*

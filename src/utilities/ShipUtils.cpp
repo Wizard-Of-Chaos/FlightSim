@@ -35,27 +35,6 @@ EntityId createDefaultShip(vector3df position, vector3df rotation)
 	return shipEntity;
 }
 
-EntityId createAIShipFromLoadout(LoadoutData loadout, vector3df position, vector3df rotation, AI_TYPE type, FACTION_TYPE fac, u32 hostilities, u32 friendlies)
-{
-	EntityId id = createShipFromId(loadout.shipId, position, rotation);
-	auto ship = sceneManager->scene.get<ShipComponent>(id);
-
-	for (u32 i = 0; i < ship->hardpointCount; ++i) {
-		initializeWeaponFromId(loadout.weaponIds[i], id, i);
-	}
-	initializeDefaultHealth(id);
-	initializeDefaultShields(id);
-	initializeShipCollisionBody(id, loadout.shipId);
-	initializeFaction(id, fac, hostilities, friendlies);
-	initializeDefaultSensors(id);
-
-	auto ai = sceneManager->scene.assign<AIComponent>(id);
-	ai->AIType = type;
-	ai->reactionSpeed = AI_DEFAULT_REACTION_TIME;
-	ai->damageTolerance = AI_DEFAULT_DAMAGE_TOLERANCE;
-	ai->timeSinceLastStateCheck = 0;
-	return id;
-}
 EntityId createDefaultAIShip(vector3df position, vector3df rotation)
 {
 	Scene* scene = &sceneManager->scene;
