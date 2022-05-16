@@ -49,7 +49,7 @@ void collisionDamage(EntityId A, EntityId B)
 	kinetic = kinetic / 8000.f;
 	if (kinetic < .1f) return;
 	if (dmgA) dmgA->registerDamageInstance(DamageInstance(B, A, DAMAGE_TYPE::IMPACT, kinetic / 2, device->getTimer()->getTime()));
-	if (dmgB) dmgA->registerDamageInstance(DamageInstance(A, B, DAMAGE_TYPE::IMPACT, kinetic / 2, device->getTimer()->getTime()));
+	if (dmgB) dmgB->registerDamageInstance(DamageInstance(A, B, DAMAGE_TYPE::IMPACT, kinetic / 2, device->getTimer()->getTime()));
 }
 
 void collisionCheckingSystem()
@@ -67,7 +67,7 @@ void collisionCheckingSystem()
 
 		EntityId idA = getIdFromBt(objA);
 		EntityId idB = getIdFromBt(objB);
-		if (idA == INVALID_ENTITY || idB == INVALID_ENTITY) return;
+		if (!sceneManager->scene.entityInUse(idA) || !sceneManager->scene.entityInUse(idB)) return;
 		auto projA = sceneManager->scene.get<ProjectileInfoComponent>(idA);
 		auto projB = sceneManager->scene.get<ProjectileInfoComponent>(idB);
 		if (projA && !projB) {
@@ -83,10 +83,10 @@ void collisionCheckingSystem()
 			destroyProjectile(idB);
 			continue;
 		}
-
 		for (int j = 0; j < numContacts; ++j) {
 			if (contact->getContactPoint(j).getDistance() >= 0.f) continue;
-			if (idA != INVALID_ENTITY && idB != INVALID_ENTITY) {
+
+			if (sceneManager->scene.entityInUse(idA) && sceneManager->scene.entityInUse(idB)) {
 				//projectile cases have been handled. now for impact damage
 				collisionDamage(idA, idB);
 			}

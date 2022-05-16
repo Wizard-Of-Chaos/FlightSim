@@ -11,7 +11,6 @@ void carrierUpdateSystem(f32 dt)
 		auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 		auto fac = sceneManager->scene.get<FactionComponent>(id);
 		carr->spawnTimer += dt;
-		std::cout << "carrier spawn timer: " << carr->spawnTimer << ", carrier spawn rate: " << carr->spawnRate << "\n";
 
 		if (carr->spawnTimer >= carr->spawnRate && carr->reserveShips > 0) {
 			ShipInstance inst = carr->spawnShipTypes[0];

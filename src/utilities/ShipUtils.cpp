@@ -255,7 +255,8 @@ EntityId createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot
 			}
 		}
 	}
-	HealthComponent* hp = sceneManager->scene.assign<HealthComponent>(id);
+	initializeDefaultHealth(id);
+	HealthComponent* hp = sceneManager->scene.get<HealthComponent>(id);
 	*hp = inst.hp;
 	initializeShipCollisionBody(id, inst.ship.shipDataId);
 

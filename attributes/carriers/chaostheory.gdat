@@ -19,7 +19,7 @@ mass=25
 scale=25,25,25
 health=10000
 reserveShips=15
-spawnRate=5.0
+spawnRate=20.0
 
 velocityTolerance=.005
 linearMaxVelocity=150
