@@ -151,6 +151,9 @@
     <ClCompile Include="src\utilities\CarrierUtils.cpp">
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\CarrierUpdateSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -383,6 +386,9 @@
     </ClInclude>
     <ClInclude Include="src\utilities\ShipInstance.h">
       <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\CarrierUpdateSystem.h">
+      <Filter>Headers\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

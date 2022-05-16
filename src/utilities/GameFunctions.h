@@ -12,6 +12,7 @@
 #include "WeaponInfoComponent.h"
 #include "FactionComponent.h"
 #include "ExplosionComponent.h"
+#include "AIComponent.h"
 #include "HUDHeader.h"
 
 /*
@@ -43,6 +44,11 @@ void initializeDefaultHealth(EntityId objectId);
 //Sets up the HUD for the given player entity.
 //Requires a player component; returns false otherwise.
 bool initializeDefaultHUD(EntityId playerId);
+
+//Creates AI component with the assigned values.
+void initializeAI(EntityId id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance);
+//Creates an AI component with default values.
+void initializeDefaultAI(EntityId id);
 
 //Creates an explosion at the point that lasts for the duration.
 EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force);

@@ -11,7 +11,7 @@
 
 void playerUpdateSystem(Scene& scene, f32 frameDelta)
 {
-	for (auto entityId : SceneView<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, InputComponent>(scene)) {
+	for (auto entityId : SceneView<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, InputComponent, SensorComponent>(scene)) {
 		IrrlichtComponent* irrcomp = scene.get<IrrlichtComponent>(entityId);
 		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
 		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);

@@ -137,6 +137,21 @@ bool initializeDefaultHUD(EntityId playerId)
 	return true;
 }
 
+void initializeAI(EntityId id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance)
+{
+	auto ai = sceneManager->scene.assign<AIComponent>(id);
+	ai->AIType = type;
+	ai->reactionSpeed = reactSpeed;
+	ai->damageTolerance = damageTolerance;
+	ai->timeSinceLastStateCheck = 10.f / (f32)(std::rand() % 100); //This is designed to make it so that the AI don't all check at the same time for framerate purposes
+
+}
+
+void initializeDefaultAI(EntityId id)
+{
+	initializeAI(id, AI_TYPE_DEFAULT, AI_DEFAULT_REACTION_TIME, AI_DEFAULT_DAMAGE_TOLERANCE);
+}
+
 EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
 {
 	EntityId id = sceneManager->scene.newEntity();

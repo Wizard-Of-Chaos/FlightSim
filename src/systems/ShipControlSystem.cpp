@@ -80,7 +80,7 @@ void throttleToShip(ShipComponent* ship, btRigidBody* body, vector3df& thrust, v
 	setVelocity(ship, localRoll, desiredRoll, SHIP_ROLL_RIGHT, SHIP_ROLL_LEFT);
 }
 
-void fireWeapon(EntityId playerId, InputComponent* input, EntityId wep)
+void firePlayerWeapon(EntityId playerId, InputComponent* input, EntityId wep)
 {
 	if (!sceneManager->scene.entityInUse(wep) || !sceneManager->scene.entityInUse(playerId)) return;
 
@@ -260,7 +260,7 @@ void shipControlSystem(f32 dt)
 			for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 				EntityId wep = ship->weapons[i];
 				if (!scene.entityInUse(wep)) continue;
-				fireWeapon(entityId, input, wep);
+				firePlayerWeapon(entityId, input, wep);
 			}
 		}
 		else {
@@ -274,7 +274,7 @@ void shipControlSystem(f32 dt)
 		}
 
 		if (input->rightMouseDown) {
-			fireWeapon(entityId, input, ship->physWeapon);
+			firePlayerWeapon(entityId, input, ship->physWeapon);
 		}
 		else {
 			if (sceneManager->scene.entityInUse(ship->physWeapon)) {

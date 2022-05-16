@@ -175,6 +175,7 @@
     <ClCompile Include="src\systems\AIUpdateSystem.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIBehaviors.cpp" />
     <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp" />
+    <ClCompile Include="src\systems\CarrierUpdateSystem.cpp" />
     <ClCompile Include="src\systems\CollisionCheckingSystem.cpp" />
     <ClCompile Include="src\core\GameController.cpp" />
     <ClCompile Include="src\core\ECS.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="src\gui\MenuData.h" />
     <ClInclude Include="src\systems\ai_systems\DefaultAIBehaviors.h" />
     <ClInclude Include="src\systems\ai_systems\DefaultAIUpdateSystem.h" />
+    <ClInclude Include="src\systems\CarrierUpdateSystem.h" />
     <ClInclude Include="src\systems\CollisionCheckingSystem.h" />
     <ClInclude Include="src\core\GameController.h" />
     <ClInclude Include="src\core\ECS.h" />

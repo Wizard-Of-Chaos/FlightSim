@@ -10,6 +10,7 @@ void initializeCarrier(EntityId id, f32 spawnRate, u32 reserveShips, vector3df s
 	carr->reserveShips = reserveShips;
 	carr->spawnRate = spawnRate;
 	carr->scale = scale;
+	carr->spawnTimer = 0;
 }
 
 EntityId createCarrierFromId(u32 id, vector3df pos, vector3df rot)
@@ -35,8 +36,20 @@ EntityId createDefaultHumanCarrier(vector3df pos, vector3df rot)
 	CarrierData* carr = stateController->carrierData[ship->shipDataId];
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(carrier);
 	irr->name = "Chaos Theory";
-	initializeNeutralFaction(carrier);
 	initializeShipCollisionBody(carrier, carrId, true);
 	initializeHealth(carrier, carr->health);
+	initializeCarrier(carrier, carr->carrierComponent.spawnRate, carr->carrierComponent.reserveShips, carr->carrierComponent.scale);
+
+	ShipInstance inst = newShipInstance();
+	inst.weps[0] = stateController->weaponData[1]->weaponComponent;
+	inst.weps[1] = stateController->weaponData[1]->weaponComponent;
+
+	auto carrcmp = sceneManager->scene.get<CarrierComponent>(carrier);
+	carrcmp->shipTypeCount = 1;
+	carrcmp->spawnShipTypes[0] = inst;
+
+	initializePlayerFaction(carrier);
+	initializeDefaultSensors(carrier);
+	initializeDefaultAI(carrier);
 	return carrier;
 }

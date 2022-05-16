@@ -14,6 +14,8 @@ EntityId createShipFromId(u32 id, vector3df position, vector3df rotation)
 	loadShip(id, shipEntity);
 	auto ship = scene->get<ShipComponent>(shipEntity);
 	auto irr = scene->get<IrrlichtComponent>(shipEntity);
+	if (!ship || !irr) return INVALID_ENTITY;
+
 	irr->node->setPosition(position);
 	irr->node->setRotation(rotation);
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
@@ -47,12 +49,7 @@ EntityId createDefaultAIShip(vector3df position, vector3df rotation)
 	initializeShipCollisionBody(id, 1);
 	initializeHostileFaction(id);
 	initializeDefaultSensors(id);
-
-	auto ai = scene->assign<AIComponent>(id);
-	ai->AIType = AI_TYPE_DEFAULT;
-	ai->reactionSpeed = AI_DEFAULT_REACTION_TIME;
-	ai->damageTolerance = AI_DEFAULT_DAMAGE_TOLERANCE;
-	ai->timeSinceLastStateCheck = 10.f / (f32)(std::rand() % 100);
+	initializeDefaultAI(id);
 
 	return id;
 }
@@ -245,6 +242,7 @@ void initializeShipParticles(EntityId id)
 EntityId createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot)
 {
 	auto id = createShipFromId(inst.ship.shipDataId, pos, rot);
+	if (id == INVALID_ENTITY) return id;
 	ShipComponent* ship = sceneManager->scene.get<ShipComponent>(id);
 	*ship = inst.ship;
 	for (u32 i = 0; i < ship->hardpointCount; ++i) {
@@ -257,8 +255,51 @@ EntityId createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot
 			}
 		}
 	}
+	HealthComponent* hp = sceneManager->scene.assign<HealthComponent>(id);
+	*hp = inst.hp;
+	initializeShipCollisionBody(id, inst.ship.shipDataId);
+
 	initializeWeaponFromId(inst.physWep.wepDataId, id, 0, true);
 
+	return id;
+}
+EntityId createAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot)
+{
+	auto id = createShipFromInstance(inst, pos, rot);
+	if (id == INVALID_ENTITY) return id;
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+	irr->name = "AI Ship";
+	initializeDefaultShields(id);
+	initializeNeutralFaction(id);
+	initializeDefaultSensors(id);
+	initializeDefaultAI(id);
+	return id;
+}
+
+EntityId createFriendlyAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot)
+{
+	auto id = createAIShipFromInstance(inst, pos, rot);
+	if (id == INVALID_ENTITY) return id;
+	auto fac = sceneManager->scene.get<FactionComponent>(id);
+	setFaction(fac, FACTION_PLAYER, FACTION_HOSTILE, FACTION_PLAYER);
+	return id;
+}
+
+EntityId createHostileAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot)
+{
+	auto id = createAIShipFromInstance(inst, pos, rot);
+	if (id == INVALID_ENTITY) return id;
+	auto fac = sceneManager->scene.get<FactionComponent>(id);
+	setFaction(fac, FACTION_HOSTILE, FACTION_PLAYER, FACTION_HOSTILE);
+	return id;
+}
+
+EntityId carrierSpawnShip(ShipInstance& inst, vector3df spawnPos, vector3df spawnRot, FactionComponent* carrFac)
+{
+	auto id = createAIShipFromInstance(inst, spawnPos, spawnPos);
+	if (id == INVALID_ENTITY) return id;
+	auto fac = sceneManager->scene.get<FactionComponent>(id);
+	*fac = *carrFac;
 	return id;
 }
 
@@ -270,15 +311,8 @@ EntityId createPlayerShipFromInstance(vector3df pos, vector3df rot)
 	auto id = createShipFromInstance(inst, pos, rot);
 	initializeDefaultPlayer(id);
 	initializeNeutralFaction(id);
-
-	initializeShipCollisionBody(id, shipId);
 	initializeDefaultShields(id);
 	initializeDefaultSensors(id);
-
-	initializeHealth(id, stateController->campaign.playerShip.hp.maxHealth);
-	auto hp = sceneManager->scene.get<HealthComponent>(id);
-	*hp = stateController->campaign.playerShip.hp;
-
 	initializeDefaultHUD(id);
 	return id;
 }

@@ -14,7 +14,7 @@ struct CarrierComponent
 	ShipInstance spawnShipTypes[CARRIER_MAX_SHIP_TYPES];
 	u32 reserveShips;
 	vector3df scale;
-	vector3df spawnPos;
+	f32 spawnTimer;
 
 	EntityId turrets[CARRIER_MAX_TURRETS];
 	vector3df turretPositions[CARRIER_MAX_TURRETS];

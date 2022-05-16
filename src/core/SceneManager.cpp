@@ -21,5 +21,6 @@ void SceneManager::update(f32 time, f32 frameDelta)
 	projectileSystem(dt); //kills projectiles after they have gone a set distance
 	playerUpdateSystem(sceneManager->scene, frameDelta); //updates camera location
 	sensorSystem(dt); //updates sensors and nearby active contacts
+	carrierUpdateSystem(dt); // spawns ships from carriers
 }
 

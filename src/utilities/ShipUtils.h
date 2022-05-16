@@ -58,4 +58,9 @@ void initializeShipParticles(EntityId id);
 
 EntityId createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
 EntityId createPlayerShipFromInstance(vector3df pos, vector3df rot);
+
+EntityId createAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
+EntityId createFriendlyAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
+EntityId createHostileAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
+EntityId carrierSpawnShip(ShipInstance& inst, vector3df spawnPos, vector3df spawnRot, FactionComponent* carrFac);
 #endif 

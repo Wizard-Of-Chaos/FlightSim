@@ -2,6 +2,15 @@
 #include "SceneManager.h"
 #include <iostream>
 
+void setAIWeapon(EntityId wep, bool firing)
+{
+	if (!sceneManager->scene.entityInUse(wep)) return;
+
+	auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
+	if (!wepInfo) return;
+	wepInfo->isFiring = firing;
+}
+
 void defaultIdleBehavior(EntityId id, f32 dt)
 {
 	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
@@ -19,8 +28,7 @@ void defaultIdleBehavior(EntityId id, f32 dt)
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		EntityId wep = ship->weapons[i];
-		auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
-		wepInfo->isFiring = false;
+		setAIWeapon(wep, false);
 	}
 }
 
@@ -49,8 +57,7 @@ void defaultFleeBehavior(EntityId id, EntityId fleeTarget, f32 dt)
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		EntityId wep = ship->weapons[i];
-		auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
-		wepInfo->isFiring = false;
+		setAIWeapon(wep, false);
 	}
 }
 
@@ -101,8 +108,10 @@ void defaultPursuitBehavior(EntityId id, EntityId pursuitTarget, f32 dt)
 	if ((angle * RADTODEG) < 30.f) {
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 			EntityId wep = ship->weapons[i];
+			if (!sceneManager->scene.entityInUse(wep)) continue;
 			auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
 			auto irrComp = sceneManager->scene.get<IrrlichtComponent>(wep);
+			if (!wepInfo || !irrComp) continue;
 			wepInfo->isFiring = true;
 			wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
 			wepInfo->firingDirection = btVecToIrr(facing); 
@@ -111,9 +120,7 @@ void defaultPursuitBehavior(EntityId id, EntityId pursuitTarget, f32 dt)
 	else {
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 			EntityId wep = ship->weapons[i];
-			if (!sceneManager->scene.entityInUse(wep)) continue;
-			auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
-			wepInfo->isFiring = false;
+			setAIWeapon(wep, false);
 		}
 	}
 }
