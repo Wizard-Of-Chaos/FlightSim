@@ -68,6 +68,9 @@ void buildScenario(Scenario& scenario)
 		SColor(200, 255, 180, 180), 50000.f);
 	n->setID(ID_IsNotSelectable);
 
+	EntityId player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
+	cullStartPosObstacleLocations(scenario);
+
 	setScenarioType(scenario);
 	setEnvironment(scenario);
 
@@ -102,6 +105,9 @@ void setScenarioType(Scenario& scenario)
 	switch (scenario.type) {
 	case SCENARIO_KILL_HOSTILES:
 		setKillHostilesScenario(scenario);
+		break;
+	case SCENARIO_SCRAMBLE:
+		setScrambleScenario(scenario);
 		break;
 	default:
 		std::cout << "No valid type! Defaulting to kill hostiles. \n";
@@ -155,41 +161,33 @@ void buildDebrisField(Scenario& scenario)
 	std::cout << "Done.\n";
 }
 
-void cullObstacleLocations(Scenario& scenario, vector3df carrierpos)
+void cullObstacleLocationsFromPosition(Scenario& scenario, vector3df pos, f32 rad)
 {
-	std::cout << "Culling obstacle positions... ";
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
-		vector3df pos = scenario.obstaclePositions[i];
-		f32 radius = 75.f;
-		if (isPointInSphere(pos, scenario.playerStartPos, radius)) {
+		if (isPointInSphere(scenario.obstaclePositions[i], pos, rad)) {
 			scenario.obstaclePositions.erase(scenario.obstaclePositions.begin() + i);
-			continue;
-		}
-		if (isPointInSphere(pos, scenario.enemyStartPos, radius)) {
-			scenario.obstaclePositions.erase(scenario.obstaclePositions.begin() + i);
-			continue;
-		}
-		if (carrierpos == vector3df(0, 0, 0)) continue;
-
-		if (isPointInSphere(pos, carrierpos, radius * 4)) {
-			scenario.obstaclePositions.erase(scenario.obstaclePositions.begin() + i);
-			continue;
 		}
 	}
+}
+
+void cullStartPosObstacleLocations(Scenario& scenario)
+{
+	std::cout << "Culling obstacle positions... ";
+	f32 rad = 75.f;
+	cullObstacleLocationsFromPosition(scenario, scenario.playerStartPos, rad);
+	cullObstacleLocationsFromPosition(scenario, scenario.enemyStartPos, rad);
 	std::cout << "Done. Obstacles remaining: " << scenario.obstaclePositions.size() << std::endl;
 }
 
 void setKillHostilesScenario(Scenario& scenario)
 {
-	//EntityId player = createPlayerShipFromLoadout(scenario.playerStartPos, vector3df(0, 0, 0));
-	EntityId player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
+	/*
 	vector3df carrierPos = scenario.playerStartPos;
 	carrierPos.X += 100;
 	carrierPos.Z -= 600;
-	cullObstacleLocations(scenario, carrierPos);
-	createDefaultHumanCarrier(carrierPos, vector3df(0, 0, 0));
-	//createCarrier(true, carrierpos, vector3df(0, 0, 0), vector3df(25, 25, 25));
-
+	cullObstacleLocationsFromPosition(scenario, carrierPos, 300.f);
+	createHumanCarrier(0, carrierPos, vector3df(0, 0, 0));
+	*/
 	std::cout << "Setting up hostiles... ";
 	for (u32 i = 0; i < scenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(scenario.enemyStartPos, 25.f);
@@ -197,4 +195,12 @@ void setKillHostilesScenario(Scenario& scenario)
 		scenario.objectives[i] = enemy;
 	}
 	std::cout << "Done. \n";
+}
+
+void setScrambleScenario(Scenario& scenario)
+{
+	std::cout << "Setting up a scramble...";
+	scenario.enemyStartPos.Z += 400;
+	scenario.objectives[0] = createAlienCarrier(1, scenario.enemyStartPos, vector3df(0, 90, 0));
+	std::cout << "Done.\n";
 }

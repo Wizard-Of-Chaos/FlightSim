@@ -13,6 +13,7 @@ void initializeCarrier(EntityId id, f32 spawnRate, u32 reserveShips, vector3df s
 
 EntityId createCarrierFromId(u32 id, vector3df pos, vector3df rot);
 
-EntityId createDefaultHumanCarrier(vector3df pos, vector3df rot);
+EntityId createHumanCarrier(u32 carrId, vector3df pos, vector3df rot);
+EntityId createAlienCarrier(u32 carrId, vector3df pos, vector3df rot);
 
 #endif

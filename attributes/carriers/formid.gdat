@@ -16,10 +16,10 @@ yawThrust=300
 rollThrust=300
 
 mass=25
-scale=30,30,30
-health=8000
+scale=50,50,50
+health=1200
 reserveShips=25
-spawnRate=15.0
+spawnRate=5.0
 
 velocityTolerance=.03
 linearMaxVelocity=80
@@ -43,4 +43,4 @@ rightJetPos0=0,0,0
 rightJetPos1=0,0,0
 reverseJetPos0=0,0,0
 reverseJetPos1=0,0,0
-engineJetPos=0,.348,2.1585
+engineJetPos=0,.348,-2.1585

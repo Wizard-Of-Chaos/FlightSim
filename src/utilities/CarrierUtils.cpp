@@ -28,27 +28,55 @@ EntityId createCarrierFromId(u32 id, vector3df pos, vector3df rot)
 	return carrier;
 }
 
-EntityId createDefaultHumanCarrier(vector3df pos, vector3df rot)
+EntityId createHumanCarrier(u32 carrId, vector3df pos, vector3df rot)
 {
-	u32 carrId = 0;
 	auto carrier = createCarrierFromId(carrId, pos, rot);
 	auto ship = sceneManager->scene.get<ShipComponent>(carrier);
 	CarrierData* carr = stateController->carrierData[ship->shipDataId];
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(carrier);
-	irr->name = "Chaos Theory";
+	irr->name = carr->name;
 	initializeShipCollisionBody(carrier, carrId, true);
 	initializeHealth(carrier, carr->health);
 	initializeCarrier(carrier, carr->carrierComponent.spawnRate, carr->carrierComponent.reserveShips, carr->carrierComponent.scale);
 
 	ShipInstance inst = newShipInstance();
-	inst.weps[0] = stateController->weaponData[1]->weaponComponent;
-	inst.weps[1] = stateController->weaponData[1]->weaponComponent;
+	for (u32 i = 0; i < inst.ship.hardpointCount; ++i) {
+		inst.weps[i] = stateController->weaponData[3]->weaponComponent;
+	}
 
 	auto carrcmp = sceneManager->scene.get<CarrierComponent>(carrier);
 	carrcmp->shipTypeCount = 1;
 	carrcmp->spawnShipTypes[0] = inst;
 
 	initializePlayerFaction(carrier);
+	initializeDefaultSensors(carrier);
+	initializeDefaultAI(carrier);
+	return carrier;
+}
+
+EntityId createAlienCarrier(u32 carrId, vector3df pos, vector3df rot)
+{
+	auto carrier = createCarrierFromId(carrId, pos, rot);
+	auto ship = sceneManager->scene.get<ShipComponent>(carrier);
+	CarrierData* carr = stateController->carrierData[ship->shipDataId];
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(carrier);
+	irr->name = carr->name;
+
+	initializeShipCollisionBody(carrier, carrId, true);
+	initializeHealth(carrier, carr->health);
+	initializeCarrier(carrier, carr->carrierComponent.spawnRate, carr->carrierComponent.reserveShips, carr->carrierComponent.scale);
+
+	ShipInstance inst = newShipInstance();
+	inst.ship = stateController->shipData[1]->shipComponent;
+	for (u32 i = 0; i < inst.ship.hardpointCount; ++i) {
+		inst.weps[i] = stateController->weaponData[1]->weaponComponent;
+	}
+
+	auto carrcmp = sceneManager->scene.get<CarrierComponent>(carrier);
+	carrcmp->shipTypeCount = 1;
+	carrcmp->spawnShipTypes[0] = inst;
+
+	initializeHostileFaction(carrier);
 	initializeDefaultSensors(carrier);
 	initializeDefaultAI(carrier);
 	return carrier;

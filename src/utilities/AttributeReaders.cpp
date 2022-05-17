@@ -210,6 +210,7 @@ bool loadShip(u32 id, EntityId entity, bool carrier)
 {
 	ShipData* data = stateController->shipData[id];
 	if (carrier) data = stateController->carrierData[id];
+
 	if (!data) return false;
 
 	auto ship = sceneManager->scene.assign<ShipComponent>(entity);
@@ -250,7 +251,7 @@ bool loadShip(u32 id, EntityId entity, bool carrier)
 
 	if (carrier) {
 		CarrierData* cdata = (CarrierData*)data;
-		CarrierComponent* carr = sceneManager->scene.assign<CarrierComponent>(id);
+		CarrierComponent* carr = sceneManager->scene.assign<CarrierComponent>(entity);
 		*carr = cdata->carrierComponent;
 		irr->node->setScale(carr->scale);
 	}

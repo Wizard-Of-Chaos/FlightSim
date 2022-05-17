@@ -10,7 +10,8 @@ Scenario randomScenario(bool scramble = false);
 
 Scenario scrambleScenario();
 
-void cullObstacleLocations(Scenario& scenario, vector3df carrierpos);
+void cullObstacleLocationsFromPosition(Scenario& scenario, vector3df pos, f32 rad);
+void cullStartPosObstacleLocations(Scenario& scenario);
 
 //Builds the given scenario.
 void buildScenario(Scenario& scenario);
@@ -31,4 +32,5 @@ void buildDebrisField(Scenario& scenario);
 
 //Sets up a kill all hostiles scenario and places the enemies.
 void setKillHostilesScenario(Scenario& scenario);
+void setScrambleScenario(Scenario& scenario);
 #endif 

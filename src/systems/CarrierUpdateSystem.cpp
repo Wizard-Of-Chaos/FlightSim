@@ -14,7 +14,7 @@ void carrierUpdateSystem(f32 dt)
 
 		if (carr->spawnTimer >= carr->spawnRate && carr->reserveShips > 0) {
 			ShipInstance inst = carr->spawnShipTypes[0];
-			vector3df spawnPos = getNodeDown(irr->node) * 15.f * carr->scale.Y;
+			vector3df spawnPos = irr->node->getAbsolutePosition() + getNodeDown(irr->node) * 5.f * carr->scale.Y;
 			vector3df spawnRot = irr->node->getRotation();
 			carrierSpawnShip(inst, spawnPos, spawnRot, fac);
 			--carr->reserveShips;

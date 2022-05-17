@@ -246,7 +246,7 @@ void initNewCampaign()
 		stateController->campaign.possibleScenarios[i] = randomScenario();
 	}
 	stateController->campaign.currentScenario = randomScenario();
-	stateController->campaign.currentScenario.detectionChance = 0;
+	stateController->campaign.currentScenario.detectionChance = 100;
 
 	ShipInstance defaultShip = newShipInstance();
 
