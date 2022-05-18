@@ -156,6 +156,7 @@
     <ClCompile Include="src\components\PlayerComponent.cpp" />
     <ClCompile Include="src\core\GameAssets.cpp" />
     <ClCompile Include="src\core\Networking.cpp" />
+    <ClCompile Include="src\core\Scenario.cpp" />
     <ClCompile Include="src\fx\Shaders.cpp" />
     <ClCompile Include="src\gui\GuiCampaignLoadoutMenu.cpp" />
     <ClCompile Include="src\gui\GuiCampaignMenu.cpp" />
@@ -279,7 +280,7 @@
     <ClInclude Include="src\utilities\LoadoutData.h" />
     <ClInclude Include="src\utilities\ObstacleUtils.h" />
     <ClInclude Include="src\utilities\ProjectileUtils.h" />
-    <ClInclude Include="src\utilities\Scenario.h" />
+    <ClInclude Include="src\core\Scenario.h" />
     <ClInclude Include="src\utilities\ScenarioUtils.h" />
     <ClInclude Include="src\utilities\ShipInstance.h" />
     <ClInclude Include="src\utilities\ShipMovementUtils.h" />

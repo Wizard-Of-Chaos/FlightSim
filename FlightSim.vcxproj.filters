@@ -154,6 +154,9 @@
     <ClCompile Include="src\systems\CarrierUpdateSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\Scenario.cpp">
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -285,9 +288,6 @@
     <ClInclude Include="src\utilities\btUtils.h">
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\Scenario.h">
-      <Filter>Headers\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="src\systems\DamageSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
@@ -389,6 +389,9 @@
     </ClInclude>
     <ClInclude Include="src\systems\CarrierUpdateSystem.h">
       <Filter>Headers\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Scenario.h">
+      <Filter>Headers\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,8 @@
 #ifndef SCENARIO_H
 #define SCENARIO_H
 #include "BaseHeader.h"
-#include "GameFunctions.h"
+#include "ECS.h"
+#include <unordered_map>
 
 //Different types of scenario available.
 enum SCENARIO_TYPE
@@ -60,7 +61,6 @@ struct Scenario
 	{
 		for (u32 i = 0; i < SCENARIO_MAX_OBJECTIVES; ++i) {
 			objectives[i] = INVALID_ENTITY;
-			objectivePos[i] = vector3df(0, 0, 0);
 		}
 	}
 	Scenario(SCENARIO_TYPE type, SCENARIO_ENVIRONMENT env, u32 objCount, vector3df playerStart, vector3df enemyStart) :
@@ -69,26 +69,21 @@ struct Scenario
 	{
 		for (u32 i = 0; i < SCENARIO_MAX_OBJECTIVES; ++i) {
 			objectives[i] = INVALID_ENTITY;
-			objectivePos[i] = vector3df(0, 0, 0);
 		}
 	}
 	SCENARIO_TYPE type;
 	SCENARIO_ENVIRONMENT environment;
 	u32 detectionChance;
-	bool detected() {
-		u32 roll = std::rand() % 100;
-		if (roll < detectionChance) return true;
-		return false;
-	}
 
 	std::string location;
 	std::string description;
 
 	std::vector<vector3df> obstaclePositions;
+
 	u32 objectiveCount;
 	u32 activeObjectiveCount;
 	EntityId objectives[SCENARIO_MAX_OBJECTIVES];
-	vector3df objectivePos[SCENARIO_MAX_OBJECTIVES];
+
 	vector3df playerStartPos;
 	vector3df enemyStartPos;
 
@@ -99,5 +94,7 @@ struct Scenario
 	u32 maxWepsRecovered;
 	u32 maxShipsRecovered;
 
+	bool detected();
+	bool completed();
 };
 #endif 

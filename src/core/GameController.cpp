@@ -26,7 +26,7 @@ void GameController::update()
 		t += dt;
 		accumulator -= dt;
 	}
-	if (checkRunningScenario()) {
+	if (currentScenario.completed()) {
 		stateController->setState(GAME_FINISHED);
 	}
 
@@ -149,20 +149,6 @@ bool GameController::OnEvent(const SEvent& event)
 	}
 	if (event.EventType == EET_GUI_EVENT) {
 		//handle GUI events here, but there probably aren't any that the HUD itself doesn't handle
-	}
-	return false;
-}
-
-bool GameController::checkRunningScenario()
-{
-	for (u32 i = 0; i < currentScenario.objectiveCount; ++i) {
-		if (currentScenario.objectives[i] != INVALID_ENTITY && !sceneManager->scene.entityInUse(currentScenario.objectives[i])) {
-			currentScenario.objectives[i] = INVALID_ENTITY;
-			--currentScenario.activeObjectiveCount;
-		}
-	}
-	if (currentScenario.activeObjectiveCount == 0) {
-		return true;
 	}
 	return false;
 }
