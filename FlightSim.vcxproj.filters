@@ -154,9 +154,6 @@
     <ClCompile Include="src\systems\CarrierUpdateSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Scenario.cpp">
-      <Filter>Sources\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\systems\ObjectiveSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>

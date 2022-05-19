@@ -58,19 +58,10 @@ const u32 SCENARIO_MAX_OBJECTIVES = 10;
 struct Scenario
 {
 	Scenario() : complete(false)
-	{
-		for (u32 i = 0; i < SCENARIO_MAX_OBJECTIVES; ++i) {
-			objectives[i] = INVALID_ENTITY;
-		}
-	}
+	{ }
 	Scenario(SCENARIO_TYPE type, SCENARIO_ENVIRONMENT env, u32 objCount, vector3df playerStart, vector3df enemyStart) :
-		type(type), objectiveCount(objCount), playerStartPos(playerStart), enemyStartPos(enemyStart), complete(false), activeObjectiveCount(objCount),
-		environment(env)
-	{
-		for (u32 i = 0; i < SCENARIO_MAX_OBJECTIVES; ++i) {
-			objectives[i] = INVALID_ENTITY;
-		}
-	}
+		type(type), objectiveCount(objCount), playerStartPos(playerStart), enemyStartPos(enemyStart), complete(false),
+		environment(env) { }
 	SCENARIO_TYPE type;
 	SCENARIO_ENVIRONMENT environment;
 	u32 detectionChance;
@@ -81,8 +72,6 @@ struct Scenario
 	std::vector<vector3df> obstaclePositions;
 
 	u32 objectiveCount;
-	u32 activeObjectiveCount;
-	EntityId objectives[SCENARIO_MAX_OBJECTIVES];
 
 	vector3df playerStartPos;
 	vector3df enemyStartPos;
@@ -99,6 +88,5 @@ struct Scenario
 		if (roll < detectionChance) return true;
 		return false;
 	}
-	bool completed();
 };
 #endif 

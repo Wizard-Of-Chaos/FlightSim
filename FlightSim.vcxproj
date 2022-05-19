@@ -156,7 +156,6 @@
     <ClCompile Include="src\components\PlayerComponent.cpp" />
     <ClCompile Include="src\core\GameAssets.cpp" />
     <ClCompile Include="src\core\Networking.cpp" />
-    <ClCompile Include="src\core\Scenario.cpp" />
     <ClCompile Include="src\fx\Shaders.cpp" />
     <ClCompile Include="src\gui\GuiCampaignLoadoutMenu.cpp" />
     <ClCompile Include="src\gui\GuiCampaignMenu.cpp" />
