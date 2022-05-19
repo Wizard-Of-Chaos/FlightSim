@@ -2,13 +2,6 @@
 #include "GameController.h"
 #include "GameStateController.h"
 
-bool Scenario::detected() 
-{
-	u32 roll = std::rand() % 100;
-	if (roll < detectionChance) return true;
-	return false;
-}
-
 bool Scenario::completed()
 {
 	for (u32 i = 0; i < objectiveCount; ++i) {

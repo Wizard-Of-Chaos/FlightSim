@@ -57,6 +57,14 @@ bool isPointInSphere(vector3df& point, vector3df center, f32 radius)
 	return (pow(point.X - center.X, 2.f) + pow(point.Y - center.Y, 2.f) + pow(point.Z - center.Z, 2.f) < pow(radius, 2));
 }
 
+EntityId getPlayer()
+{
+	for (auto id : SceneView<PlayerComponent, IrrlichtComponent>(sceneManager->scene)) {
+		return id; //just grab the first thing you see
+	}
+	return INVALID_ENTITY;
+}
+
 void destroyObject(EntityId id)
 {
 	if (!sceneManager->scene.entityInUse(id)) return;

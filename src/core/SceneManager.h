@@ -18,6 +18,7 @@
 #include "SoundSystem.h"
 #include "DamageSystem.h"
 #include "CarrierUpdateSystem.h"
+#include "ObjectiveSystem.h"
 
 /*
 * The poorly-named SceneManager (seriously, Irrlicht already took that name!) manages the ECS scene. It calls the various systems

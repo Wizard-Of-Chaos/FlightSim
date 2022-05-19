@@ -31,6 +31,9 @@ vector3df getPointInSphere(vector3df center, f32 radius);
 //Checks if a point is in the defined sphere.
 bool isPointInSphere(vector3df& point, vector3df center, f32 radius);
 
+//returns the ID of the player
+EntityId getPlayer();
+
 //Removes the given object from the scene.
 void destroyObject(EntityId id);
 

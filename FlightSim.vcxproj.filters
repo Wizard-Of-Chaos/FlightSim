@@ -157,6 +157,9 @@
     <ClCompile Include="src\core\Scenario.cpp">
       <Filter>Sources\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\ObjectiveSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -392,6 +395,12 @@
     </ClInclude>
     <ClInclude Include="src\core\Scenario.h">
       <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\ObjectiveComponent.h">
+      <Filter>Headers\Components\Basic Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ObjectiveSystem.h">
+      <Filter>Headers\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

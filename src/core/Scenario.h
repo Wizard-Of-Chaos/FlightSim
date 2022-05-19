@@ -94,7 +94,11 @@ struct Scenario
 	u32 maxWepsRecovered;
 	u32 maxShipsRecovered;
 
-	bool detected();
+	bool detected() {
+		u32 roll = std::rand() % 100;
+		if (roll < detectionChance) return true;
+		return false;
+	}
 	bool completed();
 };
 #endif 

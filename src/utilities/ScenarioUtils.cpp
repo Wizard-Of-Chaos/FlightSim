@@ -132,12 +132,9 @@ void buildAsteroidField(Scenario& scenario)
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 100;
 		f32 mass = (f32)scale / 5.f;
-		//EntityId gas = createGasCloud(obstaclePositions[i], vector3df(scale, scale, scale));
 		EntityId rock = createAsteroid(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
 	}
 	std::cout << "Done.\n";
-
-	//auto cloud = createGasCloud(vector3df(100, 0, 0), vector3df(10, 10, 10));
 }
 
 void buildGasField(Scenario& scenario) 
@@ -181,18 +178,12 @@ void cullStartPosObstacleLocations(Scenario& scenario)
 
 void setKillHostilesScenario(Scenario& scenario)
 {
-	/*
-	vector3df carrierPos = scenario.playerStartPos;
-	carrierPos.X += 100;
-	carrierPos.Z -= 600;
-	cullObstacleLocationsFromPosition(scenario, carrierPos, 300.f);
-	createHumanCarrier(0, carrierPos, vector3df(0, 0, 0));
-	*/
 	std::cout << "Setting up hostiles... ";
 	for (u32 i = 0; i < scenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(scenario.enemyStartPos, 25.f);
 		EntityId enemy = createDefaultAIShip(pos, vector3df(0, 180, 0)); //todo: create AI ship generator that pulls from loaded ships
-		scenario.objectives[i] = enemy;
+		auto obj = sceneManager->scene.assign<ObjectiveComponent>(enemy);
+		obj->type = OBJ_DESTROY;
 	}
 	std::cout << "Done. \n";
 }
@@ -201,6 +192,57 @@ void setScrambleScenario(Scenario& scenario)
 {
 	std::cout << "Setting up a scramble...";
 	scenario.enemyStartPos.Z += 400;
-	scenario.objectives[0] = createAlienCarrier(1, scenario.enemyStartPos, vector3df(0, 90, 0));
+	auto carr = createAlienCarrier(1, scenario.enemyStartPos, vector3df(0, 90, 0));
+	auto obj = sceneManager->scene.assign<ObjectiveComponent>(carr);
+	obj->type = OBJ_DESTROY;
 	std::cout << "Done.\n";
+}
+
+bool collectObjective(EntityId id)
+{
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+	if (!irr) return true;
+	auto playerirr = sceneManager->scene.get<IrrlichtComponent>(getPlayer());
+
+	aabbox3df bb = irr->node->getBoundingBox();
+
+	if (bb.intersectsWithBox(playerirr->node->getBoundingBox())) {
+		destroyObject(id); //get rid of it, it's considered collected
+		return true;
+	}
+
+	return false;
+}
+
+bool goToObjective(EntityId id)
+{
+	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+	if (!irr) return true;
+
+	auto playerirr = sceneManager->scene.get<IrrlichtComponent>(getPlayer());
+
+	vector3df dist = irr->node->getAbsolutePosition() - playerirr->node->getAbsolutePosition();
+	if (dist.getLength() <= 10.f) return true;
+
+	return false;
+}
+
+bool isObjectiveCompleted(EntityId id)
+{
+	//if there's no component / no entity available, either this function is unnecessary or the thing has been destroyed
+	//in either case, return true and exit the premises as quickly as possible
+	if (!sceneManager->scene.entityInUse(id)) return true;
+	auto obj = sceneManager->scene.get<ObjectiveComponent>(id);
+	if (!obj) return true;
+
+	switch (obj->type) {
+	case OBJ_DESTROY:
+		return false; //if the entity is valid, clearly it hasn't been wrecked yet
+	case OBJ_COLLECT:
+		return collectObjective(id);
+	case OBJ_GO_TO:
+		return goToObjective(id);
+	default:
+		return false;
+	}
 }

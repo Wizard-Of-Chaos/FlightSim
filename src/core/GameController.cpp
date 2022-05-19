@@ -26,7 +26,7 @@ void GameController::update()
 		t += dt;
 		accumulator -= dt;
 	}
-	if (currentScenario.completed()) {
+	if (objectiveSystem(dt)) {
 		stateController->setState(GAME_FINISHED);
 	}
 

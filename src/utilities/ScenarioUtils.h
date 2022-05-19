@@ -4,6 +4,7 @@
 #include "BaseHeader.h"
 #include "Scenario.h"
 #include "CarrierUtils.h"
+#include "ObjectiveComponent.h"
 
 //Generates a random scenario.
 Scenario randomScenario(bool scramble = false);
@@ -33,4 +34,6 @@ void buildDebrisField(Scenario& scenario);
 //Sets up a kill all hostiles scenario and places the enemies.
 void setKillHostilesScenario(Scenario& scenario);
 void setScrambleScenario(Scenario& scenario);
+
+bool isObjectiveCompleted(EntityId id);
 #endif 
