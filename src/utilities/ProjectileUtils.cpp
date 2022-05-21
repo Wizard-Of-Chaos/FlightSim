@@ -335,7 +335,8 @@ ProjectileInfoComponent* addProjectileInfo(EntityId id, WeaponInfoComponent* wep
 	projectileInfo->dmgtype = wepInfo->dmgtype;
 	projectileInfo->speed = wepInfo->projectileSpeed;
 	projectileInfo->startPos = spawnPos;
-	projectileInfo->range = wepInfo->range;
+	projectileInfo->lifetime = wepInfo->lifetime;
+	projectileInfo->currentLifetime = 0.f;
 	projectileInfo->damage = wepInfo->damage;
 	return projectileInfo;
 }

@@ -9,7 +9,7 @@ type=phys_bolas
 dmgtype=plasma
 firingSpeed=.5
 projectileSpeed=70
-range=800
+lifetime=3.0
 damage=1
 
 duration=5

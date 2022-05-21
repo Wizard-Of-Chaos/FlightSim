@@ -9,8 +9,8 @@ void projectileSystem(f32 dt)
 		auto projectileInfo = sceneManager->scene.get<ProjectileInfoComponent>(id);
 		auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 		auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
-		vector3df distance = irr->node->getAbsolutePosition() - projectileInfo->startPos;
-		if (distance.getLength() >= projectileInfo->range) {
+		projectileInfo->currentLifetime += dt;
+		if (projectileInfo->currentLifetime >= projectileInfo->lifetime) {
 			destroyProjectile(id);
 		}
 

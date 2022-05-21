@@ -9,5 +9,5 @@ type=none
 dmgtype=none
 firingSpeed=0
 projectileSpeed=0
-range=0
+lifetime=0
 damage=0

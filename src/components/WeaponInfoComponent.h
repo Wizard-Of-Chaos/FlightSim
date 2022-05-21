@@ -57,7 +57,7 @@ struct WeaponInfoComponent
 	DAMAGE_TYPE dmgtype;
 	f32 firingSpeed; //how long it should take in seconds between shots
 	f32 projectileSpeed; //how fast the projectile goes
-	f32 range; //how far the projectile goes
+	f32 lifetime; //how long the projectile lasts in the world
 	f32 timeSinceLastShot;
 	f32 damage;
 	bool isFiring;
@@ -87,7 +87,8 @@ struct ProjectileInfoComponent
 	DAMAGE_TYPE dmgtype;
 	f32 damage;
 	f32 speed;
-	f32 range;
+	f32 lifetime;
+	f32 currentLifetime;
 	vector3df startPos;
 };
 

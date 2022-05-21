@@ -204,7 +204,7 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	data->weaponComponent.firingSpeed = std::stof(in.values["firingSpeed"]);
 	data->weaponComponent.projectileSpeed = std::stof(in.values["projectileSpeed"]);
 	data->weaponComponent.damage = std::stof(in.values["damage"]);
-	data->weaponComponent.range = std::stof(in.values["range"]);
+	data->weaponComponent.lifetime = in.getFloat("lifetime");
 	data->weaponComponent.timeSinceLastShot = 0.f;
 
 	bool phys = std::stoi(in.values["phys"]);
