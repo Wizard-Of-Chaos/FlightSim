@@ -3,7 +3,7 @@
 #include "GameStateController.h"
 #include "SceneManager.h"
 #include "IrrlichtUtils.h"
-
+#include "WeaponUtils.h"
 #include <iostream>
 
 bool ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
@@ -34,6 +34,7 @@ void weaponFiringSystem(f32 dt)
 		auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
 		if (wepInfo->type == WEP_NONE) continue;
 		auto irrComp = scene->get<IrrlichtComponent>(entityId);
+		handleSpecialWepFunctions(entityId, dt);
 
 		if (wepInfo->usesAmmunition) {
 			if (wepInfo->clip == 0) {

@@ -37,12 +37,18 @@ battleMusic=audio/music/impending_death.ogg
 jetSound=audio/jetthrust.ogg
 engineSound=audio/engineloop.ogg
 laserSound=audio/laser_shoot.ogg
+
 physicsBlastSound=audio/impulsecannon.ogg
 gunSound=audio/pew.ogg
 impactSound=audio/impact_d.mp3
+
+bolasHitSound=audio/bolashit.mp3
+bolasLatchSound=audio/bolaslatch.mp3
+
 shieldDown=audio/shield_down.ogg
 shieldHitMinor=audio/shieldhit_minor.ogg
 shieldHitMajor=audio/shieldhit_major.ogg
+
 selectHealth=hud/selectHealth.png
 selectShields=hud/selectShields.png
 debrisHull=attributes/hulls/Ship Debris.bullet

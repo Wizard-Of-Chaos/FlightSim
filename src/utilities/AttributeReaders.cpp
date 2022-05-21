@@ -195,7 +195,11 @@ u32 loadWeaponData(std::string path, gvReader& in)
 		cmp.target1 = INVALID_ENTITY;
 		cmp.target2 = INVALID_ENTITY;
 		cmp.timeToHit = in.getFloat("timeToHit");
+		cmp.currentTimeToHit = 0.f;
 		cmp.force = in.getFloat("force");
+		BolasData* bdat = (BolasData*)data;
+		bdat->bolasComponent = cmp;
+
 	}
 
 	data->weaponComponent.isFiring = false;
@@ -335,7 +339,8 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 	if (data->weaponComponent.type == WEP_PHYS_BOLAS) {
 		auto bolas = sceneManager->scene.assign<BolasInfoComponent>(weaponEntity);
 		BolasData* bdata = (BolasData*)data;
-		*bolas = bdata->bolasComponent;
+		BolasInfoComponent cmp = bdata->bolasComponent;
+		*bolas = cmp;
 	}
 
 	wep->particle = driver->getTexture(data->weaponEffect.c_str());

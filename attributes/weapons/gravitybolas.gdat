@@ -12,6 +12,6 @@ projectileSpeed=70
 lifetime=3.0
 damage=1
 
-duration=5
-timeToHit=10
-force=250.0
+duration=3.5
+timeToHit=10.0
+force=1.0

@@ -12,13 +12,14 @@ void handleProjectileImpact(EntityId proj, EntityId impacted);
 
 void impulseBlasterImpact(EntityId proj, EntityId impacted);
 void missileImpact(EntityId proj);
+void gravityBolasImpact(EntityId proj, EntityId impacted);
 /*
 * If weapons have anything they should be doing in their downtime, that'll get called here. For instance, the gravity bolas
 * needs to keep track of how long the connection between two entities lasts.
 */
-void handleSpecialWepFunctions(EntityId wep);
+void handleSpecialWepFunctions(EntityId wep, f32 dt);
 
-void gravityBolasHandler(EntityId wep);
+void gravityBolasHandler(EntityId wep, f32 dt);
 
 
 #endif 

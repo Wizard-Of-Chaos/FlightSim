@@ -11,8 +11,9 @@ struct BolasInfoComponent
 	f32 duration;
 	f32 currentDuration;
 	f32 timeToHit; //the time required between two hits
+	f32 currentTimeToHit;
 	f32 force;
-	btPoint2PointConstraint* constraint;
+	btTypedConstraint* constraint;
 };
 
 #endif 
