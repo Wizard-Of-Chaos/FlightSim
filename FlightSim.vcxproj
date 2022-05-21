@@ -207,6 +207,7 @@
     <ClCompile Include="src\utilities\ScenarioUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\BolasComponent.h" />
     <ClInclude Include="src\components\BulletGhostComponent.h" />
     <ClInclude Include="src\components\CarrierComponent.h" />
     <ClInclude Include="src\components\DamageTrackingComponent.h" />

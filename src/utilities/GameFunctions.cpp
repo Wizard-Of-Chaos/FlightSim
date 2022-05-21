@@ -267,6 +267,7 @@ void initNewCampaign()
 
 	stateController->campaign.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
 	stateController->campaign.availablePhysWeapons.push_back(stateController->physWeaponData[0]->weaponComponent);
+	stateController->campaign.availablePhysWeapons.push_back(stateController->physWeaponData[2]->weaponComponent);
 }
 
 ShipInstance randomShipInstance()

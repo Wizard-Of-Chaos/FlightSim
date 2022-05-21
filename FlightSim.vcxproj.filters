@@ -399,6 +399,9 @@
     <ClInclude Include="src\systems\ObjectiveSystem.h">
       <Filter>Headers\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\BolasComponent.h">
+      <Filter>Headers\Components\Weapon Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

@@ -62,7 +62,7 @@ EntityId createProjectileEntity(vector3df spawnPos, vector3df direction, EntityI
 	else if (projectileInfo->type == WEP_MISSILE) {
 		createMissileProjectile(projectileEntity, sceneManager->scene.get<MissileInfoComponent>(weaponId), initialDir, spawnPos);
 	}
-	else if (projectileInfo->type == WEP_PHYS_IMPULSE) {
+	else if (projectileInfo->type == WEP_PHYS_IMPULSE || projectileInfo->type == WEP_PHYS_BOLAS) {
 		initialForce += irrVecToBt(initialDir) * projectileInfo->speed;
 		createPlasmaProjectile(projectileEntity, initialDir, spawnPos);
 	}

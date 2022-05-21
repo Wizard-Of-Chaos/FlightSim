@@ -140,6 +140,10 @@ u32 loadWeaponData(std::string path, gvReader& in)
 		delete data;
 		data = new MissileData;
 	}
+	else if (type == WEP_PHYS_BOLAS) {
+		delete data;
+		data = new BolasData;
+	}
 	data->id = id;
 	data->name = name;
 	data->description = in.values["description"];
@@ -181,6 +185,17 @@ u32 loadWeaponData(std::string path, gvReader& in)
 		loadAmmoData(data, in);
 		kin->kineticComponent.accuracy = std::stof(in.values["accuracy"]);
 		kin->kineticComponent.projectilesPerShot = std::stoi(in.values["projectilesPerShot"]);
+	}
+
+	if (type == WEP_PHYS_BOLAS) {
+		BolasInfoComponent cmp;
+		cmp.constraint = nullptr;
+		cmp.currentDuration = 0.f;
+		cmp.duration = in.getFloat("duration");
+		cmp.target1 = INVALID_ENTITY;
+		cmp.target2 = INVALID_ENTITY;
+		cmp.timeToHit = in.getFloat("timeToHit");
+		cmp.force = in.getFloat("force");
 	}
 
 	data->weaponComponent.isFiring = false;
@@ -317,6 +332,12 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 		wep->clip = wep->maxClip;
 		wep->usesAmmunition = true; 
 	}
+	if (data->weaponComponent.type == WEP_PHYS_BOLAS) {
+		auto bolas = sceneManager->scene.assign<BolasInfoComponent>(weaponEntity);
+		BolasData* bdata = (BolasData*)data;
+		*bolas = bdata->bolasComponent;
+	}
+
 	wep->particle = driver->getTexture(data->weaponEffect.c_str());
 
 	return true; 

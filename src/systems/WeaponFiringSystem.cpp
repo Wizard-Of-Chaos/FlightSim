@@ -43,7 +43,7 @@ void weaponFiringSystem(f32 dt)
 		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
 			if (wepInfo->usesAmmunition) {
 				bool firing = ammoFire(entityId, wepInfo, dt);
-				if(wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f);
+				if(wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f); //gotta be a better way to do this
 			}
 			else {
 				gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);

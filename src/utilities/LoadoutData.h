@@ -8,6 +8,7 @@
 #include "ObstacleComponent.h"
 #include "KineticComponent.h"
 #include "CarrierComponent.h"
+#include "BolasComponent.h"
 
 /*
 * Contains all data necessary to be able to properly load a ship in the game.
@@ -69,6 +70,12 @@ struct KineticData : public WeaponData
 {
 	KineticInfoComponent kineticComponent;
 };
+
+struct BolasData : public WeaponData
+{
+	BolasInfoComponent bolasComponent;
+};
+
 /*
 * All the data necessary to load an obstacle, including type, id, mesh, texture, and shape.
 */
