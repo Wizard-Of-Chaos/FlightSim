@@ -66,12 +66,7 @@ void gravityBolasImpact(EntityId projId, EntityId impacted)
 			return;
 		}
 		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("bolasLatchSound"), 1.f, 100.f);
-		/*
-		auto p2p = new btPoint2PointConstraint(rbcA->rigidBody, rbcB->rigidBody, btVector3(0, 0, 0), btVector3(0, 0, 0));
-		p2p->m_setting.m_damping = 0.0625f;
-		p2p->m_setting.m_impulseClamp = 0.95f;
-		p2p->setOverrideNumSolverIterations(200);
-		*/
+
 		btTransform tr;
 		btVector3 ori(0, 0, 0);
 		tr.setIdentity();
@@ -79,8 +74,9 @@ void gravityBolasImpact(EntityId projId, EntityId impacted)
 		auto p2p = new btGeneric6DofConstraint(rbcA->rigidBody, rbcB->rigidBody, tr, tr, false);
 		p2p->setLinearLowerLimit(btVector3(0, 0, 0));
 		p2p->setLinearUpperLimit(btVector3(0, 0, 0));
+		p2p->setAngularLowerLimit(btVector3(-PI, -PI, -PI));
+		p2p->setAngularUpperLimit(btVector3(PI, PI, PI));
 		for (u32 i = 0; i < 6; ++i) {
-			//p2p->setParam(BT_CONSTRAINT_STOP_CFM, .005f, i);
 			f32 forceFactor = .005f * bolasInfo->force;
 			p2p->setParam(BT_CONSTRAINT_STOP_ERP, forceFactor, i);
 		}
