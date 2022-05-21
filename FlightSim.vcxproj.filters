@@ -157,6 +157,9 @@
     <ClCompile Include="src\systems\ObjectiveSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\WeaponUtils.cpp">
+      <Filter>Sources\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -401,6 +404,9 @@
     </ClInclude>
     <ClInclude Include="src\components\BolasComponent.h">
       <Filter>Headers\Components\Weapon Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\WeaponUtils.h">
+      <Filter>Headers\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

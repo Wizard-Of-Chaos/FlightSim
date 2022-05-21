@@ -212,7 +212,7 @@ void destroyProjectile(EntityId projectile)
 	scene->destroyEntity(projectile); //bye bye your life goodbye
 }
 
-EntityId projectileImpact(vector3df position, f32 duration)
+EntityId createProjectileImpactEffect(vector3df position, f32 duration)
 {
 	EntityId id = sceneManager->scene.newEntity();
 	auto explodeinfo = sceneManager->scene.assign<ExplosionComponent>(id);

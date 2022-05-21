@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
-
+#include "WeaponUtils.h"
 #include <iostream>
 
 void projectileCollider(EntityId projectile, EntityId impacted)
@@ -11,6 +11,7 @@ void projectileCollider(EntityId projectile, EntityId impacted)
 	auto proj = sceneManager->scene.get<ProjectileInfoComponent>(projectile);
 	auto irr = sceneManager->scene.get<IrrlichtComponent>(projectile);
 
+	/*
 	if (proj->type == WEP_MISSILE) {
 		explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
 	}
@@ -18,10 +19,10 @@ void projectileCollider(EntityId projectile, EntityId impacted)
 		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("physicsBlastSound"), 1.f, 200.f);
 		explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 80.f, proj->damage, 500.f);
 	}
-
+	*/
+	handleProjectileImpact(projectile, impacted);
 	if (dmg) dmg->registerDamageInstance(DamageInstance(projectile, impacted, proj->dmgtype, proj->damage, device->getTimer()->getTime()));
-
-	projectileImpact(irr->node->getPosition(), .2f);
+	createProjectileImpactEffect(irr->node->getPosition(), .2f);
 	destroyProjectile(projectile);
 }
 

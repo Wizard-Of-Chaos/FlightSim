@@ -205,6 +205,7 @@
     <ClCompile Include="src\utilities\ShipMovementUtils.cpp" />
     <ClCompile Include="src\utilities\ShipUtils.cpp" />
     <ClCompile Include="src\utilities\ScenarioUtils.cpp" />
+    <ClCompile Include="src\utilities\WeaponUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\BolasComponent.h" />
@@ -288,6 +289,7 @@
     <ClInclude Include="src\utilities\ShipInstance.h" />
     <ClInclude Include="src\utilities\ShipMovementUtils.h" />
     <ClInclude Include="src\utilities\ShipUtils.h" />
+    <ClInclude Include="src\utilities\WeaponUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

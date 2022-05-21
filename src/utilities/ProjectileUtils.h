@@ -24,7 +24,7 @@ void createMissileProjectile(EntityId projId, MissileInfoComponent* missInfo, ve
 void createKineticProjectile(EntityId projId, vector3df dir, vector3df spawn);
 
 //Creates an explosion at the impact point of a projectile. Way smaller than the other one.
-EntityId projectileImpact(vector3df position, f32 duration);
+EntityId createProjectileImpactEffect(vector3df position, f32 duration);
 
 //Causes the missile to track its target and fly towards it.
 void missileGoTo(EntityId id, f32 dt);
