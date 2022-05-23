@@ -69,7 +69,6 @@ bool initializeShipCollisionBody(EntityId entityId, u32 shipId, bool carrier)
 		CarrierData* data = stateController->carrierData[shipId];
 		scale = irrVecToBt(data->carrierComponent.scale);
 		mass = data->mass;
-		std::cout << "\n\n scale: " << scale.x() << "," << scale.y() << "," << scale.z() << " mass: " << mass << "\n";
 	}
 	return initializeBtRigidBody(entityId, hull, scale, mass);
 }
@@ -301,6 +300,8 @@ EntityId carrierSpawnShip(ShipInstance& inst, vector3df spawnPos, vector3df spaw
 	if (id == INVALID_ENTITY) return id;
 	auto fac = sceneManager->scene.get<FactionComponent>(id);
 	*fac = *carrFac;
+	auto obj = sceneManager->scene.assign<ObjectiveComponent>(id);
+	obj->type = OBJ_DESTROY;
 	return id;
 }
 
