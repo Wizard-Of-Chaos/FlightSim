@@ -121,7 +121,26 @@ void setScenarioType(Scenario& scenario)
 void setObstaclePositions(Scenario& scenario)
 {
 	std::cout << "Setting obstacle positions... ";
-	for (u32 i = 0; i < 1000; ++i) {
+
+	u32 numClusters = std::rand() % 100;
+	std::vector<vector3df> clusterPositions;
+	for (u32 i = 0; i < numClusters; ++i) {
+		clusterPositions.push_back(getPointInSphere(vector3df(0, 0, 0), 5000.f));
+	}
+
+	u32 numClusterObstacles = 800;
+	u32 numLooseObstacles = 200;
+	u32 numObstacles = numClusterObstacles + numLooseObstacles;
+	u32 obstaclesPerCluster = numClusterObstacles / numClusters;
+
+	for (u32 i = 0; i < numClusters; ++i) {
+		for (u32 j = 0; j < obstaclesPerCluster; ++j) {
+			vector3df pos = getPointInSphere(clusterPositions[i], 600.f);
+			scenario.obstaclePositions.push_back(pos);
+		}
+	}
+
+	for (u32 i = 0; i < numLooseObstacles; ++i) {
 		vector3df pos = getPointInSphere(vector3df(0, 0, 0), 5000.f);
 		scenario.obstaclePositions.push_back(pos);
 	}

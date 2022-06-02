@@ -32,7 +32,18 @@ EntityId createStaticObstacle(u32 id, vector3df position, vector3df rotation, ve
 
 EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
-	return createDynamicObstacle(0, position, rotation, scale, mass);
+	EntityId id = createDynamicObstacle(0, position, rotation, scale, mass);
+	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
+	u32 roll = std::rand() % 20;
+
+	if (roll < 15) {
+		rbc->rigidBody.setActivationState(1);
+		rbc->rigidBody.applyTorque(irrVecToBt(randomRotationVector()));
+	}
+	if (roll == 20) { //Critical hit -- the asteroid is moving!
+		rbc->rigidBody.applyCentralImpulse(irrVecToBt(randomVector()));
+	}
+	return id;
 }
 
 EntityId createDebris(vector3df position, vector3df rotation, vector3df scale, f32 mass)

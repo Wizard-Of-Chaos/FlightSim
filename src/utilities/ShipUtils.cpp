@@ -312,7 +312,7 @@ EntityId createPlayerShipFromInstance(vector3df pos, vector3df rot)
 
 	auto id = createShipFromInstance(inst, pos, rot);
 	initializeDefaultPlayer(id);
-	initializePlayerFaction(id);
+	initializeNeutralFaction(id);
 	initializeDefaultShields(id);
 	initializeDefaultSensors(id);
 	initializeDefaultHUD(id);
