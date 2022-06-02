@@ -26,35 +26,68 @@ bool ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
 	return false;
 }
 
-void weaponFiringSystem(f32 dt)
+void weaponFiringSystem(flecs::iter it, WeaponInfoComponent* wic, IrrlichtComponent* irrC)
 {
 	Scene* scene = &sceneManager->scene;
-
-	for (auto entityId : SceneView<WeaponInfoComponent, IrrlichtComponent>(sceneManager->scene)) { //If the gun is firing, update time since last shot, play a sound and make the entity
-		auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
+	for (auto i : it) 
+	{
+		auto wepInfo = &wic[i];
 		if (wepInfo->type == WEP_NONE) continue;
-		auto irrComp = scene->get<IrrlichtComponent>(entityId);
-		handleSpecialWepFunctions(entityId, dt);
+		auto irrComp = &irrC[i];
+		// TODO: handleSpecialWepFunctions
 
-		if (wepInfo->usesAmmunition) {
-			if (wepInfo->clip == 0) {
-				wepInfo->timeReloading += dt;
+		if (wepInfo->usesAmmunition)
+		{
+			if (wepInfo->clip == 0)
+			{
+				wepInfo->timeReloading += it.delta_time();
 			}
 		}
-		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
-			if (wepInfo->usesAmmunition) {
-				bool firing = ammoFire(entityId, wepInfo, dt);
-				if(wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f); //gotta be a better way to do this
+
+		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed))
+		{
+			if (wepInfo->usesAmmunition)
+			{
+				// TODO: ammoFire
 			}
-			else {
-				gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);
-				createProjectileEntity(wepInfo->spawnPosition, wepInfo->firingDirection, entityId);
+			else
+			{
+				// TODO: wazer
 			}
-			wepInfo->timeSinceLastShot = 0.f;
+			wepInfo->timeSinceLastShot = 0;
 		}
-		wepInfo->timeSinceLastShot += dt;
-		if (wepInfo->timeSinceLastShot > wepInfo->firingSpeed) {
+		wepInfo->timeSinceLastShot += it.delta_time();
+		if (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)
+		{
+			// what is this?
 			wepInfo->timeSinceLastShot = wepInfo->firingSpeed + .005f;
 		}
 	}
+	//for (auto entityId : SceneView<WeaponInfoComponent, IrrlichtComponent>(sceneManager->scene)) { //If the gun is firing, update time since last shot, play a sound and make the entity
+	//	auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
+	//	if (wepInfo->type == WEP_NONE) continue;
+	//	auto irrComp = scene->get<IrrlichtComponent>(entityId);
+	//	handleSpecialWepFunctions(entityId, dt);
+
+	//	if (wepInfo->usesAmmunition) {
+	//		if (wepInfo->clip == 0) {
+	//			wepInfo->timeReloading += dt;
+	//		}
+	//	}
+	//	if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
+	//		if (wepInfo->usesAmmunition) {
+	//			bool firing = ammoFire(entityId, wepInfo, dt);
+	//			if(wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f); //gotta be a better way to do this
+	//		}
+	//		else {
+	//			gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);
+	//			createProjectileEntity(wepInfo->spawnPosition, wepInfo->firingDirection, entityId);
+	//		}
+	//		wepInfo->timeSinceLastShot = 0.f;
+	//	}
+	//	wepInfo->timeSinceLastShot += dt;
+	//	if (wepInfo->timeSinceLastShot > wepInfo->firingSpeed) {
+	//		wepInfo->timeSinceLastShot = wepInfo->firingSpeed + .005f;
+	//	}
+	//}
 }

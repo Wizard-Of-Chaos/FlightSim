@@ -160,6 +160,9 @@
     <ClCompile Include="src\utilities\WeaponUtils.cpp">
       <Filter>Sources\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\flecs.c">
+      <Filter>Sources\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -407,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="src\utilities\WeaponUtils.h">
       <Filter>Headers\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\flecs.h">
+      <Filter>Headers\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

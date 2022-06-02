@@ -5,6 +5,7 @@
 void SceneManager::update(f32 time, f32 frameDelta)
 {
 	dt = time;
+	game_world->progress(dt);
 	parentUpdate(sceneManager->scene); //checks to see whether parents are currently in use
 	soundSystem(dt); //moves around sounds and tracks sound instances
 	shipControlSystem(dt); //updates ship control scheme

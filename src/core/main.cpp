@@ -14,9 +14,12 @@ ISceneManager* smgr = 0;
 IGUIEnvironment* guienv = 0;
 ISoundEngine* soundEngine = 0;
 BulletPhysicsWorld* bWorld = 0;
+flecs::world* game_world = 0;
 
 int main()
 {
+	flecs::world world;
+	game_world = &world;
 	VideoConfig config;
 	config.loadConfig("cfg/videoconfig.gdat");
 	config.saveConfig("cfg/videoconfig.gdat");

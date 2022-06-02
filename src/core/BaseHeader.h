@@ -20,6 +20,7 @@ using namespace gui;
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <Serialize/BulletWorldImporter/btBulletWorldImporter.h>
 #include <irrKlang.h>
+#include <flecs.h>
 using namespace irrklang;
 
 #ifdef _MSC_VER
@@ -63,5 +64,5 @@ extern ISceneManager* smgr;
 extern IGUIEnvironment* guienv;
 extern ISoundEngine* soundEngine;
 extern BulletPhysicsWorld* bWorld;
-
+extern flecs::world* game_world;
 #endif
