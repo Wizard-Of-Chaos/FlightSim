@@ -66,17 +66,18 @@ void GameController::init()
 	collCb = new broadCallback();
 	bWorld->getPairCache()->setOverlapFilterCallback(collCb);
 	/*
-	flecs::OnLoad
-	flecs::PostLoad
-	flecs::PreUpdate
-	flecs::OnUpdate
-	flecs::OnValidate
-	flecs::PostUpdate
-	flecs::PreStore
-	flecs::OnStore
+	*	flecs::OnLoad
+	*	flecs::PostLoad
+	*	flecs::PreUpdate
+	*	flecs::OnUpdate
+	*	flecs::OnValidate
+	*	flecs::PostUpdate
+	*	flecs::PreStore
+	*	flecs::OnStore
 	*/
-
 	game_world->system<WeaponInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(weaponFiringSystem);
+	game_world->system<HealthComponent>().kind(flecs::OnUpdate).iter(healthSystem);
+	game_world->system<ShieldComponent>().kind(flecs::OnUpdate).iter(shieldSystem);
 
 	open = true;
 }

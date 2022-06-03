@@ -15,8 +15,8 @@ void SceneManager::update(f32 time, f32 frameDelta)
 	bWorld->stepSimulation(dt, 60); //applies the PHYSICS
 	collisionCheckingSystem(); //destroys projectiles on hit
 	damageSystem(dt); //Updates damage tracking components
-	updateHealthSystem(); //updates health and removes objects with no health
-	updateShieldSystem(dt); //updates shields and recharging thereof
+	healthSystem(); //updates health and removes objects with no health
+	shieldSystem(dt); //updates shields and recharging thereof
 	explosionSystem(dt); //Handles explosion lifetimes
 	irrlichtRigidBodyPositionSystem(sceneManager->scene, dt); //updates position based on rigidbody state
 	projectileSystem(dt); //kills projectiles after they have gone a set distance

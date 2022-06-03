@@ -6,7 +6,8 @@
 
 void carrierUpdateSystem(f32 dt)
 {
-	for (auto id : SceneView<CarrierComponent, ShipComponent, FactionComponent, IrrlichtComponent>(sceneManager->scene)) {
+	for (auto id : SceneView<CarrierComponent, ShipComponent, FactionComponent, IrrlichtComponent>(sceneManager->scene)) 
+	{
 		auto carr = sceneManager->scene.get<CarrierComponent>(id);
 		auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 		auto fac = sceneManager->scene.get<FactionComponent>(id);

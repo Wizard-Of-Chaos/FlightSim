@@ -8,10 +8,10 @@
 #include "HealthComponent.h"
 #include "GameFunctions.h"
 //Updates health for all entities in the scene. If health is 0, removes it from the scene.
-void updateHealthSystem();
+void healthSystem();
 
 //Updates shield values for all entities in the scene.
-void updateShieldSystem(f32 dt);
+void shieldSystem(f32 dt);
 
 #endif 
 

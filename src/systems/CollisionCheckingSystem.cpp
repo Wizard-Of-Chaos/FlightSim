@@ -100,9 +100,9 @@ bool broadCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadph
 	btCollisionObject* a = static_cast<btCollisionObject*>(proxy0->m_clientObject);
 	btCollisionObject* b = static_cast<btCollisionObject*>(proxy1->m_clientObject);
 
-	EntityId idA = getIdFromBt(a);
-	EntityId idB = getIdFromBt(b);
-	if (!sceneManager->scene.entityInUse(idA) || !sceneManager->scene.entityInUse(idB)) return true; //something probably went wrong if either of these hits
+	auto entityA = getIdFromBt(a);
+	auto entityB = getIdFromBt(b);
+	if (!entityA.is_valid() || !entityB.is_valid()) return true; //something probably went wrong if either of these hits
 	//need to check who "owns" these entities
 	auto parentA = sceneManager->scene.get<ParentComponent>(idA);
 	auto parentB = sceneManager->scene.get<ParentComponent>(idB);
