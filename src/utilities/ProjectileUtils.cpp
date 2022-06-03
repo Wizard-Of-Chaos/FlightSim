@@ -22,60 +22,56 @@ vector3df adjustAccuracy(vector3df dir, f32 accuracy)
 	return newDir;
 }
 
-EntityId createProjectileEntity(vector3df spawnPos, vector3df direction, EntityId weaponId)
+flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, flecs::entity weaponId)
 {
-	Scene* scene = &sceneManager->scene;
-
-	auto wepInfo = scene->get<WeaponInfoComponent>(weaponId);
-	auto shipParent = scene->get<ParentComponent>(weaponId);
-
-	if (!wepInfo || !shipParent) {
+	if (!weaponId.has<WeaponInfoComponent>() || weaponId.has_relation(flecs::ChildOf)) {
 		std::cout << "Cannot fire! ";
-		if (!wepInfo) std::cout << "Weapon info ";
-		if (!shipParent) std::cout << "Parent info ";
+		if (!weaponId.has<WeaponInfoComponent>()) std::cout << "Weapon info ";
+		if (!weaponId.has_relation(flecs::ChildOf)) std::cout << "Parent info ";
 		std::cout << "is NULL\n";
 		return INVALID_ENTITY;
 	}
+	auto wepInfo = weaponId.get_mut<WeaponInfoComponent>();
 
-	auto shipRBC = scene->get<BulletRigidBodyComponent>(shipParent->parentId);
+	auto shipRBC = weaponId.get_object(flecs::ChildOf).get<BulletRigidBodyComponent>();
 
-	auto projectileEntity = scene->newEntity();
+	auto projectileEntity = game_world->entity();
 
-	auto projectileInfo = addProjectileInfo(projectileEntity, wepInfo, spawnPos);
-	addProjectileParent(projectileEntity, weaponId);
+	auto projectileInfo = addProjectileInfo(wepInfo, spawnPos);
+	projectileEntity.add<ProjectileInfoComponent>(projectileInfo);
+	projectileEntity.add<FiredBy>(weaponId);
 
 	btVector3 initialForce(0, 0, 0);
 	vector3df initialDir = direction;
 	btVector3 initVelocity = shipRBC->rigidBody.getLinearVelocity();
 	btQuaternion initRot = shipRBC->rigidBody.getOrientation();
 
-	if (projectileInfo->type == WEP_PLASMA) {
-		initialForce += irrVecToBt(initialDir) * projectileInfo->speed;
+	if (projectileInfo.type == WEP_PLASMA) {
+		initialForce += irrVecToBt(initialDir) * projectileInfo.speed;
 		createPlasmaProjectile(projectileEntity, direction, spawnPos);
 	}
-	else if (projectileInfo->type == WEP_KINETIC) {
-		auto kin = scene->get<KineticInfoComponent>(weaponId);
+	else if (projectileInfo.type == WEP_KINETIC) {
+		auto kin = weaponId.get<KineticInfoComponent>();
 		initialDir = adjustAccuracy(direction, kin->accuracy);
-		initialForce += irrVecToBt(initialDir) * projectileInfo->speed;
+		initialForce += irrVecToBt(initialDir) * projectileInfo.speed;
 		createKineticProjectile(projectileEntity, initialDir, wepInfo->spawnPosition);
 	}
-	else if (projectileInfo->type == WEP_MISSILE) {
-		createMissileProjectile(projectileEntity, sceneManager->scene.get<MissileInfoComponent>(weaponId), initialDir, spawnPos);
+	else if (projectileInfo.type == WEP_MISSILE) {
+		createMissileProjectile(projectileEntity, initialDir, spawnPos);
 	}
-	else if (projectileInfo->type == WEP_PHYS_IMPULSE || projectileInfo->type == WEP_PHYS_BOLAS) {
-		initialForce += irrVecToBt(initialDir) * projectileInfo->speed;
+	else if (projectileInfo.type == WEP_PHYS_IMPULSE || projectileInfo.type == WEP_PHYS_BOLAS) {
+		initialForce += irrVecToBt(initialDir) * projectileInfo.speed;
 		createPlasmaProjectile(projectileEntity, initialDir, spawnPos);
 	}
 	auto rbc = addProjectileRBC(projectileEntity, initialForce, initVelocity, spawnPos, initRot);
 
 	if (wepInfo->type == WEP_KINETIC) {
-		auto kin = scene->get<KineticInfoComponent>(weaponId);
+		auto kin = weaponId.get<KineticInfoComponent>();
 		for (u32 i = 1; i < kin->projectilesPerShot; ++i) {
 			vector3df dir = adjustAccuracy(direction, kin->accuracy);
-			btVector3 force = irrVecToBt(dir) * projectileInfo->speed;
-			EntityId newId = scene->newEntity();
-			addProjectileInfo(newId, wepInfo, spawnPos);
-			addProjectileParent(newId, weaponId);
+			btVector3 force = irrVecToBt(dir) * projectileInfo.speed;
+			flecs::entity newId = game_world->entity();
+			newId.add<ProjectileInfoComponent>(projectileInfo);
 			auto newRBC = addProjectileRBC(newId, force, initVelocity, spawnPos, initRot);
 			createKineticProjectile(newId, dir, spawnPos);
 			bWorld->addRigidBody(&newRBC->rigidBody);
@@ -86,42 +82,43 @@ EntityId createProjectileEntity(vector3df spawnPos, vector3df direction, EntityI
 	return projectileEntity;
 }
 
-void createKineticProjectile(EntityId projId, vector3df dir, vector3df spawn)
+void createKineticProjectile(flecs::entity projId, vector3df dir, vector3df spawn)
 {
-	auto irr = sceneManager->scene.assign<IrrlichtComponent>(projId);
-	auto wepPar = sceneManager->scene.get<ParentComponent>(projId);
-	auto wepComp = sceneManager->scene.get<WeaponInfoComponent>(wepPar->parentId);
+	auto wepComp = projId.get_object<FiredBy>().get<WeaponInfoComponent>();
 
-	irr->node = smgr->addLightSceneNode(0, spawn, SColorf(.8f, .8f, .1f, .5f), 5.f);
-	irr->name = "bullet";
-	ISceneNode* bill = smgr->addBillboardSceneNode(irr->node, dimension2d<f32>(1.f, 1.f));
+	IrrlichtComponent irr;
+
+	irr.node = smgr->addLightSceneNode(0, spawn, SColorf(.8f, .8f, .1f, .5f), 5.f);
+	irr.name = "bullet";
+	ISceneNode* bill = smgr->addBillboardSceneNode(irr.node, dimension2d<f32>(1.f, 1.f));
 	bill->setMaterialFlag(EMF_LIGHTING, false);
 	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 	bill->setMaterialTexture(0, wepComp->particle);
-	irr->node->setID(ID_IsNotSelectable);
-	irr->node->setName(idToStr(projId).c_str());
+	irr.node->setID(ID_IsNotSelectable);
+	irr.node->setName(idToStr(projId).c_str());
 	bill->setID(ID_IsNotSelectable);
+
+	projId.add<IrrlichtComponent>(irr);
 }
 
-void createPlasmaProjectile(EntityId projId, vector3df dir, vector3df spawn)
+void createPlasmaProjectile(flecs::entity projId, vector3df dir, vector3df spawn)
 {
-	auto irr = sceneManager->scene.assign<IrrlichtComponent>(projId);
-	auto wepPar = sceneManager->scene.get<ParentComponent>(projId);
-	auto wepComp = sceneManager->scene.get<WeaponInfoComponent>(wepPar->parentId);
+	auto wepComp = projId.get_object<FiredBy>().get<WeaponInfoComponent>();
 
-	//this needs to be abstracted out to creating different types of node, for now it's just the laser with a crappy particle
-	irr->node = smgr->addLightSceneNode(0, spawn, SColorf(.8f, .2f, .2f), 30.f);
-	irr->name = "plasma ball";
-	ISceneNode* bill = smgr->addBillboardSceneNode(irr->node, dimension2d<f32>(3.f, 3.f));
+	IrrlichtComponent irr;
+
+	irr.node = smgr->addLightSceneNode(0, spawn, SColorf(.8f, .2f, .2f), 30.f);
+	irr.name = "plasma ball";
+	ISceneNode* bill = smgr->addBillboardSceneNode(irr.node, dimension2d<f32>(3.f, 3.f));
 	bill->setMaterialFlag(EMF_LIGHTING, false);
 	bill->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 	bill->setMaterialTexture(0, wepComp->particle);
 
-	irr->node->setID(ID_IsNotSelectable);
-	irr->node->setName(idToStr(projId).c_str());
+	irr.node->setID(ID_IsNotSelectable);
+	irr.node->setName(idToStr(projId).c_str());
 	bill->setID(ID_IsNotSelectable);
 
-	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false, irr->node);
+	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false, irr.node);
 	ps->setID(ID_IsNotSelectable);
 	IParticleEmitter* em = ps->createSphereEmitter(ps->getPosition(), .5f, //spawn point and radius
 		(-dir * .01f), 30, 60, //direction, emit rate min/max
@@ -136,45 +133,51 @@ void createPlasmaProjectile(EntityId projId, vector3df dir, vector3df spawn)
 	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
 	ps->setMaterialTexture(0, wepComp->particle);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	projId.add<IrrlichtComponent>(irr);
 }
 
-void createMissileProjectile(EntityId projId, MissileInfoComponent* missInfo, vector3df dir, vector3df spawn)
+void createMissileProjectile(flecs::entity projId, vector3df dir, vector3df spawn)
 {
-	auto wepParent = sceneManager->scene.get<ParentComponent>(projId);
-	auto wepComp = sceneManager->scene.get<WeaponInfoComponent>(wepParent->parentId);
-	auto missComp = sceneManager->scene.get<MissileInfoComponent>(wepParent->parentId);
+	auto wepId = projId.get_object<FiredBy>();
+	auto wepComp = wepId.get<WeaponInfoComponent>();
+	auto missComp = wepId.get<MissileInfoComponent>();
 
-	auto shipParent = sceneManager->scene.get<ParentComponent>(wepParent->parentId);
-	auto sensors = sceneManager->scene.get<SensorComponent>(shipParent->parentId);
+	auto sensors = wepId.get_object(flecs::ChildOf).get<SensorComponent>();
+
 	if (!sensors) return; // need a similar check for AI component
-	if (sensors && sensors->targetContact == INVALID_ENTITY) {
+
+	if (sensors->targetContact == INVALID_ENTITY) {
 		std::cout << "No entity is currently selected!\n";
 	}
 
-	auto irr = sceneManager->scene.assign<IrrlichtComponent>(projId);
+	IrrlichtComponent irr;
 
-	auto irrship = sceneManager->scene.get<IrrlichtComponent>(shipParent->parentId);
+	auto irrship = wepId.get_object(flecs::ChildOf).get<IrrlichtComponent>();
+
 	vector3df rot = irrship->node->getRotation();
-	irr->node = smgr->addMeshSceneNode(missComp->missileMesh, 0, ID_IsNotSelectable, spawn, rot, vector3df(.2f, .2f, .2f));
-	irr->name = "missile";
-	irr->node->setName(idToStr(projId).c_str());
+	irr.node = smgr->addMeshSceneNode(missComp->missileMesh, 0, ID_IsNotSelectable, spawn, rot, vector3df(.2f, .2f, .2f));
+	irr.name = "missile";
+	irr.node->setName(idToStr(projId).c_str());
 
-	auto missile = sceneManager->scene.assign<MissileProjectileComponent>(projId);
-	if (sensors && missInfo->timeToLock <= sensors->timeSelected) {
-		missile->target = sensors->targetContact;
+	MissileProjectileComponent missile;
+
+	if (missComp->timeToLock <= sensors->timeSelected) {
+		missile.target = sensors->targetContact;
 	} else {
 		std::cout << "Sensors unavailable or lock-time not established!\n";
-		missile->target = INVALID_ENTITY;
+		missile.target = INVALID_ENTITY;
 	}
-	auto ai = sceneManager->scene.get<AIComponent>(shipParent->parentId);
-	if (ai) {
-		//set the target to whatever the AI is targeting
+	if (wepId.get_object(flecs::ChildOf).has<AIComponent>()) {
+		//make the AI able to fire missiles
 	}
-	//hardcoded missile stuff for now
-	missile->maxVelocity = missInfo->maxMissileVelocity;
-	missile->rotThrust = missInfo->missileRotThrust;
 
-	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false, irr->node);
+	missile.maxVelocity = missComp->maxMissileVelocity;
+	missile.rotThrust = missComp->missileRotThrust;
+
+	projId.add<MissileProjectileComponent>(missile);
+
+	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false, irr.node);
 	ps->setID(ID_IsNotSelectable);
 	IParticleEmitter* em = ps->createSphereEmitter(ps->getPosition(), .5f, //spawn point and radius
 		(-dir * .00001f), 50, 100, //direction, emit rate min/max
@@ -189,33 +192,32 @@ void createMissileProjectile(EntityId projId, MissileInfoComponent* missInfo, ve
 	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
 	ps->setMaterialTexture(0, wepComp->particle);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+
+	projId.add<IrrlichtComponent>(irr);
 }
 
-void destroyProjectile(EntityId projectile)
+void destroyProjectile(flecs::entity projectile)
 {
-	Scene* scene = &sceneManager->scene;
-
-	auto rigidBodyInfo = scene->get<BulletRigidBodyComponent>(projectile);
-	if (rigidBodyInfo) {
-		bWorld->removeRigidBody(&rigidBodyInfo->rigidBody); //removes the rigid body from the bullet physics
+	if (projectile.has<BulletRigidBodyComponent>()) {
+		auto rbc = projectile.get_mut<BulletRigidBodyComponent>();
+		bWorld->removeRigidBody(&rbc->rigidBody); //removes the rigid body from the bullet physics
 	}
 
-	auto irrComp = scene->get<IrrlichtComponent>(projectile);
-	if (irrComp) {
+	if (projectile.has<IrrlichtComponent>()) {
+		auto irrComp = projectile.get_mut<IrrlichtComponent>();
 		irrComp->node->removeAll(); //removes the children of the node (like particles, billboards etc)
 		irrComp->node->remove(); // removes the node
 	}
-
-	scene->remove<BulletRigidBodyComponent>(projectile);
-	scene->remove<IrrlichtComponent>(projectile);
-	scene->remove<ProjectileInfoComponent>(projectile);
-	scene->destroyEntity(projectile); //bye bye your life goodbye
+	projectile.destruct(); //bye bye your life goodbye
 }
 
-EntityId createProjectileImpactEffect(vector3df position, f32 duration)
+flecs::entity createProjectileImpactEffect(vector3df position, f32 duration)
 {
-	EntityId id = sceneManager->scene.newEntity();
-	auto explodeinfo = sceneManager->scene.assign<ExplosionComponent>(id);
+	auto id = game_world->entity();
+
+	id.add<ExplosionComponent>();
+	auto explodeinfo = id.get_mut<ExplosionComponent>();
+
 	explodeinfo->duration = duration;
 	explodeinfo->lifetime = 0;
 	explodeinfo->explosion = smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
@@ -236,15 +238,19 @@ EntityId createProjectileImpactEffect(vector3df position, f32 duration)
 	explodeinfo->damage = 0;
 	explodeinfo->radius = 1.f;
 	explodeinfo->force = 0;
+
 	return id;
 }
 
-void missileGoTo(EntityId id, f32 dt)
+void missileGoTo(flecs::entity id, f32 dt)
 {
-	auto miss = sceneManager->scene.get<MissileProjectileComponent>(id);
-	auto proj = sceneManager->scene.get<ProjectileInfoComponent>(id);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
-	if (!miss || !proj || !rbc) return;
+	if (!id.is_alive()) return;
+	if (!id.has<MissileProjectileComponent>() || !id.has<ProjectileInfoComponent>() || !id.has<BulletRigidBodyComponent>()) return;
+
+	auto rbc = id.get_mut<BulletRigidBodyComponent>();
+	auto miss = id.get_mut<MissileProjectileComponent>();
+	auto proj = id.get_mut<ProjectileInfoComponent>();
+
 	btRigidBody* body = &rbc->rigidBody;
 
 	btVector3 torque(0, 0, 0);
@@ -256,7 +262,7 @@ void missileGoTo(EntityId id, f32 dt)
 
 	if(!sceneManager->scene.entityInUse(miss->target)) return;
 
-	auto targetirr = sceneManager->scene.get<IrrlichtComponent>(miss->target);
+	auto targetirr = miss->target.get<IrrlichtComponent>();
 
 	btVector3 path = irrVecToBt(targetirr->node->getPosition()) - body->getCenterOfMassPosition();
 	btVector3 dir = path.normalized();
@@ -296,10 +302,11 @@ void missileGoTo(EntityId id, f32 dt)
 	body->applyTorqueImpulse(torque * dt);
 }
 
-BulletRigidBodyComponent* addProjectileRBC(EntityId id, btVector3& initForce, btVector3& initVelocity, vector3df& spawn, btQuaternion& initRot)
+BulletRigidBodyComponent* addProjectileRBC(flecs::entity id, btVector3& initForce, btVector3& initVelocity, vector3df& spawn, btQuaternion& initRot)
 {
 	f32 mass = .1f;
-	auto rbc = sceneManager->scene.assign<BulletRigidBodyComponent>(id);
+	auto rbc = id.get_mut<BulletRigidBodyComponent>();
+
 	btTransform transform = btTransform();
 	transform.setIdentity();
 
@@ -313,30 +320,23 @@ BulletRigidBodyComponent* addProjectileRBC(EntityId id, btVector3& initForce, bt
 
 	rbc->sphere.calculateLocalInertia(mass, localInertia);
 	rbc->rigidBody = btRigidBody(mass, motionState, &rbc->sphere, localInertia);
-	rbc->rigidBody.setUserIndex(getEntityIndex(id));
-	rbc->rigidBody.setUserIndex2(getEntityVersion(id));
-	rbc->rigidBody.setUserIndex3(1);
+	setIdOnBtObject(&rbc->rigidBody, id);
+
 	rbc->rigidBody.setLinearVelocity(initVelocity);
 	rbc->rigidBody.applyCentralImpulse(initForce);
 	return rbc;
 }
 
-ParentComponent* addProjectileParent(EntityId id, EntityId parent)
+ProjectileInfoComponent addProjectileInfo(WeaponInfoComponent* wepInfo, vector3df spawnPos)
 {
-	auto par = sceneManager->scene.assign<ParentComponent>(id);
-	par->parentId = parent;
-	return par;
-}
+	ProjectileInfoComponent projectileInfo;
+	projectileInfo.type = wepInfo->type;
+	projectileInfo.dmgtype = wepInfo->dmgtype;
+	projectileInfo.speed = wepInfo->projectileSpeed;
+	projectileInfo.startPos = spawnPos;
+	projectileInfo.lifetime = wepInfo->lifetime;
+	projectileInfo.currentLifetime = 0.f;
+	projectileInfo.damage = wepInfo->damage;
 
-ProjectileInfoComponent* addProjectileInfo(EntityId id, WeaponInfoComponent* wepInfo, vector3df spawnPos)
-{
-	auto projectileInfo = sceneManager->scene.assign<ProjectileInfoComponent>(id);
-	projectileInfo->type = wepInfo->type;
-	projectileInfo->dmgtype = wepInfo->dmgtype;
-	projectileInfo->speed = wepInfo->projectileSpeed;
-	projectileInfo->startPos = spawnPos;
-	projectileInfo->lifetime = wepInfo->lifetime;
-	projectileInfo->currentLifetime = 0.f;
-	projectileInfo->damage = wepInfo->damage;
 	return projectileInfo;
 }

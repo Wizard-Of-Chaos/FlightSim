@@ -2,10 +2,10 @@
 #ifndef BTUTILS_H
 #define BTUTILS_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 //Convenience function to get the ID from a bullet collision object.
-EntityId getIdFromBt(btCollisionObject* object);
+flecs::entity getIdFromBt(btCollisionObject* object);
+void setIdOnBtObject(btCollisionObject* object, flecs::entity id);
 
 /* DIRECTIONAL VECTORS */
 
@@ -28,7 +28,7 @@ btVector3 getLocalAngularVelocity(btRigidBody* body);
 btVector3 getLocalLinearVelocity(btRigidBody* body);
 
 //Adds a bullet rigid body to the given entity.
-bool initializeBtRigidBody(EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass);
+bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVector3& scale, f32 mass);
 
 
 

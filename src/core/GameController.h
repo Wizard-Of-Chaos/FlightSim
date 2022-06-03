@@ -30,7 +30,7 @@ typedef std::function<void(EntityId)> deathCallback;
 
 struct SoundInstance
 {
-	EntityId id;
+	flecs::entity id;
 	ISound* sound;
 };
 
@@ -61,7 +61,7 @@ class GameController
 		void registerDeathCallback(EntityId id, deathCallback cb) { deathCallbacks[id] = cb; }
 		bool hasDeathCallback(EntityId id) { return (deathCallbacks.find(id) != deathCallbacks.end()); }
 
-		void registerSoundInstance(EntityId id, ISoundSource* snd, f32 volume, f32 radius) {
+		void registerSoundInstance(flecs::entity id, ISoundSource* snd, f32 volume, f32 radius) {
 			auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 			if (!irr) return;
 

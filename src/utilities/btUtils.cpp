@@ -2,15 +2,13 @@
 #include "SceneManager.h"
 #include "GameController.h"
 
-bool initializeBtRigidBody(EntityId entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
+bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
 {
-	Scene* scene = &sceneManager->scene;
+	if (!entityId.has<IrrlichtComponent>()) return false;
 
-	auto objIrr = scene->get<IrrlichtComponent>(entityId);
+	auto objIrr = entityId.get<IrrlichtComponent>(entityId);
 
-	if (!objIrr) return false;
-
-	BulletRigidBodyComponent* rbc = scene->assign<BulletRigidBodyComponent>(entityId);
+	BulletRigidBodyComponent* rbc = entityId.get_mut<BulletRigidBodyComponent>();
 	rbc->shape = shape;
 	rbc->shape.setLocalScaling(scale);
 	btTransform transform = btTransform();
@@ -27,25 +25,31 @@ bool initializeBtRigidBody(EntityId entityId, btConvexHullShape shape, btVector3
 	rbc->rigidBody = btRigidBody(mass, motionState, &rbc->shape, localInertia);
 	rbc->rigidBody.setSleepingThresholds(0, 0);
 
-	rbc->rigidBody.setUserIndex(getEntityIndex(entityId));
-	rbc->rigidBody.setUserIndex2(getEntityVersion(entityId));
-	rbc->rigidBody.setUserIndex3(1);
+	setIdOnBtObject(&rbc->rigidBody, entityId);
 
 	bWorld->addRigidBody(&(rbc->rigidBody));
 
 	return true;
 }
 
-EntityId getIdFromBt(btCollisionObject* object)
+flecs::entity getIdFromBt(btCollisionObject* object)
 {
-	EntityIndex ind = object->getUserIndex();
-	EntityVersion ver = object->getUserIndex2();
-	int hasEnt = object->getUserIndex3();
-	EntityId id = INVALID_ENTITY;
-	if (hasEnt) {
-		id = createEntityId(ind, ver);
-	}
-	return id;
+	uint32_t bottom = object->getUserIndex();
+	uint32_t top = object->getUserIndex2();
+
+	flecs::entity_t id = ((flecs::entity_t)top << 32) | ((flecs::entity_t)bottom);
+
+	flecs::entity ent(game_world->get_world(), id);
+	return ent;
+}
+
+void setIdOnBtObject(btCollisionObject* object, flecs::entity id)
+{
+	size_t mask = ((1 << 32) - 1);
+	uint32_t bottom = id.id() & mask;
+	uint32_t top = (id.id() >> 32) & mask;
+	object->setUserIndex(bottom);
+	object->setUserIndex2(top);
 }
 
 btVector3 getRigidBodyForward(btRigidBody* body)

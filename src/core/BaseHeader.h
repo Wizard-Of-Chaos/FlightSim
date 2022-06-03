@@ -65,4 +65,8 @@ extern IGUIEnvironment* guienv;
 extern ISoundEngine* soundEngine;
 extern BulletPhysicsWorld* bWorld;
 extern flecs::world* game_world;
+
+const flecs::id_t INVALID_ENTITY_ID = 0;
+#define INVALID_ENTITY flecs::entity(game_world->get_world(), INVALID_ENTITY_ID)
+
 #endif

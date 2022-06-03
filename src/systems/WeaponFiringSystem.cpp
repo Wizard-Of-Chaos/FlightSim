@@ -6,9 +6,8 @@
 #include "WeaponUtils.h"
 #include <iostream>
 
-bool ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
+bool ammoFire(flecs::entity id, WeaponInfoComponent* wep, f32 dt)
 {
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
 	if (wep->clip > 0) {
 		createProjectileEntity(wep->spawnPosition, wep->firingDirection, id);
 		wep->clip -= 1;
@@ -28,13 +27,14 @@ bool ammoFire(EntityId id, WeaponInfoComponent* wep, f32 dt)
 
 void weaponFiringSystem(flecs::iter it, WeaponInfoComponent* wic, IrrlichtComponent* irrC)
 {
-	Scene* scene = &sceneManager->scene;
 	for (auto i : it) 
 	{
+		auto entityId = it.entity(i);
 		auto wepInfo = &wic[i];
 		if (wepInfo->type == WEP_NONE) continue;
 		auto irrComp = &irrC[i];
-		// TODO: handleSpecialWepFunctions
+
+		handleSpecialWepFunctions(entityId, it.delta_time());
 
 		if (wepInfo->usesAmmunition)
 		{
@@ -48,11 +48,13 @@ void weaponFiringSystem(flecs::iter it, WeaponInfoComponent* wic, IrrlichtCompon
 		{
 			if (wepInfo->usesAmmunition)
 			{
-				// TODO: ammoFire
+				bool firing = ammoFire(it.entity(i), wepInfo, it.delta_time());
+				if (wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f);
 			}
 			else
 			{
-				// TODO: wazer
+				gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);
+				createProjectileEntity(wepInfo->spawnPosition, wepInfo->firingDirection, entityId);
 			}
 			wepInfo->timeSinceLastShot = 0;
 		}
@@ -60,9 +62,12 @@ void weaponFiringSystem(flecs::iter it, WeaponInfoComponent* wic, IrrlichtCompon
 		if (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)
 		{
 			// what is this?
+			//manual check to keep it from spiralling off into infinity
 			wepInfo->timeSinceLastShot = wepInfo->firingSpeed + .005f;
 		}
 	}
+
+
 	//for (auto entityId : SceneView<WeaponInfoComponent, IrrlichtComponent>(sceneManager->scene)) { //If the gun is firing, update time since last shot, play a sound and make the entity
 	//	auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
 	//	if (wepInfo->type == WEP_NONE) continue;

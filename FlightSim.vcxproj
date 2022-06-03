@@ -179,7 +179,6 @@
     <ClCompile Include="src\systems\CarrierUpdateSystem.cpp" />
     <ClCompile Include="src\systems\CollisionCheckingSystem.cpp" />
     <ClCompile Include="src\core\GameController.cpp" />
-    <ClCompile Include="src\core\ECS.cpp" />
     <ClCompile Include="src\systems\DamageSystem.cpp" />
     <ClCompile Include="src\systems\ExplosionSystem.cpp" />
     <ClCompile Include="src\systems\HealthAndShieldSystems.cpp" />
@@ -255,7 +254,6 @@
     <ClInclude Include="src\systems\CarrierUpdateSystem.h" />
     <ClInclude Include="src\systems\CollisionCheckingSystem.h" />
     <ClInclude Include="src\core\GameController.h" />
-    <ClInclude Include="src\core\ECS.h" />
     <ClInclude Include="src\components\HealthComponent.h" />
     <ClInclude Include="src\systems\DamageSystem.h" />
     <ClInclude Include="src\systems\ExplosionSystem.h" />

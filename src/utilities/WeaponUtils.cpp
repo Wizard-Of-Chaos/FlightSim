@@ -3,9 +3,9 @@
 #include "GameStateController.h"
 #include "SceneManager.h"
 
-void handleProjectileImpact(EntityId projectile, EntityId impacted)
+void handleProjectileImpact(flecs::entity projectile, flecs::entity impacted)
 {
-	auto proj = sceneManager->scene.get<ProjectileInfoComponent>(projectile);
+	auto proj = projectile.get<ProjectileInfoComponent>();
 
 	switch (proj->type) {
 	case WEP_MISSILE:
@@ -22,32 +22,34 @@ void handleProjectileImpact(EntityId projectile, EntityId impacted)
 	}
 }
 
-void impulseBlasterImpact(EntityId projId, EntityId impacted)
+void impulseBlasterImpact(flecs::entity projId, flecs::entity impacted)
 {
-	auto proj = sceneManager->scene.get<ProjectileInfoComponent>(projId);
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(projId);
+	auto proj = projId.get<ProjectileInfoComponent>();
+	auto irr = projId.get<IrrlichtComponent>();
 
 	gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("physicsBlastSound"), 1.f, 200.f);
 	explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 80.f, proj->damage, 500.f);
 }
 
-void missileImpact(EntityId projId)
+void missileImpact(flecs::entity projId)
 {
-	auto proj = sceneManager->scene.get<ProjectileInfoComponent>(projId);
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(projId);
+	auto proj = projId.get<ProjectileInfoComponent>();
+	auto irr = projId.get<IrrlichtComponent>();
 
 	explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
 }
 
-void gravityBolasImpact(EntityId projId, EntityId impacted)
+void gravityBolasImpact(flecs::entity projId, flecs::entity impacted)
 {
-	EntityId wepId = sceneManager->scene.get<ParentComponent>(projId)->parentId;
+	flecs::entity weapon = projId.get_object<FiredBy>();
+	if (!weapon.is_alive()) return;
+	if (!weapon.has<BolasInfoComponent>()) return;
 
-	auto bolasInfo = sceneManager->scene.get<BolasInfoComponent>(wepId);
+	auto bolasInfo = weapon.get_mut<BolasInfoComponent>();
 
-	if (sceneManager->scene.entityInUse(bolasInfo->target1) && sceneManager->scene.entityInUse(bolasInfo->target2)) return; //One at a time, dammit!
+	if (bolasInfo->target1.is_alive() && bolasInfo->target2.is_alive()) return; //one set of targets at a time
 
-	if (!sceneManager->scene.entityInUse(bolasInfo->target1)) {
+	if (!bolasInfo->target1.is_alive()) {
 		bolasInfo->target1 = impacted;
 		std::cout << "Bolas target 1 locked\n";
 		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("bolasHitSound"), .5f, 100.f);
@@ -57,14 +59,15 @@ void gravityBolasImpact(EntityId projId, EntityId impacted)
 		bolasInfo->target2 = impacted;
 		std::cout << "Bolas target 2 locked\n";
 
-		auto rbcA = sceneManager->scene.get<BulletRigidBodyComponent>(bolasInfo->target1);
-		auto rbcB = sceneManager->scene.get<BulletRigidBodyComponent>(bolasInfo->target2);
 
-		if (!rbcA || !rbcB) {
+		if (!bolasInfo->target1.has<BulletRigidBodyComponent>() || !bolasInfo->target2.has<BulletRigidBodyComponent>()) {
 			bolasInfo->target1 = INVALID_ENTITY;
 			bolasInfo->target2 = INVALID_ENTITY;
 			return;
 		}
+		auto rbcA = bolasInfo->target1.get_mut<BulletRigidBodyComponent>();
+		auto rbcB = bolasInfo->target2.get_mut<BulletRigidBodyComponent>();
+
 		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("bolasLatchSound"), 1.f, 100.f);
 
 		btTransform tr;
@@ -85,9 +88,12 @@ void gravityBolasImpact(EntityId projId, EntityId impacted)
 	}
 }
 
-void handleSpecialWepFunctions(EntityId wep, f32 dt)
+void handleSpecialWepFunctions(flecs::entity wep, f32 dt)
 {
-	auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
+	if (!wep.has<WeaponInfoComponent>()) return;
+
+	auto wepInfo = wep.get<WeaponInfoComponent>();
+
 	switch (wepInfo->type) {
 	case WEP_PHYS_BOLAS:
 		gravityBolasHandler(wep, dt);
@@ -97,12 +103,15 @@ void handleSpecialWepFunctions(EntityId wep, f32 dt)
 	}
 }
 
-void gravityBolasHandler(EntityId wep, f32 dt)
+void gravityBolasHandler(flecs::entity wep, f32 dt)
 {
-	auto bolasInfo = sceneManager->scene.get<BolasInfoComponent>(wep);
-	if (!sceneManager->scene.entityInUse(bolasInfo->target1)) return;
-
-	if (sceneManager->scene.entityInUse(bolasInfo->target1) && !sceneManager->scene.entityInUse(bolasInfo->target2)) {
+	if (!wep.has<BolasInfoComponent>() || !wep.is_alive()) return;
+	auto bolasInfo = wep.get_mut<BolasInfoComponent>();
+	if (!bolasInfo->target1.is_alive()) {
+		bolasInfo->target2 = INVALID_ENTITY;
+		return;
+	}
+	if (bolasInfo->target1.is_alive() && !bolasInfo->target2.is_alive()) {
 		bolasInfo->currentTimeToHit += dt;
 		if (bolasInfo->currentTimeToHit >= bolasInfo->timeToHit) {
 			bolasInfo->target1 = INVALID_ENTITY;
@@ -111,7 +120,7 @@ void gravityBolasHandler(EntityId wep, f32 dt)
 			return;
 		}
 	}
-	else if (sceneManager->scene.entityInUse(bolasInfo->target1) && sceneManager->scene.entityInUse(bolasInfo->target2)) {
+	else if (bolasInfo->target1.is_alive() && !bolasInfo->target2.is_alive()) {
 		bolasInfo->currentDuration += dt;
 		if (bolasInfo->currentDuration >= bolasInfo->duration) {
 			bolasInfo->target1 = INVALID_ENTITY;

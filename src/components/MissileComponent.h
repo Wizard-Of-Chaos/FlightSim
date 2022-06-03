@@ -2,7 +2,6 @@
 #ifndef MISSILECOMPONENT_H
 #define MISSILECOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 /*
 * The missile info component is used alongside the WeaponInfoComponent to track data about missile weapons. Note that it's
@@ -25,7 +24,7 @@ struct MissileInfoComponent
 */
 struct MissileProjectileComponent
 {
-	EntityId target;
+	flecs::entity target;
 	//effectively a stripped-down ship component here
 	f32 rotThrust;
 	f32 maxVelocity;

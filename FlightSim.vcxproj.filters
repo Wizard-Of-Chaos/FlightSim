@@ -13,9 +13,6 @@
     <ClCompile Include="src\systems\ai_systems\DefaultAIUpdateSystem.cpp">
       <Filter>Sources\Systems\AI_Systems</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\ECS.cpp">
-      <Filter>Sources\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\GameController.cpp">
       <Filter>Sources\Core</Filter>
     </ClCompile>
@@ -179,9 +176,6 @@
     </ClInclude>
     <ClInclude Include="src\systems\ai_systems\DefaultAIUpdateSystem.h">
       <Filter>Headers\Systems\AI_Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\ECS.h">
-      <Filter>Headers\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\core\GameController.h">
       <Filter>Headers\Core</Filter>
