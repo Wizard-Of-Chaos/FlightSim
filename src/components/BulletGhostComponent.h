@@ -2,7 +2,6 @@
 #ifndef BULLETGHOSTCOMPONENT_H
 #define BULLETGHOSTCOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 /*
 * Bullet ghost components are for things you can shoot at, but can't collide with.

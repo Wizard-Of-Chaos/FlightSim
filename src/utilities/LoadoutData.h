@@ -1,6 +1,5 @@
 #pragma once
 #include "BaseHeader.h"
-#include "ECS.h"
 #include "ShipComponent.h"
 #include "WeaponInfoComponent.h"
 #include "HealthComponent.h"

@@ -3,7 +3,6 @@
 #ifndef AICOMPONENT_H
 #define AICOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 /*
 * The different states an AI might be in. Implemented using steering behaviors in

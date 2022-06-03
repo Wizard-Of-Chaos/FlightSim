@@ -2,7 +2,6 @@
 #ifndef BULLETRIGIDBODYCOMPONENT_H
 #define BULLETRIGIDBODYCOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 #include "IrrlichtComponent.h"
 #include "GameFunctions.h"
 

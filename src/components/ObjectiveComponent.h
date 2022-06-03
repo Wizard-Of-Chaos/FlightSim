@@ -2,7 +2,6 @@
 #ifndef OBJECTIVECOMPONENT_H
 #define OBJECTIVECOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 enum OBJECTIVE_TYPE
 {

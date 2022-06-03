@@ -16,7 +16,7 @@ struct CarrierComponent
 	vector3df scale;
 	f32 spawnTimer;
 
-	EntityId turrets[CARRIER_MAX_TURRETS];
+	flecs::entity turrets[CARRIER_MAX_TURRETS];
 	vector3df turretPositions[CARRIER_MAX_TURRETS];
 	vector3df turretRotations[CARRIER_MAX_TURRETS];
 };

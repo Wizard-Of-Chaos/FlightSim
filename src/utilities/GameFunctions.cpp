@@ -65,32 +65,32 @@ EntityId getPlayer()
 	return INVALID_ENTITY;
 }
 
-void destroyObject(EntityId id)
+void destroyObject(flecs::entity id)
 {
-	if (!sceneManager->scene.entityInUse(id)) return;
-	auto irrComp = sceneManager->scene.get<IrrlichtComponent>(id);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
+	if (!id.is_alive()) return;
 
-	auto ship = sceneManager->scene.get<ShipComponent>(id);
-	if (ship) {
+	if (id.has<ShipComponent>()) {
+		auto ship = id.get_mut<ShipComponent>();
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 			destroyObject(ship->weapons[i]);
 		}
 	}
 
-	if (irrComp) {
-		irrComp->node->removeAll();
-		irrComp->node->remove();
+	if (id.has<IrrlichtComponent>()) {
+		auto irr = id.get_mut<IrrlichtComponent>();
+		irr->node->removeAll();
+		irr->node->remove();
 	}
-	if (rbc) {
+	if (id.has<BulletRigidBodyComponent>()) {
+		auto rbc = id.get_mut<BulletRigidBodyComponent>();
 		bWorld->removeRigidBody(&rbc->rigidBody);
 	}
-	auto ghost = sceneManager->scene.get<BulletGhostComponent>(id);
-	if (ghost) {
+	if (id.has<BulletGhostComponent>()) {
+		auto ghost = id.get_mut<BulletGhostComponent>();
 		bWorld->removeCollisionObject(&ghost->ghost);
 	}
 
-	sceneManager->scene.destroyEntity(id);
+	id.destruct();
 }
 
 bool initializeDefaultPlayer(EntityId shipId)

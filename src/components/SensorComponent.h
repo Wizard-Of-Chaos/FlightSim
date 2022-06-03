@@ -2,7 +2,6 @@
 #ifndef SENSORCOMPONENT_H
 #define SENSORCOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 #include "ShipComponent.h"
 #include "FactionComponent.h"
 #include "BulletRigidBodyComponent.h"
@@ -20,17 +19,17 @@ const f32 DEFAULT_SENSOR_UPDATE_INTERVAL = .4f;
 * This component is updated in the SensorUpdateSystem.
 */
 
-typedef std::tuple<EntityId, BulletRigidBodyComponent*, FactionComponent*> ContactInfo;
+typedef std::tuple<flecs::entity, BulletRigidBodyComponent*, FactionComponent*> ContactInfo;
 
 struct SensorComponent
 {
 	f32 detectionRadius;
 	std::vector<ContactInfo> contacts;
-	EntityId closestContact;
-	EntityId closestHostileContact;
-	EntityId closestFriendlyContact;
+	flecs::entity closestContact;
+	flecs::entity closestHostileContact;
+	flecs::entity closestFriendlyContact;
 
-	EntityId targetContact; //contact for whoever the sensors are actually focused on
+	flecs::entity targetContact; //contact for whoever the sensors are actually focused on
 	f32 timeSelected;
 
 	f32 updateInterval;

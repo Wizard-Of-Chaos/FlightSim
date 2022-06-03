@@ -3,7 +3,6 @@
 #ifndef HEALTHCOMPONENT_H
 #define HEALTHCOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 //Default maximum for health is 100.
 const f32 DEFAULT_MAX_HEALTH = 100.f;

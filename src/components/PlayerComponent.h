@@ -4,7 +4,6 @@
 #define PLAYERCOMPONENT_H
 
 #include "BaseHeader.h"
-#include "ECS.h"
 
 #include <vector>
 #include <unordered_map>
@@ -40,7 +39,7 @@ struct PlayerComponent
 	vector3df thrust;
 	vector3df rotation;
 
-	std::unordered_map<EntityId, HUDContact*> trackedContacts;
+	std::unordered_map<flecs::entity, HUDContact*> trackedContacts;
 
 	void removeContact(HUDContact* contact);
 	void removeHUDElement(HUDElement* element);

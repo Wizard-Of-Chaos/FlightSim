@@ -35,7 +35,7 @@ bool isPointInSphere(vector3df& point, vector3df center, f32 radius);
 EntityId getPlayer();
 
 //Removes the given object from the scene.
-void destroyObject(EntityId id);
+void destroyObject(flecs::entity id);
 
 //Adds on a player component and an input component to a given ship.
 //Requires: Irrlicht component. Returns false without that.

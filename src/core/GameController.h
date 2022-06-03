@@ -4,7 +4,6 @@
 #define FLIGHTEVENTRECEIVER_H
 #include "BaseHeader.h"
 
-#include "ECS.h"
 #include "SceneManager.h"
 #include "IrrlichtComponent.h"
 #include "InputComponent.h"
@@ -26,7 +25,7 @@
 * gets rid of those (such as when you return to the game menus). Many things include the GameController as a pointer - such as the SceneManager class.
 */
 
-typedef std::function<void(EntityId)> deathCallback;
+typedef std::function<void(flecs::entity)> deathCallback;
 
 struct SoundInstance
 {
@@ -55,15 +54,15 @@ class GameController
 
 		GameConfig gameConfig;
 
-		std::unordered_map<EntityId, deathCallback> deathCallbacks;
+		std::unordered_map<flecs::entity, deathCallback> deathCallbacks;
 		std::list<SoundInstance> sounds;
 
-		void registerDeathCallback(EntityId id, deathCallback cb) { deathCallbacks[id] = cb; }
-		bool hasDeathCallback(EntityId id) { return (deathCallbacks.find(id) != deathCallbacks.end()); }
+		void registerDeathCallback(flecs::entity id, deathCallback cb) { deathCallbacks[id] = cb; }
+		bool hasDeathCallback(flecs::entity id) { return (deathCallbacks.find(id) != deathCallbacks.end()); }
 
 		void registerSoundInstance(flecs::entity id, ISoundSource* snd, f32 volume, f32 radius) {
-			auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
-			if (!irr) return;
+			if (!id.has<IrrlichtComponent>()) return;
+			auto irr = id.get<IrrlichtComponent>();
 
 			ISound* sound = soundEngine->play3D(snd, irr->node->getAbsolutePosition(), false, true);
 			if (sound) {

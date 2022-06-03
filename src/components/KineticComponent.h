@@ -2,7 +2,6 @@
 #ifndef KINETICCOMPONENT_H
 #define KINETICCOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 /*
 * Kinetic info components hold some extra information on kinetic weapons. Namely, how accurate they are, and how many bullets

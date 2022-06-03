@@ -2,7 +2,6 @@
 #ifndef CAMPAIGN_H
 #define CAMPAIGN_H
 #include "BaseHeader.h"
-#include "ECS.h"
 #include "Scenario.h"
 #include "AIComponent.h"
 #include "WeaponInfoComponent.h"

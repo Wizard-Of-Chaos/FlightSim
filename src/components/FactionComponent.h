@@ -3,7 +3,6 @@
 #ifndef FACTIONCOMPONENT_H
 #define FACTIONCOMPONENT_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 //The different types of factions in the game. Right now, it's just
 //"neutral", "hostile", and "player" (friendly).

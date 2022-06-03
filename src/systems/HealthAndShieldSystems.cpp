@@ -32,7 +32,7 @@ void healthSystem(flecs::iter it, HealthComponent* hc)
 				auto rad = irrComp->node->getBoundingBox().getExtent().getLength() * avgScale;
 				explode(pos, 3.f, avgScale, rad, 50.f, 800.f);
 			}
-			e.destruct();
+			destroyObject(e);
 			if (!gameController->isPlayerAlive)
 			{
 				stateController->setState(GAME_FINISHED);

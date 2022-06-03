@@ -2,7 +2,6 @@
 
 #ifndef INPUTCOMPONENT_H
 #define INPUTCOMPONENT_H
-
 #include "BaseHeader.h"
 
 //UNUSED AT THE MOMENT
