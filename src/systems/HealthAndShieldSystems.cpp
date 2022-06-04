@@ -20,9 +20,9 @@ void healthSystem(flecs::iter it, HealthComponent* hc)
 				gameController->isPlayerAlive = false;
 				gameController->clearPlayerHUD();
 			}
-			if (gameController->hasDeathCallback(e.id()))
+			if (gameController->hasDeathCallback(e))
 			{
-				gameController->deathCallbacks[e.id()](e.id());
+				gameController->deathCallbacks[e](e);
 			}
 			else if (irrComp)
 			{

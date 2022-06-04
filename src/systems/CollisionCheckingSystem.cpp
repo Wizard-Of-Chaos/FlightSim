@@ -5,35 +5,25 @@
 #include "WeaponUtils.h"
 #include <iostream>
 
-void projectileCollider(EntityId projectile, EntityId impacted)
+void projectileCollider(flecs::entity projectile, flecs::entity impacted)
 {
-	auto dmg = sceneManager->scene.get<DamageTrackingComponent>(impacted);
-	auto proj = sceneManager->scene.get<ProjectileInfoComponent>(projectile);
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(projectile);
+	if (!impacted.has<DamageTrackingComponent>()) return;
+	auto dmg = impacted.get_mut<DamageTrackingComponent>();
+	auto proj = projectile.get<ProjectileInfoComponent>();
+	auto irr = projectile.get<IrrlichtComponent>();
 
-	/*
-	if (proj->type == WEP_MISSILE) {
-		explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 20.f, proj->damage, 100.f);
-	}
-	if (proj->type == WEP_PHYS_IMPULSE) {
-		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("physicsBlastSound"), 1.f, 200.f);
-		explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 80.f, proj->damage, 500.f);
-	}
-	*/
 	handleProjectileImpact(projectile, impacted);
 	if (dmg) dmg->registerDamageInstance(DamageInstance(projectile, impacted, proj->dmgtype, proj->damage, device->getTimer()->getTime()));
 	createProjectileImpactEffect(irr->node->getPosition(), .2f);
 	destroyProjectile(projectile);
 }
 
-void collisionDamage(EntityId A, EntityId B)
+void collisionDamage(flecs::entity A, flecs::entity B)
 {
-	auto rbcA = sceneManager->scene.get<BulletRigidBodyComponent>(A);
-	auto rbcB = sceneManager->scene.get<BulletRigidBodyComponent>(B);
-	auto dmgA = sceneManager->scene.get<DamageTrackingComponent>(A);
-	auto dmgB = sceneManager->scene.get<DamageTrackingComponent>(B);
+	if (!A.has<BulletRigidBodyComponent>() || !B.has<BulletRigidBodyComponent>()) return;
 
-	if (!rbcA || !rbcB) return;
+	auto rbcA = A.get<BulletRigidBodyComponent>();
+	auto rbcB = B.get<BulletRigidBodyComponent>();
 
 	btScalar velA = rbcA->rigidBody.getLinearVelocity().length2();
 	btScalar velB = rbcB->rigidBody.getLinearVelocity().length2();
@@ -49,8 +39,12 @@ void collisionDamage(EntityId A, EntityId B)
 	//balancing for later
 	kinetic = kinetic / 8000.f;
 	if (kinetic < .1f) return;
-	if (dmgA) dmgA->registerDamageInstance(DamageInstance(B, A, DAMAGE_TYPE::IMPACT, kinetic / 2, device->getTimer()->getTime()));
-	if (dmgB) dmgB->registerDamageInstance(DamageInstance(A, B, DAMAGE_TYPE::IMPACT, kinetic / 2, device->getTimer()->getTime()));
+	if (A.has<DamageTrackingComponent>()) {
+		A.get_mut<DamageTrackingComponent>()->registerDamageInstance(DamageInstance(B, A, DAMAGE_TYPE::IMPACT, kinetic / 2, device->getTimer()->getTime()));
+	}
+	if (B.has<DamageTrackingComponent>()) {
+		B.get_mut<DamageTrackingComponent>()->registerDamageInstance(DamageInstance(A, B, DAMAGE_TYPE::IMPACT, kinetic / 2, device->getTimer()->getTime()));
+	}
 }
 
 void collisionCheckingSystem()
@@ -66,11 +60,12 @@ void collisionCheckingSystem()
 		btRigidBody* rbcA = (btRigidBody*)objA;
 		btRigidBody* rbcB = (btRigidBody*)objB;
 
-		EntityId idA = getIdFromBt(objA);
-		EntityId idB = getIdFromBt(objB);
-		if (!sceneManager->scene.entityInUse(idA) || !sceneManager->scene.entityInUse(idB)) return;
-		auto projA = sceneManager->scene.get<ProjectileInfoComponent>(idA);
-		auto projB = sceneManager->scene.get<ProjectileInfoComponent>(idB);
+		flecs::entity idA = getIdFromBt(objA);
+		flecs::entity idB = getIdFromBt(objB);
+		if (!idA.is_alive()|| !idB.is_alive()) return;
+		bool projA = idA.has<ProjectileInfoComponent>();
+		bool projB = idB.has<ProjectileInfoComponent>();
+
 		if (projA && !projB) {
 			projectileCollider(idA, idB);
 			continue;
@@ -104,41 +99,27 @@ bool broadCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadph
 	auto entityB = getIdFromBt(b);
 	if (!entityA.is_valid() || !entityB.is_valid()) return true; //something probably went wrong if either of these hits
 	//need to check who "owns" these entities
-	auto parentA = sceneManager->scene.get<ParentComponent>(idA);
-	auto parentB = sceneManager->scene.get<ParentComponent>(idB);
-	if (parentA && parentB) { //if they have the same parent (i.e. projectiles) return false
-		if (parentA->parentId == parentB->parentId) return false;
-	}
-	auto projA = sceneManager->scene.get<ProjectileInfoComponent>(idA);
-	auto projB = sceneManager->scene.get<ProjectileInfoComponent>(idB);
 
-	if (projA && projB) {
+	if (entityA.get_object<FiredBy>().id() == entityB.get_object<FiredBy>().id()) return false; //if they have the same parent return false
+
+	if (entityA.has<ProjectileInfoComponent>() && entityB.has<ProjectileInfoComponent>()) { //if they're both projectiles return false
 		return false;
 	}
 
 	//if one is a projectile and the other isn't, needs to check whether it hit its parent - if so throw it out
-	if (projA && !projB) {
-		return isProjectileHittingParent(idA, idB);
+	if (entityA.has<ProjectileInfoComponent>() && !entityB.has<ProjectileInfoComponent>()) {
+		return isProjectileHittingParent(entityA, entityB);
 	}
-	if (!projA && projB) {
-		return isProjectileHittingParent(idB, idA);
+	if (!entityA.has<ProjectileInfoComponent>() && entityB.has<ProjectileInfoComponent>()) {
+		return isProjectileHittingParent(entityB, entityA);
 	}
 
 	//in all other scenarios return true, we need the collision
 	return true;
 }
 
-bool broadCallback::isProjectileHittingParent(EntityId proj, EntityId other) const
+bool broadCallback::isProjectileHittingParent(flecs::entity proj, flecs::entity other) const
 {
-	auto wepParent = sceneManager->scene.get<ParentComponent>(proj);
-	if (!wepParent) return true;
-	if (!sceneManager->scene.entityInUse(wepParent->parentId)) return true; //set up like this because im not sure if checking them both in the same if will throw a segfault
-	auto shipParent = sceneManager->scene.get<ParentComponent>(wepParent->parentId);
-	if (!shipParent) return true;
-	if (!sceneManager->scene.entityInUse(shipParent->parentId)) return true;
-
-	if (other == shipParent->parentId) return false;
-
+	//to-do: set it up so that you can't actually shoot yourself (or maybe leave it as a toggle?)
 	return true;
-
 }

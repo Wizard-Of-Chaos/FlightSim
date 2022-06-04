@@ -17,7 +17,7 @@
 void collisionCheckingSystem();
 
 //Checks two entities: the projectile and whatever got hit by the projectile. Removes the appropriate amount of health.
-void projectileCollider(EntityId projectile, EntityId impacted);
+void projectileCollider(flecs::entity projectile, flecs::entity impacted);
 
 //The callback used by bullet physics to determine when two things need to have collision associated with them. Doesn't do anything out
 //of the ordinary - but it will be used to make sure that a ship can't shoot itself, for example, by checking the IDs associated with
@@ -26,7 +26,7 @@ struct broadCallback : public btOverlapFilterCallback
 {
 	//returns true when pairs need collision
 	virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) const;
-	bool isProjectileHittingParent(EntityId proj, EntityId other) const;//domestic abuse should never be allowed
+	bool isProjectileHittingParent(flecs::entity proj, flecs::entity other) const;//domestic abuse should never be allowed
 };
 
 

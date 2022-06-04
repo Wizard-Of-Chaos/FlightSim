@@ -80,6 +80,10 @@ void GameController::init()
 	game_world->system<ShieldComponent>().kind(flecs::OnUpdate).iter(shieldSystem);
 	game_world->system<AIComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(AIUpdateSystem);
 	game_world->system<CarrierComponent, IrrlichtComponent, FactionComponent>().kind(flecs::OnUpdate).iter(carrierUpdateSystem);
+	game_world->system().kind(flecs::OnUpdate).iter(collisionCheckingSystem);
+	game_world->system<DamageTrackingComponent, HealthComponent>().kind(flecs::OnUpdate).iter(damageSystem);
+	game_world->system<ExplosionComponent>().kind(flecs::OnUpdate).iter(explosionSystem);
+	game_world->system<BulletRigidBodyComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(irrlichtRigidBodyPositionSystem);
 
 	open = true;
 }

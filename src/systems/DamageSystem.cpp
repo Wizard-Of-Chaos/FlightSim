@@ -10,7 +10,7 @@ void handleInstance(DamageInstance& inst, HealthComponent* hp)
 	hp->health -= inst.amount;
 }
 
-void handleShieldedInstance(EntityId id, DamageInstance& inst, HealthComponent* hp, ShieldComponent* shield, u32 lastHitTime)
+void handleShieldedInstance(flecs::entity id, DamageInstance& inst, HealthComponent* hp, ShieldComponent* shield)
 {
 	f32 overflow = 0;
 	if (shield) {
@@ -42,6 +42,50 @@ void handleEMPInstance(DamageInstance& inst, ShieldComponent* shield)
 	}
 }
 
+void damageSystem(flecs::iter it, DamageTrackingComponent* dtc, HealthComponent* hc)
+{
+	for (auto i : it) {
+		auto dmg = &dtc[i];
+		auto hp = &hc[i];
+		auto id = it.entity(i);
+		bool hasShld = id.has<ShieldComponent>();
+		ShieldComponent* shld = nullptr;
+		if (hasShld) shld = id.get_mut<ShieldComponent>();
+
+		for (DamageInstance inst : dmg->instances) {
+			switch (inst.type) {
+			case DAMAGE_TYPE::NONE:
+				break;
+			case DAMAGE_TYPE::EXPLOSIVE:
+				handleShieldedInstance(id, inst, hp, shld);
+				break;
+			case DAMAGE_TYPE::IMPACT:
+				if (inst.time >= dmg->lastDamageTime + 500) gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("impactSound"), 1.f, 50.f);
+				handleInstance(inst, hp);
+				break;
+			case DAMAGE_TYPE::VELOCITY:
+				handleInstance(inst, hp);
+				break;
+			case DAMAGE_TYPE::PLASMA:
+				handleShieldedInstance(id, inst, hp, shld);
+				break;
+			case DAMAGE_TYPE::KINETIC:
+				handleShieldedInstance(id, inst, hp, shld);
+				break;
+			case DAMAGE_TYPE::EMP:
+				handleEMPInstance(inst, shld);
+				break;
+			default: //should be an error here
+				break;
+			}
+			dmg->lastDamageType = inst.type;
+			dmg->lastDamageTime = inst.time;
+		}
+		dmg->instances.clear();
+	}
+}
+
+/*
 void damageSystem(f32 dt)
 {
 	for (auto id : SceneView<DamageTrackingComponent, HealthComponent>(sceneManager->scene)) { //making the assumption that anything that can take damage has health
@@ -83,3 +127,4 @@ void damageSystem(f32 dt)
 
 	}
 }
+*/
