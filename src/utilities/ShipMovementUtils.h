@@ -3,13 +3,10 @@
 #ifndef SHIPMOVEMENTUTILS_H
 #define SHIPMOVEMENTUTILS_H
 #include "BaseHeader.h"
-#include "ECS.h"
 #include "ShipComponent.h"
 #include "BulletRigidBodyComponent.h"
 #include "IrrlichtComponent.h"
 #include "btUtils.h"
-
-class SceneManager;
 
 const f32 DEGENERATE_VECTOR_LENGTH = 0.0000001f;
 
@@ -79,12 +76,12 @@ btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship);
 void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
 
 //Combines torque and opposing torque to try and smoothly turn towards the direction.
-void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir);
+void smoothTurnToDirection(btRigidBody* body,  ShipComponent* ship, btVector3 dir);
 
 //Applies a torque to turn towards the given direction, then applies a force to get there. Applies a braking force when close enough.
 void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt);
 
 //Applies torque and force to avoid smacking into something. Returns true if actively avoiding an obstacle, and false otherwise.
-bool avoidObstacles(EntityId id, f32 dt, EntityId target=INVALID_ENTITY);
+bool avoidObstacles(flecs::entity id, f32 dt, flecs::entity target=INVALID_ENTITY);
 
 #endif 

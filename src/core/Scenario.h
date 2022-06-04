@@ -2,7 +2,6 @@
 #ifndef SCENARIO_H
 #define SCENARIO_H
 #include "BaseHeader.h"
-#include "ECS.h"
 #include <unordered_map>
 
 //Different types of scenario available.

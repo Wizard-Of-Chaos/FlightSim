@@ -2,19 +2,22 @@
 #include "SceneManager.h"
 #include <iostream>
 
-void setAIWeapon(EntityId wep, bool firing)
+void setAIWeapon(flecs::entity wep, bool firing)
 {
-	if (!sceneManager->scene.entityInUse(wep)) return;
-
-	auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
-	if (!wepInfo) return;
+	if (!wep.is_alive()) return;
+	if (!wep.has<WeaponInfoComponent>()) return;
+	auto wepInfo = wep.get_mut<WeaponInfoComponent>();
 	wepInfo->isFiring = firing;
+
 }
 
-void defaultIdleBehavior(EntityId id, f32 dt)
+void defaultIdleBehavior(flecs::entity id, f32 dt)
 {
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
-	auto ship = sceneManager->scene.get<ShipComponent>(id);
+	if (!id.is_alive()) return;
+	if (!id.has<BulletRigidBodyComponent>() || !id.has<ShipComponent>()) return;
+
+	auto rbc = id.get_mut<BulletRigidBodyComponent>();
+	auto ship = id.get_mut<ShipComponent>();
 
 	btVector3 force = btVector3(0, 0, 0);
 	btVector3 torque = btVector3(0, 0, 0);
@@ -27,22 +30,23 @@ void defaultIdleBehavior(EntityId id, f32 dt)
 	rbc->rigidBody.applyCentralImpulse(force * dt);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-		EntityId wep = ship->weapons[i];
+		flecs::entity wep = ship->weapons[i];
 		setAIWeapon(wep, false);
 	}
 }
 
-void defaultFleeBehavior(EntityId id, EntityId fleeTarget, f32 dt)
+void defaultFleeBehavior(flecs::entity id, flecs::entity fleeTarget, f32 dt)
 {
-	if (fleeTarget == INVALID_ENTITY) return;
+	if (fleeTarget == INVALID_ENTITY || !id.is_alive()) return;
+	if (!id.has<IrrlichtComponent>() || !id.has<BulletRigidBodyComponent>() || !id.has<ShipComponent>()) return;
 
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
-	auto ship = sceneManager->scene.get<ShipComponent>(id);
-	auto ai = sceneManager->scene.get<AIComponent>(id);
+	auto irr = id.get<IrrlichtComponent>();
+	auto rbc = id.get_mut<BulletRigidBodyComponent>();
+	auto ship = id.get_mut<ShipComponent>();
 
-	auto fleeIrr = sceneManager->scene.get<IrrlichtComponent>(fleeTarget);
-	if (!fleeIrr) return;
+	if (!fleeTarget.has<IrrlichtComponent>()) return;
+	auto fleeIrr = fleeTarget.get<IrrlichtComponent>();
+
 	vector3df distance = fleeIrr->node->getPosition() - irr->node->getPosition();
 	distance.normalize();
 	vector3df targetVector = -distance; //runs away
@@ -56,29 +60,27 @@ void defaultFleeBehavior(EntityId id, EntityId fleeTarget, f32 dt)
 	rbc->rigidBody.applyCentralImpulse(force * dt);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-		EntityId wep = ship->weapons[i];
-		setAIWeapon(wep, false);
+		setAIWeapon(ship->weapons[i], false);
 	}
 }
 
 //TLDR is try and get behind the ship and match its velocity.
-void defaultPursuitBehavior(EntityId id, EntityId pursuitTarget, f32 dt)
+void defaultPursuitBehavior(flecs::entity id, flecs::entity pursuitTarget, f32 dt)
 {
-	auto sensors = sceneManager->scene.get<SensorComponent>(id);
+	if (!id.has<SensorComponent>() || !id.has<BulletRigidBodyComponent>() || !id.has<ShipComponent>()) return;
+	auto sensors = id.get_mut<SensorComponent>();
 
-	if (pursuitTarget == INVALID_ENTITY) {
+	if (pursuitTarget == INVALID_ENTITY || !pursuitTarget.is_alive()) {
 		sensors->targetContact = INVALID_ENTITY;
 		return; 
 	}
-
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
-	auto ship = sceneManager->scene.get<ShipComponent>(id);
-	auto ai = sceneManager->scene.get<AIComponent>(id);
+	auto rbc = id.get_mut<BulletRigidBodyComponent>();
+	auto ship = id.get_mut<ShipComponent>();
 
 	sensors->targetContact = pursuitTarget;
 
-	auto targetRBC = sceneManager->scene.get<BulletRigidBodyComponent>(pursuitTarget);
-	if (!targetRBC) return;
+	if (!pursuitTarget.has<BulletRigidBodyComponent>()) return;
+	auto targetRBC = pursuitTarget.get<BulletRigidBodyComponent>();
 
 	btVector3 targetPos = targetRBC->rigidBody.getCenterOfMassPosition();
 	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
@@ -99,28 +101,26 @@ void defaultPursuitBehavior(EntityId id, EntityId pursuitTarget, f32 dt)
 		//if it is behind it, start turning towards it
 		ship->moves[SHIP_STOP_VELOCITY] = true;
 		smoothTurnToDirection(&rbc->rigidBody, ship, facing);
-		auto pursuitBody = sceneManager->scene.get<BulletRigidBodyComponent>(sensors->closestContact);
 	}
 
 	btVector3 forward = getRigidBodyForward(&rbc->rigidBody);
 	btScalar angle = forward.angle(facing);
 	//if it's facing the ship, start shooting
-	if ((angle * RADTODEG) < 30.f) {
+	if ((angle * RADTODEG) < 30.f) { //converted to degrees so my overworked meat brain can better comprehend it
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-			EntityId wep = ship->weapons[i];
-			if (!sceneManager->scene.entityInUse(wep)) continue;
-			auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(wep);
-			auto irrComp = sceneManager->scene.get<IrrlichtComponent>(wep);
-			if (!wepInfo || !irrComp) continue;
+			flecs::entity wep = ship->weapons[i];
+			if (!wep.is_alive()) continue;
+			if (!wep.has<WeaponInfoComponent>() || !wep.has<IrrlichtComponent>()) continue;
+			auto wepInfo = wep.get_mut<WeaponInfoComponent>();
+			auto irrComp = wep.get_mut<IrrlichtComponent>();
 			wepInfo->isFiring = true;
 			wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
-			wepInfo->firingDirection = btVecToIrr(facing); 
+			wepInfo->firingDirection = btVecToIrr(facing); //todo: the ai doesn't lead its shots at all, fix it
 		}
 	}
 	else {
 		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-			EntityId wep = ship->weapons[i];
-			setAIWeapon(wep, false);
+			setAIWeapon(ship->weapons[i], false);
 		}
 	}
 }

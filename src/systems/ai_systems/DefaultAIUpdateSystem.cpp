@@ -2,12 +2,14 @@
 #include "DefaultAIUpdateSystem.h"
 #include <iostream>
 
-void defaultAIStateCheck(EntityId id)
+void defaultAIStateCheck(flecs::entity id)
 {
-	auto irrAI = sceneManager->scene.get<IrrlichtComponent>(id);
-	auto aiComp = sceneManager->scene.get<AIComponent>(id);
-	auto sensors = sceneManager->scene.get<SensorComponent>(id);
-	auto hp = sceneManager->scene.get<HealthComponent>(id);
+	if (!id.is_alive()) return;
+	if (!id.has<AIComponent>() || !id.has<SensorComponent>() || !id.has<HealthComponent>()) return;
+
+	auto aiComp = id.get_mut<AIComponent>();
+	auto sensors = id.get<SensorComponent>();
+	auto hp = id.get<HealthComponent>();
 
 	if (sensors->closestHostileContact == INVALID_ENTITY) {
 		aiComp->state = AI_STATE_IDLE;
@@ -23,10 +25,12 @@ void defaultAIStateCheck(EntityId id)
 	//whoop its ass!
 }
 
-void defaultAIUpdateSystem(EntityId id, f32 dt)
+void defaultAIUpdateSystem(flecs::entity id, f32 dt)
 {
-	auto ai = sceneManager->scene.get<AIComponent>(id);
-	auto sensors = sceneManager->scene.get<SensorComponent>(id);
+	if (!id.is_alive()) return;
+	if (!id.has<AIComponent>() || !id.has<SensorComponent>()) return;
+	auto ai = id.get_mut<AIComponent>();
+	auto sensors = id.get_mut<SensorComponent>();
 
 	ai->timeSinceLastStateCheck += dt;
 	if (ai->timeSinceLastStateCheck >= ai->reactionSpeed) {
