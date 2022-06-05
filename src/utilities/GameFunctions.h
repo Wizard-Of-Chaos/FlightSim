@@ -31,30 +31,27 @@ vector3df getPointInSphere(vector3df center, f32 radius);
 //Checks if a point is in the defined sphere.
 bool isPointInSphere(vector3df& point, vector3df center, f32 radius);
 
-//returns the ID of the player
-EntityId getPlayer();
-
 //Removes the given object from the scene.
 void destroyObject(flecs::entity id);
 
 //Adds on a player component and an input component to a given ship.
 //Requires: Irrlicht component. Returns false without that.
-bool initializeDefaultPlayer(EntityId shipId);
+bool initializeDefaultPlayer(flecs::entity shipId);
 //Adds a health component to the given entity. 
-void initializeHealth(EntityId id, f32 healthpool);
+void initializeHealth(flecs::entity id, f32 healthpool);
 //Adds default health component.
-void initializeDefaultHealth(EntityId objectId);
+void initializeDefaultHealth(flecs::entity objectId);
 //Sets up the HUD for the given player entity.
 //Requires a player component; returns false otherwise.
-bool initializeDefaultHUD(EntityId playerId);
+bool initializeDefaultHUD(flecs::entity playerId);
 
 //Creates AI component with the assigned values.
-void initializeAI(EntityId id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance);
+void initializeAI(flecs::entity id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance);
 //Creates an AI component with default values.
-void initializeDefaultAI(EntityId id);
+void initializeDefaultAI(flecs::entity id);
 
 //Creates an explosion at the point that lasts for the duration.
-EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force);
+flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force);
 
 //Gets the data from the player ship at the end of a scenario.
 ShipInstance getEndScenarioData();

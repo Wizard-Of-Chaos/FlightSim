@@ -9,7 +9,7 @@ class HUDVelocityBar : public HUDElement
 public:
 	HUDVelocityBar(IGUIElement* root);
 	~HUDVelocityBar() override;
-	virtual void updateElement(EntityId playerId);
+	virtual void updateElement(flecs::entity playerId);
 	IGUIImage* velocity;
 	IGUIStaticText* velocityNum;
 	IGUIStaticText* position;

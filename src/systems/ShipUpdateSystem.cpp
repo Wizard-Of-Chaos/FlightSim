@@ -71,13 +71,15 @@ bool angularSafetyCheck(f32 angVelocity, ShipComponent* ship, btVector3 velDir, 
 	return true;
 }
 
-void shipUpdateSystem(f32 dt)
+void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyComponent* rbcs, IrrlichtComponent* irrc, ShipParticleComponent* prtc)
 {
-	Scene& scene = sceneManager->scene;
-	for (auto entityId : SceneView<ShipComponent, BulletRigidBodyComponent>(scene)) {
-		auto ship = scene.get<ShipComponent>(entityId);
-		auto irr = scene.get<IrrlichtComponent>(entityId);
-		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
+	for (auto i : it) {
+		f32 dt = it.delta_time();
+		auto ship = &shpc[i];
+		auto irr = &irrc[i];
+		auto rbc = &rbcs[i];
+		auto particles = &prtc[i];
+		flecs::entity entityId = it.entity(i);
 		btRigidBody* body = &rbc->rigidBody;
 
 		f32 linVel = body->getLinearVelocity().length();
@@ -91,7 +93,6 @@ void shipUpdateSystem(f32 dt)
 		btVector3 force(0, 0, 0);
 
 		//Ugly looking, but all these emitters need adjusting every time the ship moves
-		auto particles = scene.get<ShipParticleComponent>(entityId); //need to check to make sure this exists
 		IParticleEmitter* up1 = particles->upJetEmit[0]->getEmitter();
 		IParticleEmitter* up2 = particles->upJetEmit[1]->getEmitter();
 		IParticleEmitter* down1 = particles->downJetEmit[0]->getEmitter();
@@ -196,8 +197,8 @@ void shipUpdateSystem(f32 dt)
 		f32 zPercent = rbc->rigidBody.getLinearVelocity().length() / ship->linearMaxVelocity;
 		engine->setScale(vector3df(std::max(zPercent, 3.5f), std::max(5*zPercent, .1f), std::max(zPercent, 3.5f)));
 
-		auto hp = scene.get<HealthComponent>(entityId);
-		if (!hp) continue;
+		if (!entityId.has<HealthComponent>()) continue;
+		auto hp = entityId.get_mut<HealthComponent>();
 
 		if (linVel > ship->linearMaxVelocity + 1.f) {
 			f32 over = linVel - ship->linearMaxVelocity;

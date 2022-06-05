@@ -5,13 +5,13 @@
 
 #include <iostream>
 
-HUDContact::HUDContact(IGUIElement* root, EntityId contactId, EntityId playerId) : HUDElement(root) 
+HUDContact::HUDContact(IGUIElement* root, flecs::entity contactId, flecs::entity playerId) : HUDElement(root) 
 {
 	type = HUD_ELEM_TYPE::CONTACT;
 
 	contact = contactId;
-	auto ctctFac = sceneManager->scene.get<FactionComponent>(contactId);
-	auto playerFac = sceneManager->scene.get<FactionComponent>(playerId);
+	auto ctctFac = contactId.get<FactionComponent>();
+	auto playerFac = playerId.get<FactionComponent>();
 	if (playerFac->isHostile(ctctFac)) {
 		offscreenMarker = guienv->addImage(stateController->assets.getHUDAsset("hostileMarker"), position2di(0, 0), root);
 		contactView = guienv->addImage(stateController->assets.getHUDAsset("hostileContact"), position2di(0, 0), root);
@@ -32,14 +32,13 @@ HUDContact::~HUDContact()
 	contactView->remove();
 }
 
-void HUDContact::updateElement(EntityId playerId)
+void HUDContact::updateElement(flecs::entity playerId)
 {
-	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
-
-	if (!sceneManager->scene.entityInUse(contact)) return;
+	auto player = playerId.get<PlayerComponent>();
+	if (!contact.is_alive()) return;
 	ICameraSceneNode* camera = player->camera;
 	ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
-	IrrlichtComponent* irr = sceneManager->scene.get<IrrlichtComponent>(contact);
+	auto irr = contact.get<IrrlichtComponent>();
 	if (!irr) return;
 
 	dimension2du screenSize = driver->getScreenSize();

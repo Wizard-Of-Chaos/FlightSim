@@ -73,6 +73,7 @@ class GameController
 			}
 		}
 
+		flecs::entity playerEntity;
 		bool isPlayerAlive;
 
 	private:

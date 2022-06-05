@@ -3,7 +3,7 @@
 #define SENSORUPDATESYSTEM_H
 
 #include "BaseHeader.h"
-#include "ECS.h"
+
 #include "SensorComponent.h"
 #include "ShipComponent.h"
 #include "IrrlichtComponent.h"
@@ -14,6 +14,7 @@
 * It checks whether or not an entity is in range of the sensor, and updates accordingly.
 */
 std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorComponent* sens, FactionComponent* fac);
-void sensorSystem(f32 dt);
+void sensorSystem(flecs::iter it, BulletRigidBodyComponent* rbcs, SensorComponent* sns, FactionComponent* fcs);
+
 
 #endif 

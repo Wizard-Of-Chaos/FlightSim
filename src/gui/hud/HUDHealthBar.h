@@ -13,9 +13,9 @@
 class HUDResources : public HUDElement
 {
 public:
-	HUDResources(IGUIElement* root, EntityId id);
+	HUDResources(IGUIElement* root, flecs::entity id);
 	~HUDResources() override;
-	virtual void updateElement(EntityId playerId);
+	virtual void updateElement(flecs::entity playerId);
 	IGUIImage* health;
 	IGUIImage* shield;
 	IGUIImage* fuel;

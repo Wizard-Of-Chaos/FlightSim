@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-HUDResources::HUDResources(IGUIElement* root, EntityId id) : HUDElement(root)
+HUDResources::HUDResources(IGUIElement* root, flecs::entity id) : HUDElement(root)
 {
 	IGUIFont* fnt = stateController->assets.getFontAsset("HUDFont");
 	SColor overrideClr(255, 200, 200, 200);
@@ -19,12 +19,12 @@ HUDResources::HUDResources(IGUIElement* root, EntityId id) : HUDElement(root)
 	shield = guienv->addImage(stateController->assets.getHUDAsset("velocitybar"), position2di(300, screenrect.getHeight() - 64), root);
 	shieldNum = guienv->addStaticText(L"", rect<s32>(position2di(300, screenrect.getHeight() - 96), dimension2du(300, 24)), false, true, root);
 
-	auto shipInfo = sceneManager->scene.get<ShipComponent>(id);
+	auto shipInfo = id.get<ShipComponent>();
 
 	for (u32 i = 0; i < shipInfo->hardpointCount; ++i) {
 		if (!sceneManager->scene.entityInUse(shipInfo->weapons[i])) continue;
 
-		auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(shipInfo->weapons[i]);
+		auto wepInfo = shipInfo->weapons[i].get<WeaponInfoComponent>();
 		if (!wepInfo->usesAmmunition) continue;
 		ammoNums[i] = guienv->addStaticText(L"", rect<s32>(position2di(340, screenrect.getHeight() - 16 * (i + 1)), dimension2du(240, 20)), false, true, root);
 		ammoNums[i]->setOverrideColor(overrideClr);
@@ -62,12 +62,12 @@ HUDResources::~HUDResources()
 	shieldNum->remove();
 }
 
-void HUDResources::updateElement(EntityId playerId)
+void HUDResources::updateElement(flecs::entity playerId)
 {
-	auto hpcomp = sceneManager->scene.get<HealthComponent>(playerId);
-	auto shields = sceneManager->scene.get<ShieldComponent>(playerId);
-	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
-	auto ship = sceneManager->scene.get<ShipComponent>(playerId);
+	auto hpcomp = playerId.get<HealthComponent>();
+	auto shields = playerId.get<ShieldComponent>();
+	auto player = playerId.get<PlayerComponent>();
+	auto ship = playerId.get<ShipComponent>();
 
 	std::string hp = fprecis(hpcomp->health, 5);
 	std::string maxhp = fprecis(hpcomp->maxHealth, 5);
@@ -94,7 +94,7 @@ void HUDResources::updateElement(EntityId playerId)
 
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
 		if (!ammoNums[i]) continue;
-		auto wepInfo = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
+		auto wepInfo = ship->weapons[i].get<WeaponInfoComponent>();
 		if (!wepInfo) continue;
 		if (!wepInfo->usesAmmunition) continue;
 

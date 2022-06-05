@@ -47,7 +47,7 @@ void collisionDamage(flecs::entity A, flecs::entity B)
 	}
 }
 
-void collisionCheckingSystem()
+void collisionCheckingSystem(flecs::iter it)
 {
 	int numManifolds = bWorld->getDispatcher()->getNumManifolds();
 

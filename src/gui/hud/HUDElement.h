@@ -5,7 +5,6 @@
 #include "BaseHeader.h"
 #include "PlayerComponent.h"
 #include "InputComponent.h"
-#include "ECS.h"
 
 enum class HUD_ELEM_TYPE
 {
@@ -27,7 +26,7 @@ public:
 	HUD_ELEM_TYPE type;
 	HUDElement(IGUIElement* root) {}
 	virtual ~HUDElement() {}
-	virtual void updateElement(EntityId playerId) = 0;
+	virtual void updateElement(flecs::entity playerId) = 0;
 };
 
 #endif

@@ -12,10 +12,10 @@
 class HUDContact : public HUDElement
 {
 public:
-	HUDContact(IGUIElement* root, EntityId contactId, EntityId playerId);
+	HUDContact(IGUIElement* root, flecs::entity contactId, flecs::entity playerId);
 	~HUDContact() override;
-	virtual void updateElement(EntityId playerId);
-	EntityId contact;
+	virtual void updateElement(flecs::entity playerId);
+	flecs::entity contact;
 
 	IGUIImage* contactView;
 	IGUIElement* offscreenMarker;

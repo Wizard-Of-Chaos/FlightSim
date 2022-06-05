@@ -68,7 +68,7 @@ void buildScenario(Scenario& scenario)
 		SColor(200, 255, 180, 180), 50000.f);
 	n->setID(ID_IsNotSelectable);
 
-	EntityId player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
+	flecs::entity player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
 	cullStartPosObstacleLocations(scenario);
 
 	setScenarioType(scenario);

@@ -1,24 +1,25 @@
 #include "SoundSystem.h"
 #include "GameController.h"
 
-void soundSystem(f32 dt)
+void soundSystem(flecs::iter it)
 {
-	auto it = gameController->sounds.begin();
-	while(it != gameController->sounds.end()) {
-		if (!sceneManager->scene.entityInUse(it->id)) {
-			it = gameController->sounds.erase(it);
+	auto soundIt = gameController->sounds.begin();
+	while(soundIt != gameController->sounds.end()) {
+		if (!soundIt->id.is_alive()) {
+			soundIt = gameController->sounds.erase(soundIt);
 			continue;
 		}
-		auto irr = sceneManager->scene.get<IrrlichtComponent>(it->id);
-		if (!irr || !it->sound) {
-			it = gameController->sounds.erase(it); //I want to re-work the std library so instead of "erase" it's "whip". Whip it! Whip it good!
+		auto irr = soundIt->id.get<IrrlichtComponent>();
+
+		if (!irr || !soundIt->sound) {
+			soundIt = gameController->sounds.erase(soundIt); //I want to re-work the std library so instead of "erase" it's "whip". Whip it! Whip it good!
 			continue;
-		} else if (it->sound->isFinished()) {
-			it->sound->drop();
-			it = gameController->sounds.erase(it);
+		} else if (soundIt->sound->isFinished()) {
+			soundIt->sound->drop();
+			soundIt = gameController->sounds.erase(soundIt);
 			continue;
 		}
-		it->sound->setPosition(irr->node->getAbsolutePosition());
-		++it;
+		soundIt->sound->setPosition(irr->node->getAbsolutePosition());
+		++soundIt;
 	}
 }

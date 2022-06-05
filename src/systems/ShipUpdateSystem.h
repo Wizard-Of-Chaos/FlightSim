@@ -33,6 +33,7 @@ bool angularSafetyCheck(f32 angVelocity, ShipComponent* ship, btVector3 velDir, 
 * movement. This function is used both by the player and the AI - they all follow the same set of rules with pitch, yaw,
 * torque, all of that.
 */
-void shipUpdateSystem(f32 dt);
+
+void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyComponent* rbcs, IrrlichtComponent* irrc, ShipParticleComponent* prtc);
 
 #endif 

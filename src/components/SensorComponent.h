@@ -19,7 +19,7 @@ const f32 DEFAULT_SENSOR_UPDATE_INTERVAL = .4f;
 * This component is updated in the SensorUpdateSystem.
 */
 
-typedef std::tuple<flecs::entity, BulletRigidBodyComponent*, FactionComponent*> ContactInfo;
+typedef std::tuple<flecs::entity, const BulletRigidBodyComponent*, const FactionComponent*> ContactInfo;
 
 struct SensorComponent
 {

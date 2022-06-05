@@ -14,7 +14,7 @@ class HUDActiveSelection : public HUDElement
 public:
 	HUDActiveSelection(IGUIElement* root);
 	~HUDActiveSelection() override;
-	virtual void updateElement(EntityId playerId);
+	virtual void updateElement(flecs::entity playerId);
 
 	IGUIStaticText* name;
 	IGUIImage* selectGUI;

@@ -89,7 +89,10 @@ void GameController::init()
 	game_world->system<ObjectiveComponent>().kind(flecs::OnUpdate).iter(objectiveSystem);
 	game_world->system<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, SensorComponent>().kind(flecs::OnUpdate).iter(playerUpdateSystem);
 	game_world->system<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(projectileSystem);
-
+	game_world->system<BulletRigidBodyComponent, SensorComponent, FactionComponent>().kind(flecs::OnUpdate).iter(sensorSystem);
+	game_world->system<InputComponent, ShipComponent, PlayerComponent, BulletRigidBodyComponent, IrrlichtComponent, SensorComponent>().kind(flecs::OnUpdate).iter(shipControlSystem);
+	game_world->system<ShipComponent, BulletRigidBodyComponent, IrrlichtComponent, ShipParticleComponent>().kind(flecs::OnUpdate).iter(shipUpdateSystem);
+	game_world->system().kind(flecs::OnUpdate).iter(soundSystem);
 	open = true;
 }
 
@@ -119,57 +122,51 @@ void GameController::close()
 
 void GameController::clearPlayerHUD()
 {
-	for (auto id : SceneView<PlayerComponent>(sceneManager->scene)) {
-		auto player = sceneManager->scene.get<PlayerComponent>(id);
-		for (HUDElement* hud : player->HUD) {
-			delete hud;
-		}
-		player->rootHUD->remove();
+	auto plyc = playerEntity.get_mut<PlayerComponent>();
+	for (HUDElement* hud : plyc->HUD) {
+		delete hud;
 	}
+	plyc->rootHUD->remove();
 }
 
 bool GameController::OnEvent(const SEvent& event)
 {
 	if (!open) return true;
+	if (!playerEntity.is_alive()) return true;
+	if(!playerEntity.has<InputComponent>()) return true;
+	auto input = playerEntity.get_mut<InputComponent>();
 	if (event.EventType == EET_KEY_INPUT_EVENT) {
-		for(auto entityId : SceneView<InputComponent>(sceneManager->scene)) { //Passes key input to the input components
-			InputComponent* input = sceneManager->scene.get<InputComponent>(entityId);
-			input->keysDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
-			if(event.KeyInput.Key == KEY_KEY_Y && !input->keysDown[KEY_KEY_Y]) {
-				input->mouseControlEnabled = !input->mouseControlEnabled;
-			}
-			if (event.KeyInput.Key == KEY_KEY_U && !input->keysDown[KEY_KEY_U]) {
-				input->safetyOverride = !input->safetyOverride;
-			}
+		input->keysDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+		if(event.KeyInput.Key == KEY_KEY_Y && !input->keysDown[KEY_KEY_Y]) {
+			input->mouseControlEnabled = !input->mouseControlEnabled;
+		}
+		if (event.KeyInput.Key == KEY_KEY_U && !input->keysDown[KEY_KEY_U]) {
+			input->safetyOverride = !input->safetyOverride;
 		}
 	}
 	if (event.EventType == EET_MOUSE_INPUT_EVENT) {
-		for(auto entityId: SceneView<InputComponent>(sceneManager->scene)) { //Passes mouse input to the input components
-			InputComponent* input = sceneManager->scene.get<InputComponent>(entityId);
-			switch(event.MouseInput.Event) {
-			case EMIE_LMOUSE_PRESSED_DOWN:
-				input->leftMouseDown = true;
-				break;
-			case EMIE_LMOUSE_LEFT_UP:
-				input->leftMouseDown = false;
-				break;
-			case EMIE_RMOUSE_PRESSED_DOWN:
-				input->rightMouseDown = true;
-				break;
-			case EMIE_RMOUSE_LEFT_UP:
-				input->rightMouseDown = false;
-				break;
-			case EMIE_MOUSE_MOVED:
-				input->mousePixPosition.X = event.MouseInput.X;
-				input->mousePixPosition.Y = event.MouseInput.Y;
-				input->mousePosition.X = (event.MouseInput.X - ((f32)driver->getScreenSize().Width * .5f)) / ((f32)driver->getScreenSize().Width * .5f);
-				input->mousePosition.Y = (event.MouseInput.Y - ((f32)driver->getScreenSize().Height * .5f)) / ((f32)driver->getScreenSize().Height * .5f);
-				break;
-			default:
-				break;
-			}
+		switch(event.MouseInput.Event) {
+		case EMIE_LMOUSE_PRESSED_DOWN:
+			input->leftMouseDown = true;
+			break;
+		case EMIE_LMOUSE_LEFT_UP:
+			input->leftMouseDown = false;
+			break;
+		case EMIE_RMOUSE_PRESSED_DOWN:
+			input->rightMouseDown = true;
+			break;
+		case EMIE_RMOUSE_LEFT_UP:
+			input->rightMouseDown = false;
+			break;
+		case EMIE_MOUSE_MOVED:
+			input->mousePixPosition.X = event.MouseInput.X;
+			input->mousePixPosition.Y = event.MouseInput.Y;
+			input->mousePosition.X = (event.MouseInput.X - ((f32)driver->getScreenSize().Width * .5f)) / ((f32)driver->getScreenSize().Width * .5f);
+			input->mousePosition.Y = (event.MouseInput.Y - ((f32)driver->getScreenSize().Height * .5f)) / ((f32)driver->getScreenSize().Height * .5f);
+			break;
+		default:
+			break;
 		}
-
 	}
 	if (event.EventType == EET_GUI_EVENT) {
 		//handle GUI events here, but there probably aren't any that the HUD itself doesn't handle

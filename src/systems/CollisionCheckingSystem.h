@@ -14,7 +14,7 @@
 
 //Checks all collisions that are currently happening in the scene. This function handles things like projectiles hitting ships,
 //and updates health components accordingly.
-void collisionCheckingSystem();
+void collisionCheckingSystem(flecs::iter it);
 
 //Checks two entities: the projectile and whatever got hit by the projectile. Removes the appropriate amount of health.
 void projectileCollider(flecs::entity projectile, flecs::entity impacted);

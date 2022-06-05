@@ -24,13 +24,12 @@ std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorCompon
 		btCollisionObject* obj = ghost.getOverlappingObject(i);
 		if (obj == &rbc->rigidBody) continue;
 
-		EntityId objId = getIdFromBt(obj);
+		flecs::entity objId = getIdFromBt(obj);
 		if (!sceneManager->scene.entityInUse(objId)) continue;
 
-		auto objRBC = sceneManager->scene.get<BulletRigidBodyComponent>(objId);
-		auto objFac = sceneManager->scene.get<FactionComponent>(objId);
-		if (!objRBC || !objFac) continue; //throw out anything without a rigid body comp and a faction comp
-
+		if (!objId.has<BulletRigidBodyComponent>() || !objId.has<FactionComponent>()) continue; //throw out anything without a rigid body comp and a faction comp
+		auto objRBC = objId.get<BulletRigidBodyComponent>();
+		auto objFac = objId.get<FactionComponent>();
 		ContactInfo info = { objId, objRBC, objFac };
 
 		btVector3 dist = objRBC->rigidBody.getCenterOfMassPosition() - rbc->rigidBody.getCenterOfMassPosition();
@@ -56,6 +55,27 @@ std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorCompon
 	return ret;
 }
 
+void sensorSystem(flecs::iter it, BulletRigidBodyComponent* rbcs, SensorComponent* sns, FactionComponent* fcs)
+{
+	for (auto i : it) {
+		auto sens = &sns[i];
+		auto fac = &fcs[i];
+		auto rbc = &rbcs[i];
+		sens->timeSinceLastUpdate += it.delta_time();
+		if (sens->timeSinceLastUpdate >= sens->updateInterval) {
+			sens->contacts = getContacts(rbc, sens, fac);
+			sens->timeSinceLastUpdate = 0;
+		}
+		if (sens->targetContact != INVALID_ENTITY) {
+			sens->timeSelected += it.delta_time();
+		}
+		else {
+			sens->timeSelected = 0;
+		}
+	}
+}
+
+/*
 void sensorSystem(f32 dt)
 {
 	for (EntityId id : SceneView<BulletRigidBodyComponent, SensorComponent, FactionComponent>(sceneManager->scene)) {
@@ -74,3 +94,4 @@ void sensorSystem(f32 dt)
 		}
 	}
 }
+*/

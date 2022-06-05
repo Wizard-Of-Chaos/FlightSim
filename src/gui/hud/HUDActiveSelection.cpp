@@ -31,13 +31,13 @@ HUDActiveSelection::~HUDActiveSelection()
 	selectSP->remove();
 }
 
-void HUDActiveSelection::updateElement(EntityId playerId)
+void HUDActiveSelection::updateElement(flecs::entity playerId)
 {
-	auto player = sceneManager->scene.get<PlayerComponent>(playerId);
-	auto input = sceneManager->scene.get<InputComponent>(playerId);
-	auto playerIrr = sceneManager->scene.get<IrrlichtComponent>(playerId);
-	auto sensors = sceneManager->scene.get<SensorComponent>(playerId);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(playerId);
+	auto player = gameController->playerEntity.get_mut<PlayerComponent>();
+	auto input = gameController->playerEntity.get_mut<InputComponent>();
+	auto playerIrr = gameController->playerEntity.get_mut<IrrlichtComponent>();
+	auto sensors = gameController->playerEntity.get_mut<SensorComponent>();
+	auto rbc = gameController->playerEntity.get_mut<BulletRigidBodyComponent>();
 
 	ICameraSceneNode* camera = player->camera;
 
@@ -65,15 +65,15 @@ void HUDActiveSelection::updateElement(EntityId playerId)
 			if (mouseOverHUD) break;
 		}
 		ISceneNode* selection;
-		if (mouseOverHUD) selection = sceneManager->scene.get<IrrlichtComponent>(sensors->targetContact)->node;
+		if (mouseOverHUD) selection = sensors->targetContact.get<IrrlichtComponent>()->node;
 		else selection = coll->getSceneNodeFromRayBB(ray, ID_IsSelectable);
 
 		if (selection) {
 			if (selection->getID() != -1 && selection != playerIrr->node) {
-				EntityId id = strToId(selection->getName());
+				flecs::entity id = strToId(selection->getName());
 				if(sceneManager->scene.entityInUse(id)) sensors->targetContact = id;
 
-				auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+				auto irr = id.get<IrrlichtComponent>();
 				std::wstring widestr = std::wstring(irr->name.begin(), irr->name.end());
 				name->setText(widestr.c_str());
 				selectGUI->setVisible(true);
@@ -100,11 +100,11 @@ void HUDActiveSelection::updateElement(EntityId playerId)
 		selectSP->setVisible(false);
 		return;
 	}
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(sensors->targetContact);
-	if (!irr) {
+	if (!sensors->targetContact.has<IrrlichtComponent>()) {
 		sensors->targetContact = INVALID_ENTITY;
 		return;
 	}
+	auto irr = sensors->targetContact.get<IrrlichtComponent>();
 	//Moves around the selection GUI
 	position2di selectionPos = coll->getScreenCoordinatesFrom3DPosition(irr->node->getAbsolutePosition(), camera);
 	selectionPos.X -= 64;
@@ -118,17 +118,16 @@ void HUDActiveSelection::updateElement(EntityId playerId)
 	selectionPos.Y += 8;
 	spPos = selectionPos;
 
-	auto targetHP = sceneManager->scene.get<HealthComponent>(sensors->targetContact);
-	auto targetSP = sceneManager->scene.get<ShieldComponent>(sensors->targetContact);
-
-	if (targetSP) {
+	if (sensors->targetContact.has<ShieldComponent>()) {
+		auto targetSP = sensors->targetContact.get<ShieldComponent>();
 		dimension2du spSize;
 		spSize.set((u32)targetSP->shields / targetSP->maxShields * 128, 8);
 		selectSP->setRelativePosition(rect<s32>(spPos, spSize));
 	} else {
 		selectSP->setVisible(false);
 	}
-	if (targetHP) {
+	if (sensors->targetContact.has<HealthComponent>()) {
+		auto targetHP = sensors->targetContact.get<HealthComponent>();
 		dimension2du hpSize;
 		hpSize.set((u32)targetHP->health / targetHP->maxHealth * 128, 8);
 		selectHP->setRelativePosition(rect<s32>(hpPos, hpSize));
@@ -136,16 +135,15 @@ void HUDActiveSelection::updateElement(EntityId playerId)
 		selectHP->setVisible(false);
 	}
 
-	auto targetRBC = sceneManager->scene.get<BulletRigidBodyComponent>(sensors->targetContact);
-	auto targetGhost = sceneManager->scene.get<BulletGhostComponent>(sensors->targetContact);
-	if (!targetRBC && !targetGhost) return;
+	if (!sensors->targetContact.has<BulletRigidBodyComponent>() && !sensors->targetContact.has<BulletGhostComponent>()) return;
 	btVector3 velocity = rbc->rigidBody.getLinearVelocity();
 	btVector3 forwardTarget;
-	if (targetRBC) {
+	if (sensors->targetContact.has<BulletRigidBodyComponent>()) {
+		auto targetRBC = sensors->targetContact.get<BulletRigidBodyComponent>();
 		forwardTarget = targetRBC->rigidBody.getCenterOfMassPosition() + (targetRBC->rigidBody.getLinearVelocity() * .3f);
 		forwardTarget += (rbc->rigidBody.getLinearVelocity() * -.3f);
 	}
-	else if (targetGhost) {
+	else if (sensors->targetContact.has<BulletGhostComponent>()) {
 		forwardTarget = irrVecToBt(irr->node->getAbsolutePosition());
 	}
 

@@ -57,14 +57,6 @@ bool isPointInSphere(vector3df& point, vector3df center, f32 radius)
 	return (pow(point.X - center.X, 2.f) + pow(point.Y - center.Y, 2.f) + pow(point.Z - center.Z, 2.f) < pow(radius, 2));
 }
 
-EntityId getPlayer()
-{
-	for (auto id : SceneView<PlayerComponent, IrrlichtComponent>(sceneManager->scene)) {
-		return id; //just grab the first thing you see
-	}
-	return INVALID_ENTITY;
-}
-
 void destroyObject(flecs::entity id)
 {
 	if (!id.is_alive()) return;
@@ -93,61 +85,57 @@ void destroyObject(flecs::entity id)
 	id.destruct();
 }
 
-bool initializeDefaultPlayer(EntityId shipId)
+bool initializeDefaultPlayer(flecs::entity shipId)
 {
-	Scene* scene = &sceneManager->scene;
+	if (!shipId.has<IrrlichtComponent>()) return false;
+	auto shipIrr = shipId.get<IrrlichtComponent>();
 
-	auto shipIrr = scene->get<IrrlichtComponent>(shipId);
-	if (!shipIrr) return false;
 	ISceneNode* target = smgr->addEmptySceneNode(0);
 	target->setPosition(shipIrr->node->getPosition());
 	ICameraSceneNode* camera = smgr->addCameraSceneNode(target, vector3df(0, 5, -20), shipIrr->node->getPosition(), ID_IsNotSelectable, true);
-	scene->assign<InputComponent>(shipId);
-	auto player = scene->assign<PlayerComponent>(shipId);
+	shipId.add<InputComponent>();
+	auto player = shipId.get_mut<PlayerComponent>();
 	player->camera = camera;
 	player->target = target;
 
 	player->thrust = vector3df(0, 0, 0);
 	player->rotation = vector3df(0, 0, 0);
-
+	gameController->playerEntity = shipId;
 	return true;
 }
 
-void initializeHealth(EntityId id, f32 healthpool)
+void initializeHealth(flecs::entity id, f32 healthpool)
 {
-	auto hp = sceneManager->scene.assign<HealthComponent>(id);
-	auto dmg = sceneManager->scene.assign<DamageTrackingComponent>(id);
+	auto hp = id.get_mut<HealthComponent>();
+	auto dmg = id.get_mut<DamageTrackingComponent>();
 	hp->health = healthpool;
 	hp->maxHealth = healthpool;
 }
-void initializeDefaultHealth(EntityId objectId)
+void initializeDefaultHealth(flecs::entity objectId)
 {
 	initializeHealth(objectId, DEFAULT_MAX_HEALTH);
 }
 
-bool initializeDefaultHUD(EntityId playerId)
+bool initializeDefaultHUD(flecs::entity playerId)
 {
-	Scene* scene = &sceneManager->scene;
-	auto player = scene->get<PlayerComponent>(playerId);
-	if (!player) return false;
+	if (!playerId.has<PlayerComponent>()) return false;
+	auto player = playerId.get_mut<PlayerComponent>();
 
 	dimension2du baseSize = dimension2du(960, 540);
 	player->rootHUD = guienv->addStaticText(L"", rect<s32>(position2di(0, 0), baseSize));
 
-	//HUDElement* crossHUD = new HUDCrosshair(player->rootHUD);
 	HUDElement* selectHUD = new HUDActiveSelection(player->rootHUD);
 	HUDElement* resourceHUD = new HUDResources(player->rootHUD, playerId);
 	HUDElement* speedHUD = new HUDVelocityBar(player->rootHUD);
-	//player->HUD.push_back(crossHUD);
 	player->HUD.push_back(selectHUD);
 	player->HUD.push_back(resourceHUD);
 	player->HUD.push_back(speedHUD);
 	return true;
 }
 
-void initializeAI(EntityId id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance)
+void initializeAI(flecs::entity id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance)
 {
-	auto ai = sceneManager->scene.assign<AIComponent>(id);
+	auto ai = id.get_mut<AIComponent>();
 	ai->AIType = type;
 	ai->reactionSpeed = reactSpeed;
 	ai->damageTolerance = damageTolerance;
@@ -155,15 +143,15 @@ void initializeAI(EntityId id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance
 
 }
 
-void initializeDefaultAI(EntityId id)
+void initializeDefaultAI(flecs::entity id)
 {
 	initializeAI(id, AI_TYPE_DEFAULT, AI_DEFAULT_REACTION_TIME, AI_DEFAULT_DAMAGE_TOLERANCE);
 }
 
-EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
+flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
 {
-	EntityId id = sceneManager->scene.newEntity();
-	auto exp = sceneManager->scene.assign<ExplosionComponent>(id);
+	flecs::entity id = game_world->entity();
+	auto exp = id.get_mut<ExplosionComponent>();
 	exp->duration = duration;
 	exp->lifetime = 0;
 	exp->explosion = smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
@@ -193,39 +181,37 @@ EntityId explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 da
 ShipInstance getEndScenarioData()
 {
 	ShipInstance inst;
-	for (auto id : SceneView<PlayerComponent, ShipComponent, HealthComponent>(sceneManager->scene)) {
-		auto hp = sceneManager->scene.get<HealthComponent>(id);
-		inst.hp = *hp;
+	auto hp = gameController->playerEntity.get<HealthComponent>();
+	inst.hp = *hp;
 
-		auto ship = sceneManager->scene.get<ShipComponent>(id);
-		inst.ship = *ship;
-		for (u32 i = 0; i < ship->hardpointCount; ++i) {
-			if (!sceneManager->scene.entityInUse(ship->weapons[i])) { //there's no weapon here
-				inst.weps[i] = stateController->weaponData[0]->weaponComponent; //add the no-weapon component
-				continue;
+	auto ship = gameController->playerEntity.get<ShipComponent>();
+	inst.ship = *ship;
+	for (u32 i = 0; i < ship->hardpointCount; ++i) {
+		if (!sceneManager->scene.entityInUse(ship->weapons[i])) { //there's no weapon here
+			inst.weps[i] = stateController->weaponData[0]->weaponComponent; //add the no-weapon component
+			continue;
+		}
+
+		auto wep = ship->weapons[i].get_mut<WeaponInfoComponent>();
+		if (!wep->usesAmmunition) continue;
+
+		if (wep->clip < wep->maxClip) { //if the clip is partially spent just reload the damn thing
+			wep->clip = wep->maxClip;
+			if (wep->ammunition >= wep->maxClip) {
+				wep->ammunition -= wep->maxClip;
 			}
-
-			auto wep = sceneManager->scene.get<WeaponInfoComponent>(ship->weapons[i]);
-			if (!wep->usesAmmunition) continue;
-
-			if (wep->clip < wep->maxClip) { //if the clip is partially spent just reload the damn thing
-				wep->clip = wep->maxClip;
-				if (wep->ammunition >= wep->maxClip) {
-					wep->ammunition -= wep->maxClip;
-				}
-				else {
-					wep->ammunition = 0; 
-				}
+			else {
+				wep->ammunition = 0; 
 			}
-			inst.weps[i] = *wep;
 		}
-		if (!sceneManager->scene.entityInUse(ship->physWeapon)) {
-			inst.physWep = stateController->physWeaponData[0]->weaponComponent;
-		}
-		else {
-			auto phys = sceneManager->scene.get<WeaponInfoComponent>(ship->physWeapon);
-			inst.physWep = *phys;
-		}
+		inst.weps[i] = *wep;
+	}
+	if (!sceneManager->scene.entityInUse(ship->physWeapon)) {
+		inst.physWep = stateController->physWeaponData[0]->weaponComponent;
+	}
+	else {
+		auto phys = ship->physWeapon.get<WeaponInfoComponent>();
+		inst.physWep = *phys;
 	}
 	//todo: make it so that it would also grab the health / ammo of wingmen
 	return inst;
