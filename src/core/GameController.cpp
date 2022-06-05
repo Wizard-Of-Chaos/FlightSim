@@ -26,9 +26,11 @@ void GameController::update()
 		t += dt;
 		accumulator -= dt;
 	}
+	/*
 	if (objectiveSystem(dt)) {
 		stateController->setState(GAME_FINISHED);
 	}
+	*/
 
 	//interpolate leftover time?
 	const f32 alpha = accumulator / dt;
@@ -84,6 +86,9 @@ void GameController::init()
 	game_world->system<DamageTrackingComponent, HealthComponent>().kind(flecs::OnUpdate).iter(damageSystem);
 	game_world->system<ExplosionComponent>().kind(flecs::OnUpdate).iter(explosionSystem);
 	game_world->system<BulletRigidBodyComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(irrlichtRigidBodyPositionSystem);
+	game_world->system<ObjectiveComponent>().kind(flecs::OnUpdate).iter(objectiveSystem);
+	game_world->system<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, SensorComponent>().kind(flecs::OnUpdate).iter(playerUpdateSystem);
+	game_world->system<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(projectileSystem);
 
 	open = true;
 }

@@ -219,50 +219,22 @@ void setScrambleScenario(Scenario& scenario)
 	std::cout << "Done.\n";
 }
 
-bool collectObjective(EntityId id)
-{
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
-	if (!irr) return true;
-	auto playerirr = sceneManager->scene.get<IrrlichtComponent>(getPlayer());
-
-	aabbox3df bb = irr->node->getBoundingBox();
-
-	if (bb.intersectsWithBox(playerirr->node->getBoundingBox())) {
-		destroyObject(id); //get rid of it, it's considered collected
-		return true;
-	}
-
-	return false;
-}
-
-bool goToObjective(EntityId id)
-{
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
-	if (!irr) return true;
-
-	auto playerirr = sceneManager->scene.get<IrrlichtComponent>(getPlayer());
-
-	vector3df dist = irr->node->getAbsolutePosition() - playerirr->node->getAbsolutePosition();
-	if (dist.getLength() <= 10.f) return true;
-
-	return false;
-}
-
-bool isObjectiveCompleted(EntityId id)
+bool isObjectiveCompleted(flecs::entity id)
 {
 	//if there's no component / no entity available, either this function is unnecessary or the thing has been destroyed
 	//in either case, return true and exit the premises as quickly as possible
-	if (!sceneManager->scene.entityInUse(id)) return true;
-	auto obj = sceneManager->scene.get<ObjectiveComponent>(id);
-	if (!obj) return true;
+	if (!id.is_alive()) return true;
+	if (!id.has<ObjectiveComponent>()) return true; //if it doesn't have an objective component WHY ARE YOU CALLING THIS?
+
+	auto obj = id.get<ObjectiveComponent>();
 
 	switch (obj->type) {
 	case OBJ_DESTROY:
 		return false; //if the entity is valid, clearly it hasn't been wrecked yet
 	case OBJ_COLLECT:
-		return collectObjective(id);
+		return true;
 	case OBJ_GO_TO:
-		return goToObjective(id);
+		return true;
 	default:
 		return false;
 	}

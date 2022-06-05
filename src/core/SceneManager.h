@@ -3,8 +3,6 @@
 #ifndef SCENEMANAGER_H
 #define SCENEMANAGER_H
 #include "BaseHeader.h"
-
-#include "ECS.h"
 #include "ShipControlSystem.h"
 #include "IrrlichtRigidBodyPositionSystem.h"
 #include "PlayerUpdateSystem.h"

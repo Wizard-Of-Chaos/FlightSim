@@ -4,7 +4,6 @@
 #define PROJECTILESYSTEM_H
 
 #include "BaseHeader.h"
-#include "ECS.h"
 #include "WeaponInfoComponent.h"
 #include "IrrlichtComponent.h"
 #include "BulletRigidBodyComponent.h"
@@ -12,6 +11,7 @@
 
 //Determines whether or not a projectile is out of range and deletes it accordingly. In the future,
 //this will also handle the different "types" of projectile - for example, how a missile moves, how a harpoon moves, etc.
-void projectileSystem(f32 dt);
+void projectileSystem(flecs::iter it, BulletRigidBodyComponent* rbcs, ProjectileInfoComponent* pic, IrrlichtComponent* irrs);
+
 
 #endif

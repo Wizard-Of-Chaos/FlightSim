@@ -9,6 +9,39 @@
 #include <cmath>
 #include <algorithm>
 
+void playerUpdateSystem(flecs::iter it, IrrlichtComponent* irrc, PlayerComponent* plyc, BulletRigidBodyComponent* rbcs, SensorComponent* snsc)
+{
+	for (auto i : it) {
+		auto irr = &irrc[i];
+		auto player = &plyc[i];
+		auto rbc = &rbcs[i];
+		auto sensors = &snsc[i];
+		auto entity = it.entity(i);
+
+		for (ContactInfo info : sensors->contacts) { //checks contacts and updates hud if they dont exist
+			flecs::entity id = std::get<0>(info);
+			if (player->trackedContacts[id] == nullptr && id.is_alive()) {
+				HUDContact* ct = new HUDContact(player->rootHUD, id, entity);
+				player->HUD.push_back(ct);
+				player->trackedContacts[id] = ct;
+			}
+		}
+		for (auto [id, hud] : player->trackedContacts) { //checks hud contacts and removes ones not in use
+			if (!id.is_alive()) {
+				if (hud) player->removeContact(hud);
+				continue;
+			}
+		}
+		//camera work
+		cameraUpdate(player, irr->node, &rbc->rigidBody);
+		//HUD work and updates
+		hudUpdate(player, entity);
+
+		//updates the listener position for sound
+		soundEngine->setListenerPosition(player->camera->getAbsolutePosition(), getNodeForward(player->camera), vec3df(0, 0, 0), getNodeUp(player->camera));
+	}
+}
+/*
 void playerUpdateSystem(Scene& scene, f32 frameDelta)
 {
 	for (auto entityId : SceneView<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, InputComponent, SensorComponent>(scene)) {
@@ -42,6 +75,7 @@ void playerUpdateSystem(Scene& scene, f32 frameDelta)
 		soundEngine->setListenerPosition(player->camera->getAbsolutePosition(), getNodeForward(player->camera), vec3df(0, 0, 0), getNodeUp(player->camera));
 	}
 }
+*/
 
 void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* body)
 {
@@ -73,7 +107,7 @@ void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* 
 	camera->setTarget(target);
 }
 
-void hudUpdate(PlayerComponent* player, EntityId playerId)
+void hudUpdate(PlayerComponent* player, flecs::entity playerId)
 {
 	player->rootHUD->setRelativePosition(rect<s32>(position2di(0, 0), driver->getScreenSize()));
 	for (HUDElement* elem : player->HUD) {

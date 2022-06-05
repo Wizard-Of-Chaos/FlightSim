@@ -35,5 +35,5 @@ void buildDebrisField(Scenario& scenario);
 void setKillHostilesScenario(Scenario& scenario);
 void setScrambleScenario(Scenario& scenario);
 
-bool isObjectiveCompleted(EntityId id);
+bool isObjectiveCompleted(flecs::entity id);
 #endif 
