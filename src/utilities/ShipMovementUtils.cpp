@@ -144,13 +144,14 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 	}
 }
 
-bool avoidObstacles(EntityId id, f32 dt, EntityId target)
+bool avoidObstacles(flecs::entity id, f32 dt, flecs::entity target)
 {
-	auto ship = sceneManager->scene.get<ShipComponent>(id);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+	if (!id.has<ShipComponent>() || !id.has<BulletRigidBodyComponent>() || !id.has<IrrlichtComponent>()) return false;
 
-	if (!ship || !rbc) return false;
+	auto ship = id.get_mut<ShipComponent>();
+	auto rbc = id.get_mut<BulletRigidBodyComponent>();
+	auto irr = id.get_mut<IrrlichtComponent>();
+
 	btRigidBody* body = &rbc->rigidBody;
 
 	btVector3 velocity = body->getLinearVelocity();

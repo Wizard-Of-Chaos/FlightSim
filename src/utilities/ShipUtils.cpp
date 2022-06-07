@@ -7,14 +7,11 @@
 
 flecs::entity createShipFromId(u32 id, vector3df position, vector3df rotation)
 {
-	Scene* scene = &sceneManager->scene;
-
-	auto shipEntity = scene->newEntity();
-
+	auto shipEntity = game_world->entity();
 	loadShip(id, shipEntity);
-	auto ship = scene->get<ShipComponent>(shipEntity);
-	auto irr = scene->get<IrrlichtComponent>(shipEntity);
-	if (!ship || !irr) return INVALID_ENTITY;
+	if (!shipEntity.has<ShipComponent>() || !shipEntity.has<IrrlichtComponent>()) return INVALID_ENTITY;
+	auto ship = shipEntity.get_mut<ShipComponent>();
+	auto irr = shipEntity.get_mut<IrrlichtComponent>();
 
 	irr->node->setPosition(position);
 	irr->node->setRotation(rotation);
@@ -28,8 +25,8 @@ flecs::entity createShipFromId(u32 id, vector3df position, vector3df rotation)
 
 flecs::entity createDefaultShip(vector3df position, vector3df rotation)
 {
-	EntityId shipEntity = createShipFromId(1, position, rotation);
-	auto ship = sceneManager->scene.get<ShipComponent>(shipEntity);
+	flecs::entity shipEntity = createShipFromId(1, position, rotation);
+	auto ship = shipEntity.get_mut<ShipComponent>();
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		initializeDefaultWeapon(shipEntity, i);
@@ -39,10 +36,8 @@ flecs::entity createDefaultShip(vector3df position, vector3df rotation)
 
 flecs::entity createDefaultAIShip(vector3df position, vector3df rotation)
 {
-	Scene* scene = &sceneManager->scene;
-
-	EntityId id = createDefaultShip(position, rotation);
-	auto irr = scene->get<IrrlichtComponent>(id);
+	flecs::entity id = createDefaultShip(position, rotation);
+	auto irr = id.get_mut<IrrlichtComponent>();
 	irr->name = "AI Ship";
 	initializeDefaultHealth(id);
 	initializeDefaultShields(id);
@@ -56,11 +51,9 @@ flecs::entity createDefaultAIShip(vector3df position, vector3df rotation)
 
 bool initializeShipCollisionBody(flecs::entity entityId, u32 shipId, bool carrier)
 {
-	Scene* scene = &sceneManager->scene;
+	if (!entityId.has<ShipComponent>()) return false;
+	auto shipComp = entityId.get_mut<ShipComponent>();
 
-	auto shipComp = scene->get<ShipComponent>(entityId);
-
-	if (!shipComp) return false;
 	btVector3 scale(1.f, 1.f, 1.f);
 	btScalar mass = 1.f;
 	btConvexHullShape hull = stateController->shipData[shipId]->collisionShape;
@@ -76,14 +69,16 @@ bool initializeShipCollisionBody(flecs::entity entityId, u32 shipId, bool carrie
 bool initializeWeaponFromId(u32 id, flecs::entity shipId, int hardpoint, bool phys)
 {
 	if (id <= 0) return false;
-	auto shipIrr = scene->get<IrrlichtComponent>(shipId);
-	auto shipComp = scene->get<ShipComponent>(shipId);
 
-	if (!shipIrr || !shipComp) return false;
+	if (!shipId.has<ShipComponent>() || !shipId.has<IrrlichtComponent>()) return false;
 
-	auto wepEntity = scene->newEntity();
+	auto shipIrr = shipId.get<IrrlichtComponent>();
+	auto shipComp = shipId.get_mut<ShipComponent>();
+
+	auto wepEntity = game_world->entity().child_of(shipId);
+
 	loadWeapon(id, wepEntity, shipId, phys);
-	auto irr = scene->get<IrrlichtComponent>(wepEntity);
+	auto irr = wepEntity.get_mut<IrrlichtComponent>();
 	irr->node->setParent(shipIrr->node);
 	if (!phys) {
 		irr->node->setPosition(shipComp->hardpoints[hardpoint]);
@@ -94,9 +89,6 @@ bool initializeWeaponFromId(u32 id, flecs::entity shipId, int hardpoint, bool ph
 		shipComp->physWeapon = wepEntity;
 	}
 	irr->node->setScale(vector3df(.5f, .5f, .5f));
-
-	auto parentCmp = scene->assign<ParentComponent>(wepEntity);
-	parentCmp->parentId = shipId;
 
 	return true;
 }

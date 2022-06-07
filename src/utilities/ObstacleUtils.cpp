@@ -4,12 +4,12 @@
 #include "BulletGhostComponent.h"
 #include "GameStateController.h"
 
-EntityId createDynamicObstacle(u32 id, vector3df position, vector3df rotation, vector3df scale, f32 mass)
+flecs::entity createDynamicObstacle(u32 id, vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
-	auto obstacle = sceneManager->scene.newEntity();
+	auto obstacle = game_world->entity();
 
 	loadObstacle(id, obstacle);
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(obstacle);
+	auto irr = obstacle.get_mut<IrrlichtComponent>();
 	irr->node->setID(ID_IsSelectable);
 	irr->node->setPosition(position);
 	irr->node->setScale(scale);
@@ -19,21 +19,21 @@ EntityId createDynamicObstacle(u32 id, vector3df position, vector3df rotation, v
 	n->getMesh()->setHardwareMappingHint(EHM_STATIC);
 	btVector3 btscale(irrVecToBt(scale));
 	initializeBtRigidBody(obstacle, stateController->assets.getHullAsset(stateController->obstacleData[id]->name), btscale, mass);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(obstacle);
+	auto rbc = obstacle.get_mut<BulletRigidBodyComponent>();
 	rbc->rigidBody.setActivationState(0);
 	initializeHealth(obstacle, stateController->obstacleData[id]->health);
 	return obstacle;
 
 }
-EntityId createStaticObstacle(u32 id, vector3df position, vector3df rotation, vector3df scale)
+flecs::entity createStaticObstacle(u32 id, vector3df position, vector3df rotation, vector3df scale)
 {
 	return createDynamicObstacle(id, position, rotation, scale, 0);
 }
 
-EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass)
+flecs::entity createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
-	EntityId id = createDynamicObstacle(0, position, rotation, scale, mass);
-	auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
+	flecs::entity id = createDynamicObstacle(0, position, rotation, scale, mass);
+	auto rbc = id.get_mut<BulletRigidBodyComponent>();
 	u32 roll = std::rand() % 20;
 
 	if (roll < 15) {
@@ -46,18 +46,16 @@ EntityId createAsteroid(vector3df position, vector3df rotation, vector3df scale,
 	return id;
 }
 
-EntityId createDebris(vector3df position, vector3df rotation, vector3df scale, f32 mass)
+flecs::entity createDebris(vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
 	return createDynamicObstacle(2, position, rotation, scale, mass);
 }
 
-EntityId createGasCloud(vector3df position, vector3df scale)
+flecs::entity createGasCloud(vector3df position, vector3df scale)
 {
-	Scene* scene = &sceneManager->scene;
-
-	auto cloud = scene->newEntity();
+	auto cloud = game_world->entity();
 	if (!loadObstacle(1, cloud)) return INVALID_ENTITY;
-	auto irr = scene->get<IrrlichtComponent>(cloud);
+	auto irr = cloud.get_mut<IrrlichtComponent>();
 	irr->node->setID(ID_IsSelectable);
 	irr->node->setPosition(position);
 	irr->node->setScale(scale);
@@ -69,7 +67,7 @@ EntityId createGasCloud(vector3df position, vector3df scale)
 	ps->setEmitter(em);
 	em->drop();
 
-	auto ghost = scene->assign<BulletGhostComponent>(cloud);
+	auto ghost = cloud.get_mut<BulletGhostComponent>();
 	ghost->shape = btSphereShape(scale.X / 4);
 	ghost->ghost = btGhostObject();
 	btTransform transform;
@@ -77,17 +75,16 @@ EntityId createGasCloud(vector3df position, vector3df scale)
 	ghost->ghost.setWorldTransform(transform);
 	ghost->ghost.setCollisionShape(&ghost->shape);
 	bWorld->addCollisionObject(&ghost->ghost);
-	ghost->ghost.setUserIndex(getEntityIndex(cloud));
-	ghost->ghost.setUserIndex2(getEntityVersion(cloud));
-	ghost->ghost.setUserIndex3(1);
+
+	setIdOnBtObject(&ghost->ghost, cloud);
 
 	gameController->registerDeathCallback(cloud, gasDeathExplosion);
 	return cloud;
 }
 
-void gasDeathExplosion(EntityId id)
+void gasDeathExplosion(flecs::entity id)
 {
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(id);
+	auto irr = id.get<IrrlichtComponent>();
 	vector3df pos = irr->node->getAbsolutePosition();
 	vector3df scale = irr->node->getScale();
 	f32 avgscale = (scale.X + scale.Y + scale.Z);

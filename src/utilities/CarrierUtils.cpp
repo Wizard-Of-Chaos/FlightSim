@@ -4,21 +4,21 @@
 #include "SceneManager.h"
 #include "GuiController.h"
 
-void initializeCarrier(EntityId id, f32 spawnRate, u32 reserveShips, vector3df scale)
+void initializeCarrier(flecs::entity id, f32 spawnRate, u32 reserveShips, vector3df scale)
 {
-	auto carr = sceneManager->scene.assign<CarrierComponent>(id);
+	auto carr = id.get_mut<CarrierComponent>();
 	carr->reserveShips = reserveShips;
 	carr->spawnRate = spawnRate;
 	carr->scale = scale;
 	carr->spawnTimer = 0;
 }
 
-EntityId createCarrierFromId(u32 id, vector3df pos, vector3df rot)
+flecs::entity createCarrierFromId(u32 id, vector3df pos, vector3df rot)
 {
-	EntityId carrier = sceneManager->scene.newEntity();
+	flecs::entity carrier = sceneManager->scene.newEntity();
 	loadShip(id, carrier, true);
-	auto ship = sceneManager->scene.get<ShipComponent>(carrier);
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(carrier);
+	auto ship = carrier.get_mut<ShipComponent>();
+	auto irr = carrier.get_mut<IrrlichtComponent>();
 	irr->node->setPosition(pos);
 	irr->node->setRotation(rot);
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
@@ -28,12 +28,12 @@ EntityId createCarrierFromId(u32 id, vector3df pos, vector3df rot)
 	return carrier;
 }
 
-EntityId createHumanCarrier(u32 carrId, vector3df pos, vector3df rot)
+flecs::entity createHumanCarrier(u32 carrId, vector3df pos, vector3df rot)
 {
 	auto carrier = createCarrierFromId(carrId, pos, rot);
-	auto ship = sceneManager->scene.get<ShipComponent>(carrier);
+	auto ship = carrier.get_mut<ShipComponent>();
 	CarrierData* carr = stateController->carrierData[ship->shipDataId];
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(carrier);
+	auto irr = carrier.get_mut<IrrlichtComponent>();
 	irr->name = carr->name;
 	initializeShipCollisionBody(carrier, carrId, true);
 	initializeHealth(carrier, carr->health);
@@ -44,7 +44,7 @@ EntityId createHumanCarrier(u32 carrId, vector3df pos, vector3df rot)
 		inst.weps[i] = stateController->weaponData[3]->weaponComponent;
 	}
 
-	auto carrcmp = sceneManager->scene.get<CarrierComponent>(carrier);
+	auto carrcmp = carrier.get_mut<CarrierComponent>();
 	carrcmp->shipTypeCount = 1;
 	carrcmp->spawnShipTypes[0] = inst;
 
@@ -54,12 +54,12 @@ EntityId createHumanCarrier(u32 carrId, vector3df pos, vector3df rot)
 	return carrier;
 }
 
-EntityId createAlienCarrier(u32 carrId, vector3df pos, vector3df rot)
+flecs::entity createAlienCarrier(u32 carrId, vector3df pos, vector3df rot)
 {
 	auto carrier = createCarrierFromId(carrId, pos, rot);
-	auto ship = sceneManager->scene.get<ShipComponent>(carrier);
+	auto ship = carrier.get_mut<ShipComponent>();
 	CarrierData* carr = stateController->carrierData[ship->shipDataId];
-	auto irr = sceneManager->scene.get<IrrlichtComponent>(carrier);
+	auto irr = carrier.get_mut<IrrlichtComponent>();
 	irr->name = carr->name;
 
 	initializeShipCollisionBody(carrier, carrId, true);
@@ -72,7 +72,7 @@ EntityId createAlienCarrier(u32 carrId, vector3df pos, vector3df rot)
 		inst.weps[i] = stateController->weaponData[1]->weaponComponent;
 	}
 
-	auto carrcmp = sceneManager->scene.get<CarrierComponent>(carrier);
+	auto carrcmp = carrier.get_mut<CarrierComponent>();
 	carrcmp->shipTypeCount = 1;
 	carrcmp->spawnShipTypes[0] = inst;
 

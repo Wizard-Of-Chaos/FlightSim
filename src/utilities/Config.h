@@ -6,7 +6,6 @@
 #include "InputComponent.h"
 #include <unordered_map>
 #include <vector>
-#include "ECS.h"
 
 const extern std::map <std::string, E_DRIVER_TYPE> drivers;
 

@@ -225,15 +225,15 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	return id;
 }
 
-bool loadShip(u32 id, EntityId entity, bool carrier)
+bool loadShip(u32 id, flecs::entity entity, bool carrier)
 {
 	ShipData* data = stateController->shipData[id];
 	if (carrier) data = stateController->carrierData[id];
 
 	if (!data) return false;
 
-	auto ship = sceneManager->scene.assign<ShipComponent>(entity);
-	auto irr = sceneManager->scene.assign<IrrlichtComponent>(entity);
+	auto ship = entity.get_mut<ShipComponent>();
+	auto irr = entity.get_mut<IrrlichtComponent>();
 	if (!irr || !ship) return false;
 	*ship = data->shipComponent;
 
@@ -270,27 +270,26 @@ bool loadShip(u32 id, EntityId entity, bool carrier)
 
 	if (carrier) {
 		CarrierData* cdata = (CarrierData*)data;
-		CarrierComponent* carr = sceneManager->scene.assign<CarrierComponent>(entity);
+		CarrierComponent* carr = entity.get_mut<CarrierComponent>();
 		*carr = cdata->carrierComponent;
 		irr->node->setScale(carr->scale);
 	}
 	return true;
 }
 
-bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
+bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bool phys)
 {
 	WeaponData* data;
 	if (phys) data = stateController->physWeaponData[id];
 	else data = stateController->weaponData[id];
 
 	if (!data) return false;
-
-	auto wep = sceneManager->scene.assign<WeaponInfoComponent>(weaponEntity);
-	auto irr = sceneManager->scene.assign<IrrlichtComponent>(weaponEntity);
-	auto parent = sceneManager->scene.assign<ParentComponent>(weaponEntity);
-	if (!wep || !irr || !parent) return false;
+	//assignments
+	auto wep = weaponEntity.get_mut<WeaponInfoComponent>();
+	auto irr = weaponEntity.get_mut<IrrlichtComponent>();
+	if (!wep || !irr) return false;
 	
-	parent->parentId = shipEntity;
+	weaponEntity.add(flecs::ChildOf, shipEntity);
 
 	IMesh* mesh = stateController->assets.getMeshAsset(data->name);
 	ITexture* tex = stateController->assets.getTextureAsset(data->name);
@@ -322,7 +321,7 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 
 	*wep = data->weaponComponent;
 	if (data->weaponComponent.type == WEP_MISSILE) {
-		auto miss = sceneManager->scene.assign<MissileInfoComponent>(weaponEntity);
+		auto miss = weaponEntity.get_mut<MissileInfoComponent>();
 		MissileData* mdata = (MissileData*)data;
 		*miss = mdata->missileComponent;
 		miss->missileMesh = smgr->getMesh(mdata->missileMesh.c_str());
@@ -330,14 +329,14 @@ bool loadWeapon(u32 id, EntityId weaponEntity, EntityId shipEntity, bool phys)
 		wep->usesAmmunition = true;
 	}
 	if (data->weaponComponent.type == WEP_KINETIC) {
-		auto kin = sceneManager->scene.assign<KineticInfoComponent>(weaponEntity);
+		auto kin = weaponEntity.get_mut<KineticInfoComponent>();
 		KineticData* kdata = (KineticData*)data;
 		*kin = kdata->kineticComponent;
 		wep->clip = wep->maxClip;
 		wep->usesAmmunition = true; 
 	}
 	if (data->weaponComponent.type == WEP_PHYS_BOLAS) {
-		auto bolas = sceneManager->scene.assign<BolasInfoComponent>(weaponEntity);
+		auto bolas = weaponEntity.get_mut<BolasInfoComponent>();
 		BolasData* bdata = (BolasData*)data;
 		BolasInfoComponent cmp = bdata->bolasComponent;
 		*bolas = cmp;
@@ -378,15 +377,15 @@ u32 loadObstacleData(std::string path, gvReader& in)
 	return id;
 }
 
-bool loadObstacle(u32 id, EntityId entity)
+bool loadObstacle(u32 id, flecs::entity entity)
 {
 	ObstacleData* data = stateController->obstacleData[id];
 	if (!data) return false;
 
-	auto obst = sceneManager->scene.assign<ObstacleComponent>(entity);
+	auto obst = entity.get_mut<ObstacleComponent>();
 	obst->type = data->type;
 
-	auto irr = sceneManager->scene.assign<IrrlichtComponent>(entity);
+	auto irr = entity.get_mut<IrrlichtComponent>();
 	irr->name = data->name;
 
 	IMesh* mesh = nullptr;

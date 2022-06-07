@@ -153,7 +153,7 @@ void buildAsteroidField(Scenario& scenario)
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 100;
 		f32 mass = (f32)scale / 5.f;
-		EntityId rock = createAsteroid(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
+		flecs::entity rock = createAsteroid(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
 	}
 	std::cout << "Done.\n";
 }
@@ -163,7 +163,7 @@ void buildGasField(Scenario& scenario)
 	std::cout << "Building gas field... ";
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 30;
-		EntityId gas = createGasCloud(scenario.obstaclePositions[i], vector3df(scale, scale, scale));
+		flecs::entity gas = createGasCloud(scenario.obstaclePositions[i], vector3df(scale, scale, scale));
 	}
 	std::cout << "Done. \n";
 }
@@ -174,7 +174,7 @@ void buildDebrisField(Scenario& scenario)
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 70;
 		f32 mass = (f32)scale / 5.f;
-		EntityId debris = createDebris(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
+		flecs::entity debris = createDebris(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
 	}
 	std::cout << "Done.\n";
 }
@@ -202,8 +202,8 @@ void setKillHostilesScenario(Scenario& scenario)
 	std::cout << "Setting up hostiles... ";
 	for (u32 i = 0; i < scenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(scenario.enemyStartPos, 25.f);
-		EntityId enemy = createDefaultAIShip(pos, vector3df(0, 180, 0)); //todo: create AI ship generator that pulls from loaded ships
-		auto obj = sceneManager->scene.assign<ObjectiveComponent>(enemy);
+		flecs::entity enemy = createDefaultAIShip(pos, vector3df(0, 180, 0)); //todo: create AI ship generator that pulls from loaded ships
+		auto obj = enemy.get_mut<ObjectiveComponent>();
 		obj->type = OBJ_DESTROY;
 	}
 	std::cout << "Done. \n";
@@ -214,7 +214,7 @@ void setScrambleScenario(Scenario& scenario)
 	std::cout << "Setting up a scramble...";
 	scenario.enemyStartPos.Z += 400;
 	auto carr = createAlienCarrier(1, scenario.enemyStartPos, vector3df(0, 90, 0));
-	auto obj = sceneManager->scene.assign<ObjectiveComponent>(carr);
+	auto obj = carr.get_mut<ObjectiveComponent>();
 	obj->type = OBJ_DESTROY;
 	std::cout << "Done.\n";
 }

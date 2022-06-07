@@ -3,7 +3,6 @@
 #ifndef IRRLICHTUTILS_H
 #define IRRLICHTUTILS_H
 #include "BaseHeader.h"
-#include "ECS.h"
 
 /*
 * Utility functions for use with Irrlicht nodes to determine direction.
@@ -40,9 +39,9 @@ vector3df getNodeUp(ISceneNode* node);
 vector3df getNodeDown(ISceneNode* node);
 
 //Transforms a string to an EntityId.
-EntityId strToId(std::string id);
+flecs::entity strToId(std::string id);
 //Transforms an EntityId to a string.
-std::string idToStr(EntityId id);
+std::string idToStr(flecs::entity id);
 //Convenience function to call on a GUI element to force it to scale with its root node.
 void scaleAlign(IGUIElement* elem);
 //Convenience function to call on a GUI image to force it to scale with its root node.

@@ -32,13 +32,14 @@ vector3df getNodeLeft(ISceneNode* node)
 	return -getNodeRight(node);
 }
 
-EntityId strToId(std::string id)
+flecs::entity strToId(std::string id)
 {
-	return std::stoull(id);
+	flecs::entity_t num = std::stoull(id);
+	return flecs::entity(game_world->get_world(), num);
 }
-std::string idToStr(EntityId id)
+std::string idToStr(flecs::entity id)
 {
-	return std::to_string(id);
+	return std::to_string(id.id());
 }
 
 void scaleAlign(IGUIElement* elem)
