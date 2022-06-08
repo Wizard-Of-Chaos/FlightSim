@@ -22,7 +22,9 @@ void GameController::update()
 	then = now;
 	accumulator += delta;
 	while (accumulator >= dt) {
-		sceneManager->update(dt, delta); //in-game logic and physics
+		game_world->progress(dt);
+		bWorld->stepSimulation(dt, 60);
+		//sceneManager->update(dt, delta); //in-game logic and physics
 		t += dt;
 		accumulator -= dt;
 	}
@@ -62,8 +64,6 @@ void GameController::init()
 	rend.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	bWorld->setDebugDrawer(&rend);
 #endif 
-	Scene scene;
-	sceneManager = new SceneManager(scene); //Sets up the ECS scene
 
 	collCb = new broadCallback();
 	bWorld->getPairCache()->setOverlapFilterCallback(collCb);
@@ -110,11 +110,8 @@ void GameController::close()
 	delete bWorld; //this likely leaks some memory
 	delete collCb;
 	delete gPairCb;
-	//delete all the crap in the scenemanager too
-	for (ComponentPool* pool : sceneManager->scene.componentPools) {
-		delete pool; //pool's closed
-	}
-	delete sceneManager;
+
+	//todo: need to clean out the ECS
 	sounds.clear();
 	stateController->assets.clearLoadedGameAssets();
 	open = false;

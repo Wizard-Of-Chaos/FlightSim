@@ -1,5 +1,4 @@
 #include "SensorUpdateSystem.h"
-#include "SceneManager.h"
 #include "GameController.h"
 #include <iostream>
 
@@ -25,7 +24,7 @@ std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorCompon
 		if (obj == &rbc->rigidBody) continue;
 
 		flecs::entity objId = getIdFromBt(obj);
-		if (!sceneManager->scene.entityInUse(objId)) continue;
+		if (!objId.is_alive()) continue;
 
 		if (!objId.has<BulletRigidBodyComponent>() || !objId.has<FactionComponent>()) continue; //throw out anything without a rigid body comp and a faction comp
 		auto objRBC = objId.get<BulletRigidBodyComponent>();

@@ -1,5 +1,4 @@
 #include "ShipUpdateSystem.h"
-#include "SceneManager.h"
 #include <iostream>
 
 void jetOn(IParticleEmitter* jet)

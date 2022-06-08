@@ -2,7 +2,6 @@
 #include "GameStateController.h"
 #include "GameController.h"
 #include "LoadoutData.h"
-#include "SceneManager.h"
 #include "ShipUtils.h"
 
 Scenario randomScenario(bool scramble)

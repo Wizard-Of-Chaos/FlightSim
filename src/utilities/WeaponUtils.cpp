@@ -1,7 +1,6 @@
 #include "WeaponUtils.h"
 #include "GameController.h"
 #include "GameStateController.h"
-#include "SceneManager.h"
 
 void handleProjectileImpact(flecs::entity projectile, flecs::entity impacted)
 {
@@ -54,7 +53,7 @@ void gravityBolasImpact(flecs::entity projId, flecs::entity impacted)
 		std::cout << "Bolas target 1 locked\n";
 		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("bolasHitSound"), .5f, 100.f);
 	}
-	else if (!sceneManager->scene.entityInUse(bolasInfo->target2)) {
+	else if (!bolasInfo->target2.is_alive()) {
 		if (bolasInfo->target1 == impacted) return;
 		bolasInfo->target2 = impacted;
 		std::cout << "Bolas target 2 locked\n";

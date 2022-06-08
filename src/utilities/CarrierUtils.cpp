@@ -1,7 +1,6 @@
 #include "CarrierUtils.h"
 #include "GameController.h"
 #include "GameStateController.h"
-#include "SceneManager.h"
 #include "GuiController.h"
 
 void initializeCarrier(flecs::entity id, f32 spawnRate, u32 reserveShips, vector3df scale)
@@ -15,7 +14,7 @@ void initializeCarrier(flecs::entity id, f32 spawnRate, u32 reserveShips, vector
 
 flecs::entity createCarrierFromId(u32 id, vector3df pos, vector3df rot)
 {
-	flecs::entity carrier = sceneManager->scene.newEntity();
+	flecs::entity carrier = game_world->entity();
 	loadShip(id, carrier, true);
 	auto ship = carrier.get_mut<ShipComponent>();
 	auto irr = carrier.get_mut<IrrlichtComponent>();

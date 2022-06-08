@@ -1,6 +1,5 @@
 #include "ProjectileSystem.h"
 #include "GameController.h"
-#include "SceneManager.h"
 #include <iostream>
 
 void projectileSystem(flecs::iter it, BulletRigidBodyComponent* rbcs, ProjectileInfoComponent* pic, IrrlichtComponent* irrs)

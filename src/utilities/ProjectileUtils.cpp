@@ -1,6 +1,5 @@
 #include "ProjectileUtils.h"
 #include "GameController.h"
-#include "SceneManager.h"
 #include "GameStateController.h"
 
 #include <iostream>
@@ -260,7 +259,7 @@ void missileGoTo(flecs::entity id, f32 dt)
 	force += forward * proj->speed;
 	body->applyCentralImpulse(force * dt);
 
-	if(!sceneManager->scene.entityInUse(miss->target)) return;
+	if(!miss->target.is_alive()) return;
 
 	auto targetirr = miss->target.get<IrrlichtComponent>();
 

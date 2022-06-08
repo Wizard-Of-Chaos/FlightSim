@@ -52,9 +52,6 @@
     <ClCompile Include="src\systems\ProjectileSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\SceneManager.cpp">
-      <Filter>Sources\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\systems\ShipControlSystem.cpp">
       <Filter>Sources\Systems</Filter>
     </ClCompile>
@@ -221,9 +218,6 @@
     </ClInclude>
     <ClInclude Include="src\systems\ProjectileSystem.h">
       <Filter>Headers\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\SceneManager.h">
-      <Filter>Headers\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\systems\ShipControlSystem.h">
       <Filter>Headers\Systems</Filter>
@@ -406,6 +400,9 @@
       <Filter>Headers\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="src\core\flecs.h">
+      <Filter>Headers\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\SystemsHeader.h">
       <Filter>Headers\Core</Filter>
     </ClInclude>
   </ItemGroup>

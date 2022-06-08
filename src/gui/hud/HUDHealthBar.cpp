@@ -1,5 +1,4 @@
 #include "HUDHealthBar.h"
-#include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
 
@@ -22,7 +21,7 @@ HUDResources::HUDResources(IGUIElement* root, flecs::entity id) : HUDElement(roo
 	auto shipInfo = id.get<ShipComponent>();
 
 	for (u32 i = 0; i < shipInfo->hardpointCount; ++i) {
-		if (!sceneManager->scene.entityInUse(shipInfo->weapons[i])) continue;
+		if (!shipInfo->weapons[i].is_alive()) continue;
 
 		auto wepInfo = shipInfo->weapons[i].get<WeaponInfoComponent>();
 		if (!wepInfo->usesAmmunition) continue;

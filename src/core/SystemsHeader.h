@@ -1,0 +1,20 @@
+#pragma once
+#ifndef SYSTEMHEADER_H
+#define SYSTEMHEADER_H
+#include "BaseHeader.h"
+#include "AIUpdateSystem.h"
+#include "CarrierUpdateSystem.h"
+#include "CollisionCheckingSystem.h"
+#include "DamageSystem.h"
+#include "ExplosionSystem.h"
+#include "HealthAndShieldSystems.h"
+#include "IrrlichtRigidBodyPositionSystem.h"
+#include "ObjectiveSystem.h"
+#include "PlayerUpdateSystem.h"
+#include "ProjectileSystem.h"
+#include "SensorUpdateSystem.h"
+#include "ShipControlSystem.h"
+#include "ShipUpdateSystem.h"
+#include "SoundSystem.h"
+#include "WeaponFiringSystem.h"
+#endif

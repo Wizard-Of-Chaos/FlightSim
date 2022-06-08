@@ -1,7 +1,6 @@
 #include "WeaponFiringSystem.h"
 #include "GameController.h"
 #include "GameStateController.h"
-#include "SceneManager.h"
 #include "IrrlichtUtils.h"
 #include "WeaponUtils.h"
 #include <iostream>

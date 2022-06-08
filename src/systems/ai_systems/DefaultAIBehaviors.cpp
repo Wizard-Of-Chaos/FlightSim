@@ -1,5 +1,10 @@
 #include "DefaultAIBehaviors.h"
-#include "SceneManager.h"
+#include "WeaponInfoComponent.h"
+#include "BulletRigidBodyComponent.h"
+#include "SensorComponent.h"
+#include "IrrlichtComponent.h"
+#include "ShipMovementUtils.h"
+
 #include <iostream>
 
 void setAIWeapon(flecs::entity wep, bool firing)

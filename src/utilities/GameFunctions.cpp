@@ -1,5 +1,4 @@
 #include "GameFunctions.h"
-#include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
 
@@ -187,7 +186,7 @@ ShipInstance getEndScenarioData()
 	auto ship = gameController->playerEntity.get<ShipComponent>();
 	inst.ship = *ship;
 	for (u32 i = 0; i < ship->hardpointCount; ++i) {
-		if (!sceneManager->scene.entityInUse(ship->weapons[i])) { //there's no weapon here
+		if (!ship->weapons[i].is_alive()) { //there's no weapon here
 			inst.weps[i] = stateController->weaponData[0]->weaponComponent; //add the no-weapon component
 			continue;
 		}
@@ -206,7 +205,7 @@ ShipInstance getEndScenarioData()
 		}
 		inst.weps[i] = *wep;
 	}
-	if (!sceneManager->scene.entityInUse(ship->physWeapon)) {
+	if (!ship->physWeapon.is_alive()) {
 		inst.physWep = stateController->physWeaponData[0]->weaponComponent;
 	}
 	else {

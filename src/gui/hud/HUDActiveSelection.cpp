@@ -1,5 +1,4 @@
 #include "HUDActiveSelection.h"
-#include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
 #include <iostream>
@@ -44,7 +43,7 @@ void HUDActiveSelection::updateElement(flecs::entity playerId)
 	ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
 	line3df ray = input->cameraRay;
 
-	if (!sceneManager->scene.entityInUse(sensors->targetContact)) { //Check to see if the entity still exists
+	if (!sensors->targetContact.is_alive()) { //Check to see if the entity still exists
 		sensors->targetContact = INVALID_ENTITY;
 	}
 
@@ -71,7 +70,7 @@ void HUDActiveSelection::updateElement(flecs::entity playerId)
 		if (selection) {
 			if (selection->getID() != -1 && selection != playerIrr->node) {
 				flecs::entity id = strToId(selection->getName());
-				if(sceneManager->scene.entityInUse(id)) sensors->targetContact = id;
+				if(id.is_alive()) sensors->targetContact = id;
 
 				auto irr = id.get<IrrlichtComponent>();
 				std::wstring widestr = std::wstring(irr->name.begin(), irr->name.end());

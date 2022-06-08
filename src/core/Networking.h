@@ -3,7 +3,6 @@
 #ifndef NETWORKING_H
 #define NETWORKING_H
 #include "BaseHeader.h"
-#include "ECS.h"
 #include "BulletRigidBodyComponent.h"
 #include <algorithm>
 #include <stdexcept>
@@ -15,7 +14,7 @@ typedef uint32_t SequenceNumber;
 
 struct PacketData {
 	PacketData();
-	EntityId entityId;
+	//EntityId entityId;
 	int componentId;
 	// size of this buffer is determined by its component, gonna need to keep a mapping of componentId's -> buffer sizes
 	char componentData[];
@@ -31,5 +30,5 @@ struct Packet {
 	char data[MAX_DATA_SIZE];
 };
 
-void sortAccumulator(std::vector<std::tuple<EntityId, int, unsigned int>>& priorityAccumulator);
+//void sortAccumulator(std::vector<std::tuple<EntityId, int, unsigned int>>& priorityAccumulator);
 #endif

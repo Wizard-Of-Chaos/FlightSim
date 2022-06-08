@@ -1,4 +1,3 @@
-#include "SceneManager.h"
 #include "DefaultAIUpdateSystem.h"
 #include <iostream>
 

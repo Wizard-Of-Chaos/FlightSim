@@ -4,7 +4,7 @@
 #define FLIGHTEVENTRECEIVER_H
 #include "BaseHeader.h"
 
-#include "SceneManager.h"
+#include "SystemsHeader.h"
 #include "IrrlichtComponent.h"
 #include "InputComponent.h"
 #include "GameFunctions.h"

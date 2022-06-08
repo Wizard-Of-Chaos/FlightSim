@@ -1,5 +1,4 @@
 #include "AIUpdateSystem.h"
-#include "SceneManager.h"
 
 void AIUpdateSystem(flecs::iter it, AIComponent* aic, IrrlichtComponent* irrc)
 {

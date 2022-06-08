@@ -1,5 +1,4 @@
 #include "CollisionCheckingSystem.h"
-#include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
 #include "WeaponUtils.h"
@@ -82,7 +81,7 @@ void collisionCheckingSystem(flecs::iter it)
 		for (int j = 0; j < numContacts; ++j) {
 			if (contact->getContactPoint(j).getDistance() >= 0.f) continue;
 
-			if (sceneManager->scene.entityInUse(idA) && sceneManager->scene.entityInUse(idB)) {
+			if (idA.is_alive() && idB.is_alive()) {
 				//projectile cases have been handled. now for impact damage
 				collisionDamage(idA, idB);
 			}

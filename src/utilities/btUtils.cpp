@@ -1,5 +1,4 @@
 #include "btUtils.h"
-#include "SceneManager.h"
 #include "GameController.h"
 
 bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVector3& scale, f32 mass)

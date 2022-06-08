@@ -5,7 +5,6 @@
 #include "BaseHeader.h"
 #include "GuiDialog.h"
 #include "ShipComponent.h"
-#include "ECS.h"
 #include "LoadoutData.h"
 
 struct ShipSelector

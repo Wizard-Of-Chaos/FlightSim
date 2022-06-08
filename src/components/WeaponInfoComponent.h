@@ -4,7 +4,6 @@
 #define WEAPONINFOCOMPONENT_H
 #include "BaseHeader.h"
 #include "DamageTrackingComponent.h"
-#include "ECS.h"
 #include <map>
 
 /*

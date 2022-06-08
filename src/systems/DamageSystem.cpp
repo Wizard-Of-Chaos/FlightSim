@@ -1,6 +1,5 @@
 #include "DamageSystem.h"
 #include "GameController.h"
-#include "SceneManager.h"
 #include "GameStateController.h"
 
 #include <iostream>

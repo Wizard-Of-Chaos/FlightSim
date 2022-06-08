@@ -1,5 +1,4 @@
 #include "ShipControlSystem.h"
-#include "SceneManager.h"
 #include "GameController.h"
 #include <iostream>
 #include <algorithm>
@@ -102,7 +101,7 @@ void firePlayerWeapon(flecs::entity playerId, InputComponent* input, flecs::enti
 	//auto-aim for aiming at a contact
 	for (HUDElement* h : player->HUD) {
 		if (h->type == HUD_ELEM_TYPE::ACTIVE_SELECTION) {
-			if (!sceneManager->scene.entityInUse(sensors->targetContact)) continue;
+			if (!sensors->targetContact.is_alive()) continue;
 
 			HUDActiveSelection* act = (HUDActiveSelection*)h;
 			if (act->crosshair->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
@@ -281,7 +280,7 @@ void shipControlSystem(flecs::iter it,
 			firePlayerWeapon(entityId, input, ship->physWeapon);
 		}
 		else {
-			if (sceneManager->scene.entityInUse(ship->physWeapon)) {
+			if (ship->physWeapon.is_alive()) {
 				auto wepInfo = ship->physWeapon.get_mut<WeaponInfoComponent>();
 				if(wepInfo) wepInfo->isFiring = false;
 			}

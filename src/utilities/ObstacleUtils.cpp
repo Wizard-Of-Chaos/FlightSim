@@ -1,5 +1,4 @@
 #include "ObstacleUtils.h"
-#include "SceneManager.h"
 #include "GameController.h"
 #include "BulletGhostComponent.h"
 #include "GameStateController.h"

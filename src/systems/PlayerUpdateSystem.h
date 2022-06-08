@@ -7,6 +7,7 @@
 #include "PlayerComponent.h"
 #include "BulletRigidBodyComponent.h"
 #include "IrrlichtUtils.h"
+#include "SensorComponent.h"
 
 #include "HUDHeader.h"
 

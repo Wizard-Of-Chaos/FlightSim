@@ -7,7 +7,7 @@ Packet::Packet() {
 }
 
 PacketData::PacketData() {
-	entityId = 0;
+	//entityId = 0;
 	componentId = 0;
 }
 
@@ -17,6 +17,8 @@ PacketData::PacketData() {
 /// </summary>
 /// <param name="scene">scene to be serialized and sent over the wire</param>
 /// <returns>a packet to be sent over the wire</returns>
+/// 
+/*
 Packet* buildPacket(Scene& scene) {
 	auto packet = new Packet();
 	auto spaceRemaining = MAX_DATA_SIZE;
@@ -64,6 +66,7 @@ Packet* buildPacket(Scene& scene) {
 
 	return packet;
 }
+
 bool accumulatorPred(const std::tuple<EntityId, int, unsigned int> left, const std::tuple<EntityId, int, unsigned int> right) {
 	auto prioLeft = std::get<2>(left);
 	auto prioRight = std::get<2>(right);
@@ -76,3 +79,4 @@ void sortAccumulator(std::vector<std::tuple<EntityId, int, unsigned int>>& prior
 		std::rotate(insertionPoint, it, it + 1);
 	}
 }
+*/

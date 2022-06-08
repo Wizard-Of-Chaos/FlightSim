@@ -1,5 +1,4 @@
 #include "HUDVelocityBar.h"
-#include "SceneManager.h"
 #include "GameController.h"
 #include "GameStateController.h"
 

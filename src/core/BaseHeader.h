@@ -56,7 +56,6 @@ class BulletPhysicsWorld;
 extern GameStateController* stateController;
 extern GameController* gameController;
 extern GuiController* guiController;
-extern SceneManager* sceneManager;
 
 extern IrrlichtDevice* device;
 extern IVideoDriver* driver;

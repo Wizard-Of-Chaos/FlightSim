@@ -6,7 +6,6 @@
 GameStateController* stateController = 0;
 GameController* gameController = 0;
 GuiController* guiController = 0;
-SceneManager* sceneManager = 0;
 
 IrrlichtDevice* device = 0;
 IVideoDriver* driver = 0;
