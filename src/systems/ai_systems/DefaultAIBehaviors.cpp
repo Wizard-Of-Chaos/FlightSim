@@ -3,6 +3,7 @@
 #include "BulletRigidBodyComponent.h"
 #include "SensorComponent.h"
 #include "IrrlichtComponent.h"
+#include "IrrlichtUtils.h"
 #include "ShipMovementUtils.h"
 
 #include <iostream>

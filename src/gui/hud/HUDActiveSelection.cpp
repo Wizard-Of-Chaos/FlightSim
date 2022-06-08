@@ -56,7 +56,7 @@ void HUDActiveSelection::updateElement(flecs::entity playerId)
 			if (cont->contactView->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
 				for (auto [id, c] : player->trackedContacts) {
 					if (c != cont) continue;
-					sensors->targetContact = id;
+					sensors->targetContact = flecs::entity(game_world->get_world(), id);
 					mouseOverHUD = true;
 					break;
 				}

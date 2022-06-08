@@ -15,7 +15,7 @@ public:
 	HUDContact(IGUIElement* root, flecs::entity contactId, flecs::entity playerId);
 	~HUDContact() override;
 	virtual void updateElement(flecs::entity playerId);
-	flecs::entity contact;
+	flecs::entity_t contact;
 
 	IGUIImage* contactView;
 	IGUIElement* offscreenMarker;

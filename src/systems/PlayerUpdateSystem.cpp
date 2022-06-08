@@ -26,7 +26,8 @@ void playerUpdateSystem(flecs::iter it, IrrlichtComponent* irrc, PlayerComponent
 			}
 		}
 		for (auto [id, hud] : player->trackedContacts) { //checks hud contacts and removes ones not in use
-			if (!id.is_alive()) {
+			flecs::entity ent(game_world->get_world(), id);
+			if (!ent.is_alive()) {
 				if (hud) player->removeContact(hud);
 				continue;
 			}

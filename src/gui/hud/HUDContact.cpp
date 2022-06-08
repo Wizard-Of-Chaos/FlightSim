@@ -34,10 +34,11 @@ HUDContact::~HUDContact()
 void HUDContact::updateElement(flecs::entity playerId)
 {
 	auto player = playerId.get<PlayerComponent>();
-	if (!contact.is_alive()) return;
+	flecs::entity ent(game_world->get_world(), contact);
+	if (!ent.is_alive()) return;
 	ICameraSceneNode* camera = player->camera;
 	ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
-	auto irr = contact.get<IrrlichtComponent>();
+	auto irr = ent.get<IrrlichtComponent>();
 	if (!irr) return;
 
 	dimension2du screenSize = driver->getScreenSize();

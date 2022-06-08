@@ -37,7 +37,9 @@ flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, fl
 	auto projectileEntity = game_world->entity();
 
 	auto projectileInfo = addProjectileInfo(wepInfo, spawnPos);
-	projectileEntity.add<ProjectileInfoComponent>(projectileInfo);
+	auto projInfoC = projectileEntity.get_mut<ProjectileInfoComponent>(projectileEntity);
+	*projInfoC = projectileInfo;
+
 	projectileEntity.add<FiredBy>(weaponId);
 
 	btVector3 initialForce(0, 0, 0);

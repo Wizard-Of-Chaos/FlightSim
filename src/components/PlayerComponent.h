@@ -39,7 +39,7 @@ struct PlayerComponent
 	vector3df thrust;
 	vector3df rotation;
 
-	std::unordered_map<flecs::entity, HUDContact*> trackedContacts;
+	std::unordered_map<flecs::entity_t, HUDContact*> trackedContacts;
 
 	void removeContact(HUDContact* contact);
 	void removeHUDElement(HUDElement* element);

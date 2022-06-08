@@ -126,7 +126,8 @@ void firePlayerWeapon(flecs::entity playerId, InputComponent* input, flecs::enti
 		if (cont->contactView->getAbsolutePosition().isPointInside(input->mousePixPosition)) {
 			for (auto [id, c] : player->trackedContacts) {
 				if (c != cont) continue;
-				auto targetIrr = id.get<IrrlichtComponent>();
+				flecs::entity ent(game_world->get_world(), id);
+				auto targetIrr = ent.get<IrrlichtComponent>();
 				target = targetIrr->node->getPosition();
 				mouseOverHUD = true;
 				break;
