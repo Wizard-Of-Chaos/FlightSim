@@ -72,7 +72,8 @@ flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, fl
 			vector3df dir = adjustAccuracy(direction, kin->accuracy);
 			btVector3 force = irrVecToBt(dir) * projectileInfo.speed;
 			flecs::entity newId = game_world->entity();
-			newId.add<ProjectileInfoComponent>(projectileInfo);
+			auto proj = newId.get_mut<ProjectileInfoComponent>();
+			*proj = projectileInfo;
 			auto newRBC = addProjectileRBC(newId, force, initVelocity, spawnPos, initRot);
 			createKineticProjectile(newId, dir, spawnPos);
 			bWorld->addRigidBody(&newRBC->rigidBody);
@@ -99,7 +100,8 @@ void createKineticProjectile(flecs::entity projId, vector3df dir, vector3df spaw
 	irr.node->setName(idToStr(projId).c_str());
 	bill->setID(ID_IsNotSelectable);
 
-	projId.add<IrrlichtComponent>(irr);
+	auto irrcmp = projId.get_mut<IrrlichtComponent>();
+	*irrcmp = irr;
 }
 
 void createPlasmaProjectile(flecs::entity projId, vector3df dir, vector3df spawn)
@@ -135,7 +137,8 @@ void createPlasmaProjectile(flecs::entity projId, vector3df dir, vector3df spawn
 	ps->setMaterialTexture(0, wepComp->particle);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
-	projId.add<IrrlichtComponent>(irr);
+	auto irrcmp = projId.get_mut<IrrlichtComponent>();
+	*irrcmp = irr;
 }
 
 void createMissileProjectile(flecs::entity projId, vector3df dir, vector3df spawn)
@@ -176,7 +179,8 @@ void createMissileProjectile(flecs::entity projId, vector3df dir, vector3df spaw
 	missile.maxVelocity = missComp->maxMissileVelocity;
 	missile.rotThrust = missComp->missileRotThrust;
 
-	projId.add<MissileProjectileComponent>(missile);
+	auto misscmp = projId.get_mut<MissileProjectileComponent>();
+	*misscmp = missile;
 
 	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false, irr.node);
 	ps->setID(ID_IsNotSelectable);
@@ -194,7 +198,8 @@ void createMissileProjectile(flecs::entity projId, vector3df dir, vector3df spaw
 	ps->setMaterialTexture(0, wepComp->particle);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
-	projId.add<IrrlichtComponent>(irr);
+	auto irrcmp = projId.get_mut<IrrlichtComponent>();
+	*irrcmp = irr;
 }
 
 void destroyProjectile(flecs::entity projectile)
