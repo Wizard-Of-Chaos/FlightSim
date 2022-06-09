@@ -5,7 +5,7 @@ bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVe
 {
 	if (!entityId.has<IrrlichtComponent>()) return false;
 
-	auto objIrr = entityId.get<IrrlichtComponent>(entityId);
+	auto objIrr = entityId.get<IrrlichtComponent>();
 
 	BulletRigidBodyComponent* rbc = entityId.get_mut<BulletRigidBodyComponent>();
 	rbc->shape = shape;
