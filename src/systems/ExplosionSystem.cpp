@@ -21,16 +21,16 @@ void ExplodeAOE(ExplosionComponent* exp)
 		if (!objId.has<BulletRigidBodyComponent>(objId)) continue;
 		auto objRBC = objId.get_mut<BulletRigidBodyComponent>();
 
-		btVector3 dist = objRBC->rigidBody.getCenterOfMassPosition() - center;
+		btVector3 dist = objRBC->rigidBody->getCenterOfMassPosition() - center;
 		btVector3 dir = dist.normalized();
 		f32 distfactor = (exp->radius - dist.length()) / exp->radius;
 		if (std::abs(distfactor) > 1.f) {
 			distfactor = 1.f;
 		}
 
-		objRBC->rigidBody.applyCentralImpulse(dir * (exp->force * distfactor));
-		objRBC->rigidBody.applyTorqueImpulse(dir * (exp->force * distfactor / 10.f));
-		objRBC->rigidBody.activate(true);
+		objRBC->rigidBody->applyCentralImpulse(dir * (exp->force * distfactor));
+		objRBC->rigidBody->applyTorqueImpulse(dir * (exp->force * distfactor / 10.f));
+		objRBC->rigidBody->activate(true);
 
 		f32 damage = exp->damage * distfactor;
 		if (damage < 0) damage = 0;

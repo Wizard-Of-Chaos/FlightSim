@@ -74,11 +74,15 @@ void destroyObject(flecs::entity id)
 	}
 	if (id.has<BulletRigidBodyComponent>()) {
 		auto rbc = id.get_mut<BulletRigidBodyComponent>();
-		bWorld->removeRigidBody(&rbc->rigidBody);
+		bWorld->removeRigidBody(rbc->rigidBody);
+		if (rbc->rigidBody) delete rbc->rigidBody;
+		delete rbc->shape;
 	}
 	if (id.has<BulletGhostComponent>()) {
 		auto ghost = id.get_mut<BulletGhostComponent>();
-		bWorld->removeCollisionObject(&ghost->ghost);
+		bWorld->removeCollisionObject(ghost->ghost);
+		if (ghost->ghost) delete ghost->ghost;
+		delete ghost->shape;
 	}
 
 	id.destruct();

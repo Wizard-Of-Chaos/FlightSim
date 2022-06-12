@@ -79,7 +79,7 @@ void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyCompon
 		auto rbc = &rbcs[i];
 		auto particles = &prtc[i];
 		flecs::entity entityId = it.entity(i);
-		btRigidBody* body = &rbc->rigidBody;
+		btRigidBody* body = rbc->rigidBody;
 
 		f32 linVel = body->getLinearVelocity().length();
 		f32 angVel = body->getAngularVelocity().length();
@@ -191,9 +191,9 @@ void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyCompon
 			ship->moves[i] = false;
 		}
 
-		rbc->rigidBody.applyTorqueImpulse(torque * dt);
-		rbc->rigidBody.applyCentralImpulse(force * dt);
-		f32 zPercent = rbc->rigidBody.getLinearVelocity().length() / ship->linearMaxVelocity;
+		rbc->rigidBody->applyTorqueImpulse(torque * dt);
+		rbc->rigidBody->applyCentralImpulse(force * dt);
+		f32 zPercent = rbc->rigidBody->getLinearVelocity().length() / ship->linearMaxVelocity;
 		engine->setScale(vector3df(std::max(zPercent, 3.5f), std::max(5*zPercent, .1f), std::max(zPercent, 3.5f)));
 
 		if (!entityId.has<HealthComponent>()) continue;

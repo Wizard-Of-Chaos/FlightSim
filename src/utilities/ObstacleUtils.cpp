@@ -19,7 +19,7 @@ flecs::entity createDynamicObstacle(u32 id, vector3df position, vector3df rotati
 	btVector3 btscale(irrVecToBt(scale));
 	initializeBtRigidBody(obstacle, stateController->assets.getHullAsset(stateController->obstacleData[id]->name), btscale, mass);
 	auto rbc = obstacle.get_mut<BulletRigidBodyComponent>();
-	rbc->rigidBody.setActivationState(0);
+	rbc->rigidBody->setActivationState(0);
 	initializeHealth(obstacle, stateController->obstacleData[id]->health);
 	return obstacle;
 
@@ -36,11 +36,11 @@ flecs::entity createAsteroid(vector3df position, vector3df rotation, vector3df s
 	u32 roll = std::rand() % 20;
 
 	if (roll < 15) {
-		rbc->rigidBody.setActivationState(1);
-		rbc->rigidBody.applyTorque(irrVecToBt(randomRotationVector()));
+		rbc->rigidBody->setActivationState(1);
+		rbc->rigidBody->applyTorque(irrVecToBt(randomRotationVector()));
 	}
 	if (roll == 20) { //Critical hit -- the asteroid is moving!
-		rbc->rigidBody.applyCentralImpulse(irrVecToBt(randomVector()));
+		rbc->rigidBody->applyCentralImpulse(irrVecToBt(randomVector()));
 	}
 	return id;
 }
@@ -67,15 +67,15 @@ flecs::entity createGasCloud(vector3df position, vector3df scale)
 	em->drop();
 
 	auto ghost = cloud.get_mut<BulletGhostComponent>();
-	ghost->shape = btSphereShape(scale.X / 4);
-	ghost->ghost = btGhostObject();
+	ghost->shape = new btSphereShape(scale.X / 4);
+	ghost->ghost = new btGhostObject();
 	btTransform transform;
 	transform.setOrigin(irrVecToBt(position));
-	ghost->ghost.setWorldTransform(transform);
-	ghost->ghost.setCollisionShape(&ghost->shape);
-	bWorld->addCollisionObject(&ghost->ghost);
+	ghost->ghost->setWorldTransform(transform);
+	ghost->ghost->setCollisionShape(ghost->shape);
+	bWorld->addCollisionObject(ghost->ghost);
 
-	setIdOnBtObject(&ghost->ghost, cloud);
+	setIdOnBtObject(ghost->ghost, cloud);
 
 	gameController->registerDeathCallback(cloud, gasDeathExplosion);
 	return cloud;

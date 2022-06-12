@@ -7,9 +7,9 @@ void irrlichtRigidBodyPositionSystem(flecs::iter it, BulletRigidBodyComponent* r
 		BulletRigidBodyComponent* rbc = &rbcs[i];
 		IrrlichtComponent* irr = &irrc[i];
 
-		irr->node->setPosition(btVecToIrr(rbc->rigidBody.getWorldTransform().getOrigin()));
+		irr->node->setPosition(btVecToIrr(rbc->rigidBody->getWorldTransform().getOrigin()));
 		btVector3 eulerOrientation;
-		QuaternionToEuler(rbc->rigidBody.getOrientation(), eulerOrientation);
+		QuaternionToEuler(rbc->rigidBody->getOrientation(), eulerOrientation);
 		irr->node->setRotation(btVecToIrr(eulerOrientation));
 	}
 }

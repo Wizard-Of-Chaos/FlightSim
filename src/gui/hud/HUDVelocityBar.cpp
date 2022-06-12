@@ -47,9 +47,9 @@ void HUDVelocityBar::updateElement(flecs::entity playerId)
 	auto rbc = playerId.get<BulletRigidBodyComponent>();
 	auto player = playerId.get<PlayerComponent>();
 
-	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
-	btScalar velLen = rbc->rigidBody.getLinearVelocity().length();
-	btScalar angLen = rbc->rigidBody.getAngularVelocity().length();
+	btVector3 pos = rbc->rigidBody->getCenterOfMassPosition();
+	btScalar velLen = rbc->rigidBody->getLinearVelocity().length();
+	btScalar angLen = rbc->rigidBody->getAngularVelocity().length();
 
 	std::string x, y, z;
 	x = fprecis(pos.x(), 5);

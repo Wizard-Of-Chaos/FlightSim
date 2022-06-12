@@ -110,13 +110,13 @@ void firePlayerWeapon(flecs::entity playerId, InputComponent* input, flecs::enti
 
 				if (sensors->targetContact.has<BulletRigidBodyComponent>()) {
 					auto targetRBC = sensors->targetContact.get<BulletRigidBodyComponent>();
-					forwardTarget = targetRBC->rigidBody.getCenterOfMassPosition() + (targetRBC->rigidBody.getLinearVelocity() * .35f);
+					forwardTarget = targetRBC->rigidBody->getCenterOfMassPosition() + (targetRBC->rigidBody->getLinearVelocity() * .35f);
 				}
 				else if (sensors->targetContact.has<IrrlichtComponent>()) {
 					auto targetIrr = sensors->targetContact.get<IrrlichtComponent>();
 					forwardTarget = irrVecToBt(targetIrr->node->getAbsolutePosition());
 				}
-				forwardTarget += (rbc->rigidBody.getLinearVelocity() * -.35f);
+				forwardTarget += (rbc->rigidBody->getLinearVelocity() * -.35f);
 				target = btVecToIrr(forwardTarget);
 				continue;
 			}
@@ -234,7 +234,7 @@ void shipControlSystem(flecs::iter it,
 		}
 
 		if (fa) {
-			throttleToShip(ship, &rbc->rigidBody, player->thrust, player->rotation);
+			throttleToShip(ship, rbc->rigidBody, player->thrust, player->rotation);
 		}
 
 		if (gameController->gameConfig.spaceFriction) {
@@ -246,13 +246,13 @@ void shipControlSystem(flecs::iter it,
 
 		if (input->mouseControlEnabled) {
 			vector3df viewpoint = input->cameraRay.getMiddle();
-			viewpoint = viewpoint - btVecToIrr(rbc->rigidBody.getCenterOfMassPosition());
+			viewpoint = viewpoint - btVecToIrr(rbc->rigidBody->getCenterOfMassPosition());
 			viewpoint.normalize();
 
-			btScalar angle = getRigidBodyForward(&rbc->rigidBody).angle(irrVecToBt(viewpoint));
-			btVector3 ang = rbc->rigidBody.getAngularVelocity();
+			btScalar angle = getRigidBodyForward(rbc->rigidBody).angle(irrVecToBt(viewpoint));
+			btVector3 ang = rbc->rigidBody->getAngularVelocity();
 			if (angle * RADTODEG >= .8f) {
-				turnToDirection(&rbc->rigidBody, ship, irrVecToBt(viewpoint));
+				turnToDirection(rbc->rigidBody, ship, irrVecToBt(viewpoint));
 			}
 			else {
 				ship->moves[SHIP_STOP_ROTATION] = true;

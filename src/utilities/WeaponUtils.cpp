@@ -73,7 +73,7 @@ void gravityBolasImpact(flecs::entity projId, flecs::entity impacted)
 		btVector3 ori(0, 0, 0);
 		tr.setIdentity();
 		tr.setOrigin(ori);
-		auto p2p = new btGeneric6DofConstraint(rbcA->rigidBody, rbcB->rigidBody, tr, tr, false);
+		auto p2p = new btGeneric6DofConstraint(*rbcA->rigidBody, *rbcB->rigidBody, tr, tr, false);
 		p2p->setLinearLowerLimit(btVector3(0, 0, 0));
 		p2p->setLinearUpperLimit(btVector3(0, 0, 0));
 		p2p->setAngularLowerLimit(btVector3(-PI, -PI, -PI));

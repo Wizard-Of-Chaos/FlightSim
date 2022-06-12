@@ -24,16 +24,16 @@ void collisionDamage(flecs::entity A, flecs::entity B)
 	auto rbcA = A.get<BulletRigidBodyComponent>();
 	auto rbcB = B.get<BulletRigidBodyComponent>();
 
-	btScalar velA = rbcA->rigidBody.getLinearVelocity().length2();
-	btScalar velB = rbcB->rigidBody.getLinearVelocity().length2();
+	btScalar velA = rbcA->rigidBody->getLinearVelocity().length2();
+	btScalar velB = rbcB->rigidBody->getLinearVelocity().length2();
 	btScalar kinetic = 0;
 	btScalar minimumVel = 10.f;
 	if (velA < minimumVel || velB < minimumVel) return;
 
 	//Any "static" object would have a mass of 0, and would have 0 velocity, so in both cases the static
 	//object should never be applying the damage.
-	if (velA >= velB) kinetic = (velA * rbcA->rigidBody.getMass()) / 2;
-	else kinetic = (velB * rbcB->rigidBody.getMass()) / 2;
+	if (velA >= velB) kinetic = (velA * rbcA->rigidBody->getMass()) / 2;
+	else kinetic = (velB * rbcB->rigidBody->getMass()) / 2;
 
 	//balancing for later
 	kinetic = kinetic / 8000.f;

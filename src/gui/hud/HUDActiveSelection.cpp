@@ -135,12 +135,12 @@ void HUDActiveSelection::updateElement(flecs::entity playerId)
 	}
 
 	if (!sensors->targetContact.has<BulletRigidBodyComponent>() && !sensors->targetContact.has<BulletGhostComponent>()) return;
-	btVector3 velocity = rbc->rigidBody.getLinearVelocity();
+	btVector3 velocity = rbc->rigidBody->getLinearVelocity();
 	btVector3 forwardTarget;
 	if (sensors->targetContact.has<BulletRigidBodyComponent>()) {
 		auto targetRBC = sensors->targetContact.get<BulletRigidBodyComponent>();
-		forwardTarget = targetRBC->rigidBody.getCenterOfMassPosition() + (targetRBC->rigidBody.getLinearVelocity() * .3f);
-		forwardTarget += (rbc->rigidBody.getLinearVelocity() * -.3f);
+		forwardTarget = targetRBC->rigidBody->getCenterOfMassPosition() + (targetRBC->rigidBody->getLinearVelocity() * .3f);
+		forwardTarget += (rbc->rigidBody->getLinearVelocity() * -.3f);
 	}
 	else if (sensors->targetContact.has<BulletGhostComponent>()) {
 		forwardTarget = irrVecToBt(irr->node->getAbsolutePosition());

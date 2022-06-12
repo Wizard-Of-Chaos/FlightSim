@@ -10,8 +10,8 @@
 */
 struct BulletGhostComponent
 {
-	btGhostObject ghost = btGhostObject();
-	btSphereShape shape = btSphereShape(0.f);
+	btGhostObject* ghost;
+	btSphereShape* shape;
 };
 
 #endif 

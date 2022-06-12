@@ -151,11 +151,11 @@ bool avoidObstacles(flecs::entity id, f32 dt, flecs::entity target)
 	auto rbc = id.get_mut<BulletRigidBodyComponent>();
 	auto irr = id.get_mut<IrrlichtComponent>();
 
-	btRigidBody* body = &rbc->rigidBody;
+	btRigidBody* body = rbc->rigidBody;
 
 	btVector3 velocity = body->getLinearVelocity();
 	btVector3 dir = velocitySafeNormalize(velocity);
-	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
+	btVector3 pos = rbc->rigidBody->getCenterOfMassPosition();
 	btVector3 futurePos = pos + (velocity *3.f); //where will it be three seconds from now
 #if _DEBUG
 	stateController->addDebugLine(line3df(btVecToIrr(pos), btVecToIrr(futurePos)));

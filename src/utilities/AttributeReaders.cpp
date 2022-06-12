@@ -235,6 +235,7 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 	auto ship = entity.get_mut<ShipComponent>();
 	entity.add<IrrlichtComponent>();
 	auto irr = entity.get_mut<IrrlichtComponent>();
+	irr->name = data->name;
 	if (!irr || !ship) return false;
 	*ship = data->shipComponent;
 

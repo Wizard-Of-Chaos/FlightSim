@@ -28,12 +28,12 @@ void defaultIdleBehavior(flecs::entity id, f32 dt)
 	btVector3 force = btVector3(0, 0, 0);
 	btVector3 torque = btVector3(0, 0, 0);
 
-	force += getForceToStopLinearVelocity(&rbc->rigidBody, ship);
-	torque += getTorqueToStopAngularVelocity(&rbc->rigidBody, ship);
+	force += getForceToStopLinearVelocity(rbc->rigidBody, ship);
+	torque += getTorqueToStopAngularVelocity(rbc->rigidBody, ship);
 
 	//slows and stops the rigid body
-	rbc->rigidBody.applyTorqueImpulse(torque * dt);
-	rbc->rigidBody.applyCentralImpulse(force * dt);
+	rbc->rigidBody->applyTorqueImpulse(torque * dt);
+	rbc->rigidBody->applyCentralImpulse(force * dt);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		flecs::entity wep = ship->weapons[i];
@@ -60,10 +60,10 @@ void defaultFleeBehavior(flecs::entity id, flecs::entity fleeTarget, f32 dt)
 	btVector3 force = btVector3(0, 0, 0);
 	btVector3 torque = btVector3(0, 0, 0);
 
-	force += getForceForward(&rbc->rigidBody, ship);
+	force += getForceForward(rbc->rigidBody, ship);
 
-	smoothTurnToDirection(&rbc->rigidBody, ship, irrVecToBt(targetVector));
-	rbc->rigidBody.applyCentralImpulse(force * dt);
+	smoothTurnToDirection(rbc->rigidBody, ship, irrVecToBt(targetVector));
+	rbc->rigidBody->applyCentralImpulse(force * dt);
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		setAIWeapon(ship->weapons[i], false);
@@ -88,10 +88,10 @@ void defaultPursuitBehavior(flecs::entity id, flecs::entity pursuitTarget, f32 d
 	if (!pursuitTarget.has<BulletRigidBodyComponent>()) return;
 	auto targetRBC = pursuitTarget.get<BulletRigidBodyComponent>();
 
-	btVector3 targetPos = targetRBC->rigidBody.getCenterOfMassPosition();
-	btVector3 pos = rbc->rigidBody.getCenterOfMassPosition();
+	btVector3 targetPos = targetRBC->rigidBody->getCenterOfMassPosition();
+	btVector3 pos = rbc->rigidBody->getCenterOfMassPosition();
 
-	btVector3 tailPos = targetPos + (getRigidBodyBackward(&rbc->rigidBody) * 20.f);//targetPos();
+	btVector3 tailPos = targetPos + (getRigidBodyBackward(rbc->rigidBody) * 20.f);//targetPos();
 	btVector3 dist = tailPos - pos;
 
 	btVector3 facing = targetPos - pos;
@@ -101,15 +101,15 @@ void defaultPursuitBehavior(flecs::entity id, flecs::entity pursuitTarget, f32 d
 
 	//If it's not behind the ship, get behind it
 	if (dist.length() > 30.f) {
-		goToPoint(&rbc->rigidBody, ship, tailPos, dt);
+		goToPoint(rbc->rigidBody, ship, tailPos, dt);
 	}
 	else {
 		//if it is behind it, start turning towards it
 		ship->moves[SHIP_STOP_VELOCITY] = true;
-		smoothTurnToDirection(&rbc->rigidBody, ship, facing);
+		smoothTurnToDirection(rbc->rigidBody, ship, facing);
 	}
 
-	btVector3 forward = getRigidBodyForward(&rbc->rigidBody);
+	btVector3 forward = getRigidBodyForward(rbc->rigidBody);
 	btScalar angle = forward.angle(facing);
 	//if it's facing the ship, start shooting
 	if ((angle * RADTODEG) < 30.f) { //converted to degrees so my overworked meat brain can better comprehend it

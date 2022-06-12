@@ -9,7 +9,7 @@ std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorCompon
 	btSphereShape shape(sens->detectionRadius);
 	btPairCachingGhostObject ghost; ///ooooooooooooooooooooooooo!
 	btTransform transform;
-	transform.setOrigin(rbc->rigidBody.getCenterOfMassPosition());
+	transform.setOrigin(rbc->rigidBody->getCenterOfMassPosition());
 	ghost.setCollisionShape(&shape);
 	ghost.setWorldTransform(transform);
 	bWorld->addCollisionObject(&ghost);
@@ -21,7 +21,7 @@ std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorCompon
 
 	for (u32 i = 0; i < ghost.getNumOverlappingObjects(); ++i) {
 		btCollisionObject* obj = ghost.getOverlappingObject(i);
-		if (obj == &rbc->rigidBody) continue;
+		if (obj == rbc->rigidBody) continue;
 
 		flecs::entity objId = getIdFromBt(obj);
 		if (!objId.is_alive()) continue;
@@ -31,7 +31,7 @@ std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorCompon
 		auto objFac = objId.get<FactionComponent>();
 		ContactInfo info = { objId, objRBC, objFac };
 
-		btVector3 dist = objRBC->rigidBody.getCenterOfMassPosition() - rbc->rigidBody.getCenterOfMassPosition();
+		btVector3 dist = objRBC->rigidBody->getCenterOfMassPosition() - rbc->rigidBody->getCenterOfMassPosition();
 		btScalar len = dist.length2();
 		//update closest hostile, friendly, and general contacts
 		if (len > closeDist.length2()) {

@@ -44,8 +44,8 @@ flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, fl
 
 	btVector3 initialForce(0, 0, 0);
 	vector3df initialDir = direction;
-	btVector3 initVelocity = shipRBC->rigidBody.getLinearVelocity();
-	btQuaternion initRot = shipRBC->rigidBody.getOrientation();
+	btVector3 initVelocity = shipRBC->rigidBody->getLinearVelocity();
+	btQuaternion initRot = shipRBC->rigidBody->getOrientation();
 
 	if (projectileInfo.type == WEP_PLASMA) {
 		initialForce += irrVecToBt(initialDir) * projectileInfo.speed;
@@ -76,11 +76,11 @@ flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, fl
 			*proj = projectileInfo;
 			auto newRBC = addProjectileRBC(newId, force, initVelocity, spawnPos, initRot);
 			createKineticProjectile(newId, dir, spawnPos);
-			bWorld->addRigidBody(&newRBC->rigidBody);
+			bWorld->addRigidBody(newRBC->rigidBody);
 		}
 	}
 
-	bWorld->addRigidBody(&rbc->rigidBody);
+	bWorld->addRigidBody(rbc->rigidBody);
 	return projectileEntity;
 }
 
@@ -206,7 +206,7 @@ void destroyProjectile(flecs::entity projectile)
 {
 	if (projectile.has<BulletRigidBodyComponent>()) {
 		auto rbc = projectile.get_mut<BulletRigidBodyComponent>();
-		bWorld->removeRigidBody(&rbc->rigidBody); //removes the rigid body from the bullet physics
+		bWorld->removeRigidBody(rbc->rigidBody); //removes the rigid body from the bullet physics
 	}
 
 	if (projectile.has<IrrlichtComponent>()) {
@@ -257,7 +257,7 @@ void missileGoTo(flecs::entity id, f32 dt)
 	auto miss = id.get_mut<MissileProjectileComponent>();
 	auto proj = id.get_mut<ProjectileInfoComponent>();
 
-	btRigidBody* body = &rbc->rigidBody;
+	btRigidBody* body = rbc->rigidBody;
 
 	btVector3 torque(0, 0, 0);
 	btVector3 force(0, 0, 0);
@@ -321,15 +321,15 @@ BulletRigidBodyComponent* addProjectileRBC(flecs::entity id, btVector3& initForc
 
 	auto motionState = new btDefaultMotionState(transform);
 
-	rbc->sphere = btSphereShape(.5f);
+	rbc->shape = new btSphereShape(.5f);
 	btVector3 localInertia;
 
-	rbc->sphere.calculateLocalInertia(mass, localInertia);
-	rbc->rigidBody = btRigidBody(mass, motionState, &rbc->sphere, localInertia);
-	setIdOnBtObject(&rbc->rigidBody, id);
+	rbc->shape->calculateLocalInertia(mass, localInertia);
+	rbc->rigidBody = new btRigidBody(mass, motionState, rbc->shape, localInertia);
+	setIdOnBtObject(rbc->rigidBody, id);
 
-	rbc->rigidBody.setLinearVelocity(initVelocity);
-	rbc->rigidBody.applyCentralImpulse(initForce);
+	rbc->rigidBody->setLinearVelocity(initVelocity);
+	rbc->rigidBody->applyCentralImpulse(initForce);
 	return rbc;
 }
 

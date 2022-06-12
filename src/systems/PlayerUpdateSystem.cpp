@@ -33,7 +33,7 @@ void playerUpdateSystem(flecs::iter it, IrrlichtComponent* irrc, PlayerComponent
 			}
 		}
 		//camera work
-		cameraUpdate(player, irr->node, &rbc->rigidBody);
+		cameraUpdate(player, irr->node, rbc->rigidBody);
 		//HUD work and updates
 		hudUpdate(player, entity);
 
