@@ -7,6 +7,7 @@ bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVe
 
 	auto objIrr = entityId.get<IrrlichtComponent>();
 
+	entityId.add<BulletRigidBodyComponent>();
 	BulletRigidBodyComponent* rbc = entityId.get_mut<BulletRigidBodyComponent>();
 	rbc->shape = shape;
 	rbc->shape.setLocalScaling(scale);
@@ -25,8 +26,7 @@ bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVe
 	rbc->rigidBody.setSleepingThresholds(0, 0);
 
 	setIdOnBtObject(&rbc->rigidBody, entityId);
-
-	bWorld->addRigidBody(&(rbc->rigidBody));
+	bWorld->addRigidBody(&rbc->rigidBody);
 
 	return true;
 }

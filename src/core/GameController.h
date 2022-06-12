@@ -77,6 +77,8 @@ class GameController
 		bool isPlayerAlive;
 
 	private:
+		void registerComponents();
+		void registerSystems();
 		bool open;
 
 		u32 then;

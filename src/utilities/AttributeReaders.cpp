@@ -231,7 +231,9 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 
 	if (!data) return false;
 
+	entity.add<ShipComponent>();
 	auto ship = entity.get_mut<ShipComponent>();
+	entity.add<IrrlichtComponent>();
 	auto irr = entity.get_mut<IrrlichtComponent>();
 	if (!irr || !ship) return false;
 	*ship = data->shipComponent;
@@ -269,6 +271,7 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 
 	if (carrier) {
 		CarrierData* cdata = (CarrierData*)data;
+		entity.add<CarrierComponent>();
 		CarrierComponent* carr = entity.get_mut<CarrierComponent>();
 		*carr = cdata->carrierComponent;
 		irr->node->setScale(carr->scale);
@@ -284,7 +287,9 @@ bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bo
 
 	if (!data) return false;
 	//assignments
+	weaponEntity.add<WeaponInfoComponent>();
 	auto wep = weaponEntity.get_mut<WeaponInfoComponent>();
+	weaponEntity.add<IrrlichtComponent>();
 	auto irr = weaponEntity.get_mut<IrrlichtComponent>();
 	if (!wep || !irr) return false;
 	
@@ -381,9 +386,11 @@ bool loadObstacle(u32 id, flecs::entity entity)
 	ObstacleData* data = stateController->obstacleData[id];
 	if (!data) return false;
 
+	entity.add<ObstacleComponent>();
 	auto obst = entity.get_mut<ObstacleComponent>();
 	obst->type = data->type;
 
+	entity.add<IrrlichtComponent>();
 	auto irr = entity.get_mut<IrrlichtComponent>();
 	irr->name = data->name;
 

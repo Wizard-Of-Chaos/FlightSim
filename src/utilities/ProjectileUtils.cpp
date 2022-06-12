@@ -149,7 +149,7 @@ void createMissileProjectile(flecs::entity projId, vector3df dir, vector3df spaw
 
 	auto sensors = wepId.get_object(flecs::ChildOf).get<SensorComponent>();
 
-	if (!sensors) return; // need a similar check for AI component
+	if (!sensors || !missComp) return; // need a similar check for AI component
 
 	if (sensors->targetContact == INVALID_ENTITY) {
 		std::cout << "No entity is currently selected!\n";
