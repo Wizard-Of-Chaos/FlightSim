@@ -231,6 +231,7 @@ void shipControlSystem(flecs::iter it,
 			ship->moves[SHIP_STOP_VELOCITY] = true;
 			player->thrust = vector3df(0, 0, 0);
 			player->rotation = vector3df(0, 0, 0);
+			std::cout << "halt\n";
 		}
 
 		if (fa) {

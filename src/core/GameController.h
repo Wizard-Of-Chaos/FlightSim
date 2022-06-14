@@ -73,10 +73,12 @@ class GameController
 			}
 		}
 
-		flecs::entity playerEntity;
+		void setPlayer(flecs::entity_t id);
+		flecs::entity getPlayer();
 		bool isPlayerAlive;
 
 	private:
+		flecs::entity_t playerEntity;
 		void registerComponents();
 		void registerSystems();
 		bool open;

@@ -32,11 +32,11 @@ HUDActiveSelection::~HUDActiveSelection()
 
 void HUDActiveSelection::updateElement(flecs::entity playerId)
 {
-	auto player = gameController->playerEntity.get_mut<PlayerComponent>();
-	auto input = gameController->playerEntity.get_mut<InputComponent>();
-	auto playerIrr = gameController->playerEntity.get_mut<IrrlichtComponent>();
-	auto sensors = gameController->playerEntity.get_mut<SensorComponent>();
-	auto rbc = gameController->playerEntity.get_mut<BulletRigidBodyComponent>();
+	auto player = gameController->getPlayer().get_mut<PlayerComponent>();
+	auto input = gameController->getPlayer().get_mut<InputComponent>();
+	auto playerIrr = gameController->getPlayer().get_mut<IrrlichtComponent>();
+	auto sensors = gameController->getPlayer().get_mut<SensorComponent>();
+	auto rbc = gameController->getPlayer().get_mut<BulletRigidBodyComponent>();
 
 	ICameraSceneNode* camera = player->camera;
 

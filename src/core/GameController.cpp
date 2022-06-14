@@ -142,9 +142,18 @@ void GameController::close()
 	open = false;
 }
 
+void GameController::setPlayer(flecs::entity_t id)
+{
+	playerEntity = id;
+}
+flecs::entity GameController::getPlayer()
+{
+	return flecs::entity(game_world->get_world(), playerEntity);
+}
+
 void GameController::clearPlayerHUD()
 {
-	auto plyc = playerEntity.get_mut<PlayerComponent>();
+	auto plyc = getPlayer().get_mut<PlayerComponent>();
 	for (HUDElement* hud : plyc->HUD) {
 		delete hud;
 	}
@@ -154,9 +163,9 @@ void GameController::clearPlayerHUD()
 bool GameController::OnEvent(const SEvent& event)
 {
 	if (!open) return true;
-	if (!playerEntity.is_alive()) return true;
-	if(!playerEntity.has<InputComponent>()) return true;
-	auto input = playerEntity.get_mut<InputComponent>();
+	if (!getPlayer().is_alive()) return true;
+	if(!getPlayer().has<InputComponent>()) return true;
+	auto input = getPlayer().get_mut<InputComponent>();
 	if (event.EventType == EET_KEY_INPUT_EVENT) {
 		input->keysDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
 		if(event.KeyInput.Key == KEY_KEY_Y && !input->keysDown[KEY_KEY_Y]) {

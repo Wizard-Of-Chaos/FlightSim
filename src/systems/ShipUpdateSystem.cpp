@@ -92,16 +92,20 @@ void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyCompon
 		btVector3 force(0, 0, 0);
 
 		//Ugly looking, but all these emitters need adjusting every time the ship moves
-		IParticleEmitter* up1 = particles->upJetEmit[0]->getEmitter();
-		IParticleEmitter* up2 = particles->upJetEmit[1]->getEmitter();
-		IParticleEmitter* down1 = particles->downJetEmit[0]->getEmitter();
-		IParticleEmitter* down2 = particles->downJetEmit[1]->getEmitter();
-		IParticleEmitter* left1 = particles->leftJetEmit[0]->getEmitter();
-		IParticleEmitter* left2 = particles->leftJetEmit[1]->getEmitter();
-		IParticleEmitter* right1 = particles->rightJetEmit[0]->getEmitter();
-		IParticleEmitter* right2 = particles->rightJetEmit[1]->getEmitter();
-		IParticleEmitter* back1 = particles->reverseJetEmit[0]->getEmitter();
-		IParticleEmitter* back2 = particles->reverseJetEmit[1]->getEmitter();
+		IParticleEmitter* up1 =nullptr, *up2=nullptr, *down1=nullptr, *down2=nullptr, 
+			*left1=nullptr, *left2=nullptr, *right1=nullptr, *right2=nullptr, *back1=nullptr, *back2=nullptr;
+
+		if(particles->upJetEmit[0]) up1 = particles->upJetEmit[0]->getEmitter();
+		if(particles->upJetEmit[1]) up2 = particles->upJetEmit[1]->getEmitter();
+		if(particles->downJetEmit[0]) down1 = particles->downJetEmit[0]->getEmitter();
+		if(particles->downJetEmit[1]) down2 = particles->downJetEmit[1]->getEmitter();
+		if(particles->leftJetEmit[0]) left1 = particles->leftJetEmit[0]->getEmitter();
+		if(particles->leftJetEmit[1]) left2 = particles->leftJetEmit[1]->getEmitter();
+		if(particles->rightJetEmit[0]) right1 = particles->rightJetEmit[0]->getEmitter();
+		if(particles->rightJetEmit[1]) right2 = particles->rightJetEmit[1]->getEmitter();
+		if(particles->reverseJetEmit[0]) back1 = particles->reverseJetEmit[0]->getEmitter();
+		if(particles->reverseJetEmit[1]) back2 = particles->reverseJetEmit[1]->getEmitter();
+
 		IVolumeLightSceneNode* engine = particles->engineJetEmit;
 
 		setPairDir(up1, up2, getNodeUp(irr->node));
@@ -109,7 +113,7 @@ void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyCompon
 		setPairDir(left1, left2, getNodeLeft(irr->node));
 		setPairDir(right1, right2, getNodeRight(irr->node));
 		setPairDir(back1, back2, getNodeForward(irr->node));
-		engine->setScale(vector3df(1, 1, 1));
+		if(engine) engine->setScale(vector3df(1, 1, 1));
 
 		jetPairOff(up1, up2);
 		jetPairOff(down1, down2);
@@ -190,11 +194,10 @@ void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyCompon
 		for (u32 i = 0; i < SHIP_MAX_MOVEMENTS; ++i) {
 			ship->moves[i] = false;
 		}
-
 		rbc->rigidBody->applyTorqueImpulse(torque * dt);
 		rbc->rigidBody->applyCentralImpulse(force * dt);
 		f32 zPercent = rbc->rigidBody->getLinearVelocity().length() / ship->linearMaxVelocity;
-		engine->setScale(vector3df(std::max(zPercent, 3.5f), std::max(5*zPercent, .1f), std::max(zPercent, 3.5f)));
+		if(engine) engine->setScale(vector3df(std::max(zPercent, 3.5f), std::max(5*zPercent, .1f), std::max(zPercent, 3.5f)));
 
 		if (!entityId.has<HealthComponent>()) continue;
 		auto hp = entityId.get_mut<HealthComponent>();

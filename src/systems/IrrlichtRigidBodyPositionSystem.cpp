@@ -6,7 +6,14 @@ void irrlichtRigidBodyPositionSystem(flecs::iter it, BulletRigidBodyComponent* r
 	for (auto i : it) {
 		BulletRigidBodyComponent* rbc = &rbcs[i];
 		IrrlichtComponent* irr = &irrc[i];
-
+		if (!rbc->rigidBody) {
+			std::cout << "AAAAAA THERE'S NO RIGID BODY \n";
+			continue;
+		}
+		else if (!irr->node) {
+			std::cout << "AAAAAA THERE'S NO NODE \n";
+			continue;
+		}
 		irr->node->setPosition(btVecToIrr(rbc->rigidBody->getWorldTransform().getOrigin()));
 		btVector3 eulerOrientation;
 		QuaternionToEuler(rbc->rigidBody->getOrientation(), eulerOrientation);

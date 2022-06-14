@@ -97,13 +97,22 @@ bool initializeDefaultPlayer(flecs::entity shipId)
 	target->setPosition(shipIrr->node->getPosition());
 	ICameraSceneNode* camera = smgr->addCameraSceneNode(target, vector3df(0, 5, -20), shipIrr->node->getPosition(), ID_IsNotSelectable, true);
 	shipId.add<InputComponent>();
+	auto input = shipId.get_mut<InputComponent>();
+	for (u32 i = 0; i < KEY_KEY_CODES_COUNT; ++i) {
+		input->keysDown[i] = false;
+	}
+	input->leftMouseDown = false;
+	input->rightMouseDown = false;
+	input->mouseControlEnabled = false;
+	input->safetyOverride = true;
+
 	auto player = shipId.get_mut<PlayerComponent>();
 	player->camera = camera;
 	player->target = target;
 
 	player->thrust = vector3df(0, 0, 0);
 	player->rotation = vector3df(0, 0, 0);
-	gameController->playerEntity = shipId;
+	gameController->setPlayer(shipId);
 	return true;
 }
 
@@ -184,10 +193,10 @@ flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f
 ShipInstance getEndScenarioData()
 {
 	ShipInstance inst;
-	auto hp = gameController->playerEntity.get<HealthComponent>();
+	auto hp = gameController->getPlayer().get<HealthComponent>();
 	inst.hp = *hp;
 
-	auto ship = gameController->playerEntity.get<ShipComponent>();
+	auto ship = gameController->getPlayer().get<ShipComponent>();
 	inst.ship = *ship;
 	for (u32 i = 0; i < ship->hardpointCount; ++i) {
 		if (!ship->weapons[i].is_alive()) { //there's no weapon here
