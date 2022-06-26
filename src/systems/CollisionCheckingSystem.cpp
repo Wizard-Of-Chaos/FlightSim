@@ -99,7 +99,11 @@ bool broadCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadph
 	if (!entityA.is_valid() || !entityB.is_valid()) return true; //something probably went wrong if either of these hits
 	//need to check who "owns" these entities
 
-	if (entityA.get_object<FiredBy>().id() == entityB.get_object<FiredBy>().id()) return false; //if they have the same parent return false
+	auto idFiredA = entityA.get_object<FiredBy>().id();
+	auto idFiredB = entityB.get_object<FiredBy>().id();
+	if (idFiredA != INVALID_ENTITY_ID && idFiredB != INVALID_ENTITY_ID) {
+		if (idFiredA == idFiredB) return false;
+	}
 
 	if (entityA.has<ProjectileInfoComponent>() && entityB.has<ProjectileInfoComponent>()) { //if they're both projectiles return false
 		return false;
