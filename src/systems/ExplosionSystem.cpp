@@ -18,7 +18,7 @@ void ExplodeAOE(ExplosionComponent* exp)
 
 		flecs::entity objId = getIdFromBt(obj);
 		if (!objId.is_alive()) continue;
-		if (!objId.has<BulletRigidBodyComponent>(objId)) continue;
+		if (!objId.has<BulletRigidBodyComponent>()) continue;
 		auto objRBC = objId.get_mut<BulletRigidBodyComponent>();
 
 		btVector3 dist = objRBC->rigidBody->getCenterOfMassPosition() - center;
@@ -41,13 +41,14 @@ void ExplodeAOE(ExplosionComponent* exp)
 			damage, device->getTimer()->getTime()));
 	}
 	bWorld->removeCollisionObject(&ghost);
+	exp->hasExploded = true;
 }
 
 void explosionSystem(flecs::iter it, ExplosionComponent* exc)
 {
 	for (auto i : it) {
 		ExplosionComponent* exp = &exc[i];
-		if (exp->lifetime == 0 && exp->force > 0) ExplodeAOE(exp);
+		if (!exp->hasExploded && exp->force > 0) ExplodeAOE(exp);
 		exp->lifetime += it.delta_time();
 		auto em = exp->explosion->getEmitter();
 

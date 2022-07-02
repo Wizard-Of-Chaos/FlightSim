@@ -10,6 +10,7 @@
 
 //tag for projectiles that have been fired
 struct FiredBy {};
+struct FiredByShip {};
 
 //Creates a projectile entity and shoots it in the indicated direction. Assigns information to the projectile (range, speed, etc)
 //based on the weapon that shot it. Returns the ID of the projectile.

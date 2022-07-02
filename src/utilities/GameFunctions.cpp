@@ -97,21 +97,23 @@ bool initializeDefaultPlayer(flecs::entity shipId)
 	target->setPosition(shipIrr->node->getPosition());
 	ICameraSceneNode* camera = smgr->addCameraSceneNode(target, vector3df(0, 5, -20), shipIrr->node->getPosition(), ID_IsNotSelectable, true);
 	shipId.add<InputComponent>();
-	auto input = shipId.get_mut<InputComponent>();
+	InputComponent input;
 	for (u32 i = 0; i < KEY_KEY_CODES_COUNT; ++i) {
-		input->keysDown[i] = false;
+		input.keysDown[i] = false;
 	}
-	input->leftMouseDown = false;
-	input->rightMouseDown = false;
-	input->mouseControlEnabled = false;
-	input->safetyOverride = true;
+	input.leftMouseDown = false;
+	input.rightMouseDown = false;
+	input.mouseControlEnabled = false;
+	input.safetyOverride = true;
 
-	auto player = shipId.get_mut<PlayerComponent>();
-	player->camera = camera;
-	player->target = target;
+	PlayerComponent player;
+	player.camera = camera;
+	player.target = target;
 
-	player->thrust = vector3df(0, 0, 0);
-	player->rotation = vector3df(0, 0, 0);
+	player.thrust = vector3df(0, 0, 0);
+	player.rotation = vector3df(0, 0, 0);
+	shipId.set<InputComponent>(input);
+	shipId.set<PlayerComponent>(player);
 	gameController->setPlayer(shipId);
 	return true;
 }
@@ -163,30 +165,31 @@ void initializeDefaultAI(flecs::entity id)
 flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
 {
 	flecs::entity id = game_world->entity();
-	auto exp = id.get_mut<ExplosionComponent>();
-	exp->duration = duration;
-	exp->lifetime = 0;
-	exp->explosion = smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
+	ExplosionComponent exp;
+	exp.duration = duration;
+	exp.lifetime = 0;
+	exp.explosion = smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
 	f32 scalefac = scale;
-	auto em = exp->explosion->createPointEmitter(vector3df(0.04f * scalefac, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+	auto em = exp.explosion->createPointEmitter(vector3df(0.04f * scalefac, 0.f, 0.f), 200, 500, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
 		50, 1000, 360, dimension2df(1.f, 1.f), dimension2df(5.f * scalefac, 5.f * scalefac));
 
-	exp->explosion->setEmitter(em);
+	exp.explosion->setEmitter(em);
 	em->drop();
-	IParticleAffector* paf = exp->explosion->createFadeOutParticleAffector(SColor(0,0,0,0),100);
-	exp->explosion->addAffector(paf);
+	IParticleAffector* paf = exp.explosion->createFadeOutParticleAffector(SColor(0,0,0,0),100);
+	exp.explosion->addAffector(paf);
 	paf->drop();
-	exp->explosion->setMaterialFlag(EMF_LIGHTING, false);
-	exp->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	exp->explosion->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultExplosion"));
-	exp->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+	exp.explosion->setMaterialFlag(EMF_LIGHTING, false);
+	exp.explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	exp.explosion->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultExplosion"));
+	exp.explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
-	exp->light = smgr->addLightSceneNode(0, position, SColorf(1.f, .9f, .1f));
+	exp.light = smgr->addLightSceneNode(0, position, SColorf(1.f, .9f, .1f));
 
-	exp->force = force;
-	exp->damage = damage;
-	exp->radius = radius;
-
+	exp.force = force;
+	exp.damage = damage;
+	exp.radius = radius;
+	exp.hasExploded = false;
+	id.set<ExplosionComponent>(exp);
 	return id;
 }
 

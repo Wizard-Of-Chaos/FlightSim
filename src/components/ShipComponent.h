@@ -73,7 +73,7 @@ struct ShipComponent {
 	bool moves[SHIP_MAX_MOVEMENTS];
 
 	bool afterburnerOn;
-	bool safetyOverride;
+	bool safetyOverride = true;
 	f32 velocityTolerance; //how tolerant the ship is of going faster than its expected to; damage multiplied by this factor
 	f32 linearMaxVelocity; //the max velocity a ship can handle without taking damage
 	f32 angularMaxVelocity; //max rotational speed

@@ -61,7 +61,8 @@ void collisionCheckingSystem(flecs::iter it)
 
 		flecs::entity idA = getIdFromBt(objA);
 		flecs::entity idB = getIdFromBt(objB);
-		if (!idA.is_alive()|| !idB.is_alive()) return;
+		if (!idA.is_alive() || !idB.is_alive()) return;
+
 		bool projA = idA.has<ProjectileInfoComponent>();
 		bool projB = idB.has<ProjectileInfoComponent>();
 
@@ -123,7 +124,7 @@ bool broadCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadph
 
 bool broadCallback::isProjectileHittingParent(flecs::entity proj, flecs::entity other) const
 {
-	if (proj.has<FiredBy>(other)) return false;
+	if (proj.has<FiredByShip>(other)) return false;
 	//to-do: set it up so that you can't actually shoot yourself (or maybe leave it as a toggle?)
 	return true;
 }

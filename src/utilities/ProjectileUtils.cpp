@@ -39,6 +39,7 @@ flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, fl
 	auto projectileInfo = addProjectileInfo(wepInfo, spawnPos);
 	projectileEntity.set<ProjectileInfoComponent>(projectileInfo);
 	projectileEntity.add<FiredBy>(weaponId);
+	projectileEntity.add<FiredByShip>(weaponId.get_object(flecs::ChildOf));
 
 	btVector3 initialForce(0, 0, 0);
 	vector3df initialDir = direction;
