@@ -30,16 +30,14 @@ flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, fl
 		std::cout << "is NULL\n";
 		return INVALID_ENTITY;
 	}
-	auto wepInfo = weaponId.get_mut<WeaponInfoComponent>();
+	auto wepInfo = weaponId.get<WeaponInfoComponent>();
 
 	auto shipRBC = weaponId.get_object(flecs::ChildOf).get<BulletRigidBodyComponent>();
 
 	auto projectileEntity = game_world->entity();
 
 	auto projectileInfo = addProjectileInfo(wepInfo, spawnPos);
-	auto projInfoC = projectileEntity.get_mut<ProjectileInfoComponent>(projectileEntity);
-	*projInfoC = projectileInfo;
-
+	projectileEntity.set<ProjectileInfoComponent>(projectileInfo);
 	projectileEntity.add<FiredBy>(weaponId);
 
 	btVector3 initialForce(0, 0, 0);
@@ -100,8 +98,7 @@ void createKineticProjectile(flecs::entity projId, vector3df dir, vector3df spaw
 	irr.node->setName(idToStr(projId).c_str());
 	bill->setID(ID_IsNotSelectable);
 
-	auto irrcmp = projId.get_mut<IrrlichtComponent>();
-	*irrcmp = irr;
+	projId.set<IrrlichtComponent>(irr);
 }
 
 void createPlasmaProjectile(flecs::entity projId, vector3df dir, vector3df spawn)
@@ -137,8 +134,7 @@ void createPlasmaProjectile(flecs::entity projId, vector3df dir, vector3df spawn
 	ps->setMaterialTexture(0, wepComp->particle);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
-	auto irrcmp = projId.get_mut<IrrlichtComponent>();
-	*irrcmp = irr;
+	projId.set<IrrlichtComponent>(irr);
 }
 
 void createMissileProjectile(flecs::entity projId, vector3df dir, vector3df spawn)
@@ -179,9 +175,6 @@ void createMissileProjectile(flecs::entity projId, vector3df dir, vector3df spaw
 	missile.maxVelocity = missComp->maxMissileVelocity;
 	missile.rotThrust = missComp->missileRotThrust;
 
-	auto misscmp = projId.get_mut<MissileProjectileComponent>();
-	*misscmp = missile;
-
 	IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false, irr.node);
 	ps->setID(ID_IsNotSelectable);
 	IParticleEmitter* em = ps->createSphereEmitter(ps->getPosition(), .5f, //spawn point and radius
@@ -198,8 +191,8 @@ void createMissileProjectile(flecs::entity projId, vector3df dir, vector3df spaw
 	ps->setMaterialTexture(0, wepComp->particle);
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
-	auto irrcmp = projId.get_mut<IrrlichtComponent>();
-	*irrcmp = irr;
+	projId.set<MissileProjectileComponent>(missile);
+	projId.set<IrrlichtComponent>(irr);
 }
 
 void destroyProjectile(flecs::entity projectile)
@@ -221,30 +214,30 @@ flecs::entity createProjectileImpactEffect(vector3df position, f32 duration)
 {
 	auto id = game_world->entity();
 
-	id.add<ExplosionComponent>();
-	auto explodeinfo = id.get_mut<ExplosionComponent>();
+	ExplosionComponent explodeinfo;
 
-	explodeinfo->duration = duration;
-	explodeinfo->lifetime = 0;
-	explodeinfo->explosion = smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
-	auto em = explodeinfo->explosion->createSphereEmitter(vector3df(0, 0, 0), .2f, vector3df(0.01f, 0.f, 0.f), 50, 100, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
+	explodeinfo.duration = duration;
+	explodeinfo.lifetime = 0;
+	explodeinfo.explosion = smgr->addParticleSystemSceneNode(true, 0, ID_IsNotSelectable, position);
+	auto em = explodeinfo.explosion->createSphereEmitter(vector3df(0, 0, 0), .2f, vector3df(0.01f, 0.f, 0.f), 50, 100, SColor(0, 255, 255, 255), SColor(0, 255, 255, 255),
 		50, 100, 360, dimension2df(1.f, 1.f), dimension2df(1.5f, 1.5f));
-	explodeinfo->explosion->setEmitter(em);
+	explodeinfo.explosion->setEmitter(em);
 	em->drop();
-	IParticleAffector* paf = explodeinfo->explosion->createFadeOutParticleAffector(SColor(0, 0, 0, 0), 100);
-	explodeinfo->explosion->addAffector(paf);
+	IParticleAffector* paf = explodeinfo.explosion->createFadeOutParticleAffector(SColor(0, 0, 0, 0), 100);
+	explodeinfo.explosion->addAffector(paf);
 	paf->drop();
-	explodeinfo->explosion->setMaterialFlag(EMF_LIGHTING, false);
-	explodeinfo->explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	explodeinfo->explosion->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultProjectileTexture"));
-	explodeinfo->explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+	explodeinfo.explosion->setMaterialFlag(EMF_LIGHTING, false);
+	explodeinfo.explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
+	explodeinfo.explosion->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultProjectileTexture"));
+	explodeinfo.explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
-	explodeinfo->light = nullptr;
+	explodeinfo.light = nullptr;
 
-	explodeinfo->damage = 0;
-	explodeinfo->radius = 1.f;
-	explodeinfo->force = 0;
+	explodeinfo.damage = 0;
+	explodeinfo.radius = 1.f;
+	explodeinfo.force = 0;
 
+	id.set<ExplosionComponent>(explodeinfo);
 	return id;
 }
 
@@ -311,7 +304,7 @@ void missileGoTo(flecs::entity id, f32 dt)
 BulletRigidBodyComponent* addProjectileRBC(flecs::entity id, btVector3& initForce, btVector3& initVelocity, vector3df& spawn, btQuaternion& initRot)
 {
 	f32 mass = .1f;
-	auto rbc = id.get_mut<BulletRigidBodyComponent>();
+	BulletRigidBodyComponent rbc;
 
 	btTransform transform = btTransform();
 	transform.setIdentity();
@@ -319,21 +312,23 @@ BulletRigidBodyComponent* addProjectileRBC(flecs::entity id, btVector3& initForc
 	transform.setRotation(initRot);
 	transform.setOrigin(irrVecToBt(spawn));
 
-	auto motionState = new btDefaultMotionState(transform);
+	auto motionState = new btDefaultMotionState(transform); //doesn't get deleted anywhere - check for a leak later
 
-	rbc->shape = new btSphereShape(.5f);
+	rbc.shape = new btSphereShape(.5f);
 	btVector3 localInertia;
 
-	rbc->shape->calculateLocalInertia(mass, localInertia);
-	rbc->rigidBody = new btRigidBody(mass, motionState, rbc->shape, localInertia);
-	setIdOnBtObject(rbc->rigidBody, id);
+	rbc.shape->calculateLocalInertia(mass, localInertia);
+	rbc.rigidBody = new btRigidBody(mass, motionState, rbc.shape, localInertia);
+	setIdOnBtObject(rbc.rigidBody, id);
 
-	rbc->rigidBody->setLinearVelocity(initVelocity);
-	rbc->rigidBody->applyCentralImpulse(initForce);
-	return rbc;
+	rbc.rigidBody->setLinearVelocity(initVelocity);
+	rbc.rigidBody->applyCentralImpulse(initForce);
+
+	id.set<BulletRigidBodyComponent>(rbc);
+	return id.get_mut<BulletRigidBodyComponent>();
 }
 
-ProjectileInfoComponent addProjectileInfo(WeaponInfoComponent* wepInfo, vector3df spawnPos)
+ProjectileInfoComponent addProjectileInfo(const WeaponInfoComponent* wepInfo, vector3df spawnPos)
 {
 	ProjectileInfoComponent projectileInfo;
 	projectileInfo.type = wepInfo->type;

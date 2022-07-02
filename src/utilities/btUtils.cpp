@@ -7,10 +7,9 @@ bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVe
 
 	auto objIrr = entityId.get<IrrlichtComponent>();
 
-	entityId.add<BulletRigidBodyComponent>();
-	BulletRigidBodyComponent* rbc = entityId.get_mut<BulletRigidBodyComponent>();
-	rbc->shape = new btConvexHullShape(shape);
-	rbc->shape->setLocalScaling(scale);
+	BulletRigidBodyComponent rbc;
+	rbc.shape = new btConvexHullShape(shape);
+	rbc.shape->setLocalScaling(scale);
 	btTransform transform = btTransform();
 	transform.setIdentity();
 	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
@@ -21,12 +20,13 @@ bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVe
 	auto motionState = new btDefaultMotionState(transform);
 
 	btVector3 localInertia;
-	rbc->shape->calculateLocalInertia(mass, localInertia);
-	rbc->rigidBody = new btRigidBody(mass, motionState, rbc->shape, localInertia);
-	rbc->rigidBody->setSleepingThresholds(0, 0);
+	rbc.shape->calculateLocalInertia(mass, localInertia);
+	rbc.rigidBody = new btRigidBody(mass, motionState, rbc.shape, localInertia);
+	rbc.rigidBody->setSleepingThresholds(0, 0);
 
-	setIdOnBtObject(rbc->rigidBody, entityId);
-	bWorld->addRigidBody(rbc->rigidBody);
+	setIdOnBtObject(rbc.rigidBody, entityId);
+	bWorld->addRigidBody(rbc.rigidBody);
+	entityId.set<BulletRigidBodyComponent>(rbc);
 
 	return true;
 }

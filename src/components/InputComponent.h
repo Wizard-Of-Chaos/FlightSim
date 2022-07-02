@@ -37,7 +37,7 @@ enum INPUT {
 struct InputComponent {
 	bool keysDown[KEY_KEY_CODES_COUNT];
 	bool mouseControlEnabled = false;
-	bool safetyOverride = false;
+	bool safetyOverride = true;
 	vector2df mousePosition;
 	position2di mousePixPosition;
 	line3df cameraRay;

@@ -13,6 +13,7 @@
 struct IrrlichtComponent {
 	ISceneNode* node;
 	std::string name;
+	IrrlichtComponent() : node(nullptr), name("") {}
 };
 
 #endif

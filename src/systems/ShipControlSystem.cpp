@@ -92,7 +92,7 @@ void firePlayerWeapon(flecs::entity playerId, InputComponent* input, flecs::enti
 	auto wepInfo = wep.get_mut<WeaponInfoComponent>();
 
 	wepInfo->isFiring = true;
-	wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
+	wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 10.f);
 	vector3df target = input->cameraRay.getMiddle();
 	ISceneNode* coll = smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(input->cameraRay, ID_IsSelectable);
 

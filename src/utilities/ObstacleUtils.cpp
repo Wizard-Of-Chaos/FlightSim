@@ -66,17 +66,18 @@ flecs::entity createGasCloud(vector3df position, vector3df scale)
 	ps->setEmitter(em);
 	em->drop();
 
-	auto ghost = cloud.get_mut<BulletGhostComponent>();
-	ghost->shape = new btSphereShape(scale.X / 4);
-	ghost->ghost = new btGhostObject();
+	BulletGhostComponent ghost;
+	ghost.shape = new btSphereShape(scale.X / 4);
+	ghost.ghost = new btGhostObject();
 	btTransform transform;
 	transform.setOrigin(irrVecToBt(position));
-	ghost->ghost->setWorldTransform(transform);
-	ghost->ghost->setCollisionShape(ghost->shape);
-	bWorld->addCollisionObject(ghost->ghost);
+	ghost.ghost->setWorldTransform(transform);
+	ghost.ghost->setCollisionShape(ghost.shape);
+	bWorld->addCollisionObject(ghost.ghost);
 
-	setIdOnBtObject(ghost->ghost, cloud);
+	setIdOnBtObject(ghost.ghost, cloud);
 
+	cloud.set<BulletGhostComponent>(ghost);
 	gameController->registerDeathCallback(cloud, gasDeathExplosion);
 	return cloud;
 }

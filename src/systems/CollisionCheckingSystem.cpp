@@ -123,6 +123,7 @@ bool broadCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadph
 
 bool broadCallback::isProjectileHittingParent(flecs::entity proj, flecs::entity other) const
 {
+	if (proj.has<FiredBy>(other)) return false;
 	//to-do: set it up so that you can't actually shoot yourself (or maybe leave it as a toggle?)
 	return true;
 }

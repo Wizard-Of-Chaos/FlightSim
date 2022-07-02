@@ -11,6 +11,7 @@ struct BulletRigidBodyComponent
 {
 	btRigidBody* rigidBody;
 	btCollisionShape* shape;
+	BulletRigidBodyComponent() : rigidBody(nullptr), shape(nullptr) {}
 };
 
 #endif

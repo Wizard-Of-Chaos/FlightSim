@@ -57,7 +57,8 @@ void weaponFiringSystem(flecs::iter it, WeaponInfoComponent* wic, IrrlichtCompon
 			}
 			wepInfo->timeSinceLastShot = 0;
 		}
-		wepInfo->timeSinceLastShot += it.delta_time();
+		//std::cout << it.delta_time() << std::endl;
+		wepInfo->timeSinceLastShot += it.delta_system_time();
 		if (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)
 		{
 			// what is this?

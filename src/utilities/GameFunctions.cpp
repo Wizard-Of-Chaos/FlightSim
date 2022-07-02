@@ -147,12 +147,12 @@ bool initializeDefaultHUD(flecs::entity playerId)
 
 void initializeAI(flecs::entity id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance)
 {
-	auto ai = id.get_mut<AIComponent>();
-	ai->AIType = type;
-	ai->reactionSpeed = reactSpeed;
-	ai->damageTolerance = damageTolerance;
-	ai->timeSinceLastStateCheck = 10.f / (f32)(std::rand() % 100); //This is designed to make it so that the AI don't all check at the same time for framerate purposes
-
+	AIComponent ai;
+	ai.AIType = type;
+	ai.reactionSpeed = reactSpeed;
+	ai.damageTolerance = damageTolerance;
+	ai.timeSinceLastStateCheck = 10.f / (f32)(std::rand() % 100); //This is designed to make it so that the AI don't all check at the same time for framerate purposes
+	id.set<AIComponent>(ai);
 }
 
 void initializeDefaultAI(flecs::entity id)

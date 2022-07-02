@@ -67,14 +67,15 @@ bool initializeShipCollisionBody(flecs::entity entityId, u32 shipId, bool carrie
 
 bool initializeWeaponFromId(u32 id, flecs::entity shipId, int hardpoint, bool phys)
 {
-	if (id <= 0) return false;
-
+	if (id <= 0) {
+		return false;
+	}
 	if (!shipId.has<ShipComponent>() || !shipId.has<IrrlichtComponent>()) return false;
 
 	auto shipIrr = shipId.get<IrrlichtComponent>();
 	auto shipComp = shipId.get_mut<ShipComponent>();
 
-	auto wepEntity = game_world->entity().child_of(shipId);
+	auto wepEntity = game_world->entity().child_of(shipId); //creates a weapon entity that is a child of the ship entity
 
 	loadWeapon(id, wepEntity, shipId, phys);
 	auto irr = wepEntity.get_mut<IrrlichtComponent>();
@@ -99,8 +100,9 @@ bool initializeDefaultWeapon(flecs::entity shipId, int hardpoint)
 
 void initializeFaction(flecs::entity id, FACTION_TYPE type, u32 hostiles, u32 friendlies)
 {
-	auto fac = id.get_mut<FactionComponent>();
-	setFaction(fac, type, hostiles, friendlies);
+	FactionComponent fac;
+	setFaction(&fac, type, hostiles, friendlies);
+	id.set<FactionComponent>(fac);
 }
 
 void setFaction(FactionComponent* fac, FACTION_TYPE type, unsigned int hostilities, unsigned int friendlies)
@@ -128,19 +130,20 @@ bool initializeSensors(flecs::entity id, f32 range, f32 updateInterval)
 {
 	//Faction component and rigid body component are both REQUIRED for sensors (the one for hostiles, the other for positioning).
 	if (!id.has<BulletRigidBodyComponent>() || !id.has<FactionComponent>()) return false;
-	auto sensors = id.get_mut<SensorComponent>();
-	sensors->detectionRadius = range;
+	SensorComponent sensors;
+	sensors.detectionRadius = range;
 
-	sensors->closestContact = INVALID_ENTITY;
-	sensors->closestFriendlyContact = INVALID_ENTITY;
-	sensors->closestHostileContact = INVALID_ENTITY;
-	sensors->targetContact = INVALID_ENTITY;
-	sensors->timeSelected = 0;
+	sensors.closestContact = INVALID_ENTITY;
+	sensors.closestFriendlyContact = INVALID_ENTITY;
+	sensors.closestHostileContact = INVALID_ENTITY;
+	sensors.targetContact = INVALID_ENTITY;
+	sensors.timeSelected = 0;
 
-	sensors->updateInterval = updateInterval;
+	sensors.updateInterval = updateInterval;
 	f32 start = 10.f / (f32)(std::rand() % 100);
-	sensors->timeSinceLastUpdate = start; //stagger sensor updates so it doesn't all happen at once
+	sensors.timeSinceLastUpdate = start; //stagger sensor updates so it doesn't all happen at once
 
+	id.set<SensorComponent>(sensors);
 	return true;
 }
 bool initializeDefaultSensors(flecs::entity id)
@@ -150,12 +153,13 @@ bool initializeDefaultSensors(flecs::entity id)
 
 void initializeShields(flecs::entity id, f32 amount, f32 delay, f32 recharge)
 {
-	auto shields = id.get_mut<ShieldComponent>();
-	shields->shields = amount;
-	shields->maxShields = amount;
-	shields->rechargeDelay = delay;
-	shields->rechargeRate = recharge;
-	shields->timeSinceLastHit = shields->rechargeDelay;
+	ShieldComponent shields;
+	shields.shields = amount;
+	shields.maxShields = amount;
+	shields.rechargeDelay = delay;
+	shields.rechargeRate = recharge;
+	shields.timeSinceLastHit = shields.rechargeDelay;
+	id.set<ShieldComponent>(shields);
 }
 void initializeDefaultShields(flecs::entity objectId)
 {
@@ -187,7 +191,8 @@ IParticleSystemSceneNode* createShipJet(ISceneNode* node, vector3df pos, vector3
 }
 void initializeShipParticles(flecs::entity id)
 {
-	auto particles = id.get_mut<ShipParticleComponent>(); // this should assign the particle component
+	ShipParticleComponent parc;
+	auto particles = &parc; // this should assign the particle component
 	auto ship = id.get<ShipComponent>();
 	auto irr = id.get<IrrlichtComponent>();
 
@@ -223,6 +228,8 @@ void initializeShipParticles(flecs::entity id)
 	auto engine = smgr->addLightSceneNode(irr->node, ship->engineJetPos, SColorf(0.f, 1.f, 0.f), 1.3f);
 	particles->engineLight = engine;
 	engine->setID(ID_IsNotSelectable);
+
+	id.set<ShipParticleComponent>(parc);
 }
 
 flecs::entity createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot)
@@ -234,11 +241,9 @@ flecs::entity createShipFromInstance(ShipInstance& inst, vector3df pos, vector3d
 	for (u32 i = 0; i < ship->hardpointCount; ++i) {
 		WeaponInfoComponent wepReplace = inst.weps[i];
 		initializeWeaponFromId(wepReplace.wepDataId, id, i);
-		if (wepReplace.type != WEP_NONE) {
-			WeaponInfoComponent* wep = ship->weapons[i].get_mut<WeaponInfoComponent>(); 
-			if (wep) {
-				wep->ammunition = wepReplace.ammunition;
-			}
+		WeaponInfoComponent* wep = ship->weapons[i].get_mut<WeaponInfoComponent>();
+		if (wepReplace.type != WEP_NONE && wep) {
+			wep->ammunition = wepReplace.ammunition;
 		}
 	}
 	initializeDefaultHealth(id);
@@ -303,5 +308,7 @@ flecs::entity createPlayerShipFromInstance(vector3df pos, vector3df rot)
 	initializeDefaultShields(id);
 	initializeDefaultSensors(id);
 	initializeDefaultHUD(id);
+	auto ship = id.get<ShipComponent>();
+
 	return id;
 }

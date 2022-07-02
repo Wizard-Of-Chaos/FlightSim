@@ -35,5 +35,5 @@ void missileGoTo(flecs::entity id, f32 dt);
 //Convenience function for tacking on a rigid body component to a projectile.
 BulletRigidBodyComponent* addProjectileRBC(flecs::entity id, btVector3& initForce, btVector3& initVelocity, vector3df& spawn, btQuaternion& initRot);
 //Convenience function for tacking on the weapon information to a projectile.
-ProjectileInfoComponent addProjectileInfo(WeaponInfoComponent* wepInfo, vector3df spawnPos);
+ProjectileInfoComponent addProjectileInfo(const WeaponInfoComponent* wepInfo, vector3df spawnPos);
 #endif 

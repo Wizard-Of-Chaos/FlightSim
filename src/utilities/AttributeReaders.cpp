@@ -231,13 +231,8 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 
 	if (!data) return false;
 
-	entity.add<ShipComponent>();
-	auto ship = entity.get_mut<ShipComponent>();
-	entity.add<IrrlichtComponent>();
-	auto irr = entity.get_mut<IrrlichtComponent>();
-	irr->name = data->name;
-	if (!irr || !ship) return false;
-	*ship = data->shipComponent;
+	IrrlichtComponent irr;
+	irr.name = data->name;
 
 	ITexture* norm = driver->getTexture(data->shipNorm.c_str());
 	ITexture* tex = stateController->assets.getTextureAsset(data->name);
@@ -249,52 +244,47 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 			smgr->getMeshCache()->removeMesh(initmesh);
 			stateController->assets.setMeshAsset(data->name, mesh);
 		}
-		irr->node = smgr->addMeshSceneNode(mesh);
+		irr.node = smgr->addMeshSceneNode(mesh);
 		driver->makeNormalMapTexture(norm, 7.f);
-		irr->node->setMaterialTexture(1, norm);
-		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
+		irr.node->setMaterialTexture(1, norm);
+		irr.node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
 	}
 	else {
 		if (!mesh) {
 			mesh = smgr->getMesh(data->shipMesh.c_str());
 			stateController->assets.setMeshAsset(data->name, mesh);
 		}
-		irr->node = smgr->addMeshSceneNode(mesh);
+		irr.node = smgr->addMeshSceneNode(mesh);
 	}
 	if (!tex) {
 		tex = driver->getTexture(data->shipTexture.c_str());
 		stateController->assets.setTextureAsset(data->name, tex);
 	}
-	irr->node->setMaterialTexture(0, tex);
+	irr.node->setMaterialTexture(0, tex);
 
-	irr->node->setName(idToStr(entity).c_str());
-	irr->node->setID(ID_IsSelectable | ID_IsAvoidable);
+	irr.node->setName(idToStr(entity).c_str());
+	irr.node->setID(ID_IsSelectable | ID_IsAvoidable);
 
 	if (carrier) {
 		CarrierData* cdata = (CarrierData*)data;
-		entity.add<CarrierComponent>();
-		CarrierComponent* carr = entity.get_mut<CarrierComponent>();
-		*carr = cdata->carrierComponent;
-		irr->node->setScale(carr->scale);
+		entity.set<CarrierComponent>(cdata->carrierComponent);
+		irr.node->setScale(cdata->carrierComponent.scale);
 	}
+	entity.set<ShipComponent>(data->shipComponent);
+	entity.set<IrrlichtComponent>(irr);
 	return true;
 }
 
 bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bool phys)
 {
-	WeaponData* data;
+	WeaponData* data = nullptr;
+
 	if (phys) data = stateController->physWeaponData[id];
 	else data = stateController->weaponData[id];
 
 	if (!data) return false;
-	//assignments
-	weaponEntity.add<WeaponInfoComponent>();
-	auto wep = weaponEntity.get_mut<WeaponInfoComponent>();
-	weaponEntity.add<IrrlichtComponent>();
-	auto irr = weaponEntity.get_mut<IrrlichtComponent>();
-	if (!wep || !irr) return false;
-	
-	weaponEntity.add(flecs::ChildOf, shipEntity);
+
+	IrrlichtComponent irr;
 
 	IMesh* mesh = stateController->assets.getMeshAsset(data->name);
 	ITexture* tex = stateController->assets.getTextureAsset(data->name);
@@ -307,48 +297,50 @@ bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bo
 		smgr->getMeshCache()->removeMesh(initmesh);
 		stateController->assets.setMeshAsset(data->name, mesh);
 	}
-	irr->node = smgr->addMeshSceneNode(mesh);
+	irr.node = smgr->addMeshSceneNode(mesh);
 	if (!tex) {
 		tex = driver->getTexture(data->weaponTexture.c_str());
 		stateController->assets.setTextureAsset(data->name, tex);
 	}
-	irr->node->setMaterialTexture(0, tex);
+	irr.node->setMaterialTexture(0, tex);
 
 	if (norm) {
 		driver->makeNormalMapTexture(norm, 7.f);
-		irr->node->setMaterialTexture(1, norm);
-		irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
+		irr.node->setMaterialTexture(1, norm);
+		irr.node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
 	}
 
-	irr->node->setName(idToStr(weaponEntity).c_str());
-	irr->node->setID(ID_IsNotSelectable);
-	wep->usesAmmunition = false;
+	irr.node->setName(idToStr(weaponEntity).c_str());
+	irr.node->setID(ID_IsNotSelectable);
 
-	*wep = data->weaponComponent;
+
+	WeaponInfoComponent wep = data->weaponComponent;
+
 	if (data->weaponComponent.type == WEP_MISSILE) {
-		auto miss = weaponEntity.get_mut<MissileInfoComponent>();
 		MissileData* mdata = (MissileData*)data;
-		*miss = mdata->missileComponent;
+		weaponEntity.set<MissileInfoComponent>(mdata->missileComponent);
+		auto miss = weaponEntity.get_mut<MissileInfoComponent>();
 		miss->missileMesh = smgr->getMesh(mdata->missileMesh.c_str());
 		miss->missileTexture = driver->getTexture(mdata->missileTexture.c_str());
-		wep->usesAmmunition = true;
+		wep.usesAmmunition = true;
 	}
 	if (data->weaponComponent.type == WEP_KINETIC) {
-		auto kin = weaponEntity.get_mut<KineticInfoComponent>();
 		KineticData* kdata = (KineticData*)data;
-		*kin = kdata->kineticComponent;
-		wep->clip = wep->maxClip;
-		wep->usesAmmunition = true; 
+		weaponEntity.set<KineticInfoComponent>(kdata->kineticComponent);
+		wep.clip = wep.maxClip;
+		wep.usesAmmunition = true; 
 	}
 	if (data->weaponComponent.type == WEP_PHYS_BOLAS) {
-		auto bolas = weaponEntity.get_mut<BolasInfoComponent>();
 		BolasData* bdata = (BolasData*)data;
+		weaponEntity.set<BolasInfoComponent>(bdata->bolasComponent);
+		auto bolas = weaponEntity.get_mut<BolasInfoComponent>();
 		BolasInfoComponent cmp = bdata->bolasComponent;
 		*bolas = cmp;
 	}
-
-	wep->particle = driver->getTexture(data->weaponEffect.c_str());
-
+	wep.particle = driver->getTexture(data->weaponEffect.c_str());
+	stateController->assets.setTextureAsset(data->weaponEffect, wep.particle);
+	weaponEntity.set<WeaponInfoComponent>(wep);
+	weaponEntity.set<IrrlichtComponent>(irr);
 	return true; 
 }
 u32 loadObstacleData(std::string path, gvReader& in)
@@ -387,13 +379,11 @@ bool loadObstacle(u32 id, flecs::entity entity)
 	ObstacleData* data = stateController->obstacleData[id];
 	if (!data) return false;
 
-	entity.add<ObstacleComponent>();
-	auto obst = entity.get_mut<ObstacleComponent>();
-	obst->type = data->type;
+	ObstacleComponent obst;
+	obst.type = data->type;
 
-	entity.add<IrrlichtComponent>();
-	auto irr = entity.get_mut<IrrlichtComponent>();
-	irr->name = data->name;
+	IrrlichtComponent irr;
+	irr.name = data->name;
 
 	IMesh* mesh = nullptr;
 
@@ -417,9 +407,9 @@ bool loadObstacle(u32 id, flecs::entity entity)
 		stateController->assets.setTextureAsset(data->name, tex);
 	}
 
-	if (obst->type == GAS_CLOUD) {
+	if (obst.type == GAS_CLOUD) {
 		auto ps = smgr->addParticleSystemSceneNode();
-		irr->node = ps;
+		irr.node = ps;
 		IParticleAffector* paf = ps->createFadeOutParticleAffector();
 		ps->addAffector(paf);
 		paf->drop();
@@ -429,15 +419,18 @@ bool loadObstacle(u32 id, flecs::entity entity)
 		ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 	}
 	else {
-		irr->node = smgr->addMeshSceneNode(mesh);
-		irr->node->setMaterialTexture(0, tex);
+		irr.node = smgr->addMeshSceneNode(mesh);
+		irr.node->setMaterialTexture(0, tex);
 		if (norm) {
-			irr->node->setMaterialTexture(1, norm);
-			irr->node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
+			irr.node->setMaterialTexture(1, norm);
+			irr.node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
 		}
 	}
-	irr->node->setName(idToStr(entity).c_str());
+	irr.node->setName(idToStr(entity).c_str());
 	initializeHealth(entity, data->health);
+
+	entity.set<ObstacleComponent>(obst);
+	entity.set<IrrlichtComponent>(irr);
 	return true;
 }
 

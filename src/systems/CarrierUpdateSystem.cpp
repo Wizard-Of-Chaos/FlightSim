@@ -11,7 +11,7 @@ void carrierUpdateSystem(flecs::iter it, CarrierComponent* carr, IrrlichtCompone
 		auto irrCmp = &irr[i];
 		auto facCmp = &fac[i];
 
-		carrierCmp->spawnTimer += it.delta_time();
+		carrierCmp->spawnTimer += it.delta_system_time();
 		if (carrierCmp->spawnTimer >= carrierCmp->spawnRate && carrierCmp->reserveShips > 0) {
 			ShipInstance inst = carrierCmp->spawnShipTypes[0];
 			vector3df spawnPos = irrCmp->node->getAbsolutePosition() + getNodeDown(irrCmp->node) * 5.f * carrierCmp->scale.Y;
