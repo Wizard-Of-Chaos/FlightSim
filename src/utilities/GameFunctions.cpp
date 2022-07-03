@@ -84,7 +84,6 @@ void destroyObject(flecs::entity id)
 		if (ghost->ghost) delete ghost->ghost;
 		delete ghost->shape;
 	}
-
 	id.destruct();
 }
 

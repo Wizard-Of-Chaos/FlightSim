@@ -79,6 +79,8 @@ void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyCompon
 		auto rbc = &rbcs[i];
 		auto particles = &prtc[i];
 		flecs::entity entityId = it.entity(i);
+		if (!entityId.is_alive()) return;
+
 		btRigidBody* body = rbc->rigidBody;
 
 		f32 linVel = body->getLinearVelocity().length();

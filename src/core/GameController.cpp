@@ -104,10 +104,8 @@ void GameController::registerSystems()
 *	flecs::OnStore
 */
 	game_world->system<WeaponInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(weaponFiringSystem);
-	game_world->system<HealthComponent>().kind(flecs::OnUpdate).iter(healthSystem);
-	game_world->system<ShieldComponent>().kind(flecs::OnUpdate).iter(shieldSystem);
-	game_world->system<AIComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(AIUpdateSystem);
 	game_world->system<CarrierComponent, IrrlichtComponent, FactionComponent>().kind(flecs::OnUpdate).iter(carrierUpdateSystem);
+	game_world->system<BulletRigidBodyComponent, SensorComponent, FactionComponent>().kind(flecs::OnUpdate).iter(sensorSystem);
 	game_world->system().kind(flecs::OnUpdate).iter(collisionCheckingSystem);
 	game_world->system<DamageTrackingComponent, HealthComponent>().kind(flecs::OnUpdate).iter(damageSystem);
 	game_world->system<ExplosionComponent>().kind(flecs::OnUpdate).iter(explosionSystem);
@@ -115,10 +113,12 @@ void GameController::registerSystems()
 	game_world->system<ObjectiveComponent>().kind(flecs::OnUpdate).iter(objectiveSystem);
 	game_world->system<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, SensorComponent>().kind(flecs::OnUpdate).iter(playerUpdateSystem);
 	game_world->system<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(projectileSystem);
-	game_world->system<BulletRigidBodyComponent, SensorComponent, FactionComponent>().kind(flecs::OnUpdate).iter(sensorSystem);
+	game_world->system<AIComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(AIUpdateSystem);
 	game_world->system<InputComponent, ShipComponent, PlayerComponent, BulletRigidBodyComponent, IrrlichtComponent, SensorComponent>().kind(flecs::OnUpdate).iter(shipControlSystem);
 	game_world->system<ShipComponent, BulletRigidBodyComponent, IrrlichtComponent, ShipParticleComponent>().kind(flecs::OnUpdate).iter(shipUpdateSystem);
 	game_world->system().kind(flecs::OnUpdate).iter(soundSystem);
+	game_world->system<HealthComponent>().kind(flecs::OnUpdate).iter(healthSystem);
+	game_world->system<ShieldComponent>().kind(flecs::OnUpdate).iter(shieldSystem);
 }
 
 void GameController::close()

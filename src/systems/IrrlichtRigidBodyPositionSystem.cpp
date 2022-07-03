@@ -4,6 +4,8 @@
 void irrlichtRigidBodyPositionSystem(flecs::iter it, BulletRigidBodyComponent* rbcs, IrrlichtComponent* irrc)
 {
 	for (auto i : it) {
+		auto ent = it.entity(i);
+		if (!ent.is_alive()) return;
 		BulletRigidBodyComponent* rbc = &rbcs[i];
 		IrrlichtComponent* irr = &irrc[i];
 		if (!rbc->rigidBody) {

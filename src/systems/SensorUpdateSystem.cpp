@@ -18,7 +18,6 @@ std::vector<ContactInfo> getContacts(BulletRigidBodyComponent* rbc, SensorCompon
 	btVector3 closeHostileDist(0, 0, 0);
 	btVector3 closeFriendlyDist(0, 0, 0);
 	btVector3 closeDist(0, 0, 0);
-
 	for (u32 i = 0; i < ghost.getNumOverlappingObjects(); ++i) {
 		btCollisionObject* obj = ghost.getOverlappingObject(i);
 		if (obj == rbc->rigidBody) continue;
@@ -61,6 +60,7 @@ void sensorSystem(flecs::iter it, BulletRigidBodyComponent* rbcs, SensorComponen
 		auto fac = &fcs[i];
 		auto rbc = &rbcs[i];
 		sens->timeSinceLastUpdate += it.delta_time();
+		auto id = it.entity(i).id();
 		if (sens->timeSinceLastUpdate >= sens->updateInterval) {
 			sens->contacts = getContacts(rbc, sens, fac);
 			sens->timeSinceLastUpdate = 0;

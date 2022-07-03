@@ -14,11 +14,13 @@ void defaultAIStateCheck(flecs::entity id)
 		aiComp->state = AI_STATE_IDLE;
 		return;
 	}
+
 	else if (hp->health <= (hp->maxHealth * aiComp->damageTolerance)) {
 		//there's a hostile, but I'm low on health!
 		aiComp->state = AI_STATE_FLEE; //aaaaieeeee!
 		return;
 	}
+
 	//there's a hostile and I can take him!
 	aiComp->state = AI_STATE_PURSUIT;
 	//whoop its ass!
@@ -29,8 +31,7 @@ void defaultAIUpdateSystem(flecs::entity id, f32 dt)
 	if (!id.is_alive()) return;
 	if (!id.has<AIComponent>() || !id.has<SensorComponent>()) return;
 	auto ai = id.get_mut<AIComponent>();
-	auto sensors = id.get_mut<SensorComponent>();
-
+	auto sensors = id.get<SensorComponent>();
 	ai->timeSinceLastStateCheck += dt;
 	if (ai->timeSinceLastStateCheck >= ai->reactionSpeed) {
 		defaultAIStateCheck(id);

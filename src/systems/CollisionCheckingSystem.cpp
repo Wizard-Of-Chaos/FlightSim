@@ -107,8 +107,7 @@ bool broadCallback::needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadph
 	}
 
 	if (entityA.has<ProjectileInfoComponent>() && entityB.has<ProjectileInfoComponent>()) { 
-		if (entityA.get_object<FiredBy>() == entityB.get_object<FiredBy>()) return false; //if they're from the same source, don't collide
-		return true; //otherwise collide
+		return false;
 	}
 
 	//if one is a projectile and the other isn't, needs to check whether it hit its parent - if so throw it out
