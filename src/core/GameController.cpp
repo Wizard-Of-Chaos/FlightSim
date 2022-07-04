@@ -27,7 +27,13 @@ void GameController::update()
 		t += dt;
 		accumulator -= dt;
 	}
-
+	bool complete = true;
+	game_world->each([&complete](flecs::entity e, ObjectiveComponent& obj) {
+		if (!isObjectiveCompleted(e)) {
+			complete = false;
+		}
+		});
+	if (complete) stateController->setState(GAME_FINISHED);
 	//interpolate leftover time?
 	const f32 alpha = accumulator / dt;
 }
@@ -122,7 +128,6 @@ void GameController::registerSystems()
 	game_world->system().kind(flecs::OnUpdate).iter(soundSystem);
 	game_world->system<HealthComponent>().kind(flecs::OnUpdate).iter(healthSystem);
 	game_world->system<ShieldComponent>().kind(flecs::OnUpdate).iter(shieldSystem);
-	game_world->system<ObjectiveComponent>().kind(flecs::OnUpdate).iter(objectiveSystem);
 }
 
 void GameController::close()

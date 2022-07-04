@@ -84,6 +84,9 @@ void destroyObject(flecs::entity id)
 		if (ghost->ghost) delete ghost->ghost;
 		delete ghost->shape;
 	}
+	if (id.has<ObjectiveComponent>()) {
+		id.remove<ObjectiveComponent>();
+	}
 	id.destruct();
 }
 

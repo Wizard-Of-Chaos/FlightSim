@@ -8,7 +8,7 @@ enum OBJECTIVE_TYPE
 	OBJ_DESTROY,
 	OBJ_GO_TO,
 	OBJ_COLLECT,
-	OBJ_MOVE_TO_OTHER_OBJ
+	OBJ_MOVE_TO_OTHER_OBJ,
 };
 
 struct ObjectiveComponent

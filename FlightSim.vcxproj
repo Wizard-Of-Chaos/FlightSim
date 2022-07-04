@@ -184,7 +184,6 @@
     <ClCompile Include="src\systems\HealthAndShieldSystems.cpp" />
     <ClCompile Include="src\systems\IrrlichtRigidBodyPositionSystem.cpp" />
     <ClCompile Include="src\core\main.cpp" />
-    <ClCompile Include="src\systems\ObjectiveSystem.cpp" />
     <ClCompile Include="src\systems\PlayerUpdateSystem.cpp" />
     <ClCompile Include="src\systems\ProjectileSystem.cpp" />
     <ClCompile Include="src\systems\SensorUpdateSystem.cpp" />
@@ -262,7 +261,6 @@
     <ClInclude Include="src\components\IrrlichtComponent.h" />
     <ClInclude Include="src\systems\IrrlichtRigidBodyPositionSystem.h" />
     <ClInclude Include="src\components\PlayerComponent.h" />
-    <ClInclude Include="src\systems\ObjectiveSystem.h" />
     <ClInclude Include="src\systems\PlayerUpdateSystem.h" />
     <ClInclude Include="src\systems\ProjectileSystem.h" />
     <ClInclude Include="src\components\ShipComponent.h" />

@@ -205,8 +205,9 @@ void setKillHostilesScenario(Scenario& scenario)
 	for (u32 i = 0; i < scenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(scenario.enemyStartPos, 25.f);
 		flecs::entity enemy = createDefaultAIShip(pos, vector3df(0, 180, 0)); //todo: create AI ship generator that pulls from loaded ships
-		auto obj = enemy.get_mut<ObjectiveComponent>();
-		obj->type = OBJ_DESTROY;
+		ObjectiveComponent obj;
+		obj.type = OBJ_DESTROY;
+		enemy.set<ObjectiveComponent>(obj);
 	}
 	std::cout << "Done. \n";
 }
@@ -216,8 +217,9 @@ void setScrambleScenario(Scenario& scenario)
 	std::cout << "Setting up a scramble...";
 	scenario.enemyStartPos.Z += 400;
 	auto carr = createAlienCarrier(1, scenario.enemyStartPos, vector3df(0, 90, 0));
-	auto obj = carr.get_mut<ObjectiveComponent>();
-	obj->type = OBJ_DESTROY;
+	ObjectiveComponent obj;
+	obj.type = OBJ_DESTROY;
+	carr.set<ObjectiveComponent>(obj);
 	std::cout << "Done.\n";
 }
 
