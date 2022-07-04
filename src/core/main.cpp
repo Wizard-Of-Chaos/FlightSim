@@ -17,8 +17,6 @@ flecs::world* game_world = 0;
 
 int main()
 {
-	flecs::world world;
-	game_world = &world;
 	VideoConfig config;
 	config.loadConfig("cfg/videoconfig.gdat");
 	config.saveConfig("cfg/videoconfig.gdat");

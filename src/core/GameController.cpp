@@ -66,6 +66,9 @@ void GameController::init()
 
 	collCb = new broadCallback();
 	bWorld->getPairCache()->setOverlapFilterCallback(collCb);
+
+	//ecs init
+	game_world = new flecs::world();
 	registerComponents();
 	registerSystems();
 	open = true;
@@ -144,6 +147,11 @@ void GameController::close()
 	delete bWorld; //this likely leaks some memory
 	delete collCb;
 	delete gPairCb;
+	game_world->each([](flecs::entity e) {
+		destroyObject(e);
+		});
+	game_world->quit();
+	delete game_world;
 
 	//todo: need to clean out the ECS
 	sounds.clear();

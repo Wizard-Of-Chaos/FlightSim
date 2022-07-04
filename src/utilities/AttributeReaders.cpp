@@ -51,7 +51,7 @@ u32 loadShipData(std::string path, gvReader& in, bool carrier)
 	for (unsigned int i = 0; i < data->shipComponent.hardpointCount; ++i) {
 		val = "hardpoint" + std::to_string(i);
 		data->shipComponent.hardpoints[i] = strToVec(in.values[val]);
-		data->shipComponent.weapons[i] = INVALID_ENTITY;
+		//data->shipComponent.weapons[i] = INVALID_ENTITY;
 	}
 	for (unsigned int i = 0; i < 2; ++i) {
 		val = "upJetPos" + std::to_string(i);
@@ -191,8 +191,8 @@ u32 loadWeaponData(std::string path, gvReader& in)
 		cmp.constraint = nullptr;
 		cmp.currentDuration = 0.f;
 		cmp.duration = in.getFloat("duration");
-		cmp.target1 = INVALID_ENTITY;
-		cmp.target2 = INVALID_ENTITY;
+		//cmp.target1 = INVALID_ENTITY;
+		//cmp.target2 = INVALID_ENTITY;
 		cmp.timeToHit = in.getFloat("timeToHit");
 		cmp.currentTimeToHit = 0.f;
 		cmp.force = in.getFloat("force");
