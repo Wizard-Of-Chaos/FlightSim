@@ -122,6 +122,7 @@ void shipUpdateSystem(flecs::iter it, ShipComponent* shpc, BulletRigidBodyCompon
 		jetPairOff(left1, left2);
 		jetPairOff(right1, right2);
 		jetPairOff(back1, back2);
+		auto id = it.entity(i).id();
 		if (ship->moves[SHIP_STRAFE_DOWN] && velocitySafetyCheck(linVel, ship, linDir, getRigidBodyDown(body))) {
 			jetPairOn(up1, up2);
 			force += getForceDown(body, ship);

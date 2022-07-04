@@ -6,6 +6,7 @@
 #include "DefaultAIUpdateSystem.h"
 
 //Updates all AI components in the scene (allied, friendly, and neutral ships).
-void AIUpdateSystem(flecs::iter it, AIComponent* aic, IrrlichtComponent* irrc);
+void AIUpdateSystem(flecs::iter it, 
+	AIComponent* aic, IrrlichtComponent* irrc, BulletRigidBodyComponent* rbcs, ShipComponent* shipc, SensorComponent* sensc, HealthComponent* hpc);
 
 #endif 

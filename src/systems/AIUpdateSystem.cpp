@@ -1,13 +1,19 @@
 #include "AIUpdateSystem.h"
 
-void AIUpdateSystem(flecs::iter it, AIComponent* aic, IrrlichtComponent* irrc)
+void AIUpdateSystem(flecs::iter it, 
+	AIComponent* aic, IrrlichtComponent* irrc, BulletRigidBodyComponent* rbcs, ShipComponent* shipc, SensorComponent* sensc, HealthComponent* hpc)
 {
 	for (auto i : it) {
-		auto ent = it.entity(i);
-		auto ai = ent.get<AIComponent>();
+		auto ai = &aic[i];
+		auto ship = &shipc[i];
+		auto rbc = &rbcs[i];
+		auto irr = &irrc[i];
+		auto sensors = &sensc[i];
+		auto hp = &hpc[i];
+
 		switch (ai->AIType) {
 		case AI_TYPE_DEFAULT:
-			defaultAIUpdateSystem(ent, it.delta_time());
+			defaultAIUpdateSystem(ai, irr, rbc, ship, sensors, hp, it.delta_time());
 			break;
 		default:
 			break;

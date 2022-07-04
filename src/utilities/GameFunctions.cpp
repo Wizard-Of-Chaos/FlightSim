@@ -103,7 +103,7 @@ bool initializeDefaultPlayer(flecs::entity shipId)
 	input.leftMouseDown = false;
 	input.rightMouseDown = false;
 	input.mouseControlEnabled = false;
-	input.safetyOverride = true;
+	input.safetyOverride = false;
 
 	PlayerComponent player;
 	player.camera = camera;

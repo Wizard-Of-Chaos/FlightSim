@@ -85,6 +85,12 @@ struct ShipComponent {
 	vector3df rightJetPos[2];
 	vector3df reverseJetPos[2];
 	vector3df engineJetPos;
+
+	ShipComponent() {
+		for (u32 i = 0; i < SHIP_MAX_MOVEMENTS; ++i) {
+			moves[i] = false;
+		}
+	}
 };
 
 #endif

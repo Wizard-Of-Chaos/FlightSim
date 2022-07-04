@@ -9,8 +9,9 @@
 /*
 * Includes the default state check for the AI and the update system for the AI.
 */
-//Checks as often as the AI component's reaction speed will allow it to. Updates state based on its environment.
-void defaultAIStateCheck(flecs::entity id);
+
 //The default update system for an AI component.
-void defaultAIUpdateSystem(flecs::entity id, f32 dt);
+void defaultAIUpdateSystem(
+	AIComponent* ai, IrrlichtComponent* irr, BulletRigidBodyComponent* rbc, ShipComponent* ship, SensorComponent* sensors, HealthComponent* hp,
+	f32 dt);
 #endif 

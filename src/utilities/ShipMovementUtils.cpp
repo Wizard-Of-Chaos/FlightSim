@@ -95,7 +95,6 @@ void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
 	btVector3 left = getRigidBodyLeft(body);
 	btVector3 up = getRigidBodyUp(body);
 	btVector3 down = getRigidBodyDown(body);
-
 	if (right.dot(dir) > left.dot(dir)) {
 		ship->moves[SHIP_YAW_RIGHT] = true;
 	} else {
@@ -143,14 +142,8 @@ void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
 	}
 }
 
-bool avoidObstacles(flecs::entity id, f32 dt, flecs::entity target)
+bool avoidObstacles(ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, f32 dt, flecs::entity target)
 {
-	if (!id.has<ShipComponent>() || !id.has<BulletRigidBodyComponent>() || !id.has<IrrlichtComponent>()) return false;
-
-	auto ship = id.get_mut<ShipComponent>();
-	auto rbc = id.get_mut<BulletRigidBodyComponent>();
-	auto irr = id.get_mut<IrrlichtComponent>();
-
 	btRigidBody* body = rbc->rigidBody;
 
 	btVector3 velocity = body->getLinearVelocity();
@@ -167,7 +160,6 @@ bool avoidObstacles(flecs::entity id, f32 dt, flecs::entity target)
 	to.setOrigin(futurePos);
 	bWorld->convexSweepTest(&shape, from, to, cb);
 	if (!cb.hasHit()) return false;
-	//std::cout << "AAAAAA I'M GOING TO CRASH \n";
 	ship->moves[SHIP_STOP_VELOCITY] = true;
 	goToPoint(body, ship, (pos + getRigidBodyLeft(body) * 100.f), dt);
 

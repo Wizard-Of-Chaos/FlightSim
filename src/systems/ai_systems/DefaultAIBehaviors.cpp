@@ -17,13 +17,9 @@ void setAIWeapon(flecs::entity wep, bool firing)
 
 }
 
-void defaultIdleBehavior(flecs::entity id, f32 dt)
+void defaultIdleBehavior(ShipComponent* ship, BulletRigidBodyComponent* rbc, f32 dt)
 {
-	if (!id.is_alive()) return;
-	if (!id.has<BulletRigidBodyComponent>() || !id.has<ShipComponent>()) return;
-
-	auto rbc = id.get_mut<BulletRigidBodyComponent>();
-	auto ship = id.get_mut<ShipComponent>();
+	game_world->defer_suspend();
 
 	btVector3 force = btVector3(0, 0, 0);
 	btVector3 torque = btVector3(0, 0, 0);
@@ -39,16 +35,13 @@ void defaultIdleBehavior(flecs::entity id, f32 dt)
 		flecs::entity wep = ship->weapons[i];
 		setAIWeapon(wep, false);
 	}
+	game_world->defer_resume();
 }
 
-void defaultFleeBehavior(flecs::entity id, flecs::entity fleeTarget, f32 dt)
+void defaultFleeBehavior(IrrlichtComponent* irr, BulletRigidBodyComponent* rbc, ShipComponent* ship, flecs::entity fleeTarget, f32 dt)
 {
-	if (fleeTarget == INVALID_ENTITY || !id.is_alive()) return;
-	if (!id.has<IrrlichtComponent>() || !id.has<BulletRigidBodyComponent>() || !id.has<ShipComponent>()) return;
-
-	auto irr = id.get<IrrlichtComponent>();
-	auto rbc = id.get_mut<BulletRigidBodyComponent>();
-	auto ship = id.get_mut<ShipComponent>();
+	game_world->defer_suspend();
+	if (fleeTarget == INVALID_ENTITY) return;
 
 	if (!fleeTarget.has<IrrlichtComponent>()) return;
 	auto fleeIrr = fleeTarget.get<IrrlichtComponent>();
@@ -68,20 +61,19 @@ void defaultFleeBehavior(flecs::entity id, flecs::entity fleeTarget, f32 dt)
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		setAIWeapon(ship->weapons[i], false);
 	}
+	game_world->defer_resume();
 }
 
 //TLDR is try and get behind the ship and match its velocity.
-void defaultPursuitBehavior(flecs::entity id, flecs::entity pursuitTarget, f32 dt)
+void defaultPursuitBehavior(
+	SensorComponent* sensors, BulletRigidBodyComponent* rbc, ShipComponent* ship, IrrlichtComponent* irr, 
+	flecs::entity pursuitTarget, f32 dt)
 {
-	if (!id.has<SensorComponent>() || !id.has<BulletRigidBodyComponent>() || !id.has<ShipComponent>()) return;
-	auto sensors = id.get_mut<SensorComponent>();
-
+	game_world->defer_suspend();
 	if (pursuitTarget == INVALID_ENTITY || !pursuitTarget.is_alive()) {
 		sensors->targetContact = INVALID_ENTITY;
 		return; 
 	}
-	auto rbc = id.get_mut<BulletRigidBodyComponent>();
-	auto ship = id.get_mut<ShipComponent>();
 
 	sensors->targetContact = pursuitTarget;
 
@@ -97,7 +89,7 @@ void defaultPursuitBehavior(flecs::entity id, flecs::entity pursuitTarget, f32 d
 	btVector3 facing = targetPos - pos;
 	facing = facing.normalize();
 
-	if (avoidObstacles(id, dt)) return;
+	if (avoidObstacles(ship, rbc, irr, dt)) return;
 
 	//If it's not behind the ship, get behind it
 	if (dist.length() > 30.f) {
@@ -129,4 +121,5 @@ void defaultPursuitBehavior(flecs::entity id, flecs::entity pursuitTarget, f32 d
 			setAIWeapon(ship->weapons[i], false);
 		}
 	}
+	game_world->defer_resume();
 }

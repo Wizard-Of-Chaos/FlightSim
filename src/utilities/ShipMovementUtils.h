@@ -82,6 +82,6 @@ void smoothTurnToDirection(btRigidBody* body,  ShipComponent* ship, btVector3 di
 void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt);
 
 //Applies torque and force to avoid smacking into something. Returns true if actively avoiding an obstacle, and false otherwise.
-bool avoidObstacles(flecs::entity id, f32 dt, flecs::entity target=INVALID_ENTITY);
+bool avoidObstacles(ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, f32 dt, flecs::entity target=INVALID_ENTITY);
 
 #endif 

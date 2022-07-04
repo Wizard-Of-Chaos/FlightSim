@@ -103,6 +103,11 @@ void GameController::registerSystems()
 *	flecs::PreStore
 *	flecs::OnStore
 */
+	auto playerctrl = game_world->system<InputComponent, ShipComponent, PlayerComponent, BulletRigidBodyComponent, IrrlichtComponent, SensorComponent>()
+		.no_staging(false).kind(flecs::PreUpdate).iter(shipControlSystem);
+	auto aictrl = game_world->system<AIComponent, IrrlichtComponent, BulletRigidBodyComponent, ShipComponent, SensorComponent, HealthComponent>()
+		.no_staging(false).kind(flecs::PreUpdate).iter(AIUpdateSystem);
+
 	game_world->system<WeaponInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(weaponFiringSystem);
 	game_world->system<CarrierComponent, IrrlichtComponent, FactionComponent>().kind(flecs::OnUpdate).iter(carrierUpdateSystem);
 	game_world->system<BulletRigidBodyComponent, SensorComponent, FactionComponent>().kind(flecs::OnUpdate).iter(sensorSystem);
@@ -110,15 +115,14 @@ void GameController::registerSystems()
 	game_world->system<DamageTrackingComponent, HealthComponent>().kind(flecs::OnUpdate).iter(damageSystem);
 	game_world->system<ExplosionComponent>().kind(flecs::OnUpdate).iter(explosionSystem);
 	game_world->system<BulletRigidBodyComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(irrlichtRigidBodyPositionSystem);
-	game_world->system<ObjectiveComponent>().kind(flecs::OnUpdate).iter(objectiveSystem);
 	game_world->system<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, SensorComponent>().kind(flecs::OnUpdate).iter(playerUpdateSystem);
 	game_world->system<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(projectileSystem);
-	game_world->system<AIComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(AIUpdateSystem);
-	game_world->system<InputComponent, ShipComponent, PlayerComponent, BulletRigidBodyComponent, IrrlichtComponent, SensorComponent>().kind(flecs::OnUpdate).iter(shipControlSystem);
+
 	game_world->system<ShipComponent, BulletRigidBodyComponent, IrrlichtComponent, ShipParticleComponent>().kind(flecs::OnUpdate).iter(shipUpdateSystem);
 	game_world->system().kind(flecs::OnUpdate).iter(soundSystem);
 	game_world->system<HealthComponent>().kind(flecs::OnUpdate).iter(healthSystem);
 	game_world->system<ShieldComponent>().kind(flecs::OnUpdate).iter(shieldSystem);
+	game_world->system<ObjectiveComponent>().kind(flecs::OnUpdate).iter(objectiveSystem);
 }
 
 void GameController::close()
@@ -153,6 +157,8 @@ flecs::entity GameController::getPlayer()
 
 void GameController::clearPlayerHUD()
 {
+	if (!getPlayer().is_alive()) return;
+
 	auto plyc = getPlayer().get_mut<PlayerComponent>();
 	for (HUDElement* hud : plyc->HUD) {
 		delete hud;

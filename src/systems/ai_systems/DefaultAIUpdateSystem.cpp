@@ -1,15 +1,9 @@
 #include "DefaultAIUpdateSystem.h"
 #include <iostream>
 
-void defaultAIStateCheck(flecs::entity id)
+//Checks as often as the AI component's reaction speed will allow it to. Updates state based on its environment.
+void defaultAIStateCheck(AIComponent* aiComp, SensorComponent* sensors, HealthComponent* hp)
 {
-	if (!id.is_alive()) return;
-	if (!id.has<AIComponent>() || !id.has<SensorComponent>() || !id.has<HealthComponent>()) return;
-
-	auto aiComp = id.get_mut<AIComponent>();
-	auto sensors = id.get<SensorComponent>();
-	auto hp = id.get<HealthComponent>();
-
 	if (sensors->closestHostileContact == INVALID_ENTITY) {
 		aiComp->state = AI_STATE_IDLE;
 		return;
@@ -26,27 +20,25 @@ void defaultAIStateCheck(flecs::entity id)
 	//whoop its ass!
 }
 
-void defaultAIUpdateSystem(flecs::entity id, f32 dt)
+void defaultAIUpdateSystem(
+	AIComponent* ai, IrrlichtComponent* irr, BulletRigidBodyComponent* rbc, ShipComponent* ship, SensorComponent* sensors, HealthComponent* hp,
+	f32 dt)
 {
-	if (!id.is_alive()) return;
-	if (!id.has<AIComponent>() || !id.has<SensorComponent>()) return;
-	auto ai = id.get_mut<AIComponent>();
-	auto sensors = id.get<SensorComponent>();
 	ai->timeSinceLastStateCheck += dt;
 	if (ai->timeSinceLastStateCheck >= ai->reactionSpeed) {
-		defaultAIStateCheck(id);
+		defaultAIStateCheck(ai, sensors, hp);
 		ai->timeSinceLastStateCheck = 0;
 	}
 	
 	switch (ai->state) {
 	case AI_STATE_IDLE:
-		defaultIdleBehavior(id, dt);
+		defaultIdleBehavior(ship, rbc, dt);
 		break;
 	case AI_STATE_FLEE:
-		defaultFleeBehavior(id, sensors->closestHostileContact, dt);
+		defaultFleeBehavior(irr, rbc, ship, sensors->closestHostileContact, dt);
 		break;
 	case AI_STATE_PURSUIT:
-		defaultPursuitBehavior(id, sensors->closestHostileContact, dt);
+		defaultPursuitBehavior(sensors, rbc, ship, irr, sensors->closestHostileContact, dt);
 		break;
 	default:
 		break;

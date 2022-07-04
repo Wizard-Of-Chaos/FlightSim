@@ -60,7 +60,6 @@ void sensorSystem(flecs::iter it, BulletRigidBodyComponent* rbcs, SensorComponen
 		auto fac = &fcs[i];
 		auto rbc = &rbcs[i];
 		sens->timeSinceLastUpdate += it.delta_time();
-		auto id = it.entity(i).id();
 		if (sens->timeSinceLastUpdate >= sens->updateInterval) {
 			sens->contacts = getContacts(rbc, sens, fac);
 			sens->timeSinceLastUpdate = 0;
