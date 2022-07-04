@@ -108,10 +108,10 @@ void GameController::registerSystems()
 	auto aictrl = game_world->system<AIComponent, IrrlichtComponent, BulletRigidBodyComponent, ShipComponent, SensorComponent, HealthComponent>()
 		.no_staging().kind(flecs::PreUpdate).iter(AIUpdateSystem);
 
+	game_world->system().kind(flecs::OnUpdate).no_staging().iter(collisionCheckingSystem);
 	game_world->system<WeaponInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(weaponFiringSystem);
 	game_world->system<CarrierComponent, IrrlichtComponent, FactionComponent>().kind(flecs::OnUpdate).iter(carrierUpdateSystem);
 	game_world->system<BulletRigidBodyComponent, SensorComponent, FactionComponent>().kind(flecs::OnUpdate).iter(sensorSystem);
-	game_world->system().kind(flecs::OnUpdate).iter(collisionCheckingSystem);
 	game_world->system<DamageTrackingComponent, HealthComponent>().no_staging().kind(flecs::OnUpdate).iter(damageSystem);
 	game_world->system<ExplosionComponent>().kind(flecs::OnUpdate).iter(explosionSystem);
 	game_world->system<BulletRigidBodyComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(irrlichtRigidBodyPositionSystem);

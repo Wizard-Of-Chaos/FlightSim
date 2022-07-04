@@ -74,7 +74,6 @@ void shieldSystem(flecs::iter it, ShieldComponent* sc)
 	{
 		auto shieldComponent = &sc[i];
 		shieldComponent->timeSinceLastHit += it.delta_system_time();
-		std::cout << "time since last hit: " << shieldComponent->timeSinceLastHit << std::endl;
 
 		if (shieldComponent->timeSinceLastHit >= shieldComponent->rechargeDelay)
 		{
