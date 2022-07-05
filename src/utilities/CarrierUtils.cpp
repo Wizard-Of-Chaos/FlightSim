@@ -5,11 +5,12 @@
 
 void initializeCarrier(flecs::entity id, f32 spawnRate, u32 reserveShips, vector3df scale)
 {
-	auto carr = id.get_mut<CarrierComponent>();
-	carr->reserveShips = reserveShips;
-	carr->spawnRate = spawnRate;
-	carr->scale = scale;
-	carr->spawnTimer = 0;
+	CarrierComponent carr;
+	carr.reserveShips = reserveShips;
+	carr.spawnRate = spawnRate;
+	carr.scale = scale;
+	carr.spawnTimer = 0;
+	id.set<CarrierComponent>(carr);
 }
 
 flecs::entity createCarrierFromId(u32 id, vector3df pos, vector3df rot)

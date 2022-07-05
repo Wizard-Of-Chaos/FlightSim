@@ -106,12 +106,10 @@ void setScenarioType(Scenario& scenario)
 		setKillHostilesScenario(scenario);
 		break;
 	case SCENARIO_SCRAMBLE:
-		//setScrambleScenario(scenario);
-		setKillHostilesScenario(scenario);
+		setScrambleScenario(scenario);
 		break;
 	case SCENARIO_DESTROY_OBJECT:
-		//setScrambleScenario(scenario); //the object in this case will currently be a carrier
-		setKillHostilesScenario(scenario);
+		setScrambleScenario(scenario); //the object in this case will currently be a carrier
 		break;
 	default:
 		std::cout << "No valid type! Defaulting to kill hostiles. \n";

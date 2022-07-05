@@ -122,10 +122,12 @@ bool initializeDefaultPlayer(flecs::entity shipId)
 
 void initializeHealth(flecs::entity id, f32 healthpool)
 {
-	auto hp = id.get_mut<HealthComponent>();
-	auto dmg = id.get_mut<DamageTrackingComponent>();
-	hp->health = healthpool;
-	hp->maxHealth = healthpool;
+	HealthComponent hp;
+	DamageTrackingComponent dmg;
+	hp.health = healthpool;
+	hp.maxHealth = healthpool;
+	id.set<HealthComponent>(hp);
+	id.set<DamageTrackingComponent>(dmg);
 }
 void initializeDefaultHealth(flecs::entity objectId)
 {
