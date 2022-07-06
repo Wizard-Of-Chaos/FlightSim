@@ -1,6 +1,8 @@
 model=impulseblaster/gravgun.obj
 texture=impulseblaster/gravguntex.png
 particle=particlewhite.bmp
+sound=physicsgun.ogg
+
 id=1
 phys=1
 name=Impulse Cannon

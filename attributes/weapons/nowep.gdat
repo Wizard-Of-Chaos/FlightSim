@@ -1,6 +1,8 @@
 model=none 
 texture=none
 particle=particlered.bmp
+sound=laser_shoot.ogg
+
 id=0
 phys=0
 name=None

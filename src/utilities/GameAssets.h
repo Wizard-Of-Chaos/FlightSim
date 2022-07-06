@@ -22,11 +22,23 @@ class Assets
 		std::unordered_map<u32, ISoundSource*> weaponFireSounds;
 		std::unordered_map<u32, ISoundSource*> weaponImpactSounds;
 
+		std::unordered_map<u32, ISoundSource*> physWeaponFireSounds;
+		std::unordered_map<u32, ISoundSource*> physWeaponImpactSounds;
+
+		ISoundSource* getWepFireSound(u32 id, bool phys = false);
+		bool setWepFireSound(u32 id, ISoundSource* sound, bool phys = false);
+		ISoundSource* getWepHitSound(u32 id, bool phys = false);
+		bool setWepHitSound(u32 id, ISoundSource* sound, bool phys = false);
 	public:
 		bool setWeaponFireSound(u32 id, ISoundSource* sound);
 		bool setWeaponImpactSound(u32 id, ISoundSource* sound);
+		bool setPhysWeaponFireSound(u32 id, ISoundSource* sound);
+		bool setPhysWeaponImpactSound(u32 id, ISoundSource* sound);
+
 		ISoundSource* getWeaponFireSound(u32 id);
 		ISoundSource* getWeaponImpactSound(u32 id);
+		ISoundSource* getPhysWeaponFireSound(u32 id);
+		ISoundSource* getPhysWeaponImpactSound(u32 id);
 
 		bool setMeshAsset(std::string name, IMesh* mesh);
 		bool setTextureAsset(std::string name, ITexture* texture);

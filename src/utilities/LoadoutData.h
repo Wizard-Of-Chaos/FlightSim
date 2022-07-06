@@ -52,6 +52,7 @@ struct WeaponData
 	std::string weaponTexture;
 	std::string weaponEffect;
 	std::string weaponNorm;
+	std::string weaponFireSound;
 };
 
 /*

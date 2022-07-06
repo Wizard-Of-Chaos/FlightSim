@@ -45,19 +45,12 @@ void weaponFiringSystem(flecs::iter it, WeaponInfoComponent* wic, IrrlichtCompon
 
 		if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed))
 		{
-			if (wepInfo->usesAmmunition)
-			{
-				bool firing = ammoFire(it.entity(i), wepInfo, it.delta_time());
-				if (wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, assets->getSoundAsset("gunSound"), .3f, 10.f);
-			}
-			else
-			{
-				gameController->registerSoundInstance(entityId, assets->getSoundAsset("laserSound"), .7f, 10.f);
+			if (wepInfo->usesAmmunition) ammoFire(it.entity(i), wepInfo, it.delta_time());
+			else {
 				createProjectileEntity(wepInfo->spawnPosition, wepInfo->firingDirection, entityId);
 			}
 			wepInfo->timeSinceLastShot = 0;
 		}
-		//std::cout << it.delta_time() << std::endl;
 		wepInfo->timeSinceLastShot += it.delta_system_time();
 		if (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)
 		{
@@ -66,33 +59,4 @@ void weaponFiringSystem(flecs::iter it, WeaponInfoComponent* wic, IrrlichtCompon
 			wepInfo->timeSinceLastShot = wepInfo->firingSpeed + .005f;
 		}
 	}
-
-
-	//for (auto entityId : SceneView<WeaponInfoComponent, IrrlichtComponent>(sceneManager->scene)) { //If the gun is firing, update time since last shot, play a sound and make the entity
-	//	auto wepInfo = scene->get<WeaponInfoComponent>(entityId);
-	//	if (wepInfo->type == WEP_NONE) continue;
-	//	auto irrComp = scene->get<IrrlichtComponent>(entityId);
-	//	handleSpecialWepFunctions(entityId, dt);
-
-	//	if (wepInfo->usesAmmunition) {
-	//		if (wepInfo->clip == 0) {
-	//			wepInfo->timeReloading += dt;
-	//		}
-	//	}
-	//	if (wepInfo->isFiring && (wepInfo->timeSinceLastShot > wepInfo->firingSpeed)) {
-	//		if (wepInfo->usesAmmunition) {
-	//			bool firing = ammoFire(entityId, wepInfo, dt);
-	//			if(wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f); //gotta be a better way to do this
-	//		}
-	//		else {
-	//			gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);
-	//			createProjectileEntity(wepInfo->spawnPosition, wepInfo->firingDirection, entityId);
-	//		}
-	//		wepInfo->timeSinceLastShot = 0.f;
-	//	}
-	//	wepInfo->timeSinceLastShot += dt;
-	//	if (wepInfo->timeSinceLastShot > wepInfo->firingSpeed) {
-	//		wepInfo->timeSinceLastShot = wepInfo->firingSpeed + .005f;
-	//	}
-	//}
 }

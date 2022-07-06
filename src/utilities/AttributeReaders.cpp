@@ -143,6 +143,8 @@ u32 loadWeaponData(std::string path, gvReader& in)
 		delete data;
 		data = new BolasData;
 	}
+	data->weaponFireSound = "audio/" + in.getString("sound");
+
 	data->id = id;
 	data->name = name;
 	data->description = in.values["description"];
@@ -211,6 +213,7 @@ u32 loadWeaponData(std::string path, gvReader& in)
 	data->weaponComponent.timeSinceLastShot = 0.f;
 
 	bool phys = std::stoi(in.values["phys"]);
+	data->weaponComponent.phys = phys;
 	data->weaponComponent.wepDataId = id;
 	if (id == 0) {
 		stateController->weaponData[id] = data;
@@ -313,6 +316,8 @@ bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bo
 	irr.node->setName(idToStr(weaponEntity).c_str());
 	irr.node->setID(ID_IsNotSelectable);
 
+	if(data->weaponComponent.phys) assets->setPhysWeaponFireSound(id, soundEngine->getSoundSource(data->weaponFireSound.c_str()));
+	else assets->setWeaponFireSound(id, soundEngine->getSoundSource(data->weaponFireSound.c_str()));
 
 	WeaponInfoComponent wep = data->weaponComponent;
 
@@ -339,10 +344,12 @@ bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bo
 	}
 	wep.particle = driver->getTexture(data->weaponEffect.c_str());
 	assets->setTextureAsset(data->weaponEffect, wep.particle);
+
 	weaponEntity.set<WeaponInfoComponent>(wep);
 	weaponEntity.set<IrrlichtComponent>(irr);
 	return true; 
 }
+
 u32 loadObstacleData(std::string path, gvReader& in)
 {
 	std::cout << "Reading obstacle in from " << path << "... ";

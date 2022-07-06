@@ -46,6 +46,11 @@ flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, fl
 	btVector3 initVelocity = shipRBC->rigidBody->getLinearVelocity();
 	btQuaternion initRot = shipRBC->rigidBody->getOrientation();
 
+	u32 id = wepInfo->wepDataId;
+
+	if(wepInfo->phys) gameController->registerSoundInstance(weaponId, assets->getPhysWeaponFireSound(id), .7f, 10.f);
+	else gameController->registerSoundInstance(weaponId, assets->getWeaponFireSound(id), .7f, 10.f);
+
 	if (projectileInfo.type == WEP_PLASMA) {
 		initialForce += irrVecToBt(initialDir) * projectileInfo.speed;
 		createPlasmaProjectile(projectileEntity, direction, spawnPos);
@@ -79,7 +84,6 @@ flecs::entity createProjectileEntity(vector3df spawnPos, vector3df direction, fl
 			bWorld->addRigidBody(newRBC->rigidBody);
 		}
 	}
-
 	bWorld->addRigidBody(rbc->rigidBody);
 	return projectileEntity;
 }

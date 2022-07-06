@@ -2,6 +2,8 @@ model=machinegun/gun.obj
 texture=machinegun/guntexture.png
 norm=machinegun/gunnorm.png
 particle=bullet.bmp
+sound=shotgun.ogg
+
 id=4
 phys=0
 name=SG-14 Canister
