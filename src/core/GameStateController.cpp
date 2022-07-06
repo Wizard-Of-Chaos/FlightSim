@@ -30,20 +30,20 @@ void GameStateController::init()
 	loadShipAndWeaponData();
 	soundEngine = createIrrKlangDevice();
 
-	assets.setFilenames();
+	assets->setFilenames();
 
-	changeMusic(assets.getSoundAsset("menuMusic"));
+	changeMusic(assets->getSoundAsset("menuMusic"));
 
 	gameController = new GameController;
 
 	guiController = new GuiController;
 	guiController->init();
 
-	IGUIFont* defaultFont = assets.getFontAsset("defaultFont");
+	IGUIFont* defaultFont = assets->getFontAsset("defaultFont");
 	if (defaultFont) {
 		guienv->getSkin()->setFont(defaultFont);
 	}
-	IGUIFont* tooltipDefaultFont = assets.getFontAsset("defaultTooltipFont");
+	IGUIFont* tooltipDefaultFont = assets->getFontAsset("defaultTooltipFont");
 	if (tooltipDefaultFont) {
 		guienv->getSkin()->setFont(tooltipDefaultFont, EGDF_TOOLTIP);
 	}

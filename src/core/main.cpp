@@ -15,6 +15,8 @@ ISoundEngine* soundEngine = 0;
 BulletPhysicsWorld* bWorld = 0;
 flecs::world* game_world = 0;
 
+Assets* assets = new Assets;
+
 int main()
 {
 	VideoConfig config;

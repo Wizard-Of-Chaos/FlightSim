@@ -43,6 +43,6 @@ bool GuiPauseMenu::onExit(const SEvent& event)
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 
 	stateController->setState(GAME_MENUS);
-	stateController->changeMusic(stateController->assets.getSoundAsset("menuMusic"));
+	stateController->changeMusic(assets->getSoundAsset("menuMusic"));
 	return false;
 }

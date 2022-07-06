@@ -17,13 +17,13 @@ void handleShieldedInstance(flecs::entity id, DamageInstance& inst, HealthCompon
 		if (shield->shields <= 0) shieldsDown = true;
 		shield->shields -= inst.amount;
 		if (shield->shields <= 0) {
-			if(!shieldsDown) gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("shieldDown"), 1.f, 50.f);
+			if(!shieldsDown) gameController->registerSoundInstance(id, assets->getSoundAsset("shieldDown"), 1.f, 50.f);
 			overflow += -shield->shields;
 			shield->shields = 0;
 		}
 		else {
-			if (inst.amount > 10.f) gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("shieldHitMajor"), 1.f, 25.f);
-			else gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("shieldHitMinor"), 1.f, 25.f);
+			if (inst.amount > 10.f) gameController->registerSoundInstance(id, assets->getSoundAsset("shieldHitMajor"), 1.f, 25.f);
+			else gameController->registerSoundInstance(id, assets->getSoundAsset("shieldHitMinor"), 1.f, 25.f);
 		}
 		shield->timeSinceLastHit = 0;
 	}
@@ -59,7 +59,7 @@ void damageSystem(flecs::iter it, DamageTrackingComponent* dtc, HealthComponent*
 				handleShieldedInstance(id, inst, hp, shld);
 				break;
 			case DAMAGE_TYPE::IMPACT:
-				if (inst.time >= dmg->lastDamageTime + 500) gameController->registerSoundInstance(id, stateController->assets.getSoundAsset("impactSound"), 1.f, 50.f);
+				if (inst.time >= dmg->lastDamageTime + 500) gameController->registerSoundInstance(id, assets->getSoundAsset("impactSound"), 1.f, 50.f);
 				handleInstance(inst, hp);
 				break;
 			case DAMAGE_TYPE::VELOCITY:

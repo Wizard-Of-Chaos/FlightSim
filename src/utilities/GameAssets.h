@@ -7,6 +7,7 @@
 
 //Holds all the default textures and sounds and meshes for the game that can be used as placeholders if you can't load your custom mesh.
 //When you're loading something, you should set it up in here so it can get cleared when the game ends.
+
 class Assets
 {
 	private:
@@ -18,7 +19,15 @@ class Assets
 		std::unordered_map<std::string, btConvexHullShape> hullAssets;
 		std::unordered_map<std::string, IGUIFont*> fontAssets;
 
+		std::unordered_map<u32, ISoundSource*> weaponFireSounds;
+		std::unordered_map<u32, ISoundSource*> weaponImpactSounds;
+
 	public:
+		bool setWeaponFireSound(u32 id, ISoundSource* sound);
+		bool setWeaponImpactSound(u32 id, ISoundSource* sound);
+		ISoundSource* getWeaponFireSound(u32 id);
+		ISoundSource* getWeaponImpactSound(u32 id);
+
 		bool setMeshAsset(std::string name, IMesh* mesh);
 		bool setTextureAsset(std::string name, ITexture* texture);
 

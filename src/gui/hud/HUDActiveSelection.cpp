@@ -6,14 +6,14 @@
 HUDActiveSelection::HUDActiveSelection(IGUIElement* root) : HUDElement(root)
 {
 	type = HUD_ELEM_TYPE::ACTIVE_SELECTION;
-	selectGUI = guienv->addImage(stateController->assets.getHUDAsset("neutralSelection"), position2di(0, 0), root);
+	selectGUI = guienv->addImage(assets->getHUDAsset("neutralSelection"), position2di(0, 0), root);
 	name = guienv->addStaticText(L"", rect<s32>(position2di(0, 0), dimension2du(128, 128)), false, false, root);
 	name->setOverrideColor(SColor(255, 100, 255, 100));
-	name->setOverrideFont(stateController->assets.getFontAsset("HUDFont"));
+	name->setOverrideFont(assets->getFontAsset("HUDFont"));
 	name->enableOverrideColor(true);
-	crosshair = guienv->addImage(stateController->assets.getHUDAsset("crosshair"), position2di(-200, -200), root);
-	selectHP = guienv->addImage(stateController->assets.getHUDAsset("selectHealth"), position2di(0, 0), root);
-	selectSP = guienv->addImage(stateController->assets.getHUDAsset("selectShields"), position2di(0, 0), root);
+	crosshair = guienv->addImage(assets->getHUDAsset("crosshair"), position2di(-200, -200), root);
+	selectHP = guienv->addImage(assets->getHUDAsset("selectHealth"), position2di(0, 0), root);
+	selectSP = guienv->addImage(assets->getHUDAsset("selectShields"), position2di(0, 0), root);
 	selectGUI->setVisible(false);
 	name->setVisible(false);
 	crosshair->setVisible(false);

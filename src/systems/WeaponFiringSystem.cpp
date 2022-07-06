@@ -48,11 +48,11 @@ void weaponFiringSystem(flecs::iter it, WeaponInfoComponent* wic, IrrlichtCompon
 			if (wepInfo->usesAmmunition)
 			{
 				bool firing = ammoFire(it.entity(i), wepInfo, it.delta_time());
-				if (wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("gunSound"), .3f, 10.f);
+				if (wepInfo->type == WEP_KINETIC && firing) gameController->registerSoundInstance(entityId, assets->getSoundAsset("gunSound"), .3f, 10.f);
 			}
 			else
 			{
-				gameController->registerSoundInstance(entityId, stateController->assets.getSoundAsset("laserSound"), .7f, 10.f);
+				gameController->registerSoundInstance(entityId, assets->getSoundAsset("laserSound"), .7f, 10.f);
 				createProjectileEntity(wepInfo->spawnPosition, wepInfo->firingDirection, entityId);
 			}
 			wepInfo->timeSinceLastShot = 0;

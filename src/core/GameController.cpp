@@ -155,7 +155,7 @@ void GameController::close()
 
 	//todo: need to clean out the ECS
 	sounds.clear();
-	stateController->assets.clearLoadedGameAssets();
+	assets->clearLoadedGameAssets();
 	open = false;
 }
 

@@ -17,7 +17,7 @@ flecs::entity createDynamicObstacle(u32 id, vector3df position, vector3df rotati
 	IMeshSceneNode* n = (IMeshSceneNode*)irr->node;
 	n->getMesh()->setHardwareMappingHint(EHM_STATIC);
 	btVector3 btscale(irrVecToBt(scale));
-	initializeBtRigidBody(obstacle, stateController->assets.getHullAsset(stateController->obstacleData[id]->name), btscale, mass);
+	initializeBtRigidBody(obstacle, assets->getHullAsset(stateController->obstacleData[id]->name), btscale, mass);
 	auto rbc = obstacle.get_mut<BulletRigidBodyComponent>();
 	rbc->rigidBody->setActivationState(0);
 	initializeHealth(obstacle, stateController->obstacleData[id]->health);

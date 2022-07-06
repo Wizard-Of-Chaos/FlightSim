@@ -235,14 +235,14 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 	irr.name = data->name;
 
 	ITexture* norm = driver->getTexture(data->shipNorm.c_str());
-	ITexture* tex = stateController->assets.getTextureAsset(data->name);
-	IMesh* mesh = stateController->assets.getMeshAsset(data->name);
+	ITexture* tex = assets->getTextureAsset(data->name);
+	IMesh* mesh = assets->getMeshAsset(data->name);
 	if (norm) {
 		if (!mesh) {
 			auto initmesh = smgr->getMesh(data->shipMesh.c_str());
 			mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
 			smgr->getMeshCache()->removeMesh(initmesh);
-			stateController->assets.setMeshAsset(data->name, mesh);
+			assets->setMeshAsset(data->name, mesh);
 		}
 		irr.node = smgr->addMeshSceneNode(mesh);
 		driver->makeNormalMapTexture(norm, 7.f);
@@ -252,13 +252,13 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 	else {
 		if (!mesh) {
 			mesh = smgr->getMesh(data->shipMesh.c_str());
-			stateController->assets.setMeshAsset(data->name, mesh);
+			assets->setMeshAsset(data->name, mesh);
 		}
 		irr.node = smgr->addMeshSceneNode(mesh);
 	}
 	if (!tex) {
 		tex = driver->getTexture(data->shipTexture.c_str());
-		stateController->assets.setTextureAsset(data->name, tex);
+		assets->setTextureAsset(data->name, tex);
 	}
 	irr.node->setMaterialTexture(0, tex);
 
@@ -286,8 +286,8 @@ bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bo
 
 	IrrlichtComponent irr;
 
-	IMesh* mesh = stateController->assets.getMeshAsset(data->name);
-	ITexture* tex = stateController->assets.getTextureAsset(data->name);
+	IMesh* mesh = assets->getMeshAsset(data->name);
+	ITexture* tex = assets->getTextureAsset(data->name);
 	ITexture* norm = nullptr;
 	if (data->weaponNorm != "") norm = driver->getTexture(data->weaponNorm.c_str());
 
@@ -295,12 +295,12 @@ bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bo
 		auto initmesh = smgr->getMesh(data->weaponMesh.c_str());
 		mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
 		smgr->getMeshCache()->removeMesh(initmesh);
-		stateController->assets.setMeshAsset(data->name, mesh);
+		assets->setMeshAsset(data->name, mesh);
 	}
 	irr.node = smgr->addMeshSceneNode(mesh);
 	if (!tex) {
 		tex = driver->getTexture(data->weaponTexture.c_str());
-		stateController->assets.setTextureAsset(data->name, tex);
+		assets->setTextureAsset(data->name, tex);
 	}
 	irr.node->setMaterialTexture(0, tex);
 
@@ -338,7 +338,7 @@ bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bo
 		*bolas = cmp;
 	}
 	wep.particle = driver->getTexture(data->weaponEffect.c_str());
-	stateController->assets.setTextureAsset(data->weaponEffect, wep.particle);
+	assets->setTextureAsset(data->weaponEffect, wep.particle);
 	weaponEntity.set<WeaponInfoComponent>(wep);
 	weaponEntity.set<IrrlichtComponent>(irr);
 	return true; 
@@ -388,15 +388,15 @@ bool loadObstacle(u32 id, flecs::entity entity)
 	IMesh* mesh = nullptr;
 
 	if (data->obstacleMesh != "") {
-		mesh = stateController->assets.getMeshAsset(data->name);
+		mesh = assets->getMeshAsset(data->name);
 		if (!mesh) {
 			auto initmesh = smgr->getMesh(data->obstacleMesh.c_str());
 			mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
 			smgr->getMeshCache()->removeMesh(initmesh);
-			stateController->assets.setMeshAsset(data->name, mesh);
+			assets->setMeshAsset(data->name, mesh);
 		}
 	}
-	ITexture* tex = stateController->assets.getTextureAsset(data->name);
+	ITexture* tex = assets->getTextureAsset(data->name);
 	ITexture* norm = nullptr;
 	if (data->obstacleNorm != "") {
 		norm = driver->getTexture(data->obstacleNorm.c_str());
@@ -404,7 +404,7 @@ bool loadObstacle(u32 id, flecs::entity entity)
 
 	if (!tex) {
 		tex = driver->getTexture(data->obstacleTexture.c_str());
-		stateController->assets.setTextureAsset(data->name, tex);
+		assets->setTextureAsset(data->name, tex);
 	}
 
 	if (obst.type == GAS_CLOUD) {

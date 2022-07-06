@@ -184,7 +184,7 @@ IParticleSystemSceneNode* createShipJet(ISceneNode* node, vector3df pos, vector3
 	paf->drop();
 	ps->setMaterialFlag(EMF_LIGHTING, false);
 	ps->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	ps->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultJetTexture"));
+	ps->setMaterialTexture(0, assets->getTextureAsset("defaultJetTexture"));
 	ps->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	return ps;

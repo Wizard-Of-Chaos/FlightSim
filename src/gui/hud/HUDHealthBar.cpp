@@ -7,15 +7,15 @@
 
 HUDResources::HUDResources(IGUIElement* root, flecs::entity id) : HUDElement(root)
 {
-	IGUIFont* fnt = stateController->assets.getFontAsset("HUDFont");
+	IGUIFont* fnt = assets->getFontAsset("HUDFont");
 	SColor overrideClr(255, 200, 200, 200);
 	type = HUD_ELEM_TYPE::HEALTH_BAR;
 	rect<s32> screenrect = root->getRelativePosition();
-	health = guienv->addImage(stateController->assets.getHUDAsset("healthbar"), position2di(0, screenrect.getHeight() - 64), root);
+	health = guienv->addImage(assets->getHUDAsset("healthbar"), position2di(0, screenrect.getHeight() - 64), root);
 	healthNum = guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 96), dimension2du(300,24)),false, true, root);
-	fuel = guienv->addImage(stateController->assets.getHUDAsset("fuelbar"), position2di(0, screenrect.getHeight() - 160), root);
+	fuel = guienv->addImage(assets->getHUDAsset("fuelbar"), position2di(0, screenrect.getHeight() - 160), root);
 	fuelNum = guienv->addStaticText(L"", rect<s32>(position2di(0, screenrect.getHeight() - 192), dimension2du(300, 24)), false, true, root);
-	shield = guienv->addImage(stateController->assets.getHUDAsset("velocitybar"), position2di(300, screenrect.getHeight() - 64), root);
+	shield = guienv->addImage(assets->getHUDAsset("velocitybar"), position2di(300, screenrect.getHeight() - 64), root);
 	shieldNum = guienv->addStaticText(L"", rect<s32>(position2di(300, screenrect.getHeight() - 96), dimension2du(300, 24)), false, true, root);
 
 	auto shipInfo = id.get<ShipComponent>();

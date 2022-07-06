@@ -87,6 +87,26 @@ IGUIFont* Assets::getFontAsset(std::string name)
 	return fontAssets[name];
 }
 
+bool Assets::setWeaponFireSound(u32 id, ISoundSource* sound)
+{
+	weaponFireSounds[id] = sound;
+	return true;
+}
+bool Assets::setWeaponImpactSound(u32 id, ISoundSource* sound)
+{
+	weaponImpactSounds[id] = sound;
+	return true;
+}
+
+ISoundSource* Assets::getWeaponFireSound(u32 id)
+{
+	return weaponFireSounds[id];
+}
+ISoundSource* Assets::getWeaponImpactSound(u32 id)
+{
+	return weaponImpactSounds[id];
+}
+
 void Assets::clearLoadedGameAssets() 
 {
 	for (auto [name, mesh] : meshAssets) {

@@ -26,7 +26,7 @@ void impulseBlasterImpact(flecs::entity projId, flecs::entity impacted)
 	auto proj = projId.get<ProjectileInfoComponent>();
 	auto irr = projId.get<IrrlichtComponent>();
 
-	gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("physicsBlastSound"), 1.f, 200.f);
+	gameController->registerSoundInstance(impacted, assets->getSoundAsset("physicsBlastSound"), 1.f, 200.f);
 	explode(irr->node->getAbsolutePosition(), 1.f, 1.f, 80.f, proj->damage, 500.f);
 }
 
@@ -51,7 +51,7 @@ void gravityBolasImpact(flecs::entity projId, flecs::entity impacted)
 	if (!bolasInfo->target1.is_alive()) {
 		bolasInfo->target1 = impacted;
 		std::cout << "Bolas target 1 locked\n";
-		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("bolasHitSound"), .5f, 100.f);
+		gameController->registerSoundInstance(impacted, assets->getSoundAsset("bolasHitSound"), .5f, 100.f);
 	}
 	else if (!bolasInfo->target2.is_alive()) {
 		if (bolasInfo->target1 == impacted) return;
@@ -67,7 +67,7 @@ void gravityBolasImpact(flecs::entity projId, flecs::entity impacted)
 		auto rbcA = bolasInfo->target1.get_mut<BulletRigidBodyComponent>();
 		auto rbcB = bolasInfo->target2.get_mut<BulletRigidBodyComponent>();
 
-		gameController->registerSoundInstance(impacted, stateController->assets.getSoundAsset("bolasLatchSound"), 1.f, 100.f);
+		gameController->registerSoundInstance(impacted, assets->getSoundAsset("bolasLatchSound"), 1.f, 100.f);
 
 		btTransform tr;
 		btVector3 ori(0, 0, 0);

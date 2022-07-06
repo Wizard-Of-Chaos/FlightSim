@@ -66,7 +66,6 @@ void destroyObject(flecs::entity id)
 			destroyObject(ship->weapons[i]);
 		}
 	}
-
 	if (id.has<IrrlichtComponent>()) {
 		auto irr = id.get_mut<IrrlichtComponent>();
 		irr->node->removeAll();
@@ -184,7 +183,7 @@ flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f
 	paf->drop();
 	exp.explosion->setMaterialFlag(EMF_LIGHTING, false);
 	exp.explosion->setMaterialFlag(EMF_ZWRITE_ENABLE, false);
-	exp.explosion->setMaterialTexture(0, stateController->assets.getTextureAsset("defaultExplosion"));
+	exp.explosion->setMaterialTexture(0, assets->getTextureAsset("defaultExplosion"));
 	exp.explosion->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
 	exp.light = smgr->addLightSceneNode(0, position, SColorf(1.f, .9f, .1f));

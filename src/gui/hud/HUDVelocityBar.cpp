@@ -9,7 +9,7 @@ HUDVelocityBar::HUDVelocityBar(IGUIElement* root) : HUDElement(root)
 	rect<s32> screen = root->getRelativePosition();
 
 	type = HUD_ELEM_TYPE::VELOCITY_BAR;
-	velocity = guienv->addImage(stateController->assets.getHUDAsset("velocitybar"), position2di(screen.getWidth() - 192, screen.getHeight() - 64), root);
+	velocity = guienv->addImage(assets->getHUDAsset("velocitybar"), position2di(screen.getWidth() - 192, screen.getHeight() - 64), root);
 	position = guienv->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - (screen.getWidth()/2)-150, screen.getHeight() - 32), dimension2du(280, 32)), false, true, root);
 	velocityNum = guienv->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 96), dimension2du(192, 32)), false, true, root);
 	rotationSpeed = guienv->addStaticText(L"", rect<s32>(position2di(screen.getWidth() - 190, screen.getHeight() - 128), dimension2du(192, 32)), false, true, root);
@@ -18,7 +18,7 @@ HUDVelocityBar::HUDVelocityBar(IGUIElement* root) : HUDElement(root)
 	velocity->setVisible(true);
 	velocityNum->setVisible(true);
 	velocityNum->setOverrideColor(SColor(255, 200, 200, 200));
-	IGUIFont* fnt = stateController->assets.getFontAsset("HUDFont");
+	IGUIFont* fnt = assets->getFontAsset("HUDFont");
 	velocityNum->setOverrideFont(fnt);
 	position->setVisible(true);
 	position->setOverrideColor(SColor(255, 200, 200, 200));

@@ -12,16 +12,16 @@ HUDContact::HUDContact(IGUIElement* root, flecs::entity contactId, flecs::entity
 	auto ctctFac = contactId.get<FactionComponent>();
 	auto playerFac = playerId.get<FactionComponent>();
 	if (playerFac->isHostile(ctctFac)) {
-		offscreenMarker = guienv->addImage(stateController->assets.getHUDAsset("hostileMarker"), position2di(0, 0), root);
-		contactView = guienv->addImage(stateController->assets.getHUDAsset("hostileContact"), position2di(0, 0), root);
+		offscreenMarker = guienv->addImage(assets->getHUDAsset("hostileMarker"), position2di(0, 0), root);
+		contactView = guienv->addImage(assets->getHUDAsset("hostileContact"), position2di(0, 0), root);
 	}
 	else if(playerFac->isFriendly(ctctFac)) {
-		offscreenMarker = guienv->addImage(stateController->assets.getHUDAsset("friendlyMarker"), position2di(0, 0), root);
-		contactView = guienv->addImage(stateController->assets.getHUDAsset("friendlyContact"), position2di(0, 0), root);
+		offscreenMarker = guienv->addImage(assets->getHUDAsset("friendlyMarker"), position2di(0, 0), root);
+		contactView = guienv->addImage(assets->getHUDAsset("friendlyContact"), position2di(0, 0), root);
 	}
 	else {
-		offscreenMarker = guienv->addImage(stateController->assets.getHUDAsset("neutralMarker"), position2di(0, 0), root);
-		contactView = guienv->addImage(stateController->assets.getHUDAsset("neutralContact"), position2di(0, 0), root);
+		offscreenMarker = guienv->addImage(assets->getHUDAsset("neutralMarker"), position2di(0, 0), root);
+		contactView = guienv->addImage(assets->getHUDAsset("neutralContact"), position2di(0, 0), root);
 	}
 }
 

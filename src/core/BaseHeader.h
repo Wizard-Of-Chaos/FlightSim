@@ -48,6 +48,7 @@ class GameController;
 class GuiController;
 class SceneManager;
 class BulletPhysicsWorld;
+class Assets;
 
 /*
 * These are global variables used from throughout the program to track what exactly is going on.
@@ -56,6 +57,8 @@ class BulletPhysicsWorld;
 extern GameStateController* stateController;
 extern GameController* gameController;
 extern GuiController* guiController;
+
+extern Assets* assets;
 
 extern IrrlichtDevice* device;
 extern IVideoDriver* driver;
