@@ -72,24 +72,3 @@ void sensorSystem(flecs::iter it, BulletRigidBodyComponent* rbcs, SensorComponen
 		}
 	}
 }
-
-/*
-void sensorSystem(f32 dt)
-{
-	for (EntityId id : SceneView<BulletRigidBodyComponent, SensorComponent, FactionComponent>(sceneManager->scene)) {
-		auto sens = sceneManager->scene.get<SensorComponent>(id);
-		auto fac = sceneManager->scene.get<FactionComponent>(id);
-		auto rbc = sceneManager->scene.get<BulletRigidBodyComponent>(id);
-		sens->timeSinceLastUpdate += dt;
-		if (sens->timeSinceLastUpdate >= sens->updateInterval) {
-			sens->contacts = getContacts(rbc, sens, fac);
-			sens->timeSinceLastUpdate = 0;
-		}
-		if (sens->targetContact != INVALID_ENTITY) {
-			sens->timeSelected += dt;
-		} else {
-			sens->timeSelected = 0;
-		}
-	}
-}
-*/

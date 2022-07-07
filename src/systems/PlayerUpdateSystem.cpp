@@ -41,41 +41,6 @@ void playerUpdateSystem(flecs::iter it, IrrlichtComponent* irrc, PlayerComponent
 		soundEngine->setListenerPosition(player->camera->getAbsolutePosition(), getNodeForward(player->camera), vec3df(0, 0, 0), getNodeUp(player->camera));
 	}
 }
-/*
-void playerUpdateSystem(Scene& scene, f32 frameDelta)
-{
-	for (auto entityId : SceneView<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, InputComponent, SensorComponent>(scene)) {
-		IrrlichtComponent* irrcomp = scene.get<IrrlichtComponent>(entityId);
-		PlayerComponent* player = scene.get<PlayerComponent>(entityId);
-		BulletRigidBodyComponent* rbc = scene.get<BulletRigidBodyComponent>(entityId);
-
-		SensorComponent* sensors = scene.get<SensorComponent>(entityId);
-
-		for (ContactInfo info : sensors->contacts) {
-			EntityId id = std::get<0>(info);
-			if (player->trackedContacts[id] == nullptr && scene.entityInUse(id)) {
-				HUDContact* ct = new HUDContact(player->rootHUD, id, entityId);
-				player->HUD.push_back(ct);
-				player->trackedContacts[id] = ct;
-			}
-		}
-		for (auto [id, hud] : player->trackedContacts) {
-			if (!scene.entityInUse(id)) {
-				if (hud) player->removeContact(hud);
-				continue;
-			}
-		}
-
-		//camera work
-		cameraUpdate(player, irrcomp->node, &rbc->rigidBody);
-
-		//HUD work
-		hudUpdate(player, entityId);
-
-		soundEngine->setListenerPosition(player->camera->getAbsolutePosition(), getNodeForward(player->camera), vec3df(0, 0, 0), getNodeUp(player->camera));
-	}
-}
-*/
 
 void cameraUpdate(PlayerComponent* player, ISceneNode* playerShip, btRigidBody* body)
 {

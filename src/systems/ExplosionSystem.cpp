@@ -70,30 +70,3 @@ void explosionSystem(flecs::iter it, ExplosionComponent* exc, IrrlichtComponent*
 		}
 	}
 }
-
-/*
-void explosionSystem(f32 dt)
-{
-	for (auto id : SceneView<ExplosionComponent>(sceneManager->scene))
-	{
-		auto exp = sceneManager->scene.get<ExplosionComponent>(id);
-		if (exp->lifetime == 0 && exp->force > 0) ExplodeAOE(exp);
-
-		exp->lifetime += dt;
-		auto em = exp->explosion->getEmitter();
-		f32 completion = (exp->duration - exp->lifetime) / exp->duration;
-		if (completion < 0) completion = 0;
-
-		if(exp->light) exp->light->setRadius(150.f * completion);
-
-		em->setMinParticlesPerSecond((u32)(200 * completion));
-		em->setMaxParticlesPerSecond((u32)(500 * completion));
-
-		if (exp->lifetime >= exp->duration + 3) {
-			exp->explosion->remove();
-			if(exp->light) exp->light->remove();
-			sceneManager->scene.destroyEntity(id);
-		}
-	}
-}
-*/
