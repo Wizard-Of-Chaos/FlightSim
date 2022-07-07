@@ -44,26 +44,29 @@ void ExplodeAOE(ExplosionComponent* exp)
 	exp->hasExploded = true;
 }
 
-void explosionSystem(flecs::iter it, ExplosionComponent* exc)
+void explosionSystem(flecs::iter it, ExplosionComponent* exc, IrrlichtComponent* irrc)
 {
 	for (auto i : it) {
 		ExplosionComponent* exp = &exc[i];
+		IrrlichtComponent* irr = &irrc[i];
 		if (!exp->hasExploded && exp->force > 0) ExplodeAOE(exp);
 		exp->lifetime += it.delta_time();
 		auto em = exp->explosion->getEmitter();
 
 		f32 completion = (exp->duration - exp->lifetime) / exp->duration;
+
 		if (completion < 0) completion = 0;
 
 		if (exp->light) exp->light->setRadius(150.f * completion);
-
+		vector3df scale = irr->node->getScale() * 1.04f;
+		irr->node->setScale(scale);
 		em->setMinParticlesPerSecond((u32)(200 * completion));
 		em->setMaxParticlesPerSecond((u32)(500 * completion));
 
 		if (exp->lifetime >= exp->duration + 3) {
 			exp->explosion->remove();
 			if (exp->light) exp->light->remove();
-			it.entity(i).destruct();
+			destroyObject(it.entity(i));
 		}
 	}
 }

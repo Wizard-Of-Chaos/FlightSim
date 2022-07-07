@@ -122,7 +122,7 @@ void GameController::registerSystems()
 	game_world->system<CarrierComponent, IrrlichtComponent, FactionComponent>().kind(flecs::OnUpdate).iter(carrierUpdateSystem);
 	game_world->system<BulletRigidBodyComponent, SensorComponent, FactionComponent>().kind(flecs::OnUpdate).iter(sensorSystem);
 	game_world->system<DamageTrackingComponent, HealthComponent>().no_staging().kind(flecs::OnUpdate).iter(damageSystem);
-	game_world->system<ExplosionComponent>().kind(flecs::OnUpdate).iter(explosionSystem);
+	game_world->system<ExplosionComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(explosionSystem);
 	game_world->system<BulletRigidBodyComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(irrlichtRigidBodyPositionSystem);
 	game_world->system<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, SensorComponent>().kind(flecs::OnUpdate).iter(playerUpdateSystem);
 	game_world->system<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(projectileSystem);

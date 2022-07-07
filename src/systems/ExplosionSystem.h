@@ -7,6 +7,6 @@
 /*
 * Handles explosions. Anything with an explosion component has its particle emissions decreased over the span of its lifetime.
 */
-void explosionSystem(flecs::iter it, ExplosionComponent* exc);
+void explosionSystem(flecs::iter it, ExplosionComponent* exc, IrrlichtComponent* irrc);
 
 #endif 

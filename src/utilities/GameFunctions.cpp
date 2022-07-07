@@ -197,7 +197,21 @@ flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f
 
 	IrrlichtComponent irr;
 	irr.name = "explosion!";
-	irr.node = exp.explosion;
+	irr.node = smgr->addSphereSceneNode(radius/20, 16, exp.explosion);
+	irr.node->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+	array<ITexture*> tex;
+	for (s32 i = 1; i < 11; ++i) {
+		stringc name = "effects/explosion/explode";
+		name += i;
+		name += ".png";
+		ITexture* t = driver->getTexture(name.c_str());
+		if (t)tex.push_back(t);
+	}
+	ISceneNodeAnimator* anim = smgr->createTextureAnimator(tex, 40, false);
+	irr.node->addAnimator(anim);
+	anim->drop();
+
 	id.set<ExplosionComponent>(exp);
 	id.set<IrrlichtComponent>(irr);
 	return id;

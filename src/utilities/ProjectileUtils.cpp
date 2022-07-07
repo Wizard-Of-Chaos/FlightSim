@@ -243,6 +243,11 @@ flecs::entity createProjectileImpactEffect(vector3df position, f32 duration)
 	explodeinfo.radius = 1.f;
 	explodeinfo.force = 0;
 
+	IrrlichtComponent irr;
+	irr.name = "gunimpact";
+	irr.node = explodeinfo.explosion;
+
+	id.set<IrrlichtComponent>(irr);
 	id.set<ExplosionComponent>(explodeinfo);
 	return id;
 }
