@@ -19,6 +19,7 @@ flecs::entity createShipFromId(u32 id, vector3df position, vector3df rotation)
 	}
 
 	initializeShipParticles(shipEntity);
+	gameController->registerDeathCallback(shipEntity, fighterDeathExplosionCallback);
 	return shipEntity;
 }
 
@@ -311,4 +312,15 @@ flecs::entity createPlayerShipFromInstance(vector3df pos, vector3df rot)
 	auto ship = id.get<ShipComponent>();
 
 	return id;
+}
+
+void fighterDeathExplosionCallback(flecs::entity id)
+{
+	auto irr = id.get<IrrlichtComponent>();
+	vector3df pos = irr->node->getAbsolutePosition();
+	vector3df scale = irr->node->getScale();
+	f32 avgscale = (scale.X + scale.Y + scale.Z);
+	f32 rad = irr->node->getBoundingBox().getExtent().getLength() * avgscale;
+	auto explosion = explode(pos, 3.f, avgscale, rad, 40.f, 300.f);
+	gameController->registerSoundInstance(explosion, assets->getSoundAsset("fighterDeathExplosionSound"), 1.f, 100.f);
 }

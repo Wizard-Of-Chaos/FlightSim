@@ -62,4 +62,6 @@ flecs::entity createAIShipFromInstance(ShipInstance& inst, vector3df pos, vector
 flecs::entity createFriendlyAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
 flecs::entity createHostileAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
 flecs::entity carrierSpawnShip(ShipInstance& inst, vector3df spawnPos, vector3df spawnRot, FactionComponent* carrFac);
+
+void fighterDeathExplosionCallback(flecs::entity id);
 #endif 

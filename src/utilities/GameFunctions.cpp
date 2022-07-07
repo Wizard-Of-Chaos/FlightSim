@@ -68,8 +68,10 @@ void destroyObject(flecs::entity id)
 	}
 	if (id.has<IrrlichtComponent>()) {
 		auto irr = id.get_mut<IrrlichtComponent>();
-		irr->node->removeAll();
-		irr->node->remove();
+		if (irr->node) {
+			irr->node->removeAll();
+			irr->node->remove();
+		}
 	}
 	if (id.has<BulletRigidBodyComponent>()) {
 		auto rbc = id.get_mut<BulletRigidBodyComponent>();
@@ -192,7 +194,12 @@ flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f
 	exp.damage = damage;
 	exp.radius = radius;
 	exp.hasExploded = false;
+
+	IrrlichtComponent irr;
+	irr.name = "explosion!";
+	irr.node = exp.explosion;
 	id.set<ExplosionComponent>(exp);
+	id.set<IrrlichtComponent>(irr);
 	return id;
 }
 

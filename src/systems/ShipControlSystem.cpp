@@ -128,6 +128,7 @@ void firePlayerWeapon(flecs::entity playerId, InputComponent* input, flecs::enti
 				if (c != cont) continue;
 				flecs::entity ent(game_world->get_world(), id);
 				auto targetIrr = ent.get<IrrlichtComponent>();
+				if (!targetIrr) break;
 				target = targetIrr->node->getPosition();
 				mouseOverHUD = true;
 				break;

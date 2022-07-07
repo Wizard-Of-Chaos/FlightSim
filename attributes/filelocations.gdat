@@ -41,6 +41,8 @@ laserSound=audio/laser_shoot.ogg
 physicsBlastSound=audio/impulsecannon.ogg
 gunSound=audio/pew.ogg
 impactSound=audio/impact_d.mp3
+carrierDeathExplosionSound=audio/carrier_death_explosion.ogg
+fighterDeathExplosionSound=audio/fighter_death_explosion.ogg
 
 bolasHitSound=audio/bolashit.mp3
 bolasLatchSound=audio/bolaslatch.mp3

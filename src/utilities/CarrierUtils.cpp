@@ -25,6 +25,7 @@ flecs::entity createCarrierFromId(u32 id, vector3df pos, vector3df rot)
 		ship->weapons[i] = INVALID_ENTITY;
 	}
 	initializeShipParticles(carrier);
+	gameController->registerDeathCallback(carrier, carrierDeathExplosionCallback);
 	return carrier;
 }
 
@@ -80,4 +81,15 @@ flecs::entity createAlienCarrier(u32 carrId, vector3df pos, vector3df rot)
 	initializeDefaultSensors(carrier);
 	initializeDefaultAI(carrier);
 	return carrier;
+}
+
+void carrierDeathExplosionCallback(flecs::entity id)
+{
+	auto irr = id.get<IrrlichtComponent>();
+	vector3df pos = irr->node->getAbsolutePosition();
+	vector3df scale = irr->node->getScale();
+	f32 avgscale = (scale.X + scale.Y + scale.Z);
+	f32 rad = irr->node->getBoundingBox().getExtent().getLength() * 3 * avgscale;
+	auto explosion = explode(pos, 3.f, avgscale, rad, 60.f, 600.f);
+	gameController->registerSoundInstance(explosion, assets->getSoundAsset("carrierDeathExplosionSound"), 1.f, 100.f);
 }

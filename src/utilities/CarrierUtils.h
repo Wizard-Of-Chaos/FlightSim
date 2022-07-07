@@ -15,4 +15,5 @@ flecs::entity createCarrierFromId(u32 id, vector3df pos, vector3df rot);
 flecs::entity createHumanCarrier(u32 carrId, vector3df pos, vector3df rot);
 flecs::entity createAlienCarrier(u32 carrId, vector3df pos, vector3df rot);
 
+void carrierDeathExplosionCallback(flecs::entity id);
 #endif
