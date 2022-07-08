@@ -31,23 +31,19 @@ flecs::entity createStaticObstacle(u32 id, vector3df position, vector3df rotatio
 
 flecs::entity createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
-	flecs::entity id = createDynamicObstacle(0, position, rotation, scale, mass);
-	auto rbc = id.get_mut<BulletRigidBodyComponent>();
-	u32 roll = std::rand() % 20;
-
-	if (roll < 15) {
-		rbc->rigidBody->setActivationState(1);
-		rbc->rigidBody->applyTorque(irrVecToBt(randomRotationVector()));
-	}
-	if (roll == 20) { //Critical hit -- the asteroid is moving!
-		rbc->rigidBody->applyCentralImpulse(irrVecToBt(randomVector()));
-	}
-	return id;
+	return createDynamicObstacle(0, position, rotation, scale, mass);
 }
 
 flecs::entity createDebris(vector3df position, vector3df rotation, vector3df scale, f32 mass)
 {
 	return createDynamicObstacle(2, position, rotation, scale, mass);
+}
+
+flecs::entity createExplosiveAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass)
+{
+	auto id = createDynamicObstacle(3, position, rotation, scale, mass);
+	gameController->registerDeathCallback(id, deathExplosion);
+	return id;
 }
 
 flecs::entity createGasCloud(vector3df position, vector3df scale)
@@ -67,7 +63,7 @@ flecs::entity createGasCloud(vector3df position, vector3df scale)
 	em->drop();
 
 	BulletGhostComponent ghost;
-	ghost.shape = new btSphereShape(scale.X / 4);
+	ghost.shape = new btSphereShape(scale.X);
 	ghost.ghost = new btGhostObject();
 	btTransform transform;
 	transform.setOrigin(irrVecToBt(position));
@@ -78,16 +74,17 @@ flecs::entity createGasCloud(vector3df position, vector3df scale)
 	setIdOnBtObject(ghost.ghost, cloud);
 
 	cloud.set<BulletGhostComponent>(ghost);
-	gameController->registerDeathCallback(cloud, gasDeathExplosion);
+	gameController->registerDeathCallback(cloud, deathExplosion);
 	return cloud;
 }
 
-void gasDeathExplosion(flecs::entity id)
+void deathExplosion(flecs::entity id)
 {
 	auto irr = id.get<IrrlichtComponent>();
 	vector3df pos = irr->node->getAbsolutePosition();
 	vector3df scale = irr->node->getScale();
 	f32 avgscale = (scale.X + scale.Y + scale.Z);
 	f32 rad = irr->node->getBoundingBox().getExtent().getLength() * avgscale;
-	explode(pos, 3.f, avgscale, rad, 80.f, 1200.f);
+	auto explosion = explode(pos, 3.f, avgscale, rad, 90.f, 1200.f);
+	gameController->registerSoundInstance(explosion, assets->getSoundAsset("physicsBlastSound"), 1.f, 200.f);
 }

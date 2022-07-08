@@ -1,0 +1,7 @@
+id=3
+type=explosiveasteroid
+name=Explosive Asteroid
+mesh=models/explosiveasteroid/Asteroid.obj
+texture=models/asteroid/Asteroid.jpg
+norm=
+health=20

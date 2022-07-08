@@ -10,7 +10,7 @@ enum OBSTACLE
 	GAS_CLOUD,
 	SPACE_STATION,
 	DEBRIS,
-	CARRIER
+	EXPLOSIVE_ASTEROID
 };
 
 const std::map<std::string, OBSTACLE> obstacleStrings = {
@@ -18,7 +18,7 @@ const std::map<std::string, OBSTACLE> obstacleStrings = {
 	{"gascloud", GAS_CLOUD},
 	{"spacestation", SPACE_STATION},
 	{"debris", DEBRIS},
-	{"carrier", CARRIER}
+	{"explosiveasteroid", EXPLOSIVE_ASTEROID}
 };
 
 /*

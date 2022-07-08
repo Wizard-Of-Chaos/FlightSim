@@ -58,8 +58,11 @@ void explosionSystem(flecs::iter it, ExplosionComponent* exc, IrrlichtComponent*
 		if (completion < 0) completion = 0;
 
 		if (exp->light) exp->light->setRadius(150.f * completion);
-		vector3df scale = irr->node->getScale() * 1.04f;
-		irr->node->setScale(scale);
+
+		if (irr->node) {
+			vector3df scale = irr->node->getScale() * 1.04f;
+			irr->node->setScale(scale);
+		}
 		em->setMinParticlesPerSecond((u32)(200 * completion));
 		em->setMaxParticlesPerSecond((u32)(500 * completion));
 

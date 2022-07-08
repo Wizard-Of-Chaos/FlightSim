@@ -199,6 +199,7 @@ flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f
 	irr.name = "explosion!";
 	irr.node = smgr->addSphereSceneNode(radius/20, 16, exp.explosion);
 	irr.node->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+	irr.node->setMaterialFlag(EMF_LIGHTING, false);
 
 	array<ITexture*> tex;
 	for (s32 i = 1; i < 11; ++i) {

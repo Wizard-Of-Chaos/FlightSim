@@ -153,7 +153,9 @@ void buildAsteroidField(Scenario& scenario)
 	for (u32 i = 0; i < scenario.obstaclePositions.size(); ++i) {
 		u32 scale = std::rand() % 100;
 		f32 mass = (f32)scale / 5.f;
-		flecs::entity rock = createAsteroid(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
+		u32 roll = std::rand() % 10;
+		if(roll==9) createExplosiveAsteroid(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
+		else createAsteroid(scenario.obstaclePositions[i], randomRotationVector(), vector3df(scale, scale, scale), mass);
 	}
 	std::cout << "Done.\n";
 }

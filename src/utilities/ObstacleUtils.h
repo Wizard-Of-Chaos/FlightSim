@@ -11,8 +11,9 @@ flecs::entity createStaticObstacle(u32 id, vector3df position, vector3df rotatio
 flecs::entity createGasCloud(vector3df position, vector3df scale);
 //Creates an asteroid at the given position. Includes health, irrlicht, and rigid body components. Returns the ID.
 flecs::entity createAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass);
+flecs::entity createExplosiveAsteroid(vector3df position, vector3df rotation, vector3df scale, f32 mass);
 flecs::entity createDebris(vector3df position, vector3df rotation, vector3df scale, f32 mass);
 
 //Callback for when a gas cloud blows up. Stand back.
-void gasDeathExplosion(flecs::entity id);
+void deathExplosion(flecs::entity id);
 #endif 

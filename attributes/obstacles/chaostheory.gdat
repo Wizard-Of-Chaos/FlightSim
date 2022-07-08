@@ -1,7 +1,0 @@
-id=3
-type=carrier
-name=Chaos Theory
-mesh=models/chaostheory/Carrier.obj
-texture=models/chaostheory/carriertex.png
-norm=models/chaostheory/carriernorm.png
-health=99999
