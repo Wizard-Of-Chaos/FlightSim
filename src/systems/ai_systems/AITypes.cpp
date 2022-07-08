@@ -1,4 +1,4 @@
-#include "DefaultAIBehaviors.h"
+#include "AITypes.h"
 #include "WeaponInfoComponent.h"
 #include "BulletRigidBodyComponent.h"
 #include "SensorComponent.h"
@@ -17,46 +17,28 @@ void setAIWeapon(flecs::entity wep, bool firing)
 
 }
 
-void defaultIdleBehavior(ShipComponent* ship, BulletRigidBodyComponent* rbc, f32 dt)
+void DefaultAI::stateCheck(AIComponent* aiComp, SensorComponent* sensors, HealthComponent* hp)
 {
-	game_world->defer_suspend();
-
-	btVector3 force = btVector3(0, 0, 0);
-	btVector3 torque = btVector3(0, 0, 0);
-
-	force += getForceToStopLinearVelocity(rbc->rigidBody, ship);
-	torque += getTorqueToStopAngularVelocity(rbc->rigidBody, ship);
-
-	//slows and stops the rigid body
-	rbc->rigidBody->applyTorqueImpulse(torque * dt);
-	rbc->rigidBody->applyCentralImpulse(force * dt);
-
-	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-		flecs::entity wep = ship->weapons[i];
-		setAIWeapon(wep, false);
+	if (sensors->closestHostileContact == INVALID_ENTITY) {
+		aiComp->state = AI_STATE_IDLE;
+		return;
 	}
-	game_world->defer_resume();
+	else if (hp->health <= (hp->maxHealth * aiComp->damageTolerance)) {
+		//there's a hostile, but I'm low on health!
+		aiComp->state = AI_STATE_FLEE; //aaaaieeeee!
+		return;
+	}
+	//there's a hostile and I can take him!
+	aiComp->state = AI_STATE_PURSUIT;
+	//whoop its ass!
 }
 
-void defaultFleeBehavior(IrrlichtComponent* irr, BulletRigidBodyComponent* rbc, ShipComponent* ship, flecs::entity fleeTarget, f32 dt)
+void DefaultAI::idle(ShipComponent* ship, BulletRigidBodyComponent* rbc)
 {
 	game_world->defer_suspend();
-	if (fleeTarget == INVALID_ENTITY) return;
-
-	if (!fleeTarget.has<IrrlichtComponent>()) return;
-	auto fleeIrr = fleeTarget.get<IrrlichtComponent>();
-
-	vector3df distance = fleeIrr->node->getPosition() - irr->node->getPosition();
-	distance.normalize();
-	vector3df targetVector = -distance; //runs away
-
-	btVector3 force = btVector3(0, 0, 0);
-	btVector3 torque = btVector3(0, 0, 0);
-
-	force += getForceForward(rbc->rigidBody, ship);
-
-	smoothTurnToDirection(rbc->rigidBody, ship, irrVecToBt(targetVector));
-	rbc->rigidBody->applyCentralImpulse(force * dt);
+	//sit down and think about what you've done
+	ship->moves[SHIP_STOP_ROTATION] = true;
+	ship->moves[SHIP_STOP_VELOCITY] = true;
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		setAIWeapon(ship->weapons[i], false);
@@ -64,15 +46,38 @@ void defaultFleeBehavior(IrrlichtComponent* irr, BulletRigidBodyComponent* rbc, 
 	game_world->defer_resume();
 }
 
-//TLDR is try and get behind the ship and match its velocity.
-void defaultPursuitBehavior(
-	SensorComponent* sensors, BulletRigidBodyComponent* rbc, ShipComponent* ship, IrrlichtComponent* irr, 
+void DefaultAI::flee(
+	ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, 
+	flecs::entity fleeTarget)
+{
+	game_world->defer_suspend();
+	if (fleeTarget == INVALID_ENTITY) return;
+	if (!fleeTarget.has<IrrlichtComponent>()) return;
+	auto fleeIrr = fleeTarget.get<IrrlichtComponent>();
+
+	vector3df distance = fleeIrr->node->getPosition() - irr->node->getPosition(); //vector between the two things
+	distance.normalize();
+	vector3df targetVector = -distance; //runs away in the opposite direction
+
+	//turn away and hit the gas as fast as possible
+	smoothTurnToDirection(rbc->rigidBody, ship, irrVecToBt(targetVector));
+	ship->moves[SHIP_THRUST_FORWARD] = true;
+	ship->safetyOverride = true;
+
+	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+		setAIWeapon(ship->weapons[i], false);
+	}
+	game_world->defer_resume();
+}
+
+void DefaultAI::pursue(
+	ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, SensorComponent* sensors,
 	flecs::entity pursuitTarget, f32 dt)
 {
 	game_world->defer_suspend();
 	if (pursuitTarget == INVALID_ENTITY || !pursuitTarget.is_alive()) {
 		sensors->targetContact = INVALID_ENTITY;
-		return; 
+		return;
 	}
 
 	sensors->targetContact = pursuitTarget;
@@ -83,7 +88,7 @@ void defaultPursuitBehavior(
 	btVector3 targetPos = targetRBC->rigidBody->getCenterOfMassPosition();
 	btVector3 pos = rbc->rigidBody->getCenterOfMassPosition();
 
-	btVector3 tailPos = targetPos + (getRigidBodyBackward(rbc->rigidBody) * 20.f);//targetPos();
+	btVector3 tailPos = targetPos + (getRigidBodyBackward(rbc->rigidBody) * 20.f);
 	btVector3 dist = tailPos - pos;
 
 	btVector3 facing = targetPos - pos;

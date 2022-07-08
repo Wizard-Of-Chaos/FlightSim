@@ -1,7 +1,7 @@
 #include "GameFunctions.h"
 #include "GameController.h"
 #include "GameStateController.h"
-
+#include "AITypes.h"
 #include "IrrlichtUtils.h"
 #include <iostream>
 
@@ -88,6 +88,10 @@ void destroyObject(flecs::entity id)
 	if (id.has<ObjectiveComponent>()) {
 		id.remove<ObjectiveComponent>();
 	}
+	if (id.has<AIComponent>()) {
+		auto ai = id.get_mut<AIComponent>();
+		delete ai->aiControls;
+	}
 	id.destruct();
 }
 
@@ -155,7 +159,18 @@ bool initializeDefaultHUD(flecs::entity playerId)
 void initializeAI(flecs::entity id, AI_TYPE type, f32 reactSpeed, f32 damageTolerance)
 {
 	AIComponent ai;
-	ai.AIType = type;
+	ai.type = type;
+	switch (type) {
+	case AI_TYPE_DEFAULT:
+		ai.aiControls = new DefaultAI;
+		break;
+	case AI_TYPE_ACE:
+		ai.aiControls = new AceAI;
+		break;
+	default:
+		ai.aiControls = new DefaultAI;
+		break;
+	}
 	ai.reactionSpeed = reactSpeed;
 	ai.damageTolerance = damageTolerance;
 	ai.timeSinceLastStateCheck = 10.f / (f32)(std::rand() % 100); //This is designed to make it so that the AI don't all check at the same time for framerate purposes
