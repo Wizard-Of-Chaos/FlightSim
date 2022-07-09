@@ -28,6 +28,10 @@ enum AI_TYPE //different ships would have different AI patterns
 const f32 AI_DEFAULT_REACTION_TIME = 1.f;
 //The AI will run when it is below 25% health, by default. Represented as a float.
 const f32 AI_DEFAULT_DAMAGE_TOLERANCE = .4f;
+//When issued a form-on-wing order the AI will try to get 25 units away.
+const f32 AI_DISTANCE_FROM_WING = 25.f;
+//If the AI gets further away than the max distance it will regroup with its buddies first.
+const f32 AI_MAX_DISTANCE_FROM_WING = 200.f;
 
 class AIType;
 
@@ -44,6 +48,8 @@ struct AIComponent
 	f32 timeSinceLastStateCheck; //this is going to be the time since the last state check
 
 	f32 damageTolerance; // %hp that the AI will run at
-	flecs::entity squadronLeader; //if the AI isn't an ace
+	f32 wingDistance = AI_DISTANCE_FROM_WING;
+	f32 maxWingDistance = AI_MAX_DISTANCE_FROM_WING;
+	flecs::entity wingCommander; //if the AI isn't an ace
 };
 #endif

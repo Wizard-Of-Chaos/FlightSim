@@ -48,6 +48,16 @@ flecs::entity createDefaultAIShip(vector3df position, vector3df rotation)
 
 	return id;
 }
+flecs::entity createAceAIShip(vector3df position, vector3df rotation)
+{
+	auto id = createDefaultAIShip(position, rotation);
+	auto irr = id.get_mut<IrrlichtComponent>();
+	irr->name = "Ace AI Ship";
+	initializeHealth(id, 130.f);
+	initializeShields(id, 125.f, 4.f, 12.f);
+	initializeAceAI(id);
+	return id;
+}
 
 bool initializeShipCollisionBody(flecs::entity entityId, u32 shipId, bool carrier)
 {
@@ -256,6 +266,7 @@ flecs::entity createShipFromInstance(ShipInstance& inst, vector3df pos, vector3d
 
 	return id;
 }
+
 flecs::entity createAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot)
 {
 	auto id = createShipFromInstance(inst, pos, rot);
@@ -291,8 +302,7 @@ flecs::entity carrierSpawnShip(ShipInstance& inst, vector3df spawnPos, vector3df
 {
 	auto id = createAIShipFromInstance(inst, spawnPos, spawnPos);
 	if (id == INVALID_ENTITY) return id;
-	auto fac = id.get_mut<FactionComponent>();
-	*fac = *carrFac;
+	id.set<FactionComponent>(*carrFac);
 	auto obj = id.get_mut<ObjectiveComponent>();
 	obj->type = OBJ_DESTROY;
 	return id;

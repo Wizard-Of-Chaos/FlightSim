@@ -18,6 +18,9 @@ flecs::entity createDefaultShip(vector3df position, vector3df rotation);
 //Creates a default AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, faction, and health components. Returns the ID.
 flecs::entity createDefaultAIShip(vector3df position, vector3df rotation);
 
+//Creates an ace AI ship. Includes AI, ship, bullet, irrlicht, weapon, sensors, faction, and health components. Returns the ID.
+flecs::entity createAceAIShip(vector3df position, vector3df rotation);
+
 //Adds on the ship's collision body (i.e., the rigid body component) to the entity.
 bool initializeShipCollisionBody(flecs::entity entityId, u32 shipId, bool carrier=false);
 

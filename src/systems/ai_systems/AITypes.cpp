@@ -17,6 +17,33 @@ void setAIWeapon(flecs::entity wep, bool firing)
 
 }
 
+void fireAtTarget(BulletRigidBodyComponent* rbc, const BulletRigidBodyComponent* targRBC, ShipComponent* ship)
+{
+	if (!targRBC || !rbc) return;
+	btVector3 facing = targRBC->rigidBody->getCenterOfMassPosition() - rbc->rigidBody->getCenterOfMassPosition();
+	facing = facing.normalize();
+	btVector3 forward = getRigidBodyForward(rbc->rigidBody);
+	btScalar angle = forward.angle(facing);
+	//if it's facing the ship, start shooting
+	if ((angle * RADTODEG) < 30.f) { //converted to degrees so my overworked meat brain can better comprehend it
+		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+			flecs::entity wep = ship->weapons[i];
+			if (!wep.is_alive()) continue;
+			if (!wep.has<WeaponInfoComponent>() || !wep.has<IrrlichtComponent>()) continue;
+			auto wepInfo = wep.get_mut<WeaponInfoComponent>();
+			auto irrComp = wep.get_mut<IrrlichtComponent>();
+			wepInfo->isFiring = true;
+			wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
+			wepInfo->firingDirection = btVecToIrr(facing); //todo: the ai doesn't lead its shots at all, fix it
+		}
+	}
+	else {
+		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
+			setAIWeapon(ship->weapons[i], false);
+		}
+	}
+}
+
 void DefaultAI::stateCheck(AIComponent* aiComp, SensorComponent* sensors, HealthComponent* hp)
 {
 	if (sensors->closestHostileContact == INVALID_ENTITY) {
@@ -31,6 +58,27 @@ void DefaultAI::stateCheck(AIComponent* aiComp, SensorComponent* sensors, Health
 	//there's a hostile and I can take him!
 	aiComp->state = AI_STATE_PURSUIT;
 	//whoop its ass!
+}
+
+const bool m_distCheck(AIComponent* aiComp, BulletRigidBodyComponent* rbc, f32 m_dist)
+{
+	if (aiComp->wingCommander == INVALID_ENTITY || !aiComp->wingCommander.is_alive()) return true;
+	auto cdrRBC = aiComp->wingCommander.get<BulletRigidBodyComponent>();
+	if (!cdrRBC) return true;
+
+	btVector3 dist = cdrRBC->rigidBody->getCenterOfMassPosition() - rbc->rigidBody->getCenterOfMassPosition();
+	if (dist.length() > m_dist) return false;
+
+	return true;
+}
+
+bool DefaultAI::distanceToWingCheck(AIComponent* aiComp, BulletRigidBodyComponent* rbc)
+{
+	return m_distCheck(aiComp, rbc, aiComp->wingDistance);
+}
+bool DefaultAI::combatDistanceToWingCheck(AIComponent* aiComp, BulletRigidBodyComponent* rbc)
+{
+	return m_distCheck(aiComp, rbc, aiComp->maxWingDistance);
 }
 
 void DefaultAI::idle(ShipComponent* ship, BulletRigidBodyComponent* rbc)
@@ -105,26 +153,27 @@ void DefaultAI::pursue(
 		ship->moves[SHIP_STOP_VELOCITY] = true;
 		smoothTurnToDirection(rbc->rigidBody, ship, facing);
 	}
-
-	btVector3 forward = getRigidBodyForward(rbc->rigidBody);
-	btScalar angle = forward.angle(facing);
-	//if it's facing the ship, start shooting
-	if ((angle * RADTODEG) < 30.f) { //converted to degrees so my overworked meat brain can better comprehend it
-		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-			flecs::entity wep = ship->weapons[i];
-			if (!wep.is_alive()) continue;
-			if (!wep.has<WeaponInfoComponent>() || !wep.has<IrrlichtComponent>()) continue;
-			auto wepInfo = wep.get_mut<WeaponInfoComponent>();
-			auto irrComp = wep.get_mut<IrrlichtComponent>();
-			wepInfo->isFiring = true;
-			wepInfo->spawnPosition = irrComp->node->getAbsolutePosition() + (getNodeForward(irrComp->node) * 1.f);
-			wepInfo->firingDirection = btVecToIrr(facing); //todo: the ai doesn't lead its shots at all, fix it
-		}
-	}
-	else {
-		for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
-			setAIWeapon(ship->weapons[i], false);
-		}
-	}
+	fireAtTarget(rbc, targetRBC, ship);
 	game_world->defer_resume();
+}
+
+void DefaultAI::pursueOnWing(
+	AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, SensorComponent* sensors,
+	flecs::entity pursuitTarget, f32 dt)
+{
+	if (combatDistanceToWingCheck(aiComp, rbc)) {
+		pursue(ship, rbc, irr, sensors, pursuitTarget, dt);
+		return;
+	}
+	goToPoint(rbc->rigidBody, ship, aiComp->wingCommander.get<BulletRigidBodyComponent>()->rigidBody->getCenterOfMassPosition(), dt);
+	fireAtTarget(rbc, pursuitTarget.get<BulletRigidBodyComponent>(), ship);
+}
+
+void DefaultAI::formOnWing(AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, f32 dt)
+{
+	if (distanceToWingCheck(aiComp, rbc)) {
+		idle(ship, rbc);
+		return;
+	}
+	goToPoint(rbc->rigidBody, ship, aiComp->wingCommander.get<BulletRigidBodyComponent>()->rigidBody->getCenterOfMassPosition(), dt);
 }

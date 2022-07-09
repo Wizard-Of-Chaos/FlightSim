@@ -182,6 +182,11 @@ void initializeDefaultAI(flecs::entity id)
 	initializeAI(id, AI_TYPE_DEFAULT, AI_DEFAULT_REACTION_TIME, AI_DEFAULT_DAMAGE_TOLERANCE);
 }
 
+void initializeAceAI(flecs::entity id)
+{
+	initializeAI(id, AI_TYPE_ACE, .5f, .05f);
+}
+
 flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f32 damage, f32 force)
 {
 	flecs::entity id = game_world->entity();
