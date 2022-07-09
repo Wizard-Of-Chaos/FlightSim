@@ -44,7 +44,7 @@ void fireAtTarget(BulletRigidBodyComponent* rbc, const BulletRigidBodyComponent*
 	}
 }
 
-void DefaultAI::stateCheck(AIComponent* aiComp, SensorComponent* sensors, HealthComponent* hp)
+void DefaultShipAI::stateCheck(AIComponent* aiComp, SensorComponent* sensors, HealthComponent* hp)
 {
 	if (sensors->closestHostileContact == INVALID_ENTITY) {
 		aiComp->state = AI_STATE_IDLE;
@@ -72,16 +72,16 @@ const bool m_distCheck(AIComponent* aiComp, BulletRigidBodyComponent* rbc, f32 m
 	return true;
 }
 
-bool DefaultAI::distanceToWingCheck(AIComponent* aiComp, BulletRigidBodyComponent* rbc)
+bool DefaultShipAI::distanceToWingCheck(AIComponent* aiComp, BulletRigidBodyComponent* rbc)
 {
 	return m_distCheck(aiComp, rbc, aiComp->wingDistance);
 }
-bool DefaultAI::combatDistanceToWingCheck(AIComponent* aiComp, BulletRigidBodyComponent* rbc)
+bool DefaultShipAI::combatDistanceToWingCheck(AIComponent* aiComp, BulletRigidBodyComponent* rbc)
 {
 	return m_distCheck(aiComp, rbc, aiComp->maxWingDistance);
 }
 
-void DefaultAI::idle(ShipComponent* ship, BulletRigidBodyComponent* rbc)
+void DefaultShipAI::idle(ShipComponent* ship, BulletRigidBodyComponent* rbc)
 {
 	game_world->defer_suspend();
 	//sit down and think about what you've done
@@ -94,7 +94,7 @@ void DefaultAI::idle(ShipComponent* ship, BulletRigidBodyComponent* rbc)
 	game_world->defer_resume();
 }
 
-void DefaultAI::flee(
+void DefaultShipAI::flee(
 	ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, 
 	flecs::entity fleeTarget)
 {
@@ -118,7 +118,7 @@ void DefaultAI::flee(
 	game_world->defer_resume();
 }
 
-void DefaultAI::pursue(
+void DefaultShipAI::pursue(
 	ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, SensorComponent* sensors,
 	flecs::entity pursuitTarget, f32 dt)
 {
@@ -157,7 +157,7 @@ void DefaultAI::pursue(
 	game_world->defer_resume();
 }
 
-void DefaultAI::pursueOnWing(
+void DefaultShipAI::pursueOnWing(
 	AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, SensorComponent* sensors,
 	flecs::entity pursuitTarget, f32 dt)
 {
@@ -169,7 +169,7 @@ void DefaultAI::pursueOnWing(
 	fireAtTarget(rbc, pursuitTarget.get<BulletRigidBodyComponent>(), ship);
 }
 
-void DefaultAI::formOnWing(AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, f32 dt)
+void DefaultShipAI::formOnWing(AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, f32 dt)
 {
 	if (distanceToWingCheck(aiComp, rbc)) {
 		idle(ship, rbc);

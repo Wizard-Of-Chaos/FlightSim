@@ -162,13 +162,13 @@ void initializeAI(flecs::entity id, AI_TYPE type, f32 reactSpeed, f32 damageTole
 	ai.type = type;
 	switch (type) {
 	case AI_TYPE_DEFAULT:
-		ai.aiControls = new DefaultAI;
+		ai.aiControls = new DefaultShipAI;
 		break;
 	case AI_TYPE_ACE:
 		ai.aiControls = new AceAI;
 		break;
 	default:
-		ai.aiControls = new DefaultAI;
+		ai.aiControls = new DefaultShipAI;
 		break;
 	}
 	ai.reactionSpeed = reactSpeed;

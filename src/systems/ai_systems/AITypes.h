@@ -23,7 +23,7 @@ public:
 	virtual void formOnWing(AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, f32 dt) = 0;
 };
 
-class DefaultAI : public AIType
+class DefaultShipAI : public AIType
 {
 public:
 	virtual void stateCheck(AIComponent* aiComp, SensorComponent* sensors, HealthComponent* hp);
@@ -36,7 +36,7 @@ public:
 	virtual void formOnWing(AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, f32 dt);
 };
 
-class AceAI : public DefaultAI
+class AceAI : public DefaultShipAI
 {
 public:
 private:
