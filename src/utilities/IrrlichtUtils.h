@@ -52,8 +52,11 @@ void setUIText(IGUIStaticText* text);
 void setMetalButton(IGUIButton* elem);
 //Sets the button to a holo-button, without a background if bg is false and with a background otherwise.
 void setHoloButton(IGUIButton* elem, bool bg = false);
+//Sets the button to a hybrid button, effectively a holo-button with a background.
 void setHybridButton(IGUIButton* elem, bool bg = false);
+//Sets the button to the repair button icon.
 void setRepairButton(IGUIButton* elem);
+//Sets the button to the reload button icon.
 void setReloadButton(IGUIButton* elem);
 /*
 * Smoothly moves the GUI element from one position to the next.

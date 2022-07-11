@@ -203,13 +203,14 @@ void setKillHostilesScenario(Scenario& scenario)
 {
 	std::cout << "Setting up hostiles... ";
 	flecs::entity cdr = createAceAIShip(scenario.enemyStartPos, vector3df(0, 180, 0));
+	ObjectiveComponent obj;
+	obj.type = OBJ_DESTROY;
+	cdr.set<ObjectiveComponent>(obj);
 	for (u32 i = 0; i < scenario.objectiveCount; ++i) {
 		vector3df pos = getPointInSphere(scenario.enemyStartPos, 25.f);
 		flecs::entity enemy = createDefaultAIShip(pos, vector3df(0, 180, 0)); //todo: create AI ship generator that pulls from loaded ships
 		auto ai = enemy.get_mut<AIComponent>();
 		ai->wingCommander = cdr;
-		ObjectiveComponent obj;
-		obj.type = OBJ_DESTROY;
 		enemy.set<ObjectiveComponent>(obj);
 	}
 	std::cout << "Done. \n";

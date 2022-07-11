@@ -58,13 +58,20 @@ IParticleSystemSceneNode* createShipJet(ISceneNode* node, vector3df pos, vector3
 //Adds the particle system to a given ship.
 void initializeShipParticles(flecs::entity id);
 
+//Builds a ship from the given ship instance with its health, weapons, ship component and all the rest. Returns the ID.
 flecs::entity createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
+//Creates a player ship from the current player instance.
 flecs::entity createPlayerShipFromInstance(vector3df pos, vector3df rot);
 
+//Creates an AI ship from the given ship instance at the position and rotation specified. Used by carriers.
 flecs::entity createAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
+//Creates an allied AI ship from the given instance.
 flecs::entity createFriendlyAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
+//Creates a hostile AI ship from the given instance.
 flecs::entity createHostileAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
+//Spawns a ship from a carrier and applies the same faction component that the carrier has.
 flecs::entity carrierSpawnShip(ShipInstance& inst, vector3df spawnPos, vector3df spawnRot, FactionComponent* carrFac);
 
+//The death callback used by fighters, a loud noise and a small bang.
 void fighterDeathExplosionCallback(flecs::entity id);
 #endif 

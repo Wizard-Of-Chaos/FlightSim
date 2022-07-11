@@ -62,7 +62,9 @@ ShipInstance newShipInstance();
 //Initializes a new campaign with default values.
 void initNewCampaign();
 
+//Creates a random ship instance.
 ShipInstance randomShipInstance();
+//Creats a random weapon component.
 WeaponInfoComponent randomWeapon();
 
 #endif

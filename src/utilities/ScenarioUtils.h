@@ -8,10 +8,12 @@
 
 //Generates a random scenario.
 Scenario randomScenario(bool scramble = false);
-
+//Generates a scramble scenario for if the player has been detected.
 Scenario scrambleScenario();
 
+//Culls the scenario's obstacle list of obstacles from the given position in a sphere within the given radius.
 void cullObstacleLocationsFromPosition(Scenario& scenario, vector3df pos, f32 rad);
+//Culls the scenario's obstacle list of obstacles from around the player and enemy positions.
 void cullStartPosObstacleLocations(Scenario& scenario);
 
 //Builds the given scenario.
@@ -33,7 +35,9 @@ void buildDebrisField(Scenario& scenario);
 
 //Sets up a kill all hostiles scenario and places the enemies.
 void setKillHostilesScenario(Scenario& scenario);
+//Sets up a scramble scenario and places the carrier.
 void setScrambleScenario(Scenario& scenario);
 
+//A switch statement checking whether or not the objective has been completed.
 bool isObjectiveCompleted(flecs::entity id);
 #endif 
