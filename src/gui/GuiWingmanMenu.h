@@ -5,6 +5,12 @@
 #include "GuiDialog.h"
 #include "Campaign.h"
 
+struct wingmanShipPair
+{
+	IGUIButton* wingman;
+	IGUIButton* ship;
+};
+
 class GuiWingmanMenu : public GuiDialog
 {
 	public:
@@ -13,6 +19,9 @@ class GuiWingmanMenu : public GuiDialog
 		bool backToMenu(const SEvent& event);
 	private:
 		IGUIButton* backButton;
+		wingmanShipPair wingButtons[3];
+		IGUIImage* menuDisplay;
+		IGUIStaticText* description;
 };
 
 #endif 
