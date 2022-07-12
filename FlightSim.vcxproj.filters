@@ -151,6 +151,9 @@
     <ClCompile Include="src\systems\ai_systems\AITypes.cpp">
       <Filter>Sources\Systems\AI_Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\GuiWingmanMenu.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -392,6 +395,9 @@
     </ClInclude>
     <ClInclude Include="src\systems\ai_systems\AITypes.h">
       <Filter>Headers\Systems\AI_Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GuiWingmanMenu.h">
+      <Filter>Headers\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

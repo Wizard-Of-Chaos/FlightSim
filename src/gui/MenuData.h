@@ -14,6 +14,7 @@
 #include "GuiCampaignMenu.h"
 #include "GuiCampaignLoadoutMenu.h"
 #include "GuiLootMenu.h"
+#include "GuiWingmanMenu.h"
 
 //Enum for the different types of dialog. Add to this enum when implementing a new GuiDialog.
 //This allows the GuiController to be able to set the active dialog accordingly.
@@ -26,5 +27,6 @@ enum MENU_TYPE {
 	GUI_CAMPAIGN_MENU = 6,
 	GUI_CAMPAIGN_LOADOUT_MENU = 7,
 	GUI_LOOT_MENU = 8,
+	GUI_WINGMAN_MENU = 9,
 };
 #endif

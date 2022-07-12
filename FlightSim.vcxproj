@@ -169,6 +169,7 @@
     <ClCompile Include="src\core\GuiController.cpp" />
     <ClCompile Include="src\core\GameStateController.cpp" />
     <ClCompile Include="src\gui\GuiSettingsMenu.cpp" />
+    <ClCompile Include="src\gui\GuiWingmanMenu.cpp" />
     <ClCompile Include="src\gui\hud\HUDActiveSelection.cpp" />
     <ClCompile Include="src\gui\hud\HUDContact.cpp" />
     <ClCompile Include="src\gui\hud\HUDHealthBar.cpp" />
@@ -229,6 +230,7 @@
     <ClInclude Include="src\gui\GuiLoadoutMenu.h" />
     <ClInclude Include="src\gui\GuiLootMenu.h" />
     <ClInclude Include="src\gui\GuiSettingsMenu.h" />
+    <ClInclude Include="src\gui\GuiWingmanMenu.h" />
     <ClInclude Include="src\gui\hud\HUDActiveSelection.h" />
     <ClInclude Include="src\gui\hud\HUDContact.h" />
     <ClInclude Include="src\gui\hud\HUDElement.h" />

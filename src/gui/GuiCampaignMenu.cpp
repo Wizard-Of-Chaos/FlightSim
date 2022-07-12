@@ -72,10 +72,13 @@ void GuiCampaignMenu::init()
 	setHoloButton(loadout.button);
 	loadout.toLoadoutMenu = guienv->addButton(rect<s32>(position2di(67, 70), dimension2du(260, 40)), loadout.img, -1, L"Set Loadout", L"Set your ship and loadout.");
 	setHoloButton(loadout.toLoadoutMenu);
+	loadout.wingmanButton = guienv->addButton(rect<s32>(position2di(67, 115), dimension2du(260, 40)), loadout.img, -1, L"Set Wingmen", L"Select your wingmen.");
+	setHoloButton(loadout.wingmanButton);
 
 	guiController->setCallback(loadout.button, std::bind(&GuiCampaignMenu::onLoadout, this, std::placeholders::_1));
 	guiController->setCallback(loadout.toLoadoutMenu, std::bind(&GuiCampaignMenu::onLoadoutMenuSelect, this, std::placeholders::_1));
 	guiController->setCallback(hud.advance, std::bind(&GuiCampaignMenu::onAdvance, this, std::placeholders::_1));
+	guiController->setCallback(loadout.wingmanButton, std::bind(&GuiCampaignMenu::onWingman, this, std::placeholders::_1));
 	guiController->setAnimationCallback(loadout.button, std::bind(&GuiCampaignMenu::moveLoadout, this, std::placeholders::_1));
 	guiController->setAnimationCallback(scenariohud.launch, std::bind(&GuiCampaignMenu::moveSectorInfo, this, std::placeholders::_1));
 
@@ -135,6 +138,13 @@ bool GuiCampaignMenu::onMenu(const SEvent& event)
 	guiController->setActiveDialog(GUI_MAIN_MENU);
 	stateController->inCampaign = false;
 	stateController->changeMusic(assets->getSoundAsset("menuMusic"));
+	return false;
+}
+
+bool GuiCampaignMenu::onWingman(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	guiController->setActiveDialog(GUI_WINGMAN_MENU);
 	return false;
 }
 
