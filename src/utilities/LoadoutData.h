@@ -8,6 +8,7 @@
 #include "KineticComponent.h"
 #include "CarrierComponent.h"
 #include "BolasComponent.h"
+#include "AIComponent.h"
 
 /*
 * Contains all data necessary to be able to properly load a ship in the game.
@@ -74,6 +75,17 @@ struct KineticData : public WeaponData
 struct BolasData : public WeaponData
 {
 	BolasInfoComponent bolasComponent;
+};
+
+struct WingmanData
+{
+	u32 id;
+	std::string name;
+	std::string description;
+	AIComponent ai;
+	u32 totalKills = 0;
+	u32 totalInjuries = 0;
+	bool injured = false;
 };
 
 /*

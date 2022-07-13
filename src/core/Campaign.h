@@ -18,9 +18,10 @@ const u32 NUM_SCENARIO_OPTIONS = 4;
 * 
 * Presently, only about half of the data is used, but we're working on it, dammit.
 */
+
 struct Campaign
 {
-	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(100), totalRepairCapacity(1000) {
+	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(10), totalRepairCapacity(100) {
 	}
 	u32 currentDifficulty;
 	u32 currentEncounter;
@@ -32,6 +33,7 @@ struct Campaign
 	bool moved = false;
 
 	ShipInstance playerShip;
+	std::vector<WingmanData> wingmen;
 	std::vector<ShipInstance> availableShips;
 	std::vector<WeaponInfoComponent> availableWeapons;
 	std::vector<WeaponInfoComponent> availablePhysWeapons;

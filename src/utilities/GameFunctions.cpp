@@ -172,14 +172,14 @@ void initializeAI(flecs::entity id, AI_TYPE type, f32 reactSpeed, f32 damageTole
 		break;
 	}
 	ai.reactionSpeed = reactSpeed;
-	ai.damageTolerance = damageTolerance;
+	ai.cowardice = damageTolerance;
 	ai.timeSinceLastStateCheck = 10.f / (f32)(std::rand() % 100); //This is designed to make it so that the AI don't all check at the same time for framerate purposes
 	id.set<AIComponent>(ai);
 }
 
 void initializeDefaultAI(flecs::entity id)
 {
-	initializeAI(id, AI_TYPE_DEFAULT, AI_DEFAULT_REACTION_TIME, AI_DEFAULT_DAMAGE_TOLERANCE);
+	initializeAI(id, AI_TYPE_DEFAULT, AI_DEFAULT_REACTION_TIME, AI_DEFAULT_COWARDICE);
 }
 
 void initializeAceAI(flecs::entity id)
@@ -294,13 +294,13 @@ ShipInstance newShipInstance()
 
 void initNewCampaign()
 {
-	stateController->campaign = Campaign();
+	Campaign camp;
 
 	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {
-		stateController->campaign.possibleScenarios[i] = randomScenario();
+		camp.possibleScenarios[i] = randomScenario();
 	}
-	stateController->campaign.currentScenario = randomScenario();
-	stateController->campaign.currentScenario.detectionChance = 0;
+	camp.currentScenario = randomScenario();
+	camp.currentScenario.detectionChance = 0;
 
 	ShipInstance defaultShip = newShipInstance();
 
@@ -309,11 +309,21 @@ void initNewCampaign()
 	defaultShip.weps[1] = stateController->weaponData[3]->weaponComponent;
 	defaultShip.physWep = stateController->physWeaponData[1]->weaponComponent;
 
-	stateController->campaign.playerShip = defaultShip;
+	camp.playerShip = defaultShip;
 
-	stateController->campaign.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
-	stateController->campaign.availablePhysWeapons.push_back(stateController->physWeaponData[0]->weaponComponent);
-	stateController->campaign.availablePhysWeapons.push_back(stateController->physWeaponData[2]->weaponComponent);
+	camp.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
+	camp.availablePhysWeapons.push_back(stateController->physWeaponData[0]->weaponComponent);
+	camp.availablePhysWeapons.push_back(stateController->physWeaponData[2]->weaponComponent);
+
+	std::cout << "Loading wingmen... \n";
+	std::string wingmanPath = "attributes/wingmen/";
+	for (const auto& file : std::filesystem::directory_iterator(wingmanPath)) {
+		WingmanData data;
+		if(!loadWingman(file.path().string(), data)) continue;
+		camp.wingmen.push_back(data);
+	}
+	std::cout << "Done loading wingmen.\n";
+	stateController->campaign = camp;
 }
 
 ShipInstance randomShipInstance()

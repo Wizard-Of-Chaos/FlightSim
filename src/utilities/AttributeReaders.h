@@ -41,5 +41,5 @@ bool saveHull(std::string path, btConvexHullShape& shape);
 //Loads a convex hull from file onto the "shape" hull. Returns true if successful.
 bool loadHull(std::string path, btConvexHullShape& shape);
 
-
+bool loadWingman(std::string path, WingmanData& data);
 #endif 

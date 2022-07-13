@@ -490,3 +490,27 @@ bool loadHull(std::string path, btConvexHullShape& shape)
 	return true;
 	
 }
+
+bool loadWingman(std::string path, WingmanData& data)
+{
+	std::cout << "Reading in wingman data from " << path << "... ";
+	gvReader in;
+	in.read(path);
+	if (in.lines.empty()) {
+		std::cout << "Could not read " << path << "!\n";
+		return -1;
+	}
+	in.readLinesToValues();
+	data.id = in.getInt("id");
+	data.description = in.getString("description");
+	data.name = in.getString("name");
+
+	data.ai.aggressiveness = in.getFloat("aggressiveness");
+	data.ai.type = aiTypeStrings.at(in.getString("type"));
+	data.ai.aim = in.getFloat("aim");
+	data.ai.cowardice = in.getFloat("cowardice");
+	data.ai.reactionSpeed = in.getFloat("reactionSpeed");
+
+	std::cout << "Done.\n";
+	return true;
+}

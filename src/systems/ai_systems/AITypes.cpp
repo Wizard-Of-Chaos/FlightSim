@@ -50,7 +50,7 @@ void DefaultShipAI::stateCheck(AIComponent* aiComp, SensorComponent* sensors, He
 		aiComp->state = AI_STATE_IDLE;
 		return;
 	}
-	else if (hp->health <= (hp->maxHealth * aiComp->damageTolerance)) {
+	else if (hp->health <= (hp->maxHealth * aiComp->cowardice)) {
 		//there's a hostile, but I'm low on health!
 		aiComp->state = AI_STATE_FLEE; //aaaaieeeee!
 		return;

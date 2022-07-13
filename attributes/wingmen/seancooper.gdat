@@ -1,0 +1,8 @@
+name=Sean Cooper
+description=Sean Cooper repeatedly distinguished himself in many up-close-and-personal sorties with the alien threat, and regards any weapon that doesn't let you see the whites of their eyes as unworthy.
+id=0
+type=ace
+aggressiveness=1.7
+reactionSpeed=1.0
+cowardice=.15
+aim=.4
