@@ -20,7 +20,7 @@ class GuiLootMenu : public GuiDialog
 		IGUIStaticText* loot;
 		IGUIImage* screen;
 		IGUIButton* returnToCampaign;
-		std::vector<ShipInstance> ships;
+		std::vector<ShipInstance*> ships;
 		std::vector<WeaponInfoComponent> weps;
 };
 

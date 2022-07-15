@@ -79,13 +79,15 @@ struct BolasData : public WeaponData
 
 struct WingmanData
 {
-	u32 id;
+	u32 id; //0 is the player
 	std::string name;
 	std::string description;
 	AIComponent ai;
+	ShipInstance* assignedShip = nullptr;
 	u32 totalKills = 0;
 	u32 totalInjuries = 0;
 	bool injured = false;
+	bool assigned = false;
 };
 
 /*

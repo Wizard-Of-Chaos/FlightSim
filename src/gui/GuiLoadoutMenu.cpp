@@ -82,7 +82,7 @@ void GuiLoadoutMenu::show()
 
 	if (stateController->inCampaign) {
 		Campaign& camp = stateController->campaign;
-		ShipInstance& ship = camp.playerShip;
+		ShipInstance& ship = *camp.player->assignedShip;
 
 		shipButtons.name->setText(wstr(stateController->shipData[ship.ship.shipDataId]->name).c_str());
 		shipDescription->setText(wstr(stateController->shipData[ship.ship.shipDataId]->description).c_str());

@@ -253,15 +253,15 @@ ShipInstance getEndScenarioData()
 		}
 
 		auto wep = ship->weapons[i].get_mut<WeaponInfoComponent>();
-		if (!wep->usesAmmunition) continue;
-
-		if (wep->clip < wep->maxClip) { //if the clip is partially spent just reload the damn thing
-			wep->clip = wep->maxClip;
-			if (wep->ammunition >= wep->maxClip) {
-				wep->ammunition -= wep->maxClip;
-			}
-			else {
-				wep->ammunition = 0; 
+		if (wep->usesAmmunition) {
+			if (wep->clip < wep->maxClip) { //if the clip is partially spent just reload the damn thing
+				wep->clip = wep->maxClip;
+				if (wep->ammunition >= wep->maxClip) {
+					wep->ammunition -= wep->maxClip;
+				}
+				else {
+					wep->ammunition = 0;
+				}
 			}
 		}
 		inst.weps[i] = *wep;
@@ -277,17 +277,17 @@ ShipInstance getEndScenarioData()
 	return inst;
 }
 
-ShipInstance newShipInstance()
+ShipInstance* newShipInstance()
 {
-	ShipInstance ship;
-	ship.ship = stateController->shipData[0]->shipComponent;
-	ship.hp.health = 100.f;
-	ship.hp.maxHealth = 100.f;
+	ShipInstance* ship = new ShipInstance;
+	ship->ship = stateController->shipData[0]->shipComponent;
+	ship->hp.health = 100.f;
+	ship->hp.maxHealth = 100.f;
 
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
-		ship.weps[i] = stateController->weaponData[0]->weaponComponent;
+		ship->weps[i] = stateController->weaponData[0]->weaponComponent;
 	}
-	ship.physWep = stateController->physWeaponData[0]->weaponComponent;
+	ship->physWep = stateController->physWeaponData[0]->weaponComponent;
 
 	return ship;
 }
@@ -302,14 +302,13 @@ void initNewCampaign()
 	camp.currentScenario = randomScenario();
 	camp.currentScenario.detectionChance = 0;
 
-	ShipInstance defaultShip = newShipInstance();
+	ShipInstance* defaultShip = newShipInstance();
 
-	defaultShip.ship = stateController->shipData[0]->shipComponent;
-	defaultShip.weps[0] = stateController->weaponData[3]->weaponComponent;
-	defaultShip.weps[1] = stateController->weaponData[3]->weaponComponent;
-	defaultShip.physWep = stateController->physWeaponData[1]->weaponComponent;
-
-	camp.playerShip = defaultShip;
+	defaultShip->ship = stateController->shipData[0]->shipComponent;
+	defaultShip->weps[0] = stateController->weaponData[3]->weaponComponent;
+	defaultShip->weps[1] = stateController->weaponData[3]->weaponComponent;
+	defaultShip->physWep = stateController->physWeaponData[1]->weaponComponent;
+	camp.ships.push_back(defaultShip);
 
 	camp.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
 	camp.availablePhysWeapons.push_back(stateController->physWeaponData[0]->weaponComponent);
@@ -318,21 +317,28 @@ void initNewCampaign()
 	std::cout << "Loading wingmen... \n";
 	std::string wingmanPath = "attributes/wingmen/";
 	for (const auto& file : std::filesystem::directory_iterator(wingmanPath)) {
-		WingmanData data;
-		if(!loadWingman(file.path().string(), data)) continue;
+		WingmanData* data = new WingmanData;
+		if(!loadWingman(file.path().string(), *data)) continue;
 		camp.wingmen.push_back(data);
+		if (data->id == 0) {
+			camp.assignedWingmen.push_back(data);
+			defaultShip->inUseBy = data;
+			data->assignedShip = defaultShip;
+			data->assigned = true;
+			camp.player = data;
+		}
 	}
 	std::cout << "Done loading wingmen.\n";
 	stateController->campaign = camp;
 }
 
-ShipInstance randomShipInstance()
+ShipInstance* randomShipInstance()
 {
-	ShipInstance inst = newShipInstance();
+	ShipInstance* inst = newShipInstance();
 	u32 id = std::rand() % stateController->shipData.size();
-	inst.ship = stateController->shipData[id]->shipComponent;
+	inst->ship = stateController->shipData[id]->shipComponent;
 
-	inst.hp.health = (f32)(std::rand() % (u32)(inst.hp.maxHealth));
+	inst->hp.health = (f32)(std::rand() % (u32)(inst->hp.maxHealth));
 
 	return inst;
 }

@@ -100,24 +100,28 @@ void GuiCampaignLoadoutMenu::show()
 	root->setVisible(true);
 
 	//initialize first loadout visible as player ship'
-	shipSelector.curPos = -1;
-	displayShip(stateController->campaign.playerShip);
+	shipSelector.curPos = 0;
+	displayShip(stateController->campaign.ships[0]);
 	displayCarrierInfo();
 }
 
-void GuiCampaignLoadoutMenu::displayShip(ShipInstance& inst)
+void GuiCampaignLoadoutMenu::displayShip(ShipInstance* inst)
 {
-	u32 shipId = inst.ship.shipDataId;
+	u32 shipId = inst->ship.shipDataId;
 	ShipData* data = stateController->shipData[shipId];
 	std::string name = data->name;
-	if (shipSelector.curPos == -1) {
+	if (inst == stateController->campaign.player->assignedShip) {
+		shipSelector.useShip->setVisible(false);
 		name += " - Player";
+	}
+	else {
+		shipSelector.useShip->setVisible(true);
 	}
 	shipSelector.name->setText(wstr(name).c_str());
 
-	for (u32 i = 0; i < inst.ship.hardpointCount; ++i) {
-		WeaponInfoComponent wep = stateController->weaponData[inst.weps[i].wepDataId]->weaponComponent;
-		std::string name = stateController->weaponData[inst.weps[i].wepDataId]->name;
+	for (u32 i = 0; i < inst->ship.hardpointCount; ++i) {
+		WeaponInfoComponent wep = stateController->weaponData[inst->weps[i].wepDataId]->weaponComponent;
+		std::string name = stateController->weaponData[inst->weps[i].wepDataId]->name;
 		hardpoints[i]->setText(wstr(name).c_str());
 		hardpoints[i]->setVisible(true);
 		if (wep.usesAmmunition) {
@@ -128,22 +132,15 @@ void GuiCampaignLoadoutMenu::displayShip(ShipInstance& inst)
 		}
 
 	}
-	for (u32 i = inst.ship.hardpointCount; i < MAX_HARDPOINTS; ++i) {
+	for (u32 i = inst->ship.hardpointCount; i < MAX_HARDPOINTS; ++i) {
 		hardpoints[i]->setVisible(false);
 		reloadHardpoints[i]->setVisible(false);
 	}
-	std::string phys = stateController->physWeaponData[inst.physWep.wepDataId]->name;
+	std::string phys = stateController->physWeaponData[inst->physWep.wepDataId]->name;
 	physWepHardpoint->setText(wstr(phys).c_str());
 
-	std::string desc = name + "\n" + data->description + "\n HP: " + fprecis(inst.hp.health, 5) + "/" + fprecis(inst.hp.maxHealth, 5);
+	std::string desc = name + "\n" + data->description + "\n HP: " + fprecis(inst->hp.health, 5) + "/" + fprecis(inst->hp.maxHealth, 5);
 	shipInfo->setText(wstr(desc).c_str());
-
-	if (shipSelector.curPos <= -1) {
-		shipSelector.useShip->setVisible(false);
-	}
-	else {
-		shipSelector.useShip->setVisible(true);
-	}
 }
 void GuiCampaignLoadoutMenu::displayCarrierInfo()
 {
@@ -155,14 +152,14 @@ void GuiCampaignLoadoutMenu::displayCarrierInfo()
 bool GuiCampaignLoadoutMenu::onShipChange(const SEvent& event, bool right)
 {
 	Campaign& camp = stateController->campaign;
-	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED || camp.availableShips.size() == 0) return true;
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED || camp.ships.size() == 0) return true;
 	if (right) {
 		++shipSelector.curPos;
-		if (shipSelector.curPos == camp.availableShips.size()) shipSelector.curPos = -1;
+		if (shipSelector.curPos == camp.ships.size()) shipSelector.curPos = 0;
 	}
 	else {
 		--shipSelector.curPos;
-		if (shipSelector.curPos < -1) shipSelector.curPos = camp.availableShips.size()-1;
+		if (shipSelector.curPos < 0) shipSelector.curPos = camp.ships.size()-1;
 	}
 
 	displayShip(getCurShip());
@@ -211,13 +208,15 @@ WepSelect GuiCampaignLoadoutMenu::buildWepSelect(WeaponInfoComponent& wep, posit
 	return sel;
 }
 
-ShipInstance& GuiCampaignLoadoutMenu::getCurShip()
+ShipInstance* GuiCampaignLoadoutMenu::getCurShip()
 {
+	/*
 	if (shipSelector.curPos <= -1) {
 		return stateController->campaign.playerShip;
 	}
-
 	return stateController->campaign.availableShips[shipSelector.curPos];
+	*/
+	return stateController->campaign.ships[shipSelector.curPos];
 }
 
 void GuiCampaignLoadoutMenu::displayWeaponList()
@@ -269,10 +268,10 @@ bool GuiCampaignLoadoutMenu::wepHover(const SEvent& event)
 	u32 hardpoint = (u32)event.GUIEvent.Caller->getID();
 	WeaponInfoComponent wep;
 	if (event.GUIEvent.EventType == EGET_ELEMENT_HOVERED) {
-		ShipInstance& inst = getCurShip();
-		wep = inst.weps[hardpoint];
+		ShipInstance* inst = getCurShip();
+		wep = inst->weps[hardpoint];
 		if (event.GUIEvent.Caller->getID() == PHYS_HARDPOINT) {
-			wep = inst.physWep;
+			wep = inst->physWep;
 		}
 		u32 wepId = wep.wepDataId;
 		WeaponData* data = stateController->weaponData[wepId];
@@ -316,17 +315,17 @@ bool GuiCampaignLoadoutMenu::onHardpointSelect(const SEvent& event)
 	return false;
 }
 
-bool GuiCampaignLoadoutMenu::wepSelect(const SEvent& event, ShipInstance& inst, std::vector<WeaponInfoComponent>& list)
+bool GuiCampaignLoadoutMenu::wepSelect(const SEvent& event, ShipInstance* inst, std::vector<WeaponInfoComponent>& list)
 {
 	u32 pos = (u32)event.GUIEvent.Caller->getID();
 	WeaponInfoComponent wep = list[pos];
 	if (wep.type != WEP_NONE) {
 		list.erase(list.begin() + pos);
 	}
-	if (inst.weps[currentHardpoint].type != WEP_NONE) {
-		list.push_back(inst.weps[currentHardpoint]);
+	if (inst->weps[currentHardpoint].type != WEP_NONE) {
+		list.push_back(inst->weps[currentHardpoint]);
 	}
-	inst.weps[currentHardpoint] = wep;
+	inst->weps[currentHardpoint] = wep;
 
 	std::string txt = stateController->weaponData[wep.wepDataId]->name;
 
@@ -341,17 +340,17 @@ bool GuiCampaignLoadoutMenu::wepSelect(const SEvent& event, ShipInstance& inst, 
 	return false;
 }
 
-bool GuiCampaignLoadoutMenu::physWepSelect(const SEvent& event, ShipInstance& inst, std::vector<WeaponInfoComponent>& list)
+bool GuiCampaignLoadoutMenu::physWepSelect(const SEvent& event, ShipInstance* inst, std::vector<WeaponInfoComponent>& list)
 {
 	u32 pos = (u32)event.GUIEvent.Caller->getID();
 	WeaponInfoComponent wep = list[pos];
 	if (wep.type != WEP_NONE) {
 		list.erase(list.begin() + pos);
 	}
-	if (inst.physWep.type != WEP_NONE) {
-		list.push_back(inst.physWep);
+	if (inst->physWep.type != WEP_NONE) {
+		list.push_back(inst->physWep);
 	}
-	inst.physWep = wep;
+	inst->physWep = wep;
 
 	std::string txt = stateController->physWeaponData[wep.wepDataId]->name;
 
@@ -377,6 +376,10 @@ bool GuiCampaignLoadoutMenu::onPhysWepSelect(const SEvent& event)
 bool GuiCampaignLoadoutMenu::onUseShip(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	stateController->campaign.player->assignedShip = getCurShip();
+	getCurShip()->inUseBy = stateController->campaign.player;
+	displayShip(getCurShip());
+	/*
 	ShipInstance inst = getCurShip();
 	ShipInstance player = stateController->campaign.playerShip;
 	ShipInstance& pos = getCurShip();
@@ -384,6 +387,7 @@ bool GuiCampaignLoadoutMenu::onUseShip(const SEvent& event)
 	pos = player;
 	shipSelector.curPos = -1;
 	displayShip(getCurShip());
+	*/
 	return false;
 }
 
@@ -398,7 +402,7 @@ bool GuiCampaignLoadoutMenu::onReload(const SEvent& event)
 		return false;
 	}
 	u32 id = (u32)event.GUIEvent.Caller->getID();
-	WeaponInfoComponent& wep = getCurShip().weps[id];
+	WeaponInfoComponent& wep = getCurShip()->weps[id];
 	u32 clipsToReload = (wep.maxAmmunition - wep.ammunition) / wep.maxClip;
 	if (clipsToReload == 0) {
 		guiController->setOkPopup("", "This weapon is already full on ammo.");
@@ -430,8 +434,8 @@ bool GuiCampaignLoadoutMenu::onRepair(const SEvent& event)
 		guiController->showOkPopup();
 		return false;
 	}
-	ShipInstance& ship = getCurShip();
-	f32 healthToRepair = ship.hp.maxHealth - ship.hp.health;
+	ShipInstance* ship = getCurShip();
+	f32 healthToRepair = ship->hp.maxHealth - ship->hp.health;
 	if (healthToRepair == 0) {
 		guiController->setOkPopup("", "This ship is already fully repaired.");
 		guiController->showOkPopup();
@@ -439,7 +443,7 @@ bool GuiCampaignLoadoutMenu::onRepair(const SEvent& event)
 	}
 	if (camp.totalRepairCapacity < healthToRepair) {
 		std::string txt = "You don't have the resources to repair this ship completely. A partial repair will have to be enough. \n \n Damage repaired: " + fprecis(camp.totalRepairCapacity, 5);
-		ship.hp.health += camp.totalRepairCapacity;
+		ship->hp.health += camp.totalRepairCapacity;
 		camp.totalRepairCapacity = 0;
 		guiController->setOkPopup("", txt);
 		guiController->showOkPopup();
@@ -447,7 +451,7 @@ bool GuiCampaignLoadoutMenu::onRepair(const SEvent& event)
 		return false;
 	}
 	camp.totalRepairCapacity -= healthToRepair;
-	ship.hp.health = ship.hp.maxHealth;
+	ship->hp.health = ship->hp.maxHealth;
 	displayShip(ship);
 	displayCarrierInfo();
 	return false;

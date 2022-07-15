@@ -310,7 +310,7 @@ flecs::entity carrierSpawnShip(ShipInstance& inst, vector3df spawnPos, vector3df
 
 flecs::entity createPlayerShipFromInstance(vector3df pos, vector3df rot)
 {
-	ShipInstance inst = stateController->campaign.playerShip;
+	ShipInstance inst = *stateController->campaign.player->assignedShip;
 	u32 shipId = inst.ship.shipDataId;
 
 	auto id = createShipFromInstance(inst, pos, rot);

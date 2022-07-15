@@ -1,0 +1,8 @@
+name=Player
+description=Oh, stop it, you.
+id=0
+type=ace
+aggressiveness=1.0
+reactionSpeed=1.0
+cowardice=.01
+aim=1.0

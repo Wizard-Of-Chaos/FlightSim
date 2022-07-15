@@ -55,10 +55,10 @@ void GuiLootMenu::show()
 	}
 	if (shipsRecovered > 0) {
 		txt += "\n \n Ships recovered:";
-		for (ShipInstance inst : ships) {
-			txt += "\n" + stateController->shipData[inst.ship.shipDataId]->name;
-			txt += " Health: " + std::to_string(inst.hp.health);
-			stateController->campaign.availableShips.push_back(inst);
+		for (ShipInstance* inst : ships) {
+			txt += "\n" + stateController->shipData[inst->ship.shipDataId]->name;
+			txt += " Health: " + fprecis(inst->hp.health, 5);
+			stateController->campaign.ships.push_back(inst);
 		}
 	}
 	loot->setText(wstr(txt).c_str());

@@ -23,6 +23,14 @@ struct Campaign
 {
 	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(10), totalRepairCapacity(100) {
 	}
+	~Campaign() {
+		for (ShipInstance* inst : ships) {
+			delete inst;
+		}
+		for (WingmanData* data : wingmen) {
+			delete data;
+		}
+	}
 	u32 currentDifficulty;
 	u32 currentEncounter;
 	Scenario possibleScenarios[NUM_SCENARIO_OPTIONS];
@@ -32,9 +40,10 @@ struct Campaign
 
 	bool moved = false;
 
-	ShipInstance playerShip;
-	std::vector<WingmanData> wingmen;
-	std::vector<ShipInstance> availableShips;
+	WingmanData* player;
+	std::vector<WingmanData*> wingmen;
+	std::vector<WingmanData*> assignedWingmen;
+	std::vector<ShipInstance*> ships;
 	std::vector<WeaponInfoComponent> availableWeapons;
 	std::vector<WeaponInfoComponent> availablePhysWeapons;
 };

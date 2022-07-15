@@ -175,7 +175,7 @@ void GameStateController::setState(GAME_STATE newState)
 
 void GameStateController::backToCampaign()
 {
-	campaign.playerShip = getEndScenarioData();
+	*campaign.player->assignedShip = getEndScenarioData();
 	++campaign.currentDifficulty;
 	campaign.moved = false;
 	for (u32 i = 0; i < NUM_SCENARIO_OPTIONS; ++i) {

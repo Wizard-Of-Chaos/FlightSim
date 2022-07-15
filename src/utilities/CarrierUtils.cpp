@@ -40,14 +40,15 @@ flecs::entity createHumanCarrier(u32 carrId, vector3df pos, vector3df rot)
 	initializeHealth(carrier, carr->health);
 	initializeCarrier(carrier, carr->carrierComponent.spawnRate, carr->carrierComponent.reserveShips, carr->carrierComponent.scale);
 
-	ShipInstance inst = newShipInstance();
-	for (u32 i = 0; i < inst.ship.hardpointCount; ++i) {
-		inst.weps[i] = stateController->weaponData[3]->weaponComponent;
+	ShipInstance* inst = newShipInstance();
+	for (u32 i = 0; i < inst->ship.hardpointCount; ++i) {
+		inst->weps[i] = stateController->weaponData[3]->weaponComponent;
 	}
 
 	auto carrcmp = carrier.get_mut<CarrierComponent>();
 	carrcmp->shipTypeCount = 1;
-	carrcmp->spawnShipTypes[0] = inst;
+	carrcmp->spawnShipTypes[0] = *inst;
+	delete inst;
 
 	initializePlayerFaction(carrier);
 	initializeDefaultSensors(carrier);
@@ -67,15 +68,16 @@ flecs::entity createAlienCarrier(u32 carrId, vector3df pos, vector3df rot)
 	initializeHealth(carrier, carr->health);
 	initializeCarrier(carrier, carr->carrierComponent.spawnRate, carr->carrierComponent.reserveShips, carr->carrierComponent.scale);
 
-	ShipInstance inst = newShipInstance();
-	inst.ship = stateController->shipData[1]->shipComponent;
-	for (u32 i = 0; i < inst.ship.hardpointCount; ++i) {
-		inst.weps[i] = stateController->weaponData[1]->weaponComponent;
+	ShipInstance* inst = newShipInstance();
+	inst->ship = stateController->shipData[1]->shipComponent;
+	for (u32 i = 0; i < inst->ship.hardpointCount; ++i) {
+		inst->weps[i] = stateController->weaponData[1]->weaponComponent;
 	}
 
 	auto carrcmp = carrier.get_mut<CarrierComponent>();
 	carrcmp->shipTypeCount = 1;
-	carrcmp->spawnShipTypes[0] = inst;
+	carrcmp->spawnShipTypes[0] = *inst;
+	delete inst;
 
 	initializeHostileFaction(carrier);
 	initializeDefaultSensors(carrier);

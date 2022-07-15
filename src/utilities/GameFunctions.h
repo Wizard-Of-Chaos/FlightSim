@@ -58,12 +58,12 @@ flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f
 //Gets the data from the player ship at the end of a scenario.
 ShipInstance getEndScenarioData();
 //Constructs a new ship instance.
-ShipInstance newShipInstance();
+ShipInstance* newShipInstance();
 //Initializes a new campaign with default values.
 void initNewCampaign();
 
 //Creates a random ship instance.
-ShipInstance randomShipInstance();
+ShipInstance* randomShipInstance();
 //Creats a random weapon component.
 WeaponInfoComponent randomWeapon();
 
