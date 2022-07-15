@@ -23,14 +23,7 @@ struct Campaign
 {
 	Campaign() : currentDifficulty(1), currentEncounter(0), totalAmmunition(10), totalRepairCapacity(100) {
 	}
-	~Campaign() {
-		for (ShipInstance* inst : ships) {
-			delete inst;
-		}
-		for (WingmanData* data : wingmen) {
-			delete data;
-		}
-	}
+	//currently this leaks some memory and doesn't properly clean up the wingmen / ships
 	u32 currentDifficulty;
 	u32 currentEncounter;
 	Scenario possibleScenarios[NUM_SCENARIO_OPTIONS];
@@ -42,7 +35,7 @@ struct Campaign
 
 	WingmanData* player;
 	std::vector<WingmanData*> wingmen;
-	std::vector<WingmanData*> assignedWingmen;
+	WingmanData* assignedWingmen[3];
 	std::vector<ShipInstance*> ships;
 	std::vector<WeaponInfoComponent> availableWeapons;
 	std::vector<WeaponInfoComponent> availablePhysWeapons;

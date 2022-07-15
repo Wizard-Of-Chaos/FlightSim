@@ -11,11 +11,15 @@ void GuiWingmanMenu::init()
 	menuDisplay->setImage(driver->getTexture("ui/freestandingmenu.png"));
 	scaleAlign(menuDisplay);
 	guiController->setCallback(backButton, std::bind(&GuiWingmanMenu::backToMenu, this, std::placeholders::_1));
+
 	for (u32 i = 0; i < 3; ++i) {
-		wingButtons[i].wingman = guienv->addButton(rect<s32>(position2di(80, 150 + i * 100), pairButtonSize), root, -1, L"None", L"Select a wingman.");
-		wingButtons[i].ship = guienv->addButton(rect<s32>(position2di(185, 150 + i * 100), pairButtonSize), root, -1, L"None", L"Select the ship for this wingman.");
+		wingButtons[i].wingman = guienv->addButton(rect<s32>(position2di(80, 150 + i * 100), pairButtonSize), root, (s32)i, L"None", L"Select a wingman.");
+		wingButtons[i].ship = guienv->addButton(rect<s32>(position2di(185, 150 + i * 100), pairButtonSize), root, (s32)i, L"None", L"Select the ship for this wingman.");
 		setHoloButton(wingButtons[i].wingman, true);
 		setHoloButton(wingButtons[i].ship, true);
+		guiController->setCallback(wingButtons[i].wingman, std::bind(&GuiWingmanMenu::onWingmanChange, this, std::placeholders::_1));
+		guiController->setCallback(wingButtons[i].ship, std::bind(&GuiWingmanMenu::onShipChange, this, std::placeholders::_1));
+
 	}
 
 	description = guienv->addStaticText(L"DESCRIPTION\n\n Description will go here", rect<s32>(position2di(610, 120), dimension2du(340, 320)), true, true, root);
@@ -27,5 +31,43 @@ bool GuiWingmanMenu::backToMenu(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
+	return false;
+}
+
+void GuiWingmanMenu::show()
+{
+	root->setRelativePosition(rect<s32>(position2di(0, 0), driver->getScreenSize()));
+	root->setVisible(true);
+};
+
+bool GuiWingmanMenu::onWingmanChange(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	return false;
+}
+bool GuiWingmanMenu::onWingmanSelect(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	return false;
+}
+bool GuiWingmanMenu::onWingmanHover(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_ELEMENT_HOVERED) return true;
+	return false;
+}
+
+bool GuiWingmanMenu::onShipChange(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	return false;
+}
+bool GuiWingmanMenu::onShipSelect(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	return false;
+}
+bool GuiWingmanMenu::onShipHover(const SEvent& event)
+{
+	if (event.GUIEvent.EventType != EGET_ELEMENT_HOVERED) return true;
 	return false;
 }

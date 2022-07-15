@@ -321,7 +321,7 @@ void initNewCampaign()
 		if(!loadWingman(file.path().string(), *data)) continue;
 		camp.wingmen.push_back(data);
 		if (data->id == 0) {
-			camp.assignedWingmen.push_back(data);
+			camp.wingmen.push_back(data);
 			defaultShip->inUseBy = data;
 			data->assignedShip = defaultShip;
 			data->assigned = true;

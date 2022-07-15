@@ -17,6 +17,14 @@ class GuiWingmanMenu : public GuiDialog
 		GuiWingmanMenu() : GuiDialog() {}
 		virtual void init();
 		bool backToMenu(const SEvent& event);
+		bool onWingmanChange(const SEvent& event);
+		bool onWingmanSelect(const SEvent& event);
+		bool onShipChange(const SEvent& event);
+		bool onShipSelect(const SEvent& event);
+		bool onWingmanHover(const SEvent& event);
+		bool onShipHover(const SEvent& event);
+
+		virtual void show();
 	private:
 		IGUIButton* backButton;
 		wingmanShipPair wingButtons[3];
