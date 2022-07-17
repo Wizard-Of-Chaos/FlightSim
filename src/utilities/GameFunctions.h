@@ -57,8 +57,8 @@ flecs::entity explode(vector3df position, f32 duration, f32 scale, f32 radius, f
 
 //Gets the data from the player ship at the end of a scenario.
 ShipInstance getEndScenarioData();
-//Constructs a new ship instance.
-ShipInstance* newShipInstance();
+//Constructs a new ship instance. If "templateShip" is set to true, the instance will not increment the ship counter (since ID doesn't matter for carriers).
+ShipInstance* newShipInstance(bool templateShip = false);
 //Initializes a new campaign with default values.
 void initNewCampaign();
 

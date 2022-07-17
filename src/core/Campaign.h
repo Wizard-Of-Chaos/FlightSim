@@ -36,9 +36,12 @@ struct Campaign
 	WingmanData* player;
 	std::vector<WingmanData*> wingmen;
 	WingmanData* assignedWingmen[3];
+	ShipInstance* assignedShips[3];
 	std::vector<ShipInstance*> ships;
 	std::vector<WeaponInfoComponent> availableWeapons;
 	std::vector<WeaponInfoComponent> availablePhysWeapons;
+
+	u32 shipCount = 0;
 };
 
 #endif

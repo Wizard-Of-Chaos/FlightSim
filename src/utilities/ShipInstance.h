@@ -15,6 +15,7 @@ struct WingmanData;
 */
 struct ShipInstance
 {
+	u32 id; //unique ID for this particular ship instance, assigned by the campaign
 	ShipComponent ship;
 	HealthComponent hp;
 	WeaponInfoComponent weps[MAX_HARDPOINTS]; //since weapon info components have their ids, we should be able to pull any necessary data back out when loading

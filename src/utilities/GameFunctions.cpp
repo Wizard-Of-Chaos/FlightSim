@@ -277,13 +277,20 @@ ShipInstance getEndScenarioData()
 	return inst;
 }
 
-ShipInstance* newShipInstance()
+ShipInstance* newShipInstance(bool templateShip)
 {
 	ShipInstance* ship = new ShipInstance;
 	ship->ship = stateController->shipData[0]->shipComponent;
 	ship->hp.health = 100.f;
 	ship->hp.maxHealth = 100.f;
-
+	
+	if (templateShip) {
+		++stateController->campaign.shipCount;
+		ship->id = stateController->campaign.shipCount;
+	}
+	else {
+		ship->id = 0;
+	}
 	for (u32 i = 0; i < MAX_HARDPOINTS; ++i) {
 		ship->weps[i] = stateController->weaponData[0]->weaponComponent;
 	}
@@ -327,6 +334,10 @@ void initNewCampaign()
 			data->assigned = true;
 			camp.player = data;
 		}
+	}
+	for (u32 i = 0; i < 3; ++i) {
+		camp.assignedWingmen[i] = nullptr;
+		camp.assignedShips[i] = nullptr;
 	}
 	std::cout << "Done loading wingmen.\n";
 	stateController->campaign = camp;

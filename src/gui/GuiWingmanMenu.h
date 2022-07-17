@@ -26,6 +26,7 @@ class GuiWingmanMenu : public GuiDialog
 
 		virtual void show();
 	private:
+		void displayWingStatus();
 		void displayWingmen();
 		void displayShips();
 		void clearDisplayedList();
