@@ -26,10 +26,17 @@ class GuiWingmanMenu : public GuiDialog
 
 		virtual void show();
 	private:
+		void displayWingmen();
+		void displayShips();
+		void clearDisplayedList();
+		s32 currentSlot;
+
 		IGUIButton* backButton;
 		wingmanShipPair wingButtons[3];
 		IGUIImage* menuDisplay;
 		IGUIStaticText* description;
+		
+		std::vector<IGUIButton*> buttonList;
 };
 
 #endif 

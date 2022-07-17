@@ -1,5 +1,6 @@
 #include "GuiWingmanMenu.h"
 #include "GuiController.h"
+#include "GameStateController.h"
 
 void GuiWingmanMenu::init()
 {
@@ -43,11 +44,14 @@ void GuiWingmanMenu::show()
 bool GuiWingmanMenu::onWingmanChange(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	currentSlot = event.GUIEvent.Caller->getID();
+	displayWingmen();
 	return false;
 }
 bool GuiWingmanMenu::onWingmanSelect(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	clearDisplayedList();
 	return false;
 }
 bool GuiWingmanMenu::onWingmanHover(const SEvent& event)
@@ -59,15 +63,53 @@ bool GuiWingmanMenu::onWingmanHover(const SEvent& event)
 bool GuiWingmanMenu::onShipChange(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	currentSlot = event.GUIEvent.Caller->getID();
+	displayShips();
 	return false;
 }
 bool GuiWingmanMenu::onShipSelect(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
+	clearDisplayedList();
 	return false;
 }
 bool GuiWingmanMenu::onShipHover(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_ELEMENT_HOVERED) return true;
 	return false;
+}
+
+void GuiWingmanMenu::displayWingmen()
+{
+	f32 screenRatioHoriz = 180.f / 960.f;
+	f32 screenRatioVert = 25.f / 540.f;
+	u32 width = (u32)(screenRatioHoriz * root->getAbsolutePosition().getWidth());
+	u32 height = (u32)(screenRatioVert * root->getAbsolutePosition().getHeight());
+	dimension2du buttonSize(width, height);
+	s32 num = 0;
+
+	u32 horizPos = (u32)(30.f / 960.f * root->getAbsolutePosition().getWidth());
+	u32 vertPos = (u32)(30.f / 540.f * root->getAbsolutePosition().getHeight());
+	for (WingmanData* man : stateController->campaign.wingmen) {
+		if (man->assigned) continue;
+		IGUIButton* newButton = guienv->addButton(rect<s32>(position2di(horizPos, vertPos + num * vertPos), buttonSize), menuDisplay, 
+			man->id, wstr(man->name).c_str(), L"Select this wingman.");
+		setHoloButton(newButton);
+		guiController->setCallback(newButton, std::bind(&GuiWingmanMenu::onWingmanSelect, this, std::placeholders::_1));
+		buttonList.push_back(newButton);
+	}
+}
+
+void GuiWingmanMenu::displayShips()
+{
+
+}
+
+void GuiWingmanMenu::clearDisplayedList()
+{
+	for (IGUIButton* button : buttonList) {
+		guiController->removeCallback(button);
+		button->remove();
+	}
+	buttonList.clear();
 }
