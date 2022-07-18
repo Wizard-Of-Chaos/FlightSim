@@ -62,6 +62,8 @@ ShipInstance* newShipInstance(bool templateShip = false);
 //Initializes a new campaign with default values.
 void initNewCampaign();
 
+//Creates a basic ship instance with weapons.
+ShipInstance* defaultShipInstance();
 //Creates a random ship instance.
 ShipInstance* randomShipInstance();
 //Creats a random weapon component.

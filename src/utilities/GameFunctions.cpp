@@ -299,6 +299,16 @@ ShipInstance* newShipInstance(bool templateShip)
 	return ship;
 }
 
+ShipInstance* defaultShipInstance()
+{
+	ShipInstance* defaultShip = newShipInstance();
+	defaultShip->ship = stateController->shipData[0]->shipComponent;
+	defaultShip->weps[0] = stateController->weaponData[3]->weaponComponent;
+	defaultShip->weps[1] = stateController->weaponData[3]->weaponComponent;
+	defaultShip->physWep = stateController->physWeaponData[1]->weaponComponent;
+	return defaultShip;
+}
+
 void initNewCampaign()
 {
 	Campaign camp;
@@ -308,14 +318,9 @@ void initNewCampaign()
 	}
 	camp.currentScenario = randomScenario();
 	camp.currentScenario.detectionChance = 0;
-
-	ShipInstance* defaultShip = newShipInstance();
-
-	defaultShip->ship = stateController->shipData[0]->shipComponent;
-	defaultShip->weps[0] = stateController->weaponData[3]->weaponComponent;
-	defaultShip->weps[1] = stateController->weaponData[3]->weaponComponent;
-	defaultShip->physWep = stateController->physWeaponData[1]->weaponComponent;
-	camp.ships.push_back(defaultShip);
+	auto playerShip = defaultShipInstance();
+	camp.ships.push_back(playerShip);
+	camp.ships.push_back(defaultShipInstance());
 
 	camp.availableWeapons.push_back(stateController->weaponData[0]->weaponComponent);
 	camp.availablePhysWeapons.push_back(stateController->physWeaponData[0]->weaponComponent);
@@ -329,8 +334,8 @@ void initNewCampaign()
 		camp.wingmen.push_back(data);
 		if (data->id == 0) {
 			camp.wingmen.push_back(data);
-			defaultShip->inUseBy = data;
-			data->assignedShip = defaultShip;
+			playerShip->inUseBy = data;
+			data->assignedShip = playerShip;
 			data->assigned = true;
 			camp.player = data;
 		}

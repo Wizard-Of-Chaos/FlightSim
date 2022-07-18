@@ -324,6 +324,25 @@ flecs::entity createPlayerShipFromInstance(vector3df pos, vector3df rot)
 	return id;
 }
 
+flecs::entity createWingmanFromInstance(u32 num, flecs::entity player, vector3df pos, vector3df rot)
+{
+	if (!stateController->campaign.assignedWingmen[num] || !stateController->campaign.assignedShips[num]) return INVALID_ENTITY;
+	auto wingData = stateController->campaign.assignedWingmen[num];
+	auto id = createShipFromInstance(*wingData->assignedShip, pos, rot);
+	if (id == INVALID_ENTITY) return id;
+	auto irr = id.get_mut<IrrlichtComponent>(id);
+	irr->name = wingData->name;
+	initializeDefaultShields(id);
+	initializePlayerFaction(id);
+	initializeDefaultSensors(id);
+	auto ai = wingData->ai;
+	ai.aiControls = new AceAI;
+	ai.wingCommander = player;
+	id.set<AIComponent>(ai);
+
+	return id;
+}
+
 void fighterDeathExplosionCallback(flecs::entity id)
 {
 	auto irr = id.get<IrrlichtComponent>();

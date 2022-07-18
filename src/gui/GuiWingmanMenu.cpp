@@ -32,6 +32,17 @@ bool GuiWingmanMenu::backToMenu(const SEvent& event)
 {
 	if (event.GUIEvent.EventType != EGET_BUTTON_CLICKED) return true;
 	//check to make sure all wingmen here have an assigned ship
+	for (u32 i = 0; i < 3; ++i) {
+		if (stateController->campaign.assignedWingmen[i] && !stateController->campaign.assignedShips[i]) {
+			guiController->setOkPopup(
+				"Missing Ship",
+				"One or more of your wingmen doesn't have a ship selected! You can't just hurl them into space!",
+				"Ugh, fine"
+			);
+			guiController->showOkPopup();
+			return false;
+		}
+	}
 	guiController->setActiveDialog(GUI_CAMPAIGN_MENU);
 	return false;
 }

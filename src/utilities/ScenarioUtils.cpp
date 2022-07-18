@@ -68,6 +68,15 @@ void buildScenario(Scenario& scenario)
 	n->setID(ID_IsNotSelectable);
 
 	flecs::entity player = createPlayerShipFromInstance(scenario.playerStartPos, vector3df(0, 0, 0));
+	vector3df wingpos = scenario.playerStartPos;
+	for (u32 i = 0; i < 3; ++i) {
+		if (!stateController->campaign.assignedWingmen[i] || !stateController->campaign.assignedShips[i]) continue;
+		wingpos.X += 15.f;
+		flecs::entity wingman = createWingmanFromInstance(i, player, wingpos, vector3df(0, 0, 0));
+		//auto ai = wingman.get_mut<AIComponent>();
+		//ai->wingCommander = player;
+	}
+
 	cullStartPosObstacleLocations(scenario);
 
 	setScenarioType(scenario);

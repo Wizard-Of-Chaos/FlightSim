@@ -5,6 +5,7 @@
 #include "FactionComponent.h"
 #include "LoadoutData.h"
 #include "AIComponent.h"
+#include "AITypes.h"
 #include "ShipParticleComponent.h"
 
 //Creates a ship using the data at the given id in the GameStateController.
@@ -62,6 +63,8 @@ void initializeShipParticles(flecs::entity id);
 flecs::entity createShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);
 //Creates a player ship from the current player instance.
 flecs::entity createPlayerShipFromInstance(vector3df pos, vector3df rot);
+//Creates the given wingman, slots 1-3.
+flecs::entity createWingmanFromInstance(u32 num, flecs::entity player, vector3df pos, vector3df rot);
 
 //Creates an AI ship from the given ship instance at the position and rotation specified. Used by carriers.
 flecs::entity createAIShipFromInstance(ShipInstance& inst, vector3df pos, vector3df rot);

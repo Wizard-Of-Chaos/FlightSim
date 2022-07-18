@@ -210,12 +210,6 @@ WepSelect GuiCampaignLoadoutMenu::buildWepSelect(WeaponInfoComponent& wep, posit
 
 ShipInstance* GuiCampaignLoadoutMenu::getCurShip()
 {
-	/*
-	if (shipSelector.curPos <= -1) {
-		return stateController->campaign.playerShip;
-	}
-	return stateController->campaign.availableShips[shipSelector.curPos];
-	*/
 	return stateController->campaign.ships[shipSelector.curPos];
 }
 
