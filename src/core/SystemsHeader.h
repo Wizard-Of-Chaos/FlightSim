@@ -16,4 +16,5 @@
 #include "ShipUpdateSystem.h"
 #include "SoundSystem.h"
 #include "WeaponFiringSystem.h"
+#include "ThrustSystem.h"
 #endif

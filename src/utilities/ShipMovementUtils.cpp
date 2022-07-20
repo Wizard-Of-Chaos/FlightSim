@@ -12,57 +12,57 @@ void QuaternionToEuler(const btQuaternion& TQuat, btVector3& TEuler) {
 	TEuler *= RADTODEG;
 }
 
-btVector3 getForceForward(btRigidBody* body, ShipComponent* ship)
+btVector3 getForceForward(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyForward(body) * ship->forwardThrust;
+	return getRigidBodyForward(body) * thrust->forward;
 }
-btVector3 getForceAfterburner(btRigidBody* body, ShipComponent* ship)
+btVector3 getForceBoost(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyForward(body) * ship->afterburnerThrust;
+	return getRigidBodyForward(body) * thrust->boost;
 }
-btVector3 getForceBackward(btRigidBody* body, ShipComponent* ship)
+btVector3 getForceBackward(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyBackward(body) * ship->brakeThrust;
+	return getRigidBodyBackward(body) * thrust->brake;
 }
-btVector3 getForceRight(btRigidBody* body, ShipComponent* ship)
+btVector3 getForceRight(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyRight(body) * ship->strafeThrust;
+	return getRigidBodyRight(body) * thrust->strafe;
 }
-btVector3 getForceLeft(btRigidBody* body, ShipComponent* ship)
+btVector3 getForceLeft(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyLeft(body) * ship->strafeThrust;
+	return getRigidBodyLeft(body) * thrust->strafe;
 }
-btVector3 getForceUp(btRigidBody* body, ShipComponent* ship)
+btVector3 getForceUp(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyUp(body) * ship->strafeThrust;
+	return getRigidBodyUp(body) * thrust->strafe;
 }
-btVector3 getForceDown(btRigidBody* body, ShipComponent* ship)
+btVector3 getForceDown(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyDown(body) * ship->strafeThrust;
+	return getRigidBodyDown(body) * thrust->strafe;
 }
-btVector3 getTorquePitchUp(btRigidBody* body, ShipComponent* ship)
+btVector3 getTorquePitchUp(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyLeft(body) * ship->pitchThrust;
+	return getRigidBodyLeft(body) * thrust->pitch;
 }
-btVector3 getTorquePitchDown(btRigidBody* body, ShipComponent* ship)
+btVector3 getTorquePitchDown(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyRight(body) * ship->pitchThrust;
+	return getRigidBodyRight(body) * thrust->pitch;
 }
-btVector3 getTorqueYawRight(btRigidBody* body, ShipComponent* ship)
+btVector3 getTorqueYawRight(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyUp(body) * ship->yawThrust;
+	return getRigidBodyUp(body) * thrust->pitch;
 }
-btVector3 getTorqueYawLeft(btRigidBody* body, ShipComponent* ship)
+btVector3 getTorqueYawLeft(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyDown(body) * ship->yawThrust;
+	return getRigidBodyDown(body) * thrust->pitch;
 }
-btVector3 getTorqueRollRight(btRigidBody* body, ShipComponent* ship)
+btVector3 getTorqueRollRight(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyBackward(body) * ship->rollThrust;
+	return getRigidBodyBackward(body) * thrust->pitch;
 }
-btVector3 getTorqueRollLeft(btRigidBody* body, ShipComponent* ship)
+btVector3 getTorqueRollLeft(btRigidBody* body, ThrustComponent* thrust)
 {
-	return getRigidBodyForward(body) * ship->rollThrust;
+	return getRigidBodyForward(body) * thrust->pitch;
 }
 
 btVector3 velocitySafeNormalize(btVector3& velocity)
@@ -74,75 +74,75 @@ btVector3 velocitySafeNormalize(btVector3& velocity)
 	return retval;
 }
 
-btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ShipComponent* ship)
+btVector3 getTorqueToStopAngularVelocity(btRigidBody* body, ThrustComponent* thrust)
 {
 	btVector3 ang = body->getAngularVelocity();
 	ang = velocitySafeNormalize(ang);
 	if (ang.length2() <= DEGENERATE_VECTOR_LENGTH) return -ang;
-	return -ang * ((ship->pitchThrust + ship->yawThrust + ship->rollThrust) / 3.f);
+	return -ang * ((thrust->pitch + thrust->yaw + thrust->roll) / 3.f);
 }
-btVector3 getForceToStopLinearVelocity(btRigidBody* body, ShipComponent* ship)
+btVector3 getForceToStopLinearVelocity(btRigidBody* body, ThrustComponent* thrust)
 {
 	btVector3 lin = body->getLinearVelocity();
 	lin = velocitySafeNormalize(lin);
 	if (lin.length2() <= DEGENERATE_VECTOR_LENGTH) return -lin;
-	return -lin * (ship->brakeThrust + ship->strafeThrust);
+	return -lin * (thrust->brake + thrust->brake);
 }
 
-void turnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
+void turnToDirection(btRigidBody* body, ThrustComponent* thrust, btVector3 dir)
 {
 	btVector3 right = getRigidBodyRight(body);
 	btVector3 left = getRigidBodyLeft(body);
 	btVector3 up = getRigidBodyUp(body);
 	btVector3 down = getRigidBodyDown(body);
 	if (right.dot(dir) > left.dot(dir)) {
-		ship->moves[SHIP_YAW_RIGHT] = true;
+		thrust->moves[YAW_RIGHT] = true;
 	} else {
-		ship->moves[SHIP_YAW_LEFT] = true;
+		thrust->moves[YAW_LEFT] = true;
 	}
 	if (up.dot(dir) > down.dot(dir)) {
-		ship->moves[SHIP_PITCH_UP] = true;
+		thrust->moves[PITCH_UP] = true;
 	} else {
-		ship->moves[SHIP_PITCH_DOWN] = true;
+		thrust->moves[PITCH_DOWN] = true;
 	}
 }
 
-void smoothTurnToDirection(btRigidBody* body, ShipComponent* ship, btVector3 dir)
+void smoothTurnToDirection(btRigidBody* body, ThrustComponent* thrust, btVector3 dir)
 {
 	btScalar angle = getRigidBodyForward(body).angle(dir);
 	btVector3 ang = body->getAngularVelocity();
 	if (angle > ang.length()) {
-		turnToDirection(body, ship, dir);
+		turnToDirection(body, thrust, dir);
 	} else {
-		ship->moves[SHIP_STOP_ROTATION] = true;
+		thrust->moves[STOP_ROTATION] = true;
 	}
 }
 
-void goToPoint(btRigidBody* body, ShipComponent* ship, btVector3 dest, f32 dt)
+void goToPoint(btRigidBody* body, ThrustComponent* thrust, btVector3 dest, f32 dt)
 {
 	btVector3 shipPos = body->getCenterOfMassPosition();
 	btVector3 path = dest - shipPos;
 	btVector3 dir = path.normalized();
 	btScalar angle = getRigidBodyForward(body).angle(dir) * RADTODEG;
-	smoothTurnToDirection(body, ship, dir);
+	smoothTurnToDirection(body, thrust, dir);
 	if (angle < 20.f) {
-		btScalar brakePower = ship->brakeThrust + ship->strafeThrust;
+		btScalar brakePower = thrust->brake + thrust->strafe;
 		btVector3 velocity = body->getLinearVelocity();
 		btScalar timeToStop = velocity.length() / brakePower; //time required to stop in seconds
 		btScalar timeToArrive = path.length() / velocity.length(); //time to arrive based on the current path
 		if (timeToStop >= timeToArrive) { //You ever just write something so simple that you don't understand why it was such a PITA to get correct?
 
-			ship->moves[SHIP_STOP_VELOCITY] = true;
+			thrust->moves[STOP_VELOCITY] = true;
 		} else {
-			ship->moves[SHIP_THRUST_FORWARD] = true;
+			thrust->moves[THRUST_FORWARD] = true;
 		}
 	}
 	else {
-		ship->moves[SHIP_STOP_VELOCITY] = true;
+		thrust->moves[STOP_VELOCITY] = true;
 	}
 }
 
-bool avoidObstacles(ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, f32 dt, flecs::entity target)
+bool avoidObstacles(ThrustComponent* thrust, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, f32 dt, flecs::entity target)
 {
 	btRigidBody* body = rbc->rigidBody;
 
@@ -160,8 +160,8 @@ bool avoidObstacles(ShipComponent* ship, BulletRigidBodyComponent* rbc, Irrlicht
 	to.setOrigin(futurePos);
 	bWorld->convexSweepTest(&shape, from, to, cb);
 	if (!cb.hasHit()) return false;
-	ship->moves[SHIP_STOP_VELOCITY] = true;
-	goToPoint(body, ship, (pos + getRigidBodyLeft(body) * 100.f), dt);
+	thrust->moves[STOP_VELOCITY] = true;
+	goToPoint(body, thrust, (pos + getRigidBodyLeft(body) * 100.f), dt); //swerves left 
 
 	return true;
 }

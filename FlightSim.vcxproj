@@ -190,6 +190,7 @@
     <ClCompile Include="src\systems\ShipControlSystem.cpp" />
     <ClCompile Include="src\systems\ShipUpdateSystem.cpp" />
     <ClCompile Include="src\systems\SoundSystem.cpp" />
+    <ClCompile Include="src\systems\ThrustSystem.cpp" />
     <ClCompile Include="src\systems\WeaponFiringSystem.cpp" />
     <ClCompile Include="src\utilities\AttributeReaders.cpp" />
     <ClCompile Include="src\utilities\btUtils.cpp" />
@@ -214,7 +215,7 @@
     <ClInclude Include="src\components\HarpoonComponent.h" />
     <ClInclude Include="src\components\KineticComponent.h" />
     <ClInclude Include="src\components\MissileComponent.h" />
-    <ClInclude Include="src\components\MovementComponent.h" />
+    <ClInclude Include="src\components\ThrustComponent.h" />
     <ClInclude Include="src\components\ObjectiveComponent.h" />
     <ClInclude Include="src\components\ObstacleComponent.h" />
     <ClInclude Include="src\components\SensorComponent.h" />
@@ -269,6 +270,7 @@
     <ClInclude Include="src\systems\ShipControlSystem.h" />
     <ClInclude Include="src\systems\ShipUpdateSystem.h" />
     <ClInclude Include="src\systems\SoundSystem.h" />
+    <ClInclude Include="src\systems\ThrustSystem.h" />
     <ClInclude Include="src\systems\WeaponFiringSystem.h" />
     <ClInclude Include="src\components\WeaponInfoComponent.h" />
     <ClInclude Include="src\utilities\AttributeReaders.h" />

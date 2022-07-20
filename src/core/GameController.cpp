@@ -98,6 +98,7 @@ void GameController::registerComponents()
 	game_world->component<MissileProjectileComponent>();
 	game_world->component<WeaponInfoComponent>();
 	game_world->component<ProjectileInfoComponent>();
+	game_world->component<ThrustComponent>();
 	//not added: turret, harpoon
 }
 void GameController::registerSystems()
@@ -112,9 +113,9 @@ void GameController::registerSystems()
 *	flecs::PreStore
 *	flecs::OnStore
 */
-	auto playerctrl = game_world->system<InputComponent, ShipComponent, PlayerComponent, BulletRigidBodyComponent, IrrlichtComponent, SensorComponent>()
+	auto playerctrl = game_world->system<InputComponent, ShipComponent, ThrustComponent, PlayerComponent, BulletRigidBodyComponent, IrrlichtComponent, SensorComponent>()
 		.no_staging().kind(flecs::PreUpdate).iter(shipControlSystem);
-	auto aictrl = game_world->system<AIComponent, IrrlichtComponent, BulletRigidBodyComponent, ShipComponent, SensorComponent, HealthComponent>()
+	auto aictrl = game_world->system<AIComponent, IrrlichtComponent, BulletRigidBodyComponent, ThrustComponent, ShipComponent, SensorComponent, HealthComponent>()
 		.no_staging().kind(flecs::PreUpdate).iter(AIUpdateSystem);
 
 	game_world->system().kind(flecs::OnUpdate).no_staging().iter(collisionCheckingSystem);
@@ -127,7 +128,9 @@ void GameController::registerSystems()
 	game_world->system<IrrlichtComponent, PlayerComponent, BulletRigidBodyComponent, SensorComponent>().kind(flecs::OnUpdate).iter(playerUpdateSystem);
 	game_world->system<BulletRigidBodyComponent, ProjectileInfoComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(projectileSystem);
 
-	game_world->system<ShipComponent, BulletRigidBodyComponent, IrrlichtComponent, ShipParticleComponent>().kind(flecs::OnUpdate).iter(shipUpdateSystem);
+	game_world->system<ThrustComponent, ShipComponent, BulletRigidBodyComponent, IrrlichtComponent, ShipParticleComponent>().kind(flecs::OnUpdate).iter(shipUpdateSystem);
+	game_world->system<ThrustComponent, HealthComponent, BulletRigidBodyComponent, IrrlichtComponent>().kind(flecs::OnUpdate).iter(thrustSystem);
+
 	game_world->system().kind(flecs::OnUpdate).iter(soundSystem);
 	game_world->system<HealthComponent>().kind(flecs::OnUpdate).iter(healthSystem);
 	game_world->system<ShieldComponent>().kind(flecs::OnUpdate).iter(shieldSystem);

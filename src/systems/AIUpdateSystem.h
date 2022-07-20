@@ -8,10 +8,11 @@
 #include "ShipComponent.h"
 #include "SensorComponent.h"
 #include "HealthComponent.h"
+#include "ThrustComponent.h"
 
 
 //Updates all AI components in the scene (allied, friendly, and neutral ships).
 void AIUpdateSystem(flecs::iter it, 
-	AIComponent* aic, IrrlichtComponent* irrc, BulletRigidBodyComponent* rbcs, ShipComponent* shipc, SensorComponent* sensc, HealthComponent* hpc);
+	AIComponent* aic, IrrlichtComponent* irrc, BulletRigidBodyComponent* rbcs, ThrustComponent* thrc, ShipComponent* shipc, SensorComponent* sensc, HealthComponent* hpc);
 
 #endif 

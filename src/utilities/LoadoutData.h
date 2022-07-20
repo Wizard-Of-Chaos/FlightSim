@@ -9,6 +9,7 @@
 #include "CarrierComponent.h"
 #include "BolasComponent.h"
 #include "AIComponent.h"
+#include "ThrustComponent.h"
 
 /*
 * Contains all data necessary to be able to properly load a ship in the game.
@@ -21,6 +22,7 @@ struct ShipData
 	std::string name;
 	std::string description;
 	ShipComponent shipComponent;
+	ThrustComponent thrustComponent;
 	btConvexHullShape collisionShape;
 
 	std::string shipMesh;

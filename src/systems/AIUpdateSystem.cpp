@@ -3,7 +3,7 @@
 #include "AITypes.h"
 
 void AIUpdateSystem(flecs::iter it, 
-	AIComponent* aic, IrrlichtComponent* irrc, BulletRigidBodyComponent* rbcs, ShipComponent* shipc, SensorComponent* sensc, HealthComponent* hpc)
+	AIComponent* aic, IrrlichtComponent* irrc, BulletRigidBodyComponent* rbcs, ThrustComponent* thrc, ShipComponent* shipc, SensorComponent* sensc, HealthComponent* hpc)
 {
 	for (auto i : it) {
 		auto ai = &aic[i];
@@ -12,6 +12,7 @@ void AIUpdateSystem(flecs::iter it,
 		auto irr = &irrc[i];
 		auto sensors = &sensc[i];
 		auto hp = &hpc[i];
+		auto thrust = &thrc[i];
 
 		f32 dt = it.delta_time();
 		ai->timeSinceLastStateCheck += dt;
@@ -21,13 +22,13 @@ void AIUpdateSystem(flecs::iter it,
 		}
 		switch (ai->state) {
 			case AI_STATE_IDLE:
-				ai->aiControls->formOnWing(ai, ship, rbc, dt);
+				ai->aiControls->formOnWing(thrust, ai, ship, rbc, dt);
 				break;
 			case AI_STATE_FLEE:
-				ai->aiControls->flee(ship, rbc, irr, sensors->closestHostileContact);
+				ai->aiControls->flee(thrust, ship, rbc, irr, sensors->closestHostileContact);
 				break;
 			case AI_STATE_PURSUIT:
-				ai->aiControls->pursueOnWing(ai, ship, rbc, irr, sensors, sensors->closestHostileContact, dt);
+				ai->aiControls->pursueOnWing(thrust, ai, ship, rbc, irr, sensors, sensors->closestHostileContact, dt);
 				break;
 			default:
 				break;

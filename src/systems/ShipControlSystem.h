@@ -18,6 +18,6 @@
 * TODO: Abstract keyboard inputs to be mapped to player-set keybinds.
 */
 void shipControlSystem(flecs::iter it,
-	InputComponent* inc, ShipComponent* shpc, PlayerComponent* plyc, BulletRigidBodyComponent* rbcs, IrrlichtComponent* irrc, SensorComponent* snsc);
+	InputComponent* inc, ShipComponent* shpc, ThrustComponent* thrc, PlayerComponent* plyc, BulletRigidBodyComponent* rbcs, IrrlichtComponent* irrc, SensorComponent* snsc);
 
 #endif

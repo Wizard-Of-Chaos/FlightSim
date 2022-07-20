@@ -44,6 +44,7 @@ void HUDVelocityBar::updateElement(flecs::entity playerId)
 {
 	auto irr = playerId.get<IrrlichtComponent>();
 	auto ship = playerId.get<ShipComponent>();
+	auto thrust = playerId.get<ThrustComponent>();
 	auto rbc = playerId.get<BulletRigidBodyComponent>();
 	auto player = playerId.get<PlayerComponent>();
 
@@ -70,7 +71,7 @@ void HUDVelocityBar::updateElement(flecs::entity playerId)
 	rotationSpeed->setText(std::wstring(ang.begin(), ang.end()).c_str());
 	overrideStatus->setText(std::wstring(over.begin(), over.end()).c_str());
 
-	f32 maxvel = ship->linearMaxVelocity;
+	f32 maxvel = thrust->linearMaxVelocity;
 	rect<s32> screenrect = player->rootHUD->getRelativePosition();
 	dimension2du newsize; 
 	u32 width = (u32)((velLen / maxvel) * 192);

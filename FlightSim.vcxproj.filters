@@ -154,6 +154,9 @@
     <ClCompile Include="src\gui\GuiWingmanMenu.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\ThrustSystem.cpp">
+      <Filter>Sources\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\systems\AIUpdateSystem.h">
@@ -399,8 +402,11 @@
     <ClInclude Include="src\gui\GuiWingmanMenu.h">
       <Filter>Headers\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\MovementComponent.h">
+    <ClInclude Include="src\components\ThrustComponent.h">
       <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\ThrustSystem.h">
+      <Filter>Headers\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

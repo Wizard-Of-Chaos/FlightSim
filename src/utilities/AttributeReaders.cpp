@@ -38,12 +38,16 @@ u32 loadShipData(std::string path, gvReader& in, bool carrier)
 	data->engineTexture = enginepath;
 	data->jetTexture = enginepath;
 
-	data->shipComponent.forwardThrust = std::stof(in.values["forwardThrust"]);
-	data->shipComponent.brakeThrust = std::stof(in.values["brakeThrust"]);
-	data->shipComponent.strafeThrust = std::stof(in.values["strafeThrust"]);
-	data->shipComponent.pitchThrust = std::stof(in.values["pitchThrust"]);
-	data->shipComponent.yawThrust = std::stof(in.values["yawThrust"]);
-	data->shipComponent.rollThrust = std::stof(in.values["rollThrust"]);
+	data->thrustComponent.forward = std::stof(in.values["forwardThrust"]);
+	data->thrustComponent.brake = std::stof(in.values["brakeThrust"]);
+	data->thrustComponent.strafe = std::stof(in.values["strafeThrust"]);
+	data->thrustComponent.pitch = std::stof(in.values["pitchThrust"]);
+	data->thrustComponent.yaw = std::stof(in.values["yawThrust"]);
+	data->thrustComponent.roll = std::stof(in.values["rollThrust"]);
+	data->thrustComponent.velocityTolerance = std::stof(in.values["velocityTolerance"]);
+	data->thrustComponent.linearMaxVelocity = std::stof(in.values["linearMaxVelocity"]);
+	data->thrustComponent.angularMaxVelocity = std::stof(in.values["angularMaxVelocity"]);
+	data->thrustComponent.boost = std::stof(in.values["afterburnerThrust"]);
 
 	data->shipComponent.hardpointCount = std::stoi(in.values["hardpointCount"]);
 
@@ -76,10 +80,6 @@ u32 loadShipData(std::string path, gvReader& in, bool carrier)
 	data->shipComponent.engineJetPos = strToVec(in.values["engineJetPos"]);
 	data->shipComponent.physWeaponHardpoint = strToVec(in.values["physWeaponHardpoint"]);
 
-	data->shipComponent.velocityTolerance = std::stof(in.values["velocityTolerance"]);
-	data->shipComponent.linearMaxVelocity = std::stof(in.values["linearMaxVelocity"]);
-	data->shipComponent.angularMaxVelocity = std::stof(in.values["angularMaxVelocity"]);
-	data->shipComponent.afterburnerThrust = std::stof(in.values["afterburnerThrust"]);
 	data->shipComponent.afterburnerFuel = std::stof(in.values["afterburnerFuel"]);
 	data->shipComponent.maxAfterburnerFuel = data->shipComponent.afterburnerFuel;
 	data->shipComponent.afterburnerFuelEfficiency = std::stof(in.values["afterburnerFuelEfficiency"]);
@@ -274,6 +274,7 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 		irr.node->setScale(cdata->carrierComponent.scale);
 	}
 	entity.set<ShipComponent>(data->shipComponent);
+	entity.set<ThrustComponent>(data->thrustComponent);
 	entity.set<IrrlichtComponent>(irr);
 	return true;
 }

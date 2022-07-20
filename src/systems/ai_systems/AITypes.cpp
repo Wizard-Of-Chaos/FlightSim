@@ -3,6 +3,7 @@
 #include "BulletRigidBodyComponent.h"
 #include "SensorComponent.h"
 #include "IrrlichtComponent.h"
+#include "ThrustComponent.h"
 #include "IrrlichtUtils.h"
 #include "ShipMovementUtils.h"
 
@@ -81,12 +82,12 @@ bool DefaultShipAI::combatDistanceToWingCheck(AIComponent* aiComp, BulletRigidBo
 	return m_distCheck(aiComp, rbc, aiComp->maxWingDistance);
 }
 
-void DefaultShipAI::idle(ShipComponent* ship, BulletRigidBodyComponent* rbc)
+void DefaultShipAI::idle(ThrustComponent* thrust, ShipComponent* ship, BulletRigidBodyComponent* rbc)
 {
 	game_world->defer_suspend();
 	//sit down and think about what you've done
-	ship->moves[SHIP_STOP_ROTATION] = true;
-	ship->moves[SHIP_STOP_VELOCITY] = true;
+	thrust->moves[STOP_ROTATION] = true;
+	thrust->moves[STOP_VELOCITY] = true;
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
 		setAIWeapon(ship->weapons[i], false);
@@ -95,7 +96,7 @@ void DefaultShipAI::idle(ShipComponent* ship, BulletRigidBodyComponent* rbc)
 }
 
 void DefaultShipAI::flee(
-	ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, 
+	ThrustComponent* thrust, ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr,
 	flecs::entity fleeTarget)
 {
 	game_world->defer_suspend();
@@ -108,8 +109,8 @@ void DefaultShipAI::flee(
 	vector3df targetVector = -distance; //runs away in the opposite direction
 
 	//turn away and hit the gas as fast as possible
-	smoothTurnToDirection(rbc->rigidBody, ship, irrVecToBt(targetVector));
-	ship->moves[SHIP_THRUST_FORWARD] = true;
+	smoothTurnToDirection(rbc->rigidBody, thrust, irrVecToBt(targetVector));
+	thrust->moves[THRUST_FORWARD] = true;
 	ship->safetyOverride = true;
 
 	for (unsigned int i = 0; i < ship->hardpointCount; ++i) {
@@ -119,7 +120,7 @@ void DefaultShipAI::flee(
 }
 
 void DefaultShipAI::pursue(
-	ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, SensorComponent* sensors,
+	ThrustComponent* thrust, ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, SensorComponent* sensors,
 	flecs::entity pursuitTarget, f32 dt)
 {
 	game_world->defer_suspend();
@@ -142,38 +143,40 @@ void DefaultShipAI::pursue(
 	btVector3 facing = targetPos - pos;
 	facing = facing.normalize();
 
-	if (avoidObstacles(ship, rbc, irr, dt)) return;
+	if (avoidObstacles(thrust, rbc, irr, dt)) return;
 
 	//If it's not behind the ship, get behind it
 	if (dist.length() > 30.f) {
-		goToPoint(rbc->rigidBody, ship, tailPos, dt);
+		goToPoint(rbc->rigidBody, thrust, tailPos, dt);
 	}
 	else {
 		//if it is behind it, start turning towards it
-		ship->moves[SHIP_STOP_VELOCITY] = true;
-		smoothTurnToDirection(rbc->rigidBody, ship, facing);
+		thrust->moves[STOP_VELOCITY] = true;
+		smoothTurnToDirection(rbc->rigidBody, thrust, facing);
 	}
 	fireAtTarget(rbc, targetRBC, ship);
 	game_world->defer_resume();
 }
 
 void DefaultShipAI::pursueOnWing(
-	AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, SensorComponent* sensors,
+	ThrustComponent* thrust, AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, IrrlichtComponent* irr, SensorComponent* sensors,
 	flecs::entity pursuitTarget, f32 dt)
 {
 	if (combatDistanceToWingCheck(aiComp, rbc)) {
-		pursue(ship, rbc, irr, sensors, pursuitTarget, dt);
+		pursue(thrust, ship, rbc, irr, sensors, pursuitTarget, dt);
 		return;
 	}
-	goToPoint(rbc->rigidBody, ship, aiComp->wingCommander.get<BulletRigidBodyComponent>()->rigidBody->getCenterOfMassPosition(), dt);
+	goToPoint(rbc->rigidBody, thrust, aiComp->wingCommander.get<BulletRigidBodyComponent>()->rigidBody->getCenterOfMassPosition(), dt);
 	fireAtTarget(rbc, pursuitTarget.get<BulletRigidBodyComponent>(), ship);
 }
 
-void DefaultShipAI::formOnWing(AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, f32 dt)
+void DefaultShipAI::formOnWing(
+	ThrustComponent* thrust, AIComponent* aiComp, ShipComponent* ship, BulletRigidBodyComponent* rbc, 
+	f32 dt)
 {
 	if (distanceToWingCheck(aiComp, rbc)) {
-		idle(ship, rbc);
+		idle(thrust, ship, rbc);
 		return;
 	}
-	goToPoint(rbc->rigidBody, ship, aiComp->wingCommander.get<BulletRigidBodyComponent>()->rigidBody->getCenterOfMassPosition(), dt);
+	goToPoint(rbc->rigidBody, thrust, aiComp->wingCommander.get<BulletRigidBodyComponent>()->rigidBody->getCenterOfMassPosition(), dt);
 }
