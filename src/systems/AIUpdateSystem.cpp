@@ -13,10 +13,6 @@ void AIUpdateSystem(flecs::iter it,
 		auto sensors = &sensc[i];
 		auto hp = &hpc[i];
 
-		if (!ai) std::cout << "NO AI\n";
-		if (!sensors) std::cout << "NO SENSORS\n";
-		if (!hp) std::cout << "NO HP\n";
-
 		f32 dt = it.delta_time();
 		ai->timeSinceLastStateCheck += dt;
 		if (ai->timeSinceLastStateCheck >= ai->reactionSpeed) {

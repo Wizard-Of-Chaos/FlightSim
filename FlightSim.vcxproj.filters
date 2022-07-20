@@ -399,6 +399,9 @@
     <ClInclude Include="src\gui\GuiWingmanMenu.h">
       <Filter>Headers\Gui</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\MovementComponent.h">
+      <Filter>Headers\Components\Ship Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
