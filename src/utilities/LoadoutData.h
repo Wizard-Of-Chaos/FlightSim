@@ -10,6 +10,7 @@
 #include "BolasComponent.h"
 #include "AIComponent.h"
 #include "ThrustComponent.h"
+#include "TurretComponent.h"
 
 /*
 * Contains all data necessary to be able to properly load a ship in the game.
@@ -40,6 +41,19 @@ struct CarrierData : public ShipData
 	f32 health;
 };
 
+struct TurretData
+{
+	u32 id;
+	TurretComponent turretComponent;
+	ThrustComponent thrustComponent;
+
+	std::string name;
+	std::string description;
+
+	std::string mesh;
+	std::string texture;
+	std::string norm;
+};
 /*
 * Contains all baseline data for a given weapon. The u32 id is NOT an entity id.
 * Take note of additional subclasses when loading and constructing new weapon types.

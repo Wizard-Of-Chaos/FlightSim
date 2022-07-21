@@ -97,6 +97,15 @@ u32 loadShipData(std::string path, gvReader& in, bool carrier)
 		carr->carrierComponent.spawnRate = in.getFloat("spawnRate");
 		carr->carrierComponent.scale = carr->scale;
 		carr->mass = in.getFloat("mass");
+
+		carr->carrierComponent.turretCount = in.getUint("turretCount");
+		for (u32 i = 0; i < carr->carrierComponent.turretCount; ++i) {
+			std::string pos = "turretPos" + std::to_string(i);
+			std::string rot = "turretRot" + std::to_string(i);
+			carr->carrierComponent.turretPositions[i] = in.getVec(pos);
+			carr->carrierComponent.turretRotations[i] = in.getVec(rot);
+		}
+
 		stateController->carrierData[id] = carr;
 	}
 	else {
@@ -105,6 +114,40 @@ u32 loadShipData(std::string path, gvReader& in, bool carrier)
 	std::cout << "Done.\n";
 	return id;
 }
+
+u32 loadTurretData(std::string path, gvReader& in)
+{
+	std::cout << "Reading turret in from: " << path << "... ";
+	in.read(path);
+	if (in.lines.empty()) {
+		std::cout << "Could not read " << path << "!\n";
+		return -1;
+	}
+	in.readLinesToValues();
+	u32 id = in.getUint("id");
+	std::string name = in.getString("name");
+
+	TurretData* data = new TurretData;
+
+	std::string meshpath = "models/" + in.getString("model");
+	std::string texpath = "models/" + in.getString("texture");
+	std::string normpath = "models/" + in.getString("norm");
+	data->mesh = meshpath;
+	data->texture = texpath;
+	data->norm = normpath;
+	data->id = id;
+	data->name = name;
+	data->description = in.getString("description");
+
+	data->turretComponent.hardpointCount = in.getUint("hardpointCount");
+	data->thrustComponent.pitch = in.getFloat("pitchThrust");
+	data->thrustComponent.yaw = in.getFloat("yawThrust");
+
+	stateController->turretData[id] = data;
+	std::cout << "Done. \n";
+	return id;
+}
+
 
 void loadAmmoData(WeaponData* data, gvReader& in)
 {
@@ -115,7 +158,6 @@ void loadAmmoData(WeaponData* data, gvReader& in)
 	data->weaponComponent.clip = data->weaponComponent.clip;
 
 }
-
 u32 loadWeaponData(std::string path, gvReader& in)
 {
 	std::cout << "Reading weapon in from: " << path << "... ";

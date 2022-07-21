@@ -44,3 +44,11 @@ rightJetPos1=0,0,0
 reverseJetPos0=0,0,0
 reverseJetPos1=0,0,0
 engineJetPos=0,.348,-2.1585
+
+turretCount=2
+
+turretPos0=-2.0864,.0457,.19617
+turretPos1=2.0864,.0457,.19617
+
+turretRot0=0,0,0
+turretRot1=0,0,0

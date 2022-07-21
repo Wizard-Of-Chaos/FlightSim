@@ -1,0 +1,12 @@
+model=turret/turret.obj
+texture=turret/color.png
+norm=turret/norm.png
+
+name=Sentinel
+description=The Sentinel turret is a simple weapons platform designed to be compatible with a variety of weapons.
+id=0
+
+pitchThrust=100.f
+yawThrust=100.f
+
+hardpointCount=2

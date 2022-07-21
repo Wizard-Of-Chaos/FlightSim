@@ -16,6 +16,7 @@ struct CarrierComponent
 	vector3df scale;
 	f32 spawnTimer;
 
+	u32 turretCount = 0;
 	flecs::entity turrets[CARRIER_MAX_TURRETS];
 	vector3df turretPositions[CARRIER_MAX_TURRETS];
 	vector3df turretRotations[CARRIER_MAX_TURRETS];

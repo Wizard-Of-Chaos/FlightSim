@@ -60,6 +60,7 @@ void GameStateController::loadShipAndWeaponData()
 	std::string hullpath = basepath + "hulls/";
 	std::string obstpath = basepath + "obstacles/";
 	std::string carrierpath = basepath + "carriers/";
+	std::string turretpath = basepath + "turrets/";
 
 	gvReader in;
 	std::cout << "Loading ships... \n";
@@ -103,7 +104,12 @@ void GameStateController::loadShipAndWeaponData()
 			}
 		}
 	}
-	std::cout << "Done loading carriers. \nLoading weapons... \n";
+	std::cout << "Done loading carriers. \nLoading turrets... \n";
+	for (const auto& file : std::filesystem::directory_iterator(turretpath)) {
+		loadTurretData(file.path().string(), in);
+		in.clear();
+	}
+	std::cout << "Done loading turrets. \nLoading weapons... \n";
 	for (const auto& file : std::filesystem::directory_iterator(weaponpath)) {
 		loadWeaponData(file.path().string(), in);
 		in.clear();
@@ -133,6 +139,9 @@ void GameStateController::loadShipAndWeaponData()
 	std::cout << "Number of weapons: " << weaponData.size() << std::endl;
 	std::cout << "Number of physics weapons: " << physWeaponData.size() << std::endl;
 	std::cout << "Number of ships: " << shipData.size() << std::endl;
+	std::cout << "Number of obstacle types: " << obstacleData.size() << std::endl;
+	std::cout << "Number of turrets: " << turretData.size() << std::endl;
+	std::cout << "Number of carriers: " << carrierData.size() << std::endl;
 }
 
 bool GameStateController::OnEvent(const SEvent& event)
