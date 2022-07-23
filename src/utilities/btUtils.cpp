@@ -1,18 +1,17 @@
 #include "btUtils.h"
 #include "GameController.h"
 
-bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
+bool initBtRBC(flecs::entity id, btCollisionShape* shape, btVector3& scale, f32 mass)
 {
-	if (!entityId.has<IrrlichtComponent>()) return false;
+	if (!id.has<IrrlichtComponent>()) return false;
 
-	auto objIrr = entityId.get<IrrlichtComponent>();
-
+	auto objIrr = id.get<IrrlichtComponent>();
 	BulletRigidBodyComponent rbc;
-	rbc.shape = new btConvexHullShape(shape);
+	rbc.shape = shape;
 	rbc.shape->setLocalScaling(scale);
 	btTransform transform = btTransform();
 	transform.setIdentity();
-	transform.setOrigin(irrVecToBt(objIrr->node->getPosition()));
+	transform.setOrigin(irrVecToBt(objIrr->node->getAbsolutePosition()));
 	btQuaternion q;
 	btVector3 rot = irrVecToBt(objIrr->node->getRotation());
 	q.setEuler(rot.y(), rot.x(), rot.z());
@@ -24,11 +23,16 @@ bool initializeBtRigidBody(flecs::entity entityId, btConvexHullShape shape, btVe
 	rbc.rigidBody = new btRigidBody(mass, motionState, rbc.shape, localInertia);
 	rbc.rigidBody->setSleepingThresholds(0, 0);
 
-	setIdOnBtObject(rbc.rigidBody, entityId);
+	setIdOnBtObject(rbc.rigidBody, id);
 	bWorld->addRigidBody(rbc.rigidBody);
-	entityId.set<BulletRigidBodyComponent>(rbc);
+	id.set<BulletRigidBodyComponent>(rbc);
 
-	return true;
+}
+
+bool initializeBtConvexHull(flecs::entity entityId, btConvexHullShape shape, btVector3& scale, f32 mass)
+{
+	auto newShape = new btConvexHullShape(shape);
+	return initBtRBC(entityId, newShape, scale, mass);
 }
 
 flecs::entity getIdFromBt(btCollisionObject* object)

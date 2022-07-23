@@ -10,3 +10,5 @@ pitchThrust=100.f
 yawThrust=100.f
 
 hardpointCount=2
+hardpoint0=0,.26396,1.3883
+hardpoint1=0,.26396,-1.3883

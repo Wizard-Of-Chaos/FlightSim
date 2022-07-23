@@ -140,6 +140,9 @@ u32 loadTurretData(std::string path, gvReader& in)
 	data->description = in.getString("description");
 
 	data->turretComponent.hardpointCount = in.getUint("hardpointCount");
+	for (u32 i = 0; i < data->turretComponent.hardpointCount; ++i) {
+		data->turretComponent.hardpoints[i] = in.getVec("hardpoint" + std::to_string(i));
+	}
 	data->thrustComponent.pitch = in.getFloat("pitchThrust");
 	data->thrustComponent.yaw = in.getFloat("yawThrust");
 
@@ -321,7 +324,51 @@ bool loadShip(u32 id, flecs::entity entity, bool carrier)
 	return true;
 }
 
-bool loadWeapon(u32 id, flecs::entity weaponEntity, flecs::entity shipEntity, bool phys)
+bool loadTurret(u32 id, flecs::entity entity)
+{
+	TurretData* data = stateController->turretData[id];
+	if (!data) return false;
+
+	IrrlichtComponent irr;
+	irr.name = data->name;
+
+	ITexture* norm = driver->getTexture(data->norm.c_str());
+	ITexture* tex = assets->getTextureAsset(data->name);
+	IMesh* mesh = assets->getMeshAsset(data->name);
+	if (norm) {
+		if (!mesh) {
+			auto initmesh = smgr->getMesh(data->mesh.c_str());
+			mesh = smgr->getMeshManipulator()->createMeshWithTangents(initmesh);
+			smgr->getMeshCache()->removeMesh(initmesh);
+			assets->setMeshAsset(data->name, mesh);
+		}
+		irr.node = smgr->addMeshSceneNode(mesh);
+		driver->makeNormalMapTexture(norm, 7.f);
+		irr.node->setMaterialTexture(1, norm);
+		irr.node->setMaterialType(EMT_PARALLAX_MAP_SOLID);
+	} else {
+		if (!mesh) {
+			mesh = smgr->getMesh(data->mesh.c_str());
+			assets->setMeshAsset(data->name, mesh);
+		}
+		irr.node = smgr->addMeshSceneNode(mesh);
+	}
+	if (!tex) {
+		tex = driver->getTexture(data->texture.c_str());
+		assets->setTextureAsset(data->name, tex);
+	}
+
+	irr.node->setMaterialTexture(0, tex);
+	irr.node->setName(idToStr(entity).c_str());
+	irr.node->setID(ID_IsSelectable | ID_IsAvoidable);
+
+	entity.set<IrrlichtComponent>(irr);
+	entity.set<ThrustComponent>(data->thrustComponent);
+	entity.set<TurretComponent>(data->turretComponent);
+	return true;
+}
+
+bool loadWeapon(u32 id, flecs::entity weaponEntity, bool phys)
 {
 	WeaponData* data = nullptr;
 

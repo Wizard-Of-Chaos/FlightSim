@@ -73,7 +73,7 @@ bool initializeShipCollisionBody(flecs::entity entityId, u32 shipId, bool carrie
 		scale = irrVecToBt(data->carrierComponent.scale);
 		mass = data->mass;
 	}
-	return initializeBtRigidBody(entityId, hull, scale, mass);
+	return initializeBtConvexHull(entityId, hull, scale, mass);
 }
 
 bool initializeWeaponFromId(u32 id, flecs::entity shipId, int hardpoint, bool phys)
@@ -88,7 +88,7 @@ bool initializeWeaponFromId(u32 id, flecs::entity shipId, int hardpoint, bool ph
 
 	auto wepEntity = game_world->entity().child_of(shipId); //creates a weapon entity that is a child of the ship entity
 
-	loadWeapon(id, wepEntity, shipId, phys);
+	loadWeapon(id, wepEntity, phys);
 	auto irr = wepEntity.get_mut<IrrlichtComponent>();
 	irr->node->setParent(shipIrr->node);
 	if (!phys) {
